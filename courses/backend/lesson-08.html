@@ -1,0 +1,944 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-V2NCKVL16D"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-V2NCKVL16D');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Middleware — المدمج والمخصص — دفتر البرمجة</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=Cairo:wght@300;400;500;600;700;900&family=Caveat:wght@400;700&family=Fira+Code:wght@400;500;600&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../css/shared.css">
+<link rel="stylesheet" href="../../css/notebook.css">
+<style>
+body { padding: 20px 10px; }
+
+/* terminal */
+.lp-terminal { background: #0f172a; padding: 20px; display: flex; align-items: flex-start; justify-content: center; }
+.terminal-window { width: 100%; max-width: 320px; border: 2px solid #334155; border-radius: 10px; overflow: hidden; box-shadow: 0 12px 32px rgba(0,0,0,.6); }
+.terminal-bar { background: #334155; padding: 8px 12px; display: flex; align-items: center; gap: 6px; }
+.t-dot { width: 10px; height: 10px; border-radius: 50%; }
+.t-dot.red { background: #f87171; } .t-dot.yellow { background: #fbbf24; } .t-dot.green { background: #4ade80; }
+.t-title { font-family: 'Fira Code', monospace; font-size: .68rem; color: #94a3b8; margin-right: auto; }
+.terminal-screen { padding: 14px; font-family: 'Fira Code', monospace; font-size: .76rem; line-height: 1.9; color: #e2e8f0; background: #0f172a; min-height: 200px; direction: ltr; text-align: left; }
+.t-prompt { color: #4ade80; } .t-cmd { color: #e2e8f0; } .t-out { color: #94a3b8; }
+.t-ok { color: #4ade80; font-weight: 600; } .t-info { color: #60a5fa; } .t-url { color: #fbbf24; }
+.t-err { color: #f87171; } .t-mw { color: #c084fc; }
+.t-cursor { display: inline-block; width: 8px; height: 14px; background: #4ade80; animation: blink 1s step-end infinite; vertical-align: middle; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+/* middleware pipeline */
+.mw-pipeline { display: flex; align-items: stretch; gap: 0; margin: 16px 0; overflow-x: auto; padding-bottom: 4px; }
+.mw-stage { display: flex; flex-direction: column; align-items: center; gap: 0; }
+.mw-box { padding: 10px 14px; border-radius: 10px; text-align: center; font-size: .78rem; font-weight: 700; white-space: nowrap; }
+.mw-label { font-family: 'Fira Code', monospace; font-size: .65rem; margin-top: 3px; font-weight: 400; opacity: .8; display: block; }
+.mw-req    { background: #ede9fe; color: #5b21b6; border: 2px solid #7c3aed; }
+.mw-logger { background: #fef9c3; color: #713f12; border: 2px solid #ca8a04; }
+.mw-json   { background: #dbeafe; color: #1e3a8a; border: 2px solid #3b82f6; }
+.mw-auth   { background: #fee2e2; color: #7f1d1d; border: 2px solid #ef4444; }
+.mw-route  { background: #dcfce7; color: #14532d; border: 2px solid #16a34a; }
+.mw-res    { background: #e0f2fe; color: #0c4a6e; border: 2px solid #0284c7; }
+.mw-err    { background: #ffedd5; color: #7c2d12; border: 2px solid #ea580c; }
+.mw-arrow  { color: #94a3b8; padding: 0 4px; font-size: 1.1rem; display: flex; align-items: center; flex-shrink: 0; }
+.mw-next   { font-family: 'Caveat', cursive; font-size: .7rem; color: #94a3b8; margin-top: 2px; }
+
+/* mw type cards */
+.mw-types { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; margin: 14px 0; }
+.mw-type-card { background: white; border-radius: 12px; padding: 14px; border: 2px solid var(--border); }
+.mw-type-title { font-family: 'Aref Ruqaa', serif; font-weight: 700; font-size: .95rem; margin-bottom: 6px; }
+.mw-type-desc  { font-size: .78rem; color: #64748b; }
+.mw-type-ex    { font-family: 'Fira Code', monospace; font-size: .72rem; background: #f8fafc; padding: 4px 8px; border-radius: 6px; margin-top: 8px; direction: ltr; color: #475569; }
+.mt-app   { border-color: #7c3aed; } .mt-app .mw-type-title   { color: #7c3aed; }
+.mt-route { border-color: #16a34a; } .mt-route .mw-type-title { color: #16a34a; }
+.mt-err   { border-color: #ea580c; } .mt-err .mw-type-title   { color: #ea580c; }
+
+/* 3rd party grid */
+.pkg-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 10px; margin: 14px 0; }
+.pkg-card { background: white; border-radius: 10px; padding: 12px 14px; border: 1.5px solid var(--border); }
+.pkg-name { font-family: 'Fira Code', monospace; font-weight: 700; font-size: .88rem; color: #7c3aed; margin-bottom: 4px; }
+.pkg-install { font-family: 'Fira Code', monospace; font-size: .7rem; color: #64748b; background: #f8fafc; padding: 3px 6px; border-radius: 4px; margin-bottom: 6px; direction: ltr; }
+.pkg-desc { font-size: .78rem; color: #475569; }
+
+/* error flow */
+.err-flow { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin: 14px 0; justify-content: center; }
+.ef-box { padding: 8px 14px; border-radius: 8px; font-size: .78rem; text-align: center; }
+.ef-route { background: #dcfce7; color: #14532d; border: 1.5px solid #16a34a; }
+.ef-throw { background: #fee2e2; color: #7f1d1d; border: 1.5px solid #ef4444; font-family: 'Fira Code', monospace; font-size: .72rem; }
+.ef-next  { background: #fef9c3; color: #713f12; border: 1.5px solid #ca8a04; font-family: 'Fira Code', monospace; font-size: .72rem; }
+.ef-handler { background: #ffedd5; color: #7c2d12; border: 1.5px solid #ea580c; }
+.ef-arrow { color: #94a3b8; font-size: 1.1rem; flex-shrink: 0; }
+
+/* comparison table */
+.comp-table { width: 100%; border-collapse: collapse; font-size: .83rem; margin: 14px 0; }
+.comp-table th { background: #1e293b; color: white; padding: 10px 14px; text-align: right; }
+.comp-table td { padding: 9px 14px; border-bottom: 1px solid var(--border); }
+.comp-table tr:last-child td { border: none; }
+.comp-table tr:nth-child(even) td { background: #f8fafc; }
+.table-scroll { overflow-x: auto; }
+
+@media (max-width: 700px) {
+  .lp-body { flex-direction: column; }
+  .terminal-window { max-width: 100%; }
+  .mw-pipeline { flex-direction: column; align-items: flex-start; gap: 6px; }
+  .mw-arrow { transform: rotate(90deg); }
+}
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="crumbs">
+    <a href="../../index.html">🏠 الرئيسية</a>
+    <span class="sep">/</span>
+    <a href="./index.html">⚙️ الباك إند</a>
+    <span class="sep">/</span>
+    <span class="current">🛡️ الدرس 8: Middleware</span>
+  </div>
+  <div class="progress-mini">
+    <div class="progress-bar-mini"><div class="progress-fill-mini" id="progFill"></div></div>
+    <span id="progText">0%</span>
+  </div>
+</div>
+
+<div class="notebook">
+
+  <div class="notebook-header">
+    <div class="lesson-tag" style="border-color:#7c3aed; color:#7c3aed;">🛡️ الدرس الثامن</div>
+    <h1><span class="sparkle">✦</span> Middleware — المدمج والمخصص <span class="sparkle">✦</span></h1>
+    <div class="lesson-meta">
+      <span>⏱️ 45 دقيقة</span>
+      <span>📊 متوسط-متقدم</span>
+      <span>🎯 قلب Express</span>
+    </div>
+  </div>
+
+  <div class="toc-card">
+    <h2>📑 فهرس الدرس</h2>
+    <ol>
+      <li><a href="#s1">ما هو الـ Middleware؟</a></li>
+      <li><a href="#s2">next() — قلب السلسلة</a></li>
+      <li><a href="#s3">أنواع الـ Middleware</a></li>
+      <li><a href="#s4">Custom Middleware — Logging</a></li>
+      <li><a href="#s5">Custom Middleware — Auth</a></li>
+      <li><a href="#s6">Error Handling Middleware</a></li>
+      <li><a href="#s7">Middleware من طرف ثالث</a></li>
+      <li><a href="#s8">سلسلة Middleware كاملة</a></li>
+      <li><a href="#exercises">التمارين</a></li>
+      <li><a href="#quiz">اختبر فهمك</a></li>
+    </ol>
+  </div>
+
+  <!-- S1 -->
+  <div class="section" id="s1">
+    <h2 class="section-title"><span class="num">.1</span> ما هو الـ Middleware؟ <span class="en">What is Middleware?</span></h2>
+    <div class="content">
+      <p>الـ Middleware هو دالة تعترض الطلب في منتصف رحلته من الاستقبال حتى الرد — تستطيع قراءة الطلب وتعديله وإيقافه أو تمريره للتالي:</p>
+
+      <div class="mw-pipeline">
+        <div class="mw-stage">
+          <div class="mw-box mw-req">Request<span class="mw-label">POST /api/users</span></div>
+        </div>
+        <div class="mw-arrow">→</div>
+        <div class="mw-stage">
+          <div class="mw-box mw-logger">Logger<span class="mw-label">يطبع الـ request</span></div>
+          <div class="mw-next">next()</div>
+        </div>
+        <div class="mw-arrow">→</div>
+        <div class="mw-stage">
+          <div class="mw-box mw-json">express.json()<span class="mw-label">يقرأ الـ body</span></div>
+          <div class="mw-next">next()</div>
+        </div>
+        <div class="mw-arrow">→</div>
+        <div class="mw-stage">
+          <div class="mw-box mw-auth">Auth Check<span class="mw-label">يتحقق من الـ token</span></div>
+          <div class="mw-next">next()</div>
+        </div>
+        <div class="mw-arrow">→</div>
+        <div class="mw-stage">
+          <div class="mw-box mw-route">Route Handler<span class="mw-label">المنطق الأساسي</span></div>
+        </div>
+        <div class="mw-arrow">→</div>
+        <div class="mw-stage">
+          <div class="mw-box mw-res">Response<span class="mw-label">res.json()</span></div>
+        </div>
+      </div>
+
+      <div class="code-box">
+<div class="code-header"><span>🧩 شكل Middleware الأساسي</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">// دالة middleware = 3 parameters: req, res, next</span>
+function myMiddleware(req, res, next) {
+  <span class="comment">// 1. يمكنك قراءة أو تعديل req وres</span>
+  console.log('طلب واصل:', req.method, req.url);
+
+  <span class="comment">// 2. إما تستمر في السلسلة</span>
+  next();
+
+  <span class="comment">// 3. أو ترد وتوقف السلسلة</span>
+  <span class="comment">// res.status(401).json({ error: 'غير مصرح' });</span>
+}
+
+<span class="comment">// تطبيق على جميع الطلبات</span>
+app.use(myMiddleware);
+
+<span class="comment">// تطبيق على route محدد فقط</span>
+app.get('/api/secret', myMiddleware, (req, res) => {
+  res.json({ data: 'سري' });
+});</pre>
+      </div>
+
+      <div class="analogy" style="background:linear-gradient(135deg,#ede9fe,#ddd6fe);border:2px solid #7c3aed;border-radius:12px;padding:16px 20px;margin:14px 0;position:relative;">
+        <div style="position:absolute;top:-14px;right:18px;background:var(--paper);padding:0 8px;font-size:1.4rem;">🛡️</div>
+        <div style="font-family:'Aref Ruqaa',serif;color:#4c1d95;font-weight:700;margin-bottom:8px;">تشبيه: حراس المطار</div>
+        <p style="font-size:.95rem;color:#5b21b6;margin:0;">الطلب كالمسافر — يمر عبر نقاط تفتيش متتالية: <strong>فحص التذكرة</strong> (Auth) ← <strong>تسجيل الأمتعة</strong> (Body parsing) ← <strong>تسجيل البيانات</strong> (Logger) — كل نقطة إما تمرّره أو توقفه.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- S2 -->
+  <div class="section" id="s2">
+    <h2 class="section-title"><span class="num">.2</span> next() — قلب السلسلة <span class="en">The next() Function</span></h2>
+    <div class="content">
+      <p><code>next()</code> هي الدالة التي تنتقل بك للـ middleware التالي — بدونها الطلب يتجمّد:</p>
+
+      <div class="code-box">
+<div class="code-header"><span>🔗 سلوك next() في الحالات المختلفة</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre>function middlewareA(req, res, next) {
+  console.log('A: بدأ');
+
+  <span class="comment">// ✅ تابع للـ middleware التالي</span>
+  next();
+
+  console.log('A: انتهى');  <span class="comment">// ينفَّذ بعد عودة السلسلة</span>
+}
+
+function middlewareB(req, res, next) {
+  console.log('B: بدأ');
+  next();
+  console.log('B: انتهى');
+}
+
+app.use(middlewareA);
+app.use(middlewareB);
+app.get('/', (req, res) => {
+  console.log('Handler: يرد');
+  res.json({ ok: true });
+});
+
+<span class="comment">// الترتيب الفعلي:</span>
+<span class="comment">// A: بدأ → B: بدأ → Handler: يرد → B: انتهى → A: انتهى</span></pre>
+      </div>
+
+      <div class="code-box blue">
+<div class="code-header"><span>⚠️ متى تستدعي next() ومتى لا تستدعيها؟</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">// ✅ استدعِ next() إذا لم ترد وتريد الاستمرار</span>
+function logger(req, res, next) {
+  console.log(req.method, req.url);
+  next();  <span class="comment">// ← مطلوب</span>
+}
+
+<span class="comment">// ✅ استدعِ next(err) لإرسال الخطأ لـ error handler</span>
+function riskyMiddleware(req, res, next) {
+  try { doSomething(); next(); }
+  catch (err) { next(err); }  <span class="comment">// ← يُطلق error handler</span>
+}
+
+<span class="comment">// ✅ لا تستدعِ next() إذا رددت بنفسك</span>
+function auth(req, res, next) {
+  if (!req.headers['authorization']) {
+    return res.status(401).json({ error: 'مطلوب token' });
+    <span class="comment">// ← لا next() هنا — الاستجابة اكتملت</span>
+  }
+  next();
+}
+
+<span class="comment">// ❌ لا تستدعِ الاثنتين معاً!</span>
+<span class="comment">// res.json({}) ثم next() = خطأ في الـ headers</span></pre>
+      </div>
+
+      <div class="tip-box"><strong>القاعدة الذهبية:</strong> كل middleware إما يستدعي <code>next()</code> أو يرد بـ <code>res.json()</code> أو <code>res.send()</code> — لا كليهما ولا لا شيء. أي middleware لا يفعل أحدهما سيُجمّد الطلب.</div>
+    </div>
+  </div>
+
+  <!-- S3 -->
+  <div class="section" id="s3">
+    <h2 class="section-title"><span class="num">.3</span> أنواع الـ Middleware <span class="en">Middleware Types</span></h2>
+    <div class="content">
+      <p>ثلاثة أنواع بحسب نطاق التطبيق:</p>
+
+      <div class="mw-types">
+        <div class="mw-type-card mt-app">
+          <div class="mw-type-title">🌐 Application-Level</div>
+          <div class="mw-type-desc">يُطبَّق على جميع الطلبات أو مسار بعينه</div>
+          <div class="mw-type-ex">app.use(middleware)<br>app.use('/api', middleware)</div>
+        </div>
+        <div class="mw-type-card mt-route">
+          <div class="mw-type-title">🗺️ Route-Level</div>
+          <div class="mw-type-desc">يُطبَّق على route محدد فقط — يُمرَّر كحجة</div>
+          <div class="mw-type-ex">app.get('/secret',<br>&nbsp;&nbsp;auth, handler)</div>
+        </div>
+        <div class="mw-type-card mt-err">
+          <div class="mw-type-title">💥 Error-Handling</div>
+          <div class="mw-type-desc">4 parameters — يلتقط الأخطاء من next(err)</div>
+          <div class="mw-type-ex">function(err, req,<br>&nbsp;&nbsp;res, next) {…}</div>
+        </div>
+      </div>
+
+      <div class="table-scroll">
+        <table class="comp-table">
+          <thead><tr><th>Middleware</th><th>النوع</th><th>يُوضع أين؟</th></tr></thead>
+          <tbody>
+            <tr><td>express.json()</td><td>مدمج</td><td>قبل الـ routes</td></tr>
+            <tr><td>express.static()</td><td>مدمج</td><td>أي مكان</td></tr>
+            <tr><td>logger مخصص</td><td>application</td><td>في البداية</td></tr>
+            <tr><td>auth مخصص</td><td>route / application</td><td>قبل الـ routes المحمية</td></tr>
+            <tr><td>error handler</td><td>error-handling</td><td>آخر شيء دائماً</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- S4 -->
+  <div class="section" id="s4">
+    <h2 class="section-title"><span class="num">.4</span> Custom Middleware — Logging <span class="en">Request Logger</span></h2>
+    <div class="content">
+      <p>أكثر middleware تصنعه بنفسك هو الـ Logger — يُسجّل كل طلب وتفاصيله:</p>
+
+      <div class="code-box">
+<div class="code-header"><span>📋 Logger بسيط</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre>function requestLogger(req, res, next) {
+  console.log(`${req.method} ${req.url}`);
+  next();
+}
+
+app.use(requestLogger);
+
+<span class="comment">// الناتج:</span>
+<span class="comment">// GET /api/users</span>
+<span class="comment">// POST /api/users</span></pre>
+      </div>
+
+      <div class="code-box">
+<div class="code-header"><span>📊 Logger متقدم مع الوقت والـ Status</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre>function requestLogger(req, res, next) {
+  const start = Date.now();
+
+  <span class="comment">// نستمع لحدث finish — يُطلَق عند اكتمال الرد</span>
+  res.on('finish', () => {
+    const ms      = Date.now() - start;
+    const status  = res.statusCode;
+    const color   = status >= 400 ? '\x1b[31m' : '\x1b[32m';  <span class="comment">// أحمر/أخضر</span>
+    const reset   = '\x1b[0m';
+
+    console.log(
+      `${color}${status}${reset}`,
+      req.method.padEnd(6),
+      req.url.padEnd(30),
+      `${ms}ms`
+    );
+  });
+
+  next();
+}
+
+app.use(requestLogger);
+
+<span class="comment">// الناتج:</span>
+<span class="comment">// 200 GET    /api/users                     12ms</span>
+<span class="comment">// 201 POST   /api/users                     8ms</span>
+<span class="comment">// 404 GET    /api/unknown                   3ms</span></pre>
+      </div>
+
+      <div class="info-box"><strong>لماذا res.on('finish')?</strong> لأن الـ status code لا يكون متاحاً حتى يكتمل الرد — إذا طبعناه في بداية الـ middleware سيكون دائماً <code>undefined</code>. حدث <code>finish</code> يُطلَق بعد إرسال الرد كاملاً.</div>
+    </div>
+  </div>
+
+  <!-- S5 -->
+  <div class="section" id="s5">
+    <h2 class="section-title"><span class="num">.5</span> Custom Middleware — Auth <span class="en">Authentication Middleware</span></h2>
+    <div class="content">
+      <p>الـ Auth Middleware يتحقق من هوية المستخدم قبل السماح له بالوصول للـ route:</p>
+
+      <div class="code-box">
+<div class="code-header"><span>🔐 Auth Middleware بسيط</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre>function requireAuth(req, res, next) {
+  <span class="comment">// استخرج الـ token من الـ header</span>
+  const authHeader = req.headers['authorization'];
+
+  <span class="comment">// تحقق من وجوده</span>
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return res.status(401).json({
+      error: 'يجب تسجيل الدخول — أرسل Authorization: Bearer TOKEN',
+    });
+  }
+
+  const token = authHeader.split(' ')[1];  <span class="comment">// "Bearer xyz" → "xyz"</span>
+
+  <span class="comment">// في الواقع: تتحقق من JWT هنا (درس لاحق)</span>
+  if (token !== 'my-secret-token') {
+    return res.status(403).json({ error: 'Token غير صالح' });
+  }
+
+  <span class="comment">// أضف بيانات المستخدم للـ req — متاحة للـ handler بعدك</span>
+  req.user = { id: 1, name: 'أحمد', role: 'admin' };
+  next();
+}</pre>
+      </div>
+
+      <div class="code-box">
+<div class="code-header"><span>🛡️ تطبيق Auth على routes مختلفة</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">// route محدد — requireAuth يُمرَّر كحجة</span>
+app.get('/api/profile', requireAuth, (req, res) => {
+  res.json({ user: req.user });  <span class="comment">// req.user من الـ middleware</span>
+});
+
+<span class="comment">// جميع routes /api/admin محمية</span>
+app.use('/api/admin', requireAuth);
+app.get('/api/admin/users', (req, res) => {
+  res.json({ users: [], admin: req.user });
+});
+
+<span class="comment">// تطبيق على router كامل</span>
+const adminRouter = require('./routes/admin');
+app.use('/api/admin', requireAuth, adminRouter);
+
+<span class="comment">// routes عامة — لا تحتاج auth</span>
+app.get('/api/products', (req, res) => {
+  res.json({ products: [] });  <span class="comment">// متاح للجميع</span>
+});</pre>
+      </div>
+
+      <div class="note-box"><strong>req.user في كل مكان:</strong> بعد تعيين <code>req.user</code> في الـ middleware، تستطيع قراءته في أي middleware أو handler يأتي بعده في نفس الطلب — الـ req object يُمرَّر عبر السلسلة كاملة.</div>
+    </div>
+  </div>
+
+  <!-- S6 -->
+  <div class="section" id="s6">
+    <h2 class="section-title"><span class="num">.6</span> Error Handling Middleware <span class="en">Error Handler</span></h2>
+    <div class="content">
+      <p>هذا النوع الخاص له <strong>4 parameters</strong> — Express يُميّزه تلقائياً عن الـ middleware العادي:</p>
+
+      <div class="err-flow">
+        <div class="ef-box ef-route">Route Handler<br>أو Middleware</div>
+        <div class="ef-arrow">→</div>
+        <div class="ef-box ef-throw">throw new Error()<br>أو next(err)</div>
+        <div class="ef-arrow">→</div>
+        <div class="ef-box ef-next">يتخطى كل<br>middleware عادي</div>
+        <div class="ef-arrow">→</div>
+        <div class="ef-box ef-handler">Error Handler<br>(4 params)</div>
+      </div>
+
+      <div class="code-box">
+<div class="code-header"><span>💥 Error Handler — 4 Parameters</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">// يجب أن يكون له بالضبط 4 params — حتى لو لم تستخدم next</span>
+function errorHandler(err, req, res, next) {
+  <span class="comment">// طبع الخطأ في الـ console (للمطور)</span>
+  console.error('❌ Error:', err.message);
+
+  const statusCode = err.statusCode || 500;
+  const message    = err.message    || 'خطأ داخلي في الخادم';
+
+  res.status(statusCode).json({
+    success: false,
+    error:   message,
+    <span class="comment">// لا ترسل stack trace في الإنتاج!</span>
+    ...(process.env.NODE_ENV !== 'production' && { stack: err.stack }),
+  });
+}
+
+<span class="comment">// يُوضع آخر شيء بعد جميع الـ routes</span>
+app.use(errorHandler);</pre>
+      </div>
+
+      <div class="code-box blue">
+<div class="code-header"><span>⚡ إطلاق الـ Error Handler بـ next(err)</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">// خطأ مخصص مع statusCode</span>
+class AppError extends Error {
+  constructor(message, statusCode) {
+    super(message);
+    this.statusCode = statusCode;
+  }
+}
+
+<span class="comment">// في الـ route</span>
+app.get('/api/users/:id', async (req, res, next) => {
+  try {
+    const user = await findUser(req.params.id);
+
+    if (!user) {
+      throw new AppError('المستخدم غير موجود', 404);
+    }
+
+    res.json({ data: user });
+  } catch (err) {
+    next(err);  <span class="comment">// ← يُرسله للـ error handler</span>
+  }
+});
+
+<span class="comment">// أو بدون try/catch في Express 5 (يُمسك async errors تلقائياً)</span>
+<span class="comment">// app.get('/api/users/:id', async (req, res) => { throw ... });</span></pre>
+      </div>
+
+      <div class="tip-box"><strong>Express لا يُمسك async errors تلقائياً في v4:</strong> في Express 4 يجب استخدام <code>try/catch + next(err)</code>. في Express 5 (الأحدث) يُمسك الأخطاء غير المعالجة من async functions تلقائياً.</div>
+    </div>
+  </div>
+
+  <!-- S7 -->
+  <div class="section" id="s7">
+    <h2 class="section-title"><span class="num">.7</span> Middleware من طرف ثالث <span class="en">Third-Party Middleware</span></h2>
+    <div class="content">
+      <p>مكتبات جاهزة توفر middleware شائع — تثبّتها بـ npm وتستخدمها فوراً:</p>
+
+      <div class="pkg-grid">
+        <div class="pkg-card">
+          <div class="pkg-name">morgan</div>
+          <div class="pkg-install">npm i morgan</div>
+          <div class="pkg-desc">Logger احترافي للـ HTTP requests مع تنسيقات متعددة</div>
+        </div>
+        <div class="pkg-card">
+          <div class="pkg-name">cors</div>
+          <div class="pkg-install">npm i cors</div>
+          <div class="pkg-desc">يُتيح للمواقع الأخرى الوصول لـ API الخاص بك</div>
+        </div>
+        <div class="pkg-card">
+          <div class="pkg-name">helmet</div>
+          <div class="pkg-install">npm i helmet</div>
+          <div class="pkg-desc">يُضيف Headers أمانية لحماية التطبيق</div>
+        </div>
+        <div class="pkg-card">
+          <div class="pkg-name">express-rate-limit</div>
+          <div class="pkg-install">npm i express-rate-limit</div>
+          <div class="pkg-desc">يحد من عدد الطلبات لمنع الـ abuse</div>
+        </div>
+        <div class="pkg-card">
+          <div class="pkg-name">compression</div>
+          <div class="pkg-install">npm i compression</div>
+          <div class="pkg-desc">يضغط الاستجابات بـ gzip لتسريع التحميل</div>
+        </div>
+        <div class="pkg-card">
+          <div class="pkg-name">multer</div>
+          <div class="pkg-install">npm i multer</div>
+          <div class="pkg-desc">رفع الملفات (multipart/form-data)</div>
+        </div>
+      </div>
+
+      <div class="code-box">
+<div class="code-header"><span>📦 استخدام morgan وcors وhelmet</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre>const express    = require('express');
+const morgan     = require('morgan');
+const cors       = require('cors');
+const helmet     = require('helmet');
+const rateLimit  = require('express-rate-limit');
+
+const app = express();
+
+<span class="comment">// 1. Helmet — أمان (أول شيء)</span>
+app.use(helmet());
+
+<span class="comment">// 2. CORS — السماح للفرونت إند بالوصول</span>
+app.use(cors({
+  origin: ['http://localhost:3000', 'https://mysite.com'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+}));
+
+<span class="comment">// 3. Morgan — logging (dev = ملوّن وتفصيلي)</span>
+app.use(morgan('dev'));
+
+<span class="comment">// 4. Rate Limiting — 100 طلب كل 15 دقيقة</span>
+const limiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 100 });
+app.use('/api', limiter);
+
+<span class="comment">// 5. Body parsing</span>
+app.use(express.json());
+
+<span class="comment">// Middleware جاهز بسطرين بدل 50!</span></pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- S8 — Live Preview -->
+  <div class="section" id="s8">
+    <h2 class="section-title"><span class="num">.8</span> سلسلة Middleware كاملة في العمل <span class="en">Full Middleware Chain</span></h2>
+    <div class="content"><p>تطبيق Express كامل مع Logger + Auth + Error Handler وكل شيء بالترتيب الصحيح:</p></div>
+
+    <div class="live-preview">
+      <div class="lp-header">
+        <span>🛡️ Express — سلسلة Middleware كاملة</span>
+        <span class="lp-tag">app.js</span>
+      </div>
+      <div class="lp-body">
+        <div class="lp-code">
+<pre><span class="c">// app.js — الترتيب مهم جداً!</span>
+<span class="k">const</span> express = <span class="t">require</span>(<span class="s">'express'</span>);
+<span class="k">const</span> app = <span class="t">express</span>();
+
+<span class="c">// ── 1. Logger (أول شيء) ──────</span>
+app.<span class="t">use</span>((req, res, next) => {
+  <span class="k">const</span> s = <span class="t">Date</span>.<span class="t">now</span>();
+  res.<span class="t">on</span>(<span class="s">'finish'</span>, () =>
+    console.<span class="t">log</span>(
+      req.method, req.url,
+      res.statusCode,
+      <span class="s">`${Date.now()-s}ms`</span>
+    )
+  );
+  <span class="t">next</span>();
+});
+
+<span class="c">// ── 2. Body Parsing ──────────</span>
+app.<span class="t">use</span>(<span class="t">express</span>.<span class="t">json</span>());
+
+<span class="c">// ── 3. Routes عامة ──────────</span>
+app.<span class="t">get</span>(<span class="s">'/api/public'</span>,
+  (req, res) =>
+    res.<span class="t">json</span>({data:<span class="s">'للجميع'</span>})
+);
+
+<span class="c">// ── 4. Auth Middleware ───────</span>
+<span class="k">function</span> <span class="t">requireAuth</span>(req,res,next){
+  <span class="k">const</span> h=req.headers.authorization;
+  <span class="k">if</span>(!h?.startsWith(<span class="s">'Bearer '</span>))
+    <span class="k">return</span> res.<span class="t">status</span>(<span class="n">401</span>)
+      .<span class="t">json</span>({error:<span class="s">'token مطلوب'</span>});
+  req.user={id:<span class="n">1</span>,name:<span class="s">'أحمد'</span>};
+  <span class="t">next</span>();
+}
+
+<span class="c">// ── 5. Routes محمية ─────────</span>
+app.<span class="t">get</span>(<span class="s">'/api/profile'</span>,
+  requireAuth,
+  (req,res) =>
+    res.<span class="t">json</span>({user:req.user})
+);
+
+app.<span class="t">post</span>(<span class="s">'/api/data'</span>,
+  requireAuth,
+  (req,res,next) => {
+    <span class="k">try</span>{
+      <span class="k">if</span>(!req.body.value)
+        <span class="k">throw</span> <span class="t">Object</span>.<span class="t">assign</span>(
+          <span class="k">new</span> Error(<span class="s">'value مطلوب'</span>),
+          {statusCode:<span class="n">400</span>}
+        );
+      res.<span class="t">json</span>({ok:<span class="k">true</span>});
+    }<span class="k">catch</span>(e){<span class="t">next</span>(e);}
+  }
+);
+
+<span class="c">// ── 6. 404 Handler ───────────</span>
+app.<span class="t">use</span>((req,res) =>
+  res.<span class="t">status</span>(<span class="n">404</span>)
+    .<span class="t">json</span>({error:<span class="s">'Not Found'</span>})
+);
+
+<span class="c">// ── 7. Error Handler (آخراً) ─</span>
+app.<span class="t">use</span>((err,req,res,next) => {
+  res.<span class="t">status</span>(err.statusCode||<span class="n">500</span>)
+    .<span class="t">json</span>({
+      success:<span class="k">false</span>,
+      error:err.message
+    });
+});
+
+app.<span class="t">listen</span>(<span class="n">3000</span>);</pre>
+        </div>
+        <div class="lp-terminal">
+          <div class="terminal-window">
+            <div class="terminal-bar">
+              <div class="t-dot red"></div><div class="t-dot yellow"></div><div class="t-dot green"></div>
+              <span class="t-title">Middleware Chain</span>
+            </div>
+            <div class="terminal-screen">
+              <div><span class="t-prompt">$</span> <span class="t-cmd">node app.js</span></div>
+              <div><span class="t-out">──────────────────────</span></div>
+              <div><span class="t-info">GET</span> <span class="t-url">/api/public</span> <span class="t-ok">200</span> <span class="t-out">5ms</span></div>
+              <div><span class="t-mw">→ logger → json → route</span></div>
+              <div><span class="t-out">──────────────────────</span></div>
+              <div><span class="t-info">GET</span> <span class="t-url">/api/profile</span> <span class="t-err">401</span> <span class="t-out">2ms</span></div>
+              <div><span class="t-mw">→ logger → json → auth❌</span></div>
+              <div><span class="t-out">  error: 'token مطلوب'</span></div>
+              <div><span class="t-out">──────────────────────</span></div>
+              <div><span class="t-info">GET</span> <span class="t-url">/api/profile</span> <span class="t-ok">200</span> <span class="t-out">3ms</span></div>
+              <div><span class="t-out"> [Auth: Bearer token]</span></div>
+              <div><span class="t-mw">→ logger → json → auth✓ → route</span></div>
+              <div><span class="t-out">──────────────────────</span></div>
+              <div><span class="t-info">POST</span> <span class="t-url">/api/data</span> <span class="t-err">400</span> <span class="t-out">4ms</span></div>
+              <div><span class="t-mw">→ auth✓ → route → next(err)</span></div>
+              <div><span class="t-mw">→ errorHandler</span></div>
+              <div><span class="t-out">  error: 'value مطلوب'</span></div>
+              <div><span class="t-out">──────────────────────</span></div>
+              <div><span class="t-info">GET</span> <span class="t-url">/unknown</span> <span class="t-err">404</span> <span class="t-out">1ms</span></div>
+              <div><span class="t-prompt">$</span> <span class="t-cursor"></span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EXERCISES -->
+  <div class="section" id="exercises">
+    <h2 class="section-title"><span class="num">📝</span> التمارين العملية <span class="en">Exercises</span></h2>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 1: Logger Middleware</div>
+      <p>اكتب middleware logger يطبع لكل طلب:<br>
+      <code>[2026-01-01 12:00:00] GET /api/users → 200 (12ms)</code><br>
+      مع الوقت والـ status code والمدة.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box"><pre>function requestLogger(req, res, next) {
+  const start = Date.now();
+
+  res.on('finish', () => {
+    const ms       = Date.now() - start;
+    const time     = new Date().toISOString().replace('T', ' ').slice(0, 19);
+    const status   = res.statusCode;
+    console.log(`[${time}] ${req.method} ${req.url} → ${status} (${ms}ms)`);
+  });
+
+  next();
+}
+
+app.use(requestLogger);</pre></div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 2: API Key Middleware</div>
+      <p>اكتب middleware يتحقق من وجود header <code>X-API-Key</code> بقيمة معينة. إذا لم يوجد أعد 401، إذا كانت القيمة خاطئة أعد 403.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box"><pre>const VALID_API_KEY = 'my-secret-api-key-2024';
+
+function requireApiKey(req, res, next) {
+  const apiKey = req.headers['x-api-key'];
+
+  if (!apiKey) {
+    return res.status(401).json({
+      error: 'X-API-Key header مطلوب',
+    });
+  }
+
+  if (apiKey !== VALID_API_KEY) {
+    return res.status(403).json({
+      error: 'API Key غير صالح',
+    });
+  }
+
+  next();
+}
+
+<span class="comment">// الاستخدام</span>
+app.use('/api', requireApiKey);</pre></div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 3: Validation Middleware</div>
+      <p>اكتب middleware <code>requireBody(...fields)</code> يتحقق من وجود حقول معينة في <code>req.body</code>. إذا غاب أي حقل أعد 400 مع رسالة تحدد الحقل الناقص.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box"><pre>function requireBody(...fields) {
+  return (req, res, next) => {
+    for (const field of fields) {
+      if (!req.body || req.body[field] === undefined || req.body[field] === '') {
+        return res.status(400).json({
+          error: `الحقل "${field}" مطلوب`,
+        });
+      }
+    }
+    next();
+  };
+}
+
+<span class="comment">// الاستخدام</span>
+app.post('/api/users',
+  requireBody('name', 'email', 'password'),
+  (req, res) => {
+    res.status(201).json({ message: 'تم إنشاء المستخدم' });
+  }
+);</pre></div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 4: Error Handler</div>
+      <p>اكتب <code>errorHandler</code> يُعيد JSON بهذا الشكل:<br>
+      <code>{ success: false, error: message, statusCode, path: req.url }</code><br>
+      بكود الـ error.statusCode أو 500 افتراضياً.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box"><pre>function errorHandler(err, req, res, next) {
+  const statusCode = err.statusCode || 500;
+  const message    = err.message    || 'خطأ داخلي في الخادم';
+
+  console.error(`[ERROR] ${statusCode}: ${message}`);
+
+  res.status(statusCode).json({
+    success:    false,
+    error:      message,
+    statusCode,
+    path:       req.url,
+  });
+}
+
+<span class="comment">// يُوضع آخر شيء في app.js</span>
+app.use(errorHandler);</pre></div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 5: ترتيب الـ Middleware</div>
+      <p>رتّب هذه الـ middlewares بالترتيب الصحيح في <code>app.js</code> واشرح لماذا:<br>
+      أ) <code>app.use(errorHandler)</code><br>
+      ب) <code>app.use(express.json())</code><br>
+      ج) <code>app.use(requestLogger)</code><br>
+      د) routes التطبيق<br>
+      هـ) <code>app.use((req,res) => res.status(404)...)</code></p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الترتيب الصحيح: ج ← ب ← د ← هـ ← أ</span>
+        <p>• <strong>ج (logger)</strong> أولاً: يجب أن يُسجّل كل طلب بما فيها المحظورة<br>
+        • <strong>ب (json)</strong> ثانياً: يجب تحليل الـ body قبل وصوله للـ routes<br>
+        • <strong>د (routes)</strong> ثالثاً: المنطق الأساسي بعد الإعداد<br>
+        • <strong>هـ (404)</strong> رابعاً: يلتقط ما لم تلتقطه الـ routes<br>
+        • <strong>أ (error handler)</strong> آخراً: يلتقط جميع أخطاء next(err)</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="quiz-container" id="quiz">
+    <div class="quiz-intro"><p>اختبر فهمك للـ Middleware — قلب Express!</p></div>
+    <div class="quiz-type-tabs">
+      <button class="qt-tab active" onclick="switchQuiz(this,'tf')">✓✗ صح وخطأ</button>
+      <button class="qt-tab" onclick="switchQuiz(this,'mc')">🔘 اختيار من متعدد</button>
+    </div>
+
+    <div class="quiz-section active" id="quiz-tf">
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">1</span><span class="q-text">كل middleware يجب إما أن يستدعي <code>next()</code> أو يرد بـ <code>res.json()</code> — لا يمكن تركه دون أي منهما.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="false">
+        <span class="q-num">2</span><span class="q-text">ترتيب تعريف الـ middleware في Express لا يؤثر على ترتيب تنفيذها.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">3</span><span class="q-text">Error Handler Middleware يجب أن يكون له بالضبط 4 parameters: <code>(err, req, res, next)</code>.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">4</span><span class="q-text">يمكن تعيين بيانات في <code>req</code> داخل middleware وقراءتها في الـ route handler الذي يأتي بعده.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">5</span><span class="q-text">يمكن تطبيق middleware على route واحد فقط بتمريره كحجة: <code>app.get('/path', auth, handler)</code>.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <button class="quiz-submit" onclick="submitQuiz('tf')">عرض النتيجة 🎯</button>
+      <div class="quiz-result" id="result-tf"><div class="result-score" id="score-tf">0/5</div><div class="result-label">إجابات صحيحة</div><div class="result-message" id="msg-tf"></div><button class="retry-btn" onclick="retryQuiz('tf')">🔄 حاول تاني</button></div>
+    </div>
+
+    <div class="quiz-section" id="quiz-mc">
+      <div class="quiz-question" data-correct="1">
+        <span class="q-num">1</span><span class="q-text">ما المعامل الثالث في دالة middleware العادية؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">err</button>
+          <button class="q-opt" onclick="answerMC(this,1)">next</button>
+          <button class="q-opt" onclick="answerMC(this,2)">done</button>
+          <button class="q-opt" onclick="answerMC(this,3)">callback</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="1">
+        <span class="q-num">2</span><span class="q-text">ما الفرق بين <code>next()</code> و<code>next(err)</code>؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">لا فرق بينهما</button>
+          <button class="q-opt" onclick="answerMC(this,1)">next() يتابع عادي، next(err) ينتقل للـ error handler مباشرة</button>
+          <button class="q-opt" onclick="answerMC(this,2)">next(err) يوقف الطلب نهائياً</button>
+          <button class="q-opt" onclick="answerMC(this,3)">next() للـ GET، next(err) للـ POST</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="1">
+        <span class="q-num">3</span><span class="q-text">أين يجب وضع Error Handler Middleware في Express؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">في البداية قبل كل شيء</button>
+          <button class="q-opt" onclick="answerMC(this,1)">في النهاية بعد جميع الـ routes والـ middleware الأخرى</button>
+          <button class="q-opt" onclick="answerMC(this,2)">في منتصف الـ routes</button>
+          <button class="q-opt" onclick="answerMC(this,3)">الترتيب لا يهم</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="1">
+        <span class="q-num">4</span><span class="q-text">ما الغرض من مكتبة <code>morgan</code>؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">إعداد CORS headers</button>
+          <button class="q-opt" onclick="answerMC(this,1)">تسجيل HTTP requests بتفاصيلها في الـ console</button>
+          <button class="q-opt" onclick="answerMC(this,2)">تشفير كلمات المرور</button>
+          <button class="q-opt" onclick="answerMC(this,3)">ضغط الاستجابات</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="2">
+        <span class="q-num">5</span><span class="q-text">ماذا يحدث إذا نسي middleware استدعاء <code>next()</code> ولم يرد؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">ينتقل للـ middleware التالي تلقائياً</button>
+          <button class="q-opt" onclick="answerMC(this,1)">يُرجع 200 OK فارغاً</button>
+          <button class="q-opt" onclick="answerMC(this,2)">الطلب يظل معلقاً حتى timeout</button>
+          <button class="q-opt" onclick="answerMC(this,3)">يُطلق error handler تلقائياً</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <button class="quiz-submit" onclick="submitQuiz('mc')">عرض النتيجة 🎯</button>
+      <div class="quiz-result" id="result-mc"><div class="result-score" id="score-mc">0/5</div><div class="result-label">إجابات صحيحة</div><div class="result-message" id="msg-mc"></div><button class="retry-btn" onclick="retryQuiz('mc')">🔄 حاول تاني</button></div>
+    </div>
+  </div>
+
+  <div class="lesson-nav">
+    <a href="./lesson-07.html" class="nav-btn"><span>⬅️</span><span>الدرس السابق</span></a>
+    <button class="nav-btn complete-btn" id="completeBtn" onclick="markComplete(this)" style="background:#7c3aed; border-color:#7c3aed;"><span>✅</span><span>علّم كمكتمل</span></button>
+    <a href="./lesson-09.html" class="nav-btn"><span>الدرس التالي</span><span>➡️</span></a>
+  </div>
+
+  <div class="notebook-footer">
+    <h3>🎉 أتقنت سلسلة الـ Middleware!</h3>
+    <p>Logger، Auth، Error Handler — أنت الآن تبني خوادم احترافية محمية. 🛡️<br><strong>الدرس التالي: REST API — تصميم وأسس التطبيق الصحيح 🔌</strong></p>
+  </div>
+</div>
+
+<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">⬆️</button>
+<div class="toast" id="toast"></div>
+<script src="../../js/data/courses.js"></script>
+<script src="../../js/progress.js"></script>
+<script>
+const COURSE_ID='backend', LESSON_ID=8, TOTAL=32;
+function toggleSolution(b){const s=b.nextElementSibling;s.classList.toggle('show');b.textContent=s.classList.contains('show')?'إخفاء الحل ▲':'عرض الحل ▼';}
+function copyCode(b){const p=b.closest('.code-box').querySelector('pre');navigator.clipboard.writeText(p.innerText).then(()=>{b.classList.add('copied');b.textContent='✓ تم النسخ';setTimeout(()=>{b.classList.remove('copied');b.textContent='📋 نسخ';},2000);});}
+function switchQuiz(b,t){document.querySelectorAll('.qt-tab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.quiz-section').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.getElementById('quiz-'+t).classList.add('active');}
+const answers={tf:{},mc:{}};
+function answerTF(b,v){const q=b.closest('.quiz-question'),i=Array.from(q.parentNode.querySelectorAll('.quiz-question')).indexOf(q);q.querySelectorAll('.q-opt').forEach(o=>o.classList.remove('selected'));b.classList.add('selected');answers.tf[i]=v;}
+function answerMC(b,i){const q=b.closest('.quiz-question'),qi=Array.from(q.parentNode.querySelectorAll('.quiz-question')).indexOf(q);q.querySelectorAll('.q-opt').forEach(o=>o.classList.remove('selected'));b.classList.add('selected');answers.mc[qi]=i;}
+function submitQuiz(type){const sec=document.getElementById('quiz-'+type),qs=sec.querySelectorAll('.quiz-question');let c=0;qs.forEach((q,i)=>{const ca=type==='tf'?(q.dataset.correct==='true'):parseInt(q.dataset.correct),ua=answers[type][i],fb=q.querySelector('.q-feedback'),opts=q.querySelectorAll('.q-opt');opts.forEach(o=>{o.classList.remove('selected');o.disabled=true;});if(ua===undefined){fb.className='q-feedback wrong show';fb.textContent='⚠️ ما اخترتش إجابة!';return;}if(ua===ca){c++;fb.className='q-feedback correct show';fb.textContent='✓ إجابة صحيحة!';if(type==='tf')opts[ca?0:1].classList.add('correct');else opts[ca].classList.add('correct');}else{fb.className='q-feedback wrong show';if(type==='tf'){opts[ca?0:1].classList.add('correct');opts[ua?0:1].classList.add('wrong');fb.textContent='✗ خطأ.';}else{opts[ca].classList.add('correct');opts[ua].classList.add('wrong');fb.textContent='✗ الإجابة بالأخضر.';}}});const r=document.getElementById('result-'+type);document.getElementById('score-'+type).textContent=c+'/'+qs.length;const m=document.getElementById('msg-'+type);if(c===qs.length){m.textContent='🏆 ممتاز 100%!';m.className='result-message excellent';}else if(c>=3){m.textContent='👍 جيد!';m.className='result-message good';}else{m.textContent='📚 راجع الدرس.';m.className='result-message try-again';}r.classList.add('show');r.scrollIntoView({behavior:'smooth',block:'center'});}
+function retryQuiz(type){const sec=document.getElementById('quiz-'+type);sec.querySelectorAll('.q-opt').forEach(o=>{o.classList.remove('selected','correct','wrong');o.disabled=false;});sec.querySelectorAll('.q-feedback').forEach(f=>{f.classList.remove('show','correct','wrong');f.textContent='';});document.getElementById('result-'+type).classList.remove('show');answers[type]={};}
+function markComplete(btn){const done=Progress.toggleLessonComplete(COURSE_ID,LESSON_ID);btn.classList.toggle('completed',done);btn.querySelector('span:last-child').textContent=done?'مكتمل! ⭐':'علّم كمكتمل';showToast(done?'🎉 أكملت الدرس الثامن!':'تم إلغاء الإكمال');}
+if(Progress.isLessonComplete(COURSE_ID,LESSON_ID)){const b=document.getElementById('completeBtn');b.classList.add('completed');b.querySelector('span:last-child').textContent='مكتمل! ⭐';}
+(function(){const p=Progress.getCourseProgress(COURSE_ID,TOTAL);document.getElementById('progFill').style.width=p+'%';document.getElementById('progText').textContent=p+'%';})();
+function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
+window.addEventListener('scroll',()=>{document.getElementById('scrollTop').classList.toggle('show',window.scrollY>300);});
+document.querySelectorAll('.toc-card a').forEach(l=>{l.addEventListener('click',e=>{e.preventDefault();const t=document.querySelector(l.getAttribute('href'));if(t)t.scrollIntoView({behavior:'smooth',block:'start'});});});
+</script>
+</body>
+</html>

@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-V2NCKVL16D"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-V2NCKVL16D');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>مقدمة في React Native — دفتر البرمجة</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=Cairo:wght@300;400;500;600;700;900&family=Caveat:wght@400;700&family=Fira+Code:wght@400;500;600&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../css/shared.css">
+<link rel="stylesheet" href="../../css/notebook.css">
+<style>
+body { padding: 20px 10px; }
+
+/* ═══════════ phone frame (محاكاة الجوال) ═══════════ */
+.phone-frame {
+  width: 280px; margin: 20px auto;
+  border: 14px solid #1e293b;
+  border-radius: 36px;
+  background: white;
+  box-shadow: 0 20px 50px rgba(0,0,0,.25);
+  overflow: hidden;
+  position: relative;
+}
+.phone-notch {
+  background: #1e293b; height: 22px;
+  display: flex; align-items: center; justify-content: center;
+  position: relative;
+}
+.phone-notch::before {
+  content: ''; width: 60px; height: 14px;
+  background: #0f172a; border-radius: 0 0 10px 10px;
+}
+.phone-screen {
+  min-height: 380px; padding: 16px;
+  font-family: 'Cairo', sans-serif;
+  background: linear-gradient(180deg, #0ea5e9, #0369a1);
+  color: white; text-align: center;
+}
+.phone-screen-light { background: #f8fafc; color: #1e293b; }
+.phone-app-title { font-size: 1.3rem; font-weight: 800; margin-top: 30px; }
+.phone-app-sub   { font-size: .9rem; opacity: .85; margin-top: 8px; }
+.phone-app-btn   {
+  background: white; color: #0369a1; border: none;
+  padding: 10px 24px; border-radius: 999px;
+  font-family: 'Cairo', sans-serif; font-weight: 700;
+  margin-top: 24px; font-size: .9rem; cursor: pointer;
+}
+.phone-emoji { font-size: 4rem; margin: 30px 0 16px; }
+
+/* مقارنة المنصات */
+.platform-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 14px; margin: 18px 0;
+}
+.platform-card {
+  background: #f8fafc; border: 1.5px solid var(--border);
+  border-radius: 12px; padding: 16px;
+}
+.platform-card.rn  { border-color: #0ea5e9; background: #f0f9ff; }
+.pc-head { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.pc-icon { font-size: 1.8rem; }
+.pc-title { font-weight: 700; font-size: 1rem; }
+.pc-tag  { font-size: .75rem; padding: 2px 8px; border-radius: 999px;
+           background: var(--border); color: var(--text-muted); margin-right: auto; }
+.pc-tag.best { background: #dcfce7; color: #166534; }
+.pc-list { font-size: .85rem; color: var(--text-muted); line-height: 1.8; padding-right: 18px; }
+
+/* قائمة الميزات */
+.feature-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px; margin: 14px 0;
+}
+.feature-item {
+  background: #f8fafc; border: 1px solid var(--border);
+  border-radius: 10px; padding: 14px;
+  display: flex; align-items: flex-start; gap: 10px;
+}
+.fi-icon  { font-size: 1.4rem; flex-shrink: 0; }
+.fi-title { font-weight: 600; font-size: .9rem; }
+.fi-desc  { font-size: .82rem; color: var(--text-muted); }
+
+/* شركات تستخدم RN */
+.companies-row {
+  display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0;
+}
+.company-chip {
+  background: white; border: 1.5px solid var(--border);
+  padding: 6px 14px; border-radius: 999px; font-size: .85rem;
+  font-weight: 600; color: var(--text);
+  box-shadow: 0 2px 8px rgba(0,0,0,.04);
+}
+
+/* جدول مقارنة */
+.compare-cell-check { color: #16a34a; font-weight: 700; }
+.compare-cell-x     { color: #dc2626; font-weight: 700; }
+
+/* JSX preview block */
+.jsx-preview {
+  background: #1e293b; border-radius: 10px;
+  padding: 14px 16px; margin: 10px 0;
+  font-family: 'Fira Code', monospace; font-size: .85rem;
+  direction: ltr; color: #e2e8f0; line-height: 1.7;
+}
+.jsx-tag { color: #60a5fa; }
+.jsx-attr { color: #fbbf24; }
+.jsx-str  { color: #4ade80; }
+.jsx-comment { color: #64748b; font-style: italic; }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="crumbs">
+    <a href="../../index.html">🏠 الرئيسية</a>
+    <span class="sep">/</span>
+    <a href="./index.html">📱 React Native</a>
+    <span class="sep">/</span>
+    <span class="current">🚀 الدرس 1: مقدمة</span>
+  </div>
+  <div class="progress-mini">
+    <div class="progress-bar-mini"><div class="progress-fill-mini" id="progFill"></div></div>
+    <span id="progText">0%</span>
+  </div>
+</div>
+
+<div class="notebook">
+
+  <div class="notebook-header">
+    <div class="lesson-tag">🚀 الدرس الأول</div>
+    <h1><span class="sparkle">✦</span> مقدمة في React Native <span class="sparkle">✦</span></h1>
+    <div class="lesson-meta">
+      <span>⏱️ 35 دقيقة</span>
+      <span>📊 مبتدئ</span>
+      <span>🎯 5 تمارين + اختبار</span>
+    </div>
+  </div>
+
+  <div class="toc-card">
+    <h2>📑 فهرس الدرس</h2>
+    <ol>
+      <li><a href="#s1">ما هي تطبيقات الجوال؟</a></li>
+      <li><a href="#s2">طرق تطوير تطبيقات الجوال</a></li>
+      <li><a href="#s3">ما هو React Native؟</a></li>
+      <li><a href="#s4">لماذا RN — مميزاته</a></li>
+      <li><a href="#s5">شركات عملاقة تستخدمه</a></li>
+      <li><a href="#s6">RN مقارنة بـ Flutter</a></li>
+      <li><a href="#s7">رحلة التعلم — ما الذي ستتعلمه؟</a></li>
+      <li><a href="#s8">معاينة تطبيق بـ RN</a></li>
+      <li><a href="#exercises">التمارين</a></li>
+      <li><a href="#quiz">اختبر فهمك</a></li>
+    </ol>
+  </div>
+
+  <!-- S1 -->
+  <div class="section" id="s1">
+    <h2 class="section-title"><span class="num">.1</span> ما هي تطبيقات الجوال؟ <span class="en">Mobile Apps</span></h2>
+    <div class="content">
+      <p>تطبيق الجوال هو برنامج يعمل مباشرة على هاتفك (Android أو iPhone). تختلف عن مواقع الويب لأنها:</p>
+      <ul>
+        <li>تُثبَّت على الجهاز من Google Play أو App Store</li>
+        <li>تستخدم ميزات الجوال (الكاميرا، GPS، الإشعارات، البصمة...)</li>
+        <li>تعمل بدون اتصال إنترنت (offline mode)</li>
+        <li>أسرع وأكثر سلاسة من المواقع</li>
+      </ul>
+
+      <div class="analogy">
+        <div class="analogy-title">📱 تخيل الفرق:</div>
+        <p>تطبيق Instagram على الجوال = تجربة سلسة، إشعارات، كاميرا مباشرة.<br>
+        موقع instagram.com في المتصفح = أبطأ، بدون إشعارات، تجربة محدودة.</p>
+      </div>
+
+      <div class="sub-header">سوق تطبيقات الجوال بالأرقام:</div>
+      <div class="tip-box" style="text-align:center;">
+        🌍 <strong style="font-size:1.3rem;">+5 مليار</strong> مستخدم جوال<br>
+        📲 <strong style="font-size:1.3rem;">+3.5 مليون</strong> تطبيق على Google Play<br>
+        💰 <strong style="font-size:1.3rem;">+500 مليار $</strong> حجم سوق التطبيقات سنوياً
+      </div>
+    </div>
+  </div>
+
+  <!-- S2 -->
+  <div class="section" id="s2">
+    <h2 class="section-title"><span class="num">.2</span> طرق تطوير تطبيقات الجوال <span class="en">Approaches</span></h2>
+    <div class="content">
+      <p>هناك 3 طرق رئيسية لبناء تطبيق جوال:</p>
+
+      <div class="platform-grid">
+        <div class="platform-card">
+          <div class="pc-head">
+            <span class="pc-icon">🍎</span>
+            <span class="pc-title">Native iOS</span>
+            <span class="pc-tag">Swift</span>
+          </div>
+          <p style="font-size:.85rem; color:var(--text-muted);">للـ iPhone فقط</p>
+          <ul class="pc-list">
+            <li>✅ أداء ممتاز</li>
+            <li>❌ يعمل على iOS فقط</li>
+            <li>❌ كود مختلف تماماً عن Android</li>
+          </ul>
+        </div>
+        <div class="platform-card">
+          <div class="pc-head">
+            <span class="pc-icon">🤖</span>
+            <span class="pc-title">Native Android</span>
+            <span class="pc-tag">Kotlin</span>
+          </div>
+          <p style="font-size:.85rem; color:var(--text-muted);">للأندرويد فقط</p>
+          <ul class="pc-list">
+            <li>✅ أداء ممتاز</li>
+            <li>❌ يعمل على Android فقط</li>
+            <li>❌ تحتاج كتابة كود ثاني للـ iPhone!</li>
+          </ul>
+        </div>
+        <div class="platform-card rn">
+          <div class="pc-head">
+            <span class="pc-icon">⚛️</span>
+            <span class="pc-title">React Native</span>
+            <span class="pc-tag best">الأفضل ✨</span>
+          </div>
+          <p style="font-size:.85rem; color:var(--text-muted);">iOS + Android معاً</p>
+          <ul class="pc-list">
+            <li>✅ كود واحد لكل المنصات</li>
+            <li>✅ JavaScript الذي تعرفه</li>
+            <li>✅ توفير وقت وجهد بنسبة 70%</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="tip-box"><strong>الفكرة الذهبية:</strong> بدل ما تتعلم Swift للـ iPhone و Kotlin للأندرويد، تتعلم React Native مرة واحدة وتبني للاثنين! 🎯</div>
+    </div>
+  </div>
+
+  <!-- S3 -->
+  <div class="section" id="s3">
+    <h2 class="section-title"><span class="num">.3</span> ما هو React Native؟ <span class="en">What is RN?</span></h2>
+    <div class="content">
+      <p><strong>React Native</strong> هو إطار عمل (Framework) طوّرته شركة <strong>Meta (Facebook)</strong> سنة 2015، يتيح بناء تطبيقات جوال حقيقية باستخدام <strong>JavaScript</strong> و <strong>React</strong>.</p>
+
+      <div class="analogy">
+        <div class="analogy-title">🎬 تخيلها كـ "مترجم":</div>
+        <p>أنت تكتب كود JavaScript عادي بأسلوب React.<br>
+        React Native يترجمه إلى مكونات أصلية (Native) على iOS و Android.<br>
+        النتيجة: تطبيق <strong>حقيقي 100%</strong>، ليس مجرد موقع داخل تطبيق!</p>
+      </div>
+
+      <div class="sub-header">الفكرة الأساسية:</div>
+      <table class="cool-table">
+        <thead><tr><th>في الويب (React)</th><th>في الجوال (React Native)</th></tr></thead>
+        <tbody>
+          <tr><td><code>&lt;div&gt;</code></td><td><code>&lt;View&gt;</code></td></tr>
+          <tr><td><code>&lt;p&gt;</code> &nbsp; <code>&lt;h1&gt;</code></td><td><code>&lt;Text&gt;</code></td></tr>
+          <tr><td><code>&lt;img&gt;</code></td><td><code>&lt;Image&gt;</code></td></tr>
+          <tr><td><code>&lt;button&gt;</code></td><td><code>&lt;Pressable&gt;</code></td></tr>
+          <tr><td><code>CSS</code> منفصل</td><td><code>StyleSheet</code> داخل JS</td></tr>
+        </tbody>
+      </table>
+
+      <div class="info-box"><strong>الخلاصة:</strong> إذا تعرف React، فأنت على بُعد <strong>أسبوعين</strong> من إتقان React Native!</div>
+    </div>
+  </div>
+
+  <!-- S4 -->
+  <div class="section" id="s4">
+    <h2 class="section-title"><span class="num">.4</span> لماذا React Native؟ <span class="en">Why RN?</span></h2>
+    <div class="content">
+      <div class="feature-grid">
+        <div class="feature-item">
+          <span class="fi-icon">⚡</span>
+          <div><div class="fi-title">سرعة التطوير</div><div class="fi-desc">Hot Reload — التغييرات تظهر فوراً بدون إعادة تشغيل</div></div>
+        </div>
+        <div class="feature-item">
+          <span class="fi-icon">🔄</span>
+          <div><div class="fi-title">كود واحد</div><div class="fi-desc">80%+ من الكود مشترك بين iOS و Android</div></div>
+        </div>
+        <div class="feature-item">
+          <span class="fi-icon">📚</span>
+          <div><div class="fi-title">JavaScript</div><div class="fi-desc">اللغة التي تعرفها — لا حاجة لتعلم Swift أو Kotlin</div></div>
+        </div>
+        <div class="feature-item">
+          <span class="fi-icon">🎨</span>
+          <div><div class="fi-title">مكونات حقيقية</div><div class="fi-desc">المظهر طبيعي 100% (Native)، ليس WebView</div></div>
+        </div>
+        <div class="feature-item">
+          <span class="fi-icon">📦</span>
+          <div><div class="fi-title">آلاف الحزم</div><div class="fi-desc">npm + مكتبات RN خاصة (Expo, Navigation...)</div></div>
+        </div>
+        <div class="feature-item">
+          <span class="fi-icon">🌍</span>
+          <div><div class="fi-title">مجتمع ضخم</div><div class="fi-desc">دعم Meta + شركات كبرى + ملايين المطورين</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- S5 -->
+  <div class="section" id="s5">
+    <h2 class="section-title"><span class="num">.5</span> شركات عملاقة تستخدمه <span class="en">Big Companies</span></h2>
+    <div class="content">
+      <p>أكبر شركات العالم تطبيقاتها مبنية بـ React Native (كلياً أو جزئياً):</p>
+
+      <div class="companies-row">
+        <span class="company-chip">📘 Facebook</span>
+        <span class="company-chip">📸 Instagram</span>
+        <span class="company-chip">💬 WhatsApp Business</span>
+        <span class="company-chip">🛍️ Shopify</span>
+        <span class="company-chip">🍔 Uber Eats</span>
+        <span class="company-chip">💼 Microsoft Office</span>
+        <span class="company-chip">🎵 Discord</span>
+        <span class="company-chip">📺 Pinterest</span>
+        <span class="company-chip">🛒 Walmart</span>
+        <span class="company-chip">📰 Bloomberg</span>
+        <span class="company-chip">✈️ Skype</span>
+        <span class="company-chip">🎮 Coinbase</span>
+      </div>
+
+      <div class="tip-box"><strong>ماذا يعني هذا لك؟</strong><br>
+      مهارة React Native = فرص عمل ضخمة 💼<br>
+      الراتب المتوسط لمطور RN: <strong>$70,000 - $130,000</strong> سنوياً (في الشركات العالمية)</div>
+    </div>
+  </div>
+
+  <!-- S6 -->
+  <div class="section" id="s6">
+    <h2 class="section-title"><span class="num">.6</span> RN مقابل Flutter <span class="en">RN vs Flutter</span></h2>
+    <div class="content">
+      <p>المنافس الأكبر لـ React Native هو <strong>Flutter</strong> من Google. مقارنة سريعة:</p>
+
+      <table class="cool-table">
+        <thead><tr><th>المعيار</th><th>React Native ⚛️</th><th>Flutter 🦋</th></tr></thead>
+        <tbody>
+          <tr><td>اللغة</td><td>JavaScript / TypeScript</td><td>Dart (لغة جديدة)</td></tr>
+          <tr><td>الشركة الراعية</td><td>Meta (Facebook)</td><td>Google</td></tr>
+          <tr><td>سهولة التعلم</td><td><span class="compare-cell-check">⭐⭐⭐⭐⭐</span></td><td>⭐⭐⭐</td></tr>
+          <tr><td>عدد الوظائف</td><td><span class="compare-cell-check">أكثر</span></td><td>أقل (لكن في نمو)</td></tr>
+          <tr><td>JavaScript يفيد في الويب أيضاً</td><td><span class="compare-cell-check">✓</span></td><td><span class="compare-cell-x">✗</span></td></tr>
+          <tr><td>الأداء</td><td>ممتاز</td><td><span class="compare-cell-check">ممتاز جداً</span></td></tr>
+          <tr><td>المظهر الطبيعي</td><td><span class="compare-cell-check">Native components</span></td><td>محرك رسم خاص</td></tr>
+        </tbody>
+      </table>
+
+      <div class="info-box"><strong>اختيار هذه الأكاديمية:</strong> React Native لأنك بالفعل أنهيت مسار الفرونت إند وتعرف JavaScript — أنت في منتصف الطريق! 🎯</div>
+    </div>
+  </div>
+
+  <!-- S7 -->
+  <div class="section" id="s7">
+    <h2 class="section-title"><span class="num">.7</span> رحلة التعلم <span class="en">Your Journey</span></h2>
+    <div class="content">
+      <p>على مدى <strong>28 درس</strong>، ستتعلم في 6 مراحل متدرجة:</p>
+
+      <div class="feature-grid">
+        <div class="feature-item">
+          <span class="fi-icon">🚀</span>
+          <div><div class="fi-title">المرحلة 1: الأساسيات</div><div class="fi-desc">Expo, JSX, المكونات الأساسية</div></div>
+        </div>
+        <div class="feature-item">
+          <span class="fi-icon">🎨</span>
+          <div><div class="fi-title">المرحلة 2: التنسيق</div><div class="fi-desc">Flexbox, Styling, الواجهات الجميلة</div></div>
+        </div>
+        <div class="feature-item">
+          <span class="fi-icon">👆</span>
+          <div><div class="fi-title">المرحلة 3: التفاعل</div><div class="fi-desc">الأزرار، الفورمات، القوائم</div></div>
+        </div>
+        <div class="feature-item">
+          <span class="fi-icon">⚡</span>
+          <div><div class="fi-title">المرحلة 4: State</div><div class="fi-desc">إدارة الحالة، Hooks متقدمة</div></div>
+        </div>
+        <div class="feature-item">
+          <span class="fi-icon">🌐</span>
+          <div><div class="fi-title">المرحلة 5: التنقل + APIs</div><div class="fi-desc">عدة شاشات، اتصال بالإنترنت</div></div>
+        </div>
+        <div class="feature-item">
+          <span class="fi-icon">🏗️</span>
+          <div><div class="fi-title">المرحلة 6: مشاريع</div><div class="fi-desc">3 تطبيقات كاملة + نشر على Stores</div></div>
+        </div>
+      </div>
+
+      <div class="tip-box"><strong>الهدف النهائي:</strong> بعد إنهاء المسار ستكون قادراً على بناء أي تطبيق جوال تفكر فيه ونشره على Google Play و App Store 🚀</div>
+    </div>
+  </div>
+
+  <!-- S8 -->
+  <div class="section" id="s8">
+    <h2 class="section-title"><span class="num">.8</span> معاينة تطبيق RN <span class="en">Preview</span></h2>
+    <div class="content">
+      <p>إليك أول معاينة لتطبيق React Native بسيط — كيف يبدو الكود والنتيجة على الجوال:</p>
+
+      <div class="sub-header">كود React Native:</div>
+      <div class="jsx-preview">
+<span class="jsx-comment">// App.js</span>
+<span class="jsx-tag">import</span> { <span style="color:#fbbf24;">View, Text, Pressable, StyleSheet</span> } <span class="jsx-tag">from</span> <span class="jsx-str">'react-native'</span>;
+
+<span class="jsx-tag">export default function</span> <span style="color:#a78bfa;">App</span>() {
+  <span class="jsx-tag">return</span> (
+    &lt;<span class="jsx-tag">View</span> <span class="jsx-attr">style</span>={styles.container}&gt;
+      &lt;<span class="jsx-tag">Text</span> <span class="jsx-attr">style</span>={styles.title}&gt;
+        مرحباً من React Native! 👋
+      &lt;/<span class="jsx-tag">Text</span>&gt;
+      &lt;<span class="jsx-tag">Pressable</span> <span class="jsx-attr">style</span>={styles.btn} <span class="jsx-attr">onPress</span>={() =&gt; alert(<span class="jsx-str">'تم!'</span>)}&gt;
+        &lt;<span class="jsx-tag">Text</span> <span class="jsx-attr">style</span>={styles.btnText}&gt;اضغطني&lt;/<span class="jsx-tag">Text</span>&gt;
+      &lt;/<span class="jsx-tag">Pressable</span>&gt;
+    &lt;/<span class="jsx-tag">View</span>&gt;
+  );
+}
+      </div>
+
+      <div class="sub-header">النتيجة على الجوال:</div>
+
+      <div class="phone-frame">
+        <div class="phone-notch"></div>
+        <div class="phone-screen">
+          <div class="phone-emoji">👋</div>
+          <div class="phone-app-title">مرحباً من<br>React Native!</div>
+          <div class="phone-app-sub">أول تطبيق لك بالـ JS</div>
+          <button class="phone-app-btn" onclick="alert('🎉 يعمل على الجوال الحقيقي بالضبط هكذا!')">اضغطني</button>
+        </div>
+      </div>
+
+      <div class="info-box"><strong>هذه المحاكاة في المتصفح فقط.</strong> في الدروس القادمة سنشغّل الكود الفعلي على جهازك أو على Expo Snack (محرر RN على الويب).</div>
+
+      <div class="tip-box"><strong>💡 جرّبه الآن في 30 ثانية:</strong><br>
+      افتح <a href="https://snack.expo.dev" target="_blank" style="color:var(--ink-blue);font-weight:700;">snack.expo.dev</a> — محرر RN رسمي على الويب لا يحتاج تثبيت!</div>
+    </div>
+  </div>
+
+  <!-- EXERCISES -->
+  <div class="section" id="exercises">
+    <h2 class="section-title"><span class="num">📝</span> التمارين العملية <span class="en">Exercises</span></h2>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 1: لماذا React Native؟</div>
+      <p>اذكر <strong>3 أسباب</strong> رئيسية تجعل مطور JavaScript يختار React Native بدل تعلم Swift و Kotlin منفصلين.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <p>1. <strong>كود واحد لمنصتين:</strong> 80%+ من الكود يعمل على iOS و Android معاً<br>
+        2. <strong>اللغة المعروفة:</strong> JavaScript بدلاً من تعلم لغتين جديدتين<br>
+        3. <strong>سرعة التطوير:</strong> Hot Reload + مكتبات جاهزة + مجتمع ضخم</p>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 2: المكافئ في RN</div>
+      <p>اكتب المكوّن المكافئ في React Native لكل من وسوم HTML التالية:</p>
+      <p><code>&lt;div&gt;</code> · <code>&lt;p&gt;</code> · <code>&lt;img&gt;</code> · <code>&lt;button&gt;</code></p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <p><code>&lt;div&gt;</code> → <code>&lt;View&gt;</code><br>
+        <code>&lt;p&gt;</code> → <code>&lt;Text&gt;</code><br>
+        <code>&lt;img&gt;</code> → <code>&lt;Image&gt;</code><br>
+        <code>&lt;button&gt;</code> → <code>&lt;Pressable&gt;</code> أو <code>&lt;TouchableOpacity&gt;</code></p>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 3: شركات RN</div>
+      <p>اذكر <strong>5 تطبيقات</strong> مشهورة من حياتك اليومية مبنية بـ React Native (كلياً أو جزئياً).</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <p>Facebook · Instagram · Discord · Shopify · Pinterest · Uber Eats · Walmart · Coinbase · Microsoft Office · Bloomberg · Skype</p>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 4: RN مقابل Flutter</div>
+      <p>اذكر فرقاً جوهرياً واحداً بين React Native و Flutter من ناحية اللغة المستخدمة.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <p>React Native يستخدم <strong>JavaScript</strong> (لغة منتشرة جداً تُستخدم في الويب أيضاً)، بينما Flutter يستخدم <strong>Dart</strong> (لغة جديدة من Google غير منتشرة خارج Flutter).</p>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 5: جرّب Expo Snack</div>
+      <p>افتح <strong>snack.expo.dev</strong> في متصفحك، وغيّر النص "Hello world" إلى اسمك. التقط صورة للنتيجة.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <p>1. افتح <a href="https://snack.expo.dev" target="_blank">snack.expo.dev</a><br>
+        2. ابحث عن سطر <code>&lt;Text&gt;Hello world!&lt;/Text&gt;</code><br>
+        3. غيّره إلى <code>&lt;Text&gt;مرحباً، أنا [اسمك]!&lt;/Text&gt;</code><br>
+        4. شاهد النتيجة على الجوال المحاكي على اليسار 🎉</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="quiz-container" id="quiz">
+    <div class="quiz-intro"><p>اختبر فهمك للمقدمة!</p></div>
+    <div class="quiz-type-tabs">
+      <button class="qt-tab active" onclick="switchQuiz(this,'tf')">✓✗ صح وخطأ</button>
+      <button class="qt-tab" onclick="switchQuiz(this,'mc')">🔘 اختيار من متعدد</button>
+    </div>
+
+    <div class="quiz-section active" id="quiz-tf">
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">1</span><span class="q-text">React Native يتيح بناء تطبيقات لـ iOS و Android بنفس الكود.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="false">
+        <span class="q-num">2</span><span class="q-text">React Native يستخدم لغة Dart مثل Flutter.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">3</span><span class="q-text">شركة Meta (Facebook) هي مَن طوّرت React Native.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="false">
+        <span class="q-num">4</span><span class="q-text">في React Native نستخدم وسم &lt;div&gt; مثل HTML.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">5</span><span class="q-text">يمكن تجربة كود React Native في المتصفح عبر Expo Snack دون تثبيت أي شيء.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <button class="quiz-submit" onclick="submitQuiz('tf')">عرض النتيجة 🎯</button>
+      <div class="quiz-result" id="result-tf"><div class="result-score" id="score-tf">0/5</div><div class="result-label">إجابات صحيحة</div><div class="result-message" id="msg-tf"></div><button class="retry-btn" onclick="retryQuiz('tf')">🔄 حاول تاني</button></div>
+    </div>
+
+    <div class="quiz-section" id="quiz-mc">
+      <div class="quiz-question" data-correct="1">
+        <span class="q-num">1</span><span class="q-text">ما المكافئ في React Native لوسم &lt;div&gt; في HTML؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">&lt;Div&gt;</button>
+          <button class="q-opt" onclick="answerMC(this,1)">&lt;View&gt;</button>
+          <button class="q-opt" onclick="answerMC(this,2)">&lt;Box&gt;</button>
+          <button class="q-opt" onclick="answerMC(this,3)">&lt;Container&gt;</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="2">
+        <span class="q-num">2</span><span class="q-text">ما اللغة الأساسية في React Native؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">Swift</button>
+          <button class="q-opt" onclick="answerMC(this,1)">Kotlin</button>
+          <button class="q-opt" onclick="answerMC(this,2)">JavaScript</button>
+          <button class="q-opt" onclick="answerMC(this,3)">Dart</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="3">
+        <span class="q-num">3</span><span class="q-text">في React Native، أي مكوّن نستخدم لعرض النصوص؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">&lt;p&gt;</button>
+          <button class="q-opt" onclick="answerMC(this,1)">&lt;Label&gt;</button>
+          <button class="q-opt" onclick="answerMC(this,2)">&lt;String&gt;</button>
+          <button class="q-opt" onclick="answerMC(this,3)">&lt;Text&gt;</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="0">
+        <span class="q-num">4</span><span class="q-text">ما المنافس الأكبر لـ React Native؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">Flutter</button>
+          <button class="q-opt" onclick="answerMC(this,1)">Vue Native</button>
+          <button class="q-opt" onclick="answerMC(this,2)">Ionic</button>
+          <button class="q-opt" onclick="answerMC(this,3)">Xamarin</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="1">
+        <span class="q-num">5</span><span class="q-text">أي مما يلي ليس مكوّناً أساسياً في React Native؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">View</button>
+          <button class="q-opt" onclick="answerMC(this,1)">Div</button>
+          <button class="q-opt" onclick="answerMC(this,2)">Text</button>
+          <button class="q-opt" onclick="answerMC(this,3)">Image</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <button class="quiz-submit" onclick="submitQuiz('mc')">عرض النتيجة 🎯</button>
+      <div class="quiz-result" id="result-mc"><div class="result-score" id="score-mc">0/5</div><div class="result-label">إجابات صحيحة</div><div class="result-message" id="msg-mc"></div><button class="retry-btn" onclick="retryQuiz('mc')">🔄 حاول تاني</button></div>
+    </div>
+  </div>
+
+  <div class="lesson-nav">
+    <a href="./index.html" class="nav-btn"><span>⬅️</span><span>صفحة المسار</span></a>
+    <button class="nav-btn complete-btn" id="completeBtn" onclick="markComplete(this)"><span>✅</span><span>علّم كمكتمل</span></button>
+    <a href="./lesson-02.html" class="nav-btn"><span>الدرس التالي</span><span>➡️</span></a>
+  </div>
+
+  <div class="notebook-footer">
+    <h3>🎉 أكملت المقدمة!</h3>
+    <p>الآن تعرف ما هو React Native ولماذا ستتعلمه ❤️<br><strong>الدرس التالي: إعداد بيئة التطوير 🛠️</strong></p>
+  </div>
+</div>
+
+<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">⬆️</button>
+<div class="toast" id="toast"></div>
+<script src="../../js/data/courses.js"></script>
+<script src="../../js/progress.js"></script>
+<script>
+const COURSE_ID='react-native',LESSON_ID=1,TOTAL=28;
+function toggleSolution(b){const s=b.nextElementSibling;s.classList.toggle('show');b.textContent=s.classList.contains('show')?'إخفاء الحل ▲':'عرض الحل ▼';}
+function copyCode(b){const p=b.closest('.code-box').querySelector('pre');navigator.clipboard.writeText(p.innerText).then(()=>{b.classList.add('copied');b.textContent='✓ تم النسخ';setTimeout(()=>{b.classList.remove('copied');b.textContent='📋 نسخ';},2000);});}
+function switchQuiz(b,t){document.querySelectorAll('.qt-tab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.quiz-section').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.getElementById('quiz-'+t).classList.add('active');}
+const answers={tf:{},mc:{}};
+function answerTF(b,v){const q=b.closest('.quiz-question'),i=Array.from(q.parentNode.querySelectorAll('.quiz-question')).indexOf(q);q.querySelectorAll('.q-opt').forEach(o=>o.classList.remove('selected'));b.classList.add('selected');answers.tf[i]=v;}
+function answerMC(b,i){const q=b.closest('.quiz-question'),qi=Array.from(q.parentNode.querySelectorAll('.quiz-question')).indexOf(q);q.querySelectorAll('.q-opt').forEach(o=>o.classList.remove('selected'));b.classList.add('selected');answers.mc[qi]=i;}
+function submitQuiz(type){const sec=document.getElementById('quiz-'+type),qs=sec.querySelectorAll('.quiz-question');let c=0;qs.forEach((q,i)=>{const ca=type==='tf'?(q.dataset.correct==='true'):parseInt(q.dataset.correct),ua=answers[type][i],fb=q.querySelector('.q-feedback'),opts=q.querySelectorAll('.q-opt');opts.forEach(o=>{o.classList.remove('selected');o.disabled=true;});if(ua===undefined){fb.className='q-feedback wrong show';fb.textContent='⚠️ ما اخترتش إجابة!';return;}if(ua===ca){c++;fb.className='q-feedback correct show';fb.textContent='✓ إجابة صحيحة!';if(type==='tf')opts[ca?0:1].classList.add('correct');else opts[ca].classList.add('correct');}else{fb.className='q-feedback wrong show';if(type==='tf'){opts[ca?0:1].classList.add('correct');opts[ua?0:1].classList.add('wrong');fb.textContent='✗ خطأ.';}else{opts[ca].classList.add('correct');opts[ua].classList.add('wrong');fb.textContent='✗ الإجابة بالأخضر.';}}});const r=document.getElementById('result-'+type);document.getElementById('score-'+type).textContent=c+'/'+qs.length;const m=document.getElementById('msg-'+type);if(c===qs.length){m.textContent='🏆 ممتاز 100%!';m.className='result-message excellent';}else if(c>=3){m.textContent='👍 جيد!';m.className='result-message good';}else{m.textContent='📚 راجع الدرس.';m.className='result-message try-again';}r.classList.add('show');r.scrollIntoView({behavior:'smooth',block:'center'});}
+function retryQuiz(type){const sec=document.getElementById('quiz-'+type);sec.querySelectorAll('.q-opt').forEach(o=>{o.classList.remove('selected','correct','wrong');o.disabled=false;});sec.querySelectorAll('.q-feedback').forEach(f=>{f.classList.remove('show','correct','wrong');f.textContent='';});document.getElementById('result-'+type).classList.remove('show');answers[type]={};}
+function markComplete(btn){const done=Progress.toggleLessonComplete(COURSE_ID,LESSON_ID);btn.classList.toggle('completed',done);btn.querySelector('span:last-child').textContent=done?'مكتمل! ⭐':'علّم كمكتمل';showToast(done?'🎉 أكملت مقدمة React Native!':'تم إلغاء الإكمال');}
+if(Progress.isLessonComplete(COURSE_ID,LESSON_ID)){const b=document.getElementById('completeBtn');b.classList.add('completed');b.querySelector('span:last-child').textContent='مكتمل! ⭐';}
+(function(){const p=Progress.getCourseProgress(COURSE_ID,TOTAL);document.getElementById('progFill').style.width=p+'%';document.getElementById('progText').textContent=p+'%';})();
+function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
+window.addEventListener('scroll',()=>{document.getElementById('scrollTop').classList.toggle('show',window.scrollY>300);});
+document.querySelectorAll('.toc-card a').forEach(l=>{l.addEventListener('click',e=>{e.preventDefault();const t=document.querySelector(l.getAttribute('href'));if(t)t.scrollIntoView({behavior:'smooth',block:'start'});});});
+</script>
+</body>
+</html>

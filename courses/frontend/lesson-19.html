@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-V2NCKVL16D"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-V2NCKVL16D');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>الكائنات Objects — دفتر البرمجة</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=Cairo:wght@300;400;500;600;700;900&family=Caveat:wght@400;700&family=Fira+Code:wght@400;500;600&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../css/shared.css">
+<link rel="stylesheet" href="../../css/notebook.css">
+<style>
+body { padding: 20px 10px; }
+.mini-console {
+  background: #1e293b; border-radius: 10px; padding: 14px 16px;
+  margin: 10px 0; font-family: 'Fira Code', monospace; font-size: .88rem; direction: ltr;
+}
+.mc-line { margin: 3px 0; }
+.mc-in  { color: #94a3b8; }
+.mc-in::before  { content: '> '; color: #7c3aed; }
+.mc-out { color: #4ade80; }
+.mc-out::before { content: '← '; color: #4ade80; }
+
+/* object visual */
+.obj-visual {
+  background: white; border: 2px solid var(--ink-blue);
+  border-radius: 12px; padding: 16px 20px; margin: 14px 0;
+  font-family: 'Fira Code', monospace; font-size: .88rem; direction: ltr;
+}
+.obj-key   { color: var(--ink-blue); font-weight: 700; }
+.obj-colon { color: var(--text-muted); }
+.obj-val   { color: var(--ink-green); }
+.obj-label {
+  font-family: 'Cairo', sans-serif; font-size: .78rem;
+  color: var(--ink-purple); margin-right: 12px; direction: rtl;
+}
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="crumbs">
+    <a href="../../index.html">🏠 الرئيسية</a>
+    <span class="sep">/</span>
+    <a href="./index.html">🌐 الفرونت إند</a>
+    <span class="sep">/</span>
+    <span class="current">⚡ الدرس 19: الكائنات</span>
+  </div>
+  <div class="progress-mini">
+    <div class="progress-bar-mini"><div class="progress-fill-mini" id="progFill"></div></div>
+    <span id="progText">0%</span>
+  </div>
+</div>
+
+<div class="notebook">
+
+  <div class="notebook-header">
+    <div class="lesson-tag">⚡ الدرس التاسع عشر</div>
+    <h1><span class="sparkle">✦</span> الكائنات — Objects <span class="sparkle">✦</span></h1>
+    <div class="lesson-meta">
+      <span>⏱️ 45 دقيقة</span>
+      <span>📊 مبتدئ-متوسط</span>
+      <span>🎯 5 تمارين + اختبار</span>
+    </div>
+  </div>
+
+  <div class="toc-card">
+    <h2>📑 فهرس الدرس</h2>
+    <ol>
+      <li><a href="#s1">ما هو الكائن؟</a></li>
+      <li><a href="#s2">إنشاء الكائنات والوصول للخصائص</a></li>
+      <li><a href="#s3">إضافة وتعديل وحذف الخصائص</a></li>
+      <li><a href="#s4">الدوال داخل الكائنات (Methods)</a></li>
+      <li><a href="#s5">Object Destructuring</a></li>
+      <li><a href="#s6">Spread و Object.assign</a></li>
+      <li><a href="#s7">دوال Object المدمجة</a></li>
+      <li><a href="#s8">محرر الكود الحي</a></li>
+      <li><a href="#exercises">التمارين</a></li>
+      <li><a href="#quiz">اختبر فهمك</a></li>
+    </ol>
+  </div>
+
+  <!-- S1 -->
+  <div class="section" id="s1">
+    <h2 class="section-title"><span class="num">.1</span> ما هو الكائن؟ <span class="en">What is an Object?</span></h2>
+    <div class="content">
+      <p>الكائن هو مجموعة من <strong>الخصائص (key: value)</strong> تصف شيئاً ما. يناسب تمثيل الكيانات الحقيقية كمستخدم، منتج، طلب...</p>
+      <div class="analogy">
+        <div class="analogy-title">🪪 تخيل بطاقة هوية:</div>
+        <p>بطاقة الهوية تحتوي على: الاسم، العمر، الجنسية، رقم البطاقة... كل معلومة لها اسم (key) وقيمة (value). هذا هو الكائن بالضبط.</p>
+      </div>
+
+      <div class="obj-visual">
+        {<br>
+        &nbsp;&nbsp;<span class="obj-key">name</span><span class="obj-colon">:</span> <span class="obj-val">'أحمد'</span>,<span class="obj-label">← اسم الخاصية (key)</span><br>
+        &nbsp;&nbsp;<span class="obj-key">age</span><span class="obj-colon">:</span> <span class="obj-val">25</span>,<span class="obj-label">← قيمة رقمية</span><br>
+        &nbsp;&nbsp;<span class="obj-key">isStudent</span><span class="obj-colon">:</span> <span class="obj-val">true</span>,<span class="obj-label">← قيمة boolean</span><br>
+        &nbsp;&nbsp;<span class="obj-key">city</span><span class="obj-colon">:</span> <span class="obj-val">'القاهرة'</span><span class="obj-label">← آخر خاصية بدون فاصلة</span><br>
+        }
+      </div>
+
+      <div class="info-box">
+        <strong>المصفوفة vs الكائن:</strong>
+        المصفوفة = قائمة مرتبة (index رقمي). الكائن = مجموعة خصائص (key نصي). استخدم المصفوفة للقوائم، والكائن لوصف كيان.
+      </div>
+    </div>
+  </div>
+
+  <!-- S2 -->
+  <div class="section" id="s2">
+    <h2 class="section-title"><span class="num">.2</span> إنشاء الكائنات والوصول <span class="en">Create & Access</span></h2>
+    <div class="content">
+      <div class="code-box">
+<div class="code-header"><span>🔧 إنشاء كائن</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-name">const</span> <span class="attr">person</span> = {
+  <span class="attr">name</span>:  <span class="attr-val">'سارة'</span>,
+  <span class="attr">age</span>:   <span class="attr-val">22</span>,
+  <span class="attr">city</span>:  <span class="attr-val">'الرياض'</span>,
+  <span class="attr">hobbies</span>: [<span class="attr-val">'قراءة'</span>, <span class="attr-val">'برمجة'</span>]  <span class="comment">// مصفوفة داخل كائن</span>
+};</pre>
+      </div>
+
+      <div class="sub-header">طريقتان للوصول للخصائص:</div>
+      <div class="code-box blue">
+<div class="code-header"><span>🎯 Dot vs Bracket Notation</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">// Dot Notation — الأشهر والأنظف</span>
+<span class="attr">person</span>.<span class="attr">name</span>      <span class="comment">// 'سارة'</span>
+<span class="attr">person</span>.<span class="attr">age</span>       <span class="comment">// 22</span>
+<span class="attr">person</span>.<span class="attr">hobbies</span>[<span class="attr-val">0</span>] <span class="comment">// 'قراءة'</span>
+
+<span class="comment">// Bracket Notation — لما الـ key متغير أو يحتوي مسافة</span>
+<span class="attr">person</span>[<span class="attr-val">'name'</span>]     <span class="comment">// 'سارة'</span>
+<span class="tag-name">const</span> <span class="attr">key</span> = <span class="attr-val">'age'</span>;
+<span class="attr">person</span>[<span class="attr">key</span>]       <span class="comment">// 22 (مفيد مع المتغيرات)</span></pre>
+      </div>
+
+      <div class="mini-console">
+        <div class="mc-line mc-in">person.name</div>
+        <div class="mc-line mc-out">'سارة'</div>
+        <div class="mc-line mc-in">person.hobbies.length</div>
+        <div class="mc-line mc-out">2</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- S3 -->
+  <div class="section" id="s3">
+    <h2 class="section-title"><span class="num">.3</span> إضافة وتعديل وحذف <span class="en">Add, Edit, Delete</span></h2>
+    <div class="content">
+      <div class="code-box">
+<div class="code-header"><span>✏️ تعديل الكائن</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-name">const</span> <span class="attr">car</span> = { <span class="attr">brand</span>: <span class="attr-val">'Toyota'</span>, <span class="attr">year</span>: <span class="attr-val">2020</span> };
+
+<span class="comment">// تعديل خاصية موجودة</span>
+<span class="attr">car</span>.<span class="attr">year</span> = <span class="attr-val">2024</span>;
+
+<span class="comment">// إضافة خاصية جديدة</span>
+<span class="attr">car</span>.<span class="attr">color</span> = <span class="attr-val">'أبيض'</span>;
+<span class="attr">car</span>.<span class="attr">isElectric</span> = <span class="attr-val">false</span>;
+
+<span class="comment">// حذف خاصية</span>
+<span class="tag-name">delete</span> <span class="attr">car</span>.<span class="attr">year</span>;
+
+<span class="comment">// التحقق من وجود خاصية</span>
+<span class="attr-val">'brand'</span> <span class="tag-name">in</span> <span class="attr">car</span>       <span class="comment">// true</span>
+<span class="attr-val">'year'</span>  <span class="tag-name">in</span> <span class="attr">car</span>        <span class="comment">// false (محذوفة)</span>
+<span class="attr">car</span>.<span class="attr">hasOwnProperty</span>(<span class="attr-val">'color'</span>) <span class="comment">// true</span></pre>
+      </div>
+
+      <div class="note-box"><strong>const والكائنات:</strong> const يمنع إعادة تعيين المتغير، لكن يسمح بتعديل محتوى الكائن. <em>car = {}</em> ← خطأ. <em>car.color = 'أسود'</em> ← مسموح.</div>
+    </div>
+  </div>
+
+  <!-- S4 -->
+  <div class="section" id="s4">
+    <h2 class="section-title"><span class="num">.4</span> Methods — الدوال داخل الكائنات <span class="en">Object Methods</span></h2>
+    <div class="content">
+      <p>يمكن أن تكون قيمة الخاصية دالة — وتسمى حينها <strong>Method</strong>:</p>
+      <div class="code-box">
+<div class="code-header"><span>⚙️ Methods و this</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-name">const</span> <span class="attr">person</span> = {
+  <span class="attr">name</span>:  <span class="attr-val">'أحمد'</span>,
+  <span class="attr">age</span>:   <span class="attr-val">25</span>,
+
+  <span class="comment">// Method عادي</span>
+  <span class="attr">greet</span>() {
+    <span class="tag-name">return</span> <span class="attr-val">`مرحباً، أنا ${<span class="tag-name">this</span>.<span class="attr">name</span>}!`</span>;
+  },
+
+  <span class="comment">// Method يستخدم خصائص الكائن</span>
+  <span class="attr">isAdult</span>() {
+    <span class="tag-name">return</span> <span class="tag-name">this</span>.<span class="attr">age</span> >= <span class="attr-val">18</span>;
+  }
+};
+
+<span class="attr">person</span>.<span class="tag-name">greet</span>()    <span class="comment">// "مرحباً، أنا أحمد!"</span>
+<span class="attr">person</span>.<span class="tag-name">isAdult</span>()  <span class="comment">// true</span></pre>
+      </div>
+      <div class="tip-box"><strong>this</strong> داخل method يشير إلى الكائن نفسه. هو ما يجعل الدالة "تعرف" في أي كائن هي.</div>
+    </div>
+  </div>
+
+  <!-- S5 -->
+  <div class="section" id="s5">
+    <h2 class="section-title"><span class="num">.5</span> Object Destructuring <span class="en">Destructuring</span></h2>
+    <div class="content">
+      <p>استخراج خصائص الكائن في متغيرات منفصلة بسطر واحد:</p>
+      <div class="code-box">
+<div class="code-header"><span>🎁 Destructuring</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-name">const</span> <span class="attr">user</span> = { <span class="attr">name</span>: <span class="attr-val">'محمد'</span>, <span class="attr">age</span>: <span class="attr-val">30</span>, <span class="attr">city</span>: <span class="attr-val">'جدة'</span> };
+
+<span class="comment">// بدون Destructuring</span>
+<span class="tag-name">const</span> <span class="attr">name</span> = <span class="attr">user</span>.<span class="attr">name</span>;
+<span class="tag-name">const</span> <span class="attr">age</span>  = <span class="attr">user</span>.<span class="attr">age</span>;
+
+<span class="comment">// مع Destructuring ✅</span>
+<span class="tag-name">const</span> { <span class="attr">name</span>, <span class="attr">age</span>, <span class="attr">city</span> } = <span class="attr">user</span>;
+
+<span class="comment">// إعادة تسمية</span>
+<span class="tag-name">const</span> { <span class="attr">name</span>: <span class="attr">userName</span>, <span class="attr">age</span>: <span class="attr">userAge</span> } = <span class="attr">user</span>;
+
+<span class="comment">// قيمة افتراضية</span>
+<span class="tag-name">const</span> { <span class="attr">name</span>, <span class="attr">role</span> = <span class="attr-val">'مستخدم'</span> } = <span class="attr">user</span>;
+<span class="comment">// role = 'مستخدم' (لأنها غير موجودة في user)</span></pre>
+      </div>
+
+      <div class="example">
+        <span class="example-label">📌 استخدام شائع جداً — في معاملات الدوال:</span>
+        <div class="code-box green">
+<pre><span class="comment">// بدلاً من: function showUser(user) { user.name ... }</span>
+<span class="tag-name">function</span> <span class="attr">showUser</span>({ <span class="attr">name</span>, <span class="attr">age</span>, <span class="attr">city</span> = <span class="attr-val">'غير محدد'</span> }) {
+  <span class="tag-name">return</span> <span class="attr-val">`${name} (${age}) — ${city}`</span>;
+}
+
+<span class="attr">showUser</span>({ <span class="attr">name</span>: <span class="attr-val">'سارة'</span>, <span class="attr">age</span>: <span class="attr-val">25</span> });
+<span class="comment">// "سارة (25) — غير محدد"</span></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- S6 -->
+  <div class="section" id="s6">
+    <h2 class="section-title"><span class="num">.6</span> Spread و Object.assign <span class="en">Merge & Copy</span></h2>
+    <div class="content">
+      <div class="code-box">
+<div class="code-header"><span>📦 Spread للكائنات</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-name">const</span> <span class="attr">base</span>    = { <span class="attr">name</span>: <span class="attr-val">'أحمد'</span>, <span class="attr">age</span>: <span class="attr-val">25</span> };
+<span class="tag-name">const</span> <span class="attr">extras</span>  = { <span class="attr">city</span>: <span class="attr-val">'القاهرة'</span>, <span class="attr">job</span>: <span class="attr-val">'مطور'</span> };
+
+<span class="comment">// نسخ كائن</span>
+<span class="tag-name">const</span> <span class="attr">copy</span>    = { ...<span class="attr">base</span> };
+
+<span class="comment">// دمج كائنين</span>
+<span class="tag-name">const</span> <span class="attr">merged</span>  = { ...<span class="attr">base</span>, ...<span class="attr">extras</span> };
+<span class="comment">// { name:'أحمد', age:25, city:'القاهرة', job:'مطور' }</span>
+
+<span class="comment">// تحديث خاصية واحدة بدون تعديل الأصل</span>
+<span class="tag-name">const</span> <span class="attr">updated</span> = { ...<span class="attr">base</span>, <span class="attr">age</span>: <span class="attr-val">26</span> };
+<span class="comment">// { name:'أحمد', age:26 }</span></pre>
+      </div>
+
+      <div class="tip-box"><strong>لماذا Spread بدل التعديل المباشر؟</strong> يحافظ على الكائن الأصلي ولا يعدّله — مبدأ أساسي في البرمجة الحديثة (Immutability).</div>
+    </div>
+  </div>
+
+  <!-- S7 -->
+  <div class="section" id="s7">
+    <h2 class="section-title"><span class="num">.7</span> دوال Object المدمجة <span class="en">Object Static Methods</span></h2>
+    <div class="content">
+      <div class="code-box">
+<div class="code-header"><span>🛠️ Object.keys, values, entries</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-name">const</span> <span class="attr">scores</span> = { <span class="attr">أحمد</span>: <span class="attr-val">85</span>, <span class="attr">سارة</span>: <span class="attr-val">92</span>, <span class="attr">محمد</span>: <span class="attr-val">78</span> };
+
+<span class="comment">// الأسماء فقط</span>
+<span class="tag-name">Object</span>.<span class="tag-name">keys</span>(<span class="attr">scores</span>)
+<span class="comment">// ['أحمد', 'سارة', 'محمد']</span>
+
+<span class="comment">// القيم فقط</span>
+<span class="tag-name">Object</span>.<span class="tag-name">values</span>(<span class="attr">scores</span>)
+<span class="comment">// [85, 92, 78]</span>
+
+<span class="comment">// الأزواج [key, value]</span>
+<span class="tag-name">Object</span>.<span class="tag-name">entries</span>(<span class="attr">scores</span>)
+<span class="comment">// [['أحمد',85], ['سارة',92], ['محمد',78]]</span>
+
+<span class="comment">// التجوال على الكائن بـ entries</span>
+<span class="tag-name">for</span> (<span class="tag-name">const</span> [<span class="attr">name</span>, <span class="attr">score</span>] <span class="tag-name">of</span> <span class="tag-name">Object</span>.<span class="tag-name">entries</span>(<span class="attr">scores</span>)) {
+  <span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr-val">`${name}: ${score}`</span>);
+}</pre>
+      </div>
+
+      <div class="code-box blue">
+<div class="code-header"><span>🔒 Object.freeze — منع التعديل</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-name">const</span> <span class="attr">config</span> = <span class="tag-name">Object</span>.<span class="tag-name">freeze</span>({
+  <span class="attr">API_URL</span>: <span class="attr-val">'https://api.example.com'</span>,
+  <span class="attr">VERSION</span>: <span class="attr-val">'1.0'</span>
+});
+
+<span class="attr">config</span>.<span class="attr">API_URL</span> = <span class="attr-val">'جديد'</span>;  <span class="comment">// لن يتغير — مجمّد!</span></pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- S8 -->
+  <div class="section" id="s8">
+    <h2 class="section-title"><span class="num">.8</span> محرر الكود الحي <span class="en">Live Editor</span></h2>
+    <div class="content"><p>جرب الكائنات بنفسك:</p></div>
+    <div class="try-it">
+      <div class="try-it-header">
+        <span>⚡ جرب Objects</span>
+        <div class="try-it-controls">
+          <button class="try-btn" onclick="runCode(this)">▶️ تشغيل</button>
+          <button class="try-btn" onclick="resetCode(this)">🔄 إعادة</button>
+        </div>
+      </div>
+      <div class="try-it-body">
+        <textarea class="try-it-editor" spellcheck="false" data-default='<!DOCTYPE html>
+<html><head><meta charset="UTF-8"></head>
+<body style="font-family:Arial;padding:20px;direction:rtl;">
+  <h2>🗂️ نظام طلاب</h2>
+  <div id="out" style="background:#1e293b;color:#4ade80;padding:16px;border-radius:10px;font-family:monospace;white-space:pre-line;line-height:1.8;"></div>
+<script>
+  const p = s => document.getElementById("out").textContent += s + "\n";
+
+  const students = [
+    { name: "أحمد",  grade: "A", score: 92, city: "القاهرة"  },
+    { name: "سارة",  grade: "B", score: 85, city: "الرياض"   },
+    { name: "محمد",  grade: "C", score: 71, city: "جدة"      },
+    { name: "نور",   grade: "A", score: 95, city: "القاهرة"  },
+  ];
+
+  // عرض كل طالب
+  p("=== قائمة الطلاب ===");
+  students.forEach(({ name, grade, score }) => {
+    p(`${name} — ${grade} (${score})`);
+  });
+
+  // أعلى درجة
+  const top = students.reduce((best, s) => s.score > best.score ? s : best);
+  p(`\n🏆 الأول: ${top.name} بدرجة ${top.score}`);
+
+  // متوسط الدرجات
+  const avg = students.reduce((sum, s) => sum + s.score, 0) / students.length;
+  p(`📊 المتوسط: ${avg}`);
+
+  // طلاب القاهرة
+  const cairo = students.filter(s => s.city === "القاهرة").map(s => s.name);
+  p(`🏙️ طلاب القاهرة: ${cairo.join(", ")}`);
+</script>
+</body></html>'><!DOCTYPE html>
+<html><head><meta charset="UTF-8"></head>
+<body style="font-family:Arial;padding:20px;direction:rtl;">
+  <h2>🗂️ نظام طلاب</h2>
+  <div id="out" style="background:#1e293b;color:#4ade80;padding:16px;border-radius:10px;font-family:monospace;white-space:pre-line;line-height:1.8;"></div>
+<script>
+  const p = s => document.getElementById("out").textContent += s + "\n";
+
+  const students = [
+    { name: "أحمد",  grade: "A", score: 92, city: "القاهرة"  },
+    { name: "سارة",  grade: "B", score: 85, city: "الرياض"   },
+    { name: "محمد",  grade: "C", score: 71, city: "جدة"      },
+    { name: "نور",   grade: "A", score: 95, city: "القاهرة"  },
+  ];
+
+  p("=== قائمة الطلاب ===");
+  students.forEach(({ name, grade, score }) => {
+    p(`${name} — ${grade} (${score})`);
+  });
+
+  const top = students.reduce((best, s) => s.score > best.score ? s : best);
+  p(`\n🏆 الأول: ${top.name} بدرجة ${top.score}`);
+
+  const avg = students.reduce((sum, s) => sum + s.score, 0) / students.length;
+  p(`📊 المتوسط: ${avg}`);
+
+  const cairo = students.filter(s => s.city === "القاهرة").map(s => s.name);
+  p(`🏙️ طلاب القاهرة: ${cairo.join(", ")}`);
+</script>
+</body></html></textarea>
+        <div class="try-it-preview"><iframe srcdoc="" sandbox="allow-scripts allow-same-origin allow-modals allow-popups allow-forms" title="معاينة الكود"></iframe></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EXERCISES -->
+  <div class="section" id="exercises">
+    <h2 class="section-title"><span class="num">📝</span> التمارين العملية <span class="en">Exercises</span></h2>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 1: إنشاء كائن وعرضه</div>
+      <p>أنشئ كائن يمثّل سيارة بخصائص: brand، model، year، color. ثم اطبع كل خاصية.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre><span class="tag-name">const</span> <span class="attr">car</span> = { <span class="attr">brand</span>: <span class="attr-val">'Toyota'</span>, <span class="attr">model</span>: <span class="attr-val">'Camry'</span>, <span class="attr">year</span>: <span class="attr-val">2022</span>, <span class="attr">color</span>: <span class="attr-val">'أبيض'</span> };
+<span class="tag-name">for</span> (<span class="tag-name">const</span> [<span class="attr">key</span>, <span class="attr">val</span>] <span class="tag-name">of</span> <span class="tag-name">Object</span>.<span class="tag-name">entries</span>(<span class="attr">car</span>)) {
+  <span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr-val">`${key}: ${val}`</span>);
+}</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 2: Destructuring</div>
+      <p>من الكائن <em>{name:'نور', age:20, job:'مصممة'}</em>، استخرج name و job فقط في متغيرات.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre><span class="tag-name">const</span> { <span class="attr">name</span>, <span class="attr">job</span> } = { <span class="attr">name</span>: <span class="attr-val">'نور'</span>, <span class="attr">age</span>: <span class="attr-val">20</span>, <span class="attr">job</span>: <span class="attr-val">'مصممة'</span> };
+<span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr">name</span>, <span class="attr">job</span>);  <span class="comment">// نور مصممة</span></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 3: تحديث بدون تعديل الأصل</div>
+      <p>لديك <em>const user = {name:'أحمد', age:25}</em>. أنشئ كائناً جديداً بنفس الخصائص لكن age = 26.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre><span class="tag-name">const</span> <span class="attr">user</span>    = { <span class="attr">name</span>: <span class="attr-val">'أحمد'</span>, <span class="attr">age</span>: <span class="attr-val">25</span> };
+<span class="tag-name">const</span> <span class="attr">updated</span> = { ...<span class="attr">user</span>, <span class="attr">age</span>: <span class="attr-val">26</span> };
+<span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr">updated</span>);  <span class="comment">// {name:'أحمد', age:26}</span>
+<span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr">user</span>);     <span class="comment">// {name:'أحمد', age:25} ← لم يتغير</span></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 4: Method</div>
+      <p>أضف method اسمها <em>introduce</em> لكائن person تطبع: "أنا [الاسم]، عمري [السن]".</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre><span class="tag-name">const</span> <span class="attr">person</span> = {
+  <span class="attr">name</span>: <span class="attr-val">'سارة'</span>,
+  <span class="attr">age</span>:  <span class="attr-val">22</span>,
+  <span class="attr">introduce</span>() {
+    <span class="tag-name">return</span> <span class="attr-val">`أنا ${<span class="tag-name">this</span>.<span class="attr">name</span>}، عمري ${<span class="tag-name">this</span>.<span class="attr">age</span>}`</span>;
+  }
+};
+<span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr">person</span>.<span class="tag-name">introduce</span>());</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 5: Object.values مع reduce</div>
+      <p>عندك <em>{رياضيات:90, علوم:85, عربي:78}</em>. احسب متوسط الدرجات باستخدام Object.values و reduce.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre><span class="tag-name">const</span> <span class="attr">grades</span> = { <span class="attr">رياضيات</span>:<span class="attr-val">90</span>, <span class="attr">علوم</span>:<span class="attr-val">85</span>, <span class="attr">عربي</span>:<span class="attr-val">78</span> };
+<span class="tag-name">const</span> <span class="attr">vals</span>   = <span class="tag-name">Object</span>.<span class="tag-name">values</span>(<span class="attr">grades</span>);
+<span class="tag-name">const</span> <span class="attr">avg</span>    = <span class="attr">vals</span>.<span class="tag-name">reduce</span>((<span class="attr">s</span>,<span class="attr">n</span>) => <span class="attr">s</span>+<span class="attr">n</span>, <span class="attr-val">0</span>) / <span class="attr">vals</span>.<span class="attr">length</span>;
+<span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr">avg</span>);  <span class="comment">// 84.33...</span></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="quiz-container" id="quiz">
+    <div class="quiz-intro"><p>اختبر فهمك للكائنات!</p></div>
+    <div class="quiz-type-tabs">
+      <button class="qt-tab active" onclick="switchQuiz(this,'tf')">✓✗ صح وخطأ</button>
+      <button class="qt-tab" onclick="switchQuiz(this,'mc')">🔘 اختيار من متعدد</button>
+    </div>
+
+    <div class="quiz-section active" id="quiz-tf">
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">1</span><span class="q-text">يمكن تعديل خصائص كائن معرَّف بـ const.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">2</span><span class="q-text">this داخل method يشير إلى الكائن الذي تنتمي إليه.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="false">
+        <span class="q-num">3</span><span class="q-text">Object.keys() تعيد قيم الكائن (values).</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">4</span><span class="q-text">{...obj, key: newVal} ينشئ كائناً جديداً بدون تعديل الأصل.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="false">
+        <span class="q-num">5</span><span class="q-text">Bracket notation لا يمكن استخدامه مع المتغيرات كـ keys.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <button class="quiz-submit" onclick="submitQuiz('tf')">عرض النتيجة 🎯</button>
+      <div class="quiz-result" id="result-tf"><div class="result-score" id="score-tf">0/5</div><div class="result-label">إجابات صحيحة</div><div class="result-message" id="msg-tf"></div><button class="retry-btn" onclick="retryQuiz('tf')">🔄 حاول تاني</button></div>
+    </div>
+
+    <div class="quiz-section" id="quiz-mc">
+      <div class="quiz-question" data-correct="2">
+        <span class="q-num">1</span><span class="q-text">كيف تحذف خاصية من كائن؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">obj.key = null</button>
+          <button class="q-opt" onclick="answerMC(this,1)">obj.remove('key')</button>
+          <button class="q-opt" onclick="answerMC(this,2)">delete obj.key</button>
+          <button class="q-opt" onclick="answerMC(this,3)">obj.key = undefined</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="1">
+        <span class="q-num">2</span><span class="q-text">ما ناتج: Object.values({a:1, b:2, c:3})؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">['a','b','c']</button>
+          <button class="q-opt" onclick="answerMC(this,1)">[1,2,3]</button>
+          <button class="q-opt" onclick="answerMC(this,2)">[['a',1],['b',2],['c',3]]</button>
+          <button class="q-opt" onclick="answerMC(this,3)">3</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="3">
+        <span class="q-num">3</span><span class="q-text">في destructuring: const {name: n} = obj — ماذا يعني؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">خطأ في الصياغة</button>
+          <button class="q-opt" onclick="answerMC(this,1)">يستخرج n ويسميها name</button>
+          <button class="q-opt" onclick="answerMC(this,2)">يستخرج خاصيتين</button>
+          <button class="q-opt" onclick="answerMC(this,3)">يستخرج name ويحفظها في متغير n</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="0">
+        <span class="q-num">4</span><span class="q-text">متى تستخدم Bracket notation بدلاً من Dot؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">لما الـ key محفوظ في متغير أو يحتوي مسافات</button>
+          <button class="q-opt" onclick="answerMC(this,1)">دائماً أفضل من Dot</button>
+          <button class="q-opt" onclick="answerMC(this,2)">للخصائص الرقمية فقط</button>
+          <button class="q-opt" onclick="answerMC(this,3)">لا فرق بينهما</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="2">
+        <span class="q-num">5</span><span class="q-text">ما وظيفة Object.entries()؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">تعيد الـ keys فقط</button>
+          <button class="q-opt" onclick="answerMC(this,1)">تعيد الـ values فقط</button>
+          <button class="q-opt" onclick="answerMC(this,2)">تعيد مصفوفة من [key,value] لكل خاصية</button>
+          <button class="q-opt" onclick="answerMC(this,3)">تحذف الكائن</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <button class="quiz-submit" onclick="submitQuiz('mc')">عرض النتيجة 🎯</button>
+      <div class="quiz-result" id="result-mc"><div class="result-score" id="score-mc">0/5</div><div class="result-label">إجابات صحيحة</div><div class="result-message" id="msg-mc"></div><button class="retry-btn" onclick="retryQuiz('mc')">🔄 حاول تاني</button></div>
+    </div>
+  </div>
+
+  <div class="lesson-nav">
+    <a href="./lesson-18.html" class="nav-btn"><span>⬅️</span><span>الدرس السابق</span></a>
+    <button class="nav-btn complete-btn" id="completeBtn" onclick="markComplete(this)"><span>✅</span><span>علّم كمكتمل</span></button>
+    <a href="./lesson-20.html" class="nav-btn"><span>الدرس التالي</span><span>➡️</span></a>
+  </div>
+
+  <div class="notebook-footer">
+    <h3>🎉 أتقنت الكائنات!</h3>
+    <p>الكائنات + المصفوفات = أساس كل تطبيق حقيقي ❤️<br><strong>الدرس التالي: التعامل مع DOM 🌐</strong></p>
+  </div>
+</div>
+
+<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">⬆️</button>
+<div class="toast" id="toast"></div>
+<script src="../../js/data/courses.js"></script>
+<script src="../../js/progress.js"></script>
+<script src="../../js/lesson-editor.js"></script>
+<script>
+const COURSE_ID='frontend',LESSON_ID=19,TOTAL=32;
+function toggleSolution(b){const s=b.nextElementSibling;s.classList.toggle('show');b.textContent=s.classList.contains('show')?'إخفاء الحل ▲':'عرض الحل ▼';}
+function copyCode(b){const p=b.closest('.code-box').querySelector('pre');navigator.clipboard.writeText(p.innerText).then(()=>{b.classList.add('copied');b.textContent='✓ تم النسخ';setTimeout(()=>{b.classList.remove('copied');b.textContent='📋 نسخ';},2000);});}
+function runCode(b){const t=b.closest('.try-it');t.querySelector('iframe').srcdoc=t.querySelector('.try-it-editor').value;}
+function resetCode(b){const t=b.closest('.try-it'),e=t.querySelector('.try-it-editor');e.value=e.dataset.default;t.querySelector('iframe').srcdoc=e.value;}
+window.addEventListener('load',()=>{document.querySelectorAll('.try-it').forEach(t=>{const e=t.querySelector('.try-it-editor');t.querySelector('iframe').srcdoc=e.value;});});
+function switchQuiz(b,t){document.querySelectorAll('.qt-tab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.quiz-section').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.getElementById('quiz-'+t).classList.add('active');}
+const answers={tf:{},mc:{}};
+function answerTF(b,v){const q=b.closest('.quiz-question'),i=Array.from(q.parentNode.querySelectorAll('.quiz-question')).indexOf(q);q.querySelectorAll('.q-opt').forEach(o=>o.classList.remove('selected'));b.classList.add('selected');answers.tf[i]=v;}
+function answerMC(b,i){const q=b.closest('.quiz-question'),qi=Array.from(q.parentNode.querySelectorAll('.quiz-question')).indexOf(q);q.querySelectorAll('.q-opt').forEach(o=>o.classList.remove('selected'));b.classList.add('selected');answers.mc[qi]=i;}
+function submitQuiz(type){const sec=document.getElementById('quiz-'+type),qs=sec.querySelectorAll('.quiz-question');let c=0;qs.forEach((q,i)=>{const ca=type==='tf'?(q.dataset.correct==='true'):parseInt(q.dataset.correct),ua=answers[type][i],fb=q.querySelector('.q-feedback'),opts=q.querySelectorAll('.q-opt');opts.forEach(o=>{o.classList.remove('selected');o.disabled=true;});if(ua===undefined){fb.className='q-feedback wrong show';fb.textContent='⚠️ ما اخترتش إجابة!';return;}if(ua===ca){c++;fb.className='q-feedback correct show';fb.textContent='✓ إجابة صحيحة!';if(type==='tf')opts[ca?0:1].classList.add('correct');else opts[ca].classList.add('correct');}else{fb.className='q-feedback wrong show';if(type==='tf'){opts[ca?0:1].classList.add('correct');opts[ua?0:1].classList.add('wrong');fb.textContent='✗ خطأ.';}else{opts[ca].classList.add('correct');opts[ua].classList.add('wrong');fb.textContent='✗ الإجابة بالأخضر.';}}});const r=document.getElementById('result-'+type);document.getElementById('score-'+type).textContent=c+'/'+qs.length;const m=document.getElementById('msg-'+type);if(c===qs.length){m.textContent='🏆 ممتاز 100%!';m.className='result-message excellent';}else if(c>=3){m.textContent='👍 جيد!';m.className='result-message good';}else{m.textContent='📚 راجع الدرس.';m.className='result-message try-again';}r.classList.add('show');r.scrollIntoView({behavior:'smooth',block:'center'});}
+function retryQuiz(type){const sec=document.getElementById('quiz-'+type);sec.querySelectorAll('.q-opt').forEach(o=>{o.classList.remove('selected','correct','wrong');o.disabled=false;});sec.querySelectorAll('.q-feedback').forEach(f=>{f.classList.remove('show','correct','wrong');f.textContent='';});document.getElementById('result-'+type).classList.remove('show');answers[type]={};}
+function markComplete(btn){const done=Progress.toggleLessonComplete(COURSE_ID,LESSON_ID);btn.classList.toggle('completed',done);btn.querySelector('span:last-child').textContent=done?'مكتمل! ⭐':'علّم كمكتمل';showToast(done?'🎉 أكملت درس الكائنات!':'تم إلغاء الإكمال');}
+if(Progress.isLessonComplete(COURSE_ID,LESSON_ID)){const b=document.getElementById('completeBtn');b.classList.add('completed');b.querySelector('span:last-child').textContent='مكتمل! ⭐';}
+(function(){const p=Progress.getCourseProgress(COURSE_ID,TOTAL);document.getElementById('progFill').style.width=p+'%';document.getElementById('progText').textContent=p+'%';})();
+function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
+window.addEventListener('scroll',()=>{document.getElementById('scrollTop').classList.toggle('show',window.scrollY>300);});
+document.querySelectorAll('.toc-card a').forEach(l=>{l.addEventListener('click',e=>{e.preventDefault();const t=document.querySelector(l.getAttribute('href'));if(t)t.scrollIntoView({behavior:'smooth',block:'start'});});});
+</script>
+</body>
+</html>

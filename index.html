@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<!-- منع clickjacking (احتياطي إذا لم تُضبط رؤوس الخادم) -->
+<script>if (window.top !== window.self) { try { window.top.location = window.self.location; } catch (e) { document.documentElement.style.display = 'none'; } }</script>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-V2NCKVL16D"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-V2NCKVL16D');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>دفتر البرمجة — تعلّم البرمجة بالعربي</title>
+
+<!-- PWA -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#1e3a8a">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="دفتر البرمجة">
+<link rel="apple-touch-icon" href="icon.svg">
+
+<!-- SEO -->
+<meta name="description" content="دفتر البرمجة — تعلّم البرمجة بأسلوب الكشكول، HTML, CSS, JavaScript بالعربي">
+<meta name="keywords" content="دفتر البرمجة, تعلم البرمجة, HTML, CSS, JavaScript, عربي, مجاني">
+<link rel="canonical" href="https://progbook.msm-fintech.online/">
+
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://progbook.msm-fintech.online/">
+<meta property="og:title" content="دفتر البرمجة — تعلّم البرمجة بالعربي">
+<meta property="og:description" content="منصة عربية مجانية لتعليم البرمجة بأسلوب الكشكول — شرح مبسّط، تمارين عملية، ومشاريع حقيقية">
+<meta property="og:image" content="https://progbook.msm-fintech.online/icons/icon-512.png">
+<meta property="og:locale" content="ar_AR">
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="دفتر البرمجة — تعلّم البرمجة بالعربي">
+<meta name="twitter:description" content="منصة عربية مجانية لتعليم البرمجة من الصفر حتى الاحتراف">
+<meta name="twitter:image" content="https://progbook.msm-fintech.online/icons/icon-512.png">
+
+<!-- Favicon -->
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=Cairo:wght@300;400;500;600;700;900&family=Caveat:wght@400;700&family=Fira+Code:wght@400;500;600&family=Reem+Kufi:wght@400;500;600;700&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/shared.css">
+<link rel="stylesheet" href="css/home.css">
+</head>
+<body>
+
+<!-- ═══════════════ NAVBAR ═══════════════ -->
+<nav class="top-nav">
+  <div class="nav-inner">
+    <a href="#" class="brand-logo">
+      <span class="logo-icon">📚</span>
+      <span>دفتر البرمجة</span>
+    </a>
+    <div class="nav-actions">
+      <button id="themeToggle" title="تبديل الوضع الليلي" aria-label="تبديل الوضع الليلي">🌙</button>
+      <button id="menuToggle" class="menu-toggle" aria-label="القائمة" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+      <div class="nav-menu" id="navMenu">
+        <button class="nav-menu-item" id="aboutBtn"><span class="mi-icon">ℹ️</span> عن التطبيق</button>
+        <button class="nav-menu-item" id="shareBtn"><span class="mi-icon">🔗</span> مشاركة التطبيق</button>
+        <button class="nav-menu-item" id="installBtn"><span class="mi-icon">⬇️</span> تثبيت التطبيق</button>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<div class="page-wrap">
+
+  <!-- ═══════════════ HERO SECTION ═══════════════ -->
+  <header class="hero">
+    <div class="hero-content">
+      <div class="hero-badge">
+        <span>✨</span>
+        <span>منصة تعليمية تفاعلية</span>
+      </div>
+
+      <h1>
+        تعلّم البرمجة
+        <span class="gradient-text">بالعربي</span>
+      </h1>
+
+      <div class="hero-typewriter" id="typewriter"></div>
+
+      <p class="hero-tagline">
+        من الصفر إلى الاحتراف — شرح مبسّط بأسلوب الكشكول، تمارين عملية، ومشاريع حقيقية 🚀
+      </p>
+
+      <div class="hero-ctas">
+        <a href="#courses" class="cta-btn primary">
+          <span>🚀</span>
+          <span>ابدأ رحلتك الآن</span>
+        </a>
+        <a href="#courses" class="cta-btn outline">
+          <span>📖</span>
+          <span>شاهد المسارات</span>
+        </a>
+      </div>
+
+      <div class="hero-stats">
+        <div class="hero-stat">
+          <div class="hero-stat-num" id="statCourses">7</div>
+          <div class="hero-stat-label">مسار تعليمي</div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-num" id="statLessons">32+</div>
+          <div class="hero-stat-label">درس تفاعلي</div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-num">100%</div>
+          <div class="hero-stat-label">مجاناً وبالعربي</div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ═══════════════ SEARCH ═══════════════ -->
+  <div class="search-section">
+    <div class="search-wrap">
+      <span class="search-icon">🔍</span>
+      <input
+        type="text"
+        id="searchInput"
+        class="search-input"
+        placeholder="ابحث عن مسار... (React, Python, الفرونت إند)"
+        autocomplete="off"
+      >
+    </div>
+  </div>
+
+  <!-- ═══════════════ COURSES SECTION ═══════════════ -->
+  <div id="courses" class="section-heading">
+    <h2>🗺️ اختر مسارك التعليمي</h2>
+    <div class="line"></div>
+  </div>
+
+  <div class="courses-grid" id="coursesGrid">
+    <!-- البطاقات تُبنى بـ JavaScript -->
+  </div>
+
+  <!-- ═══════════════ PROGRESS SUMMARY ═══════════════ -->
+  <div class="progress-summary" id="progressSummary" style="display:none;">
+    <div class="ps-title">🎯 تقدمك حتى الآن</div>
+    <div class="ps-stats">
+      <div>
+        <div class="ps-stat-num" id="psCompleted">0</div>
+        <div class="ps-stat-label">درس مكتمل</div>
+      </div>
+      <div>
+        <div class="ps-stat-num" id="psPct">0%</div>
+        <div class="ps-stat-label">من إجمالي المسارات</div>
+      </div>
+      <div>
+        <div class="ps-stat-num" id="psStreak">🔥</div>
+        <div class="ps-stat-label">استمر بالتعلم!</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ FOOTER ═══════════════ -->
+  <footer class="home-footer">
+    <div class="hf-grid">
+      <div class="hf-brand">
+        <h3>📚 دفتر البرمجة</h3>
+        <p>
+          منصة تعليمية مجانية بالكامل لتعليم البرمجة باللغة العربية بأسلوب الكشكول التفاعلي.<br>
+          كل مبرمج محترف كان يوماً مبتدئ مثلك ❤️
+        </p>
+      </div>
+      <div class="hf-links">
+        <h4>🔗 روابط سريعة</h4>
+        <ul id="quickLinks">
+          <!-- يُبنى ديناميكياً -->
+        </ul>
+      </div>
+    </div>
+    <div class="hf-bottom">
+      صُنع بـ <span class="made-with">❤️</span> للشباب العربي ·
+      <strong>Keep Learning, Keep Building 🚀</strong>
+    </div>
+  </footer>
+
+</div>
+
+<!-- ═══════════════ ABOUT MODAL ═══════════════ -->
+<div class="modal-overlay" id="aboutModal">
+  <div class="modal">
+    <button class="modal-close" id="aboutClose" aria-label="إغلاق">✕</button>
+    <img src="icon.svg" class="modal-icon" alt="دفتر البرمجة">
+    <h2>دفتر البرمجة</h2>
+    <p>
+      منصة تعليمية عربية مجانية بالكامل لتعليم البرمجة بأسلوب الكشكول التفاعلي —
+      من الأساسيات حتى بناء مشاريع حقيقية.
+    </p>
+    <div class="modal-dev">
+      <span class="dev-label">تطوير وتصميم</span>
+      <span class="dev-name">Mohamed Sayed</span>
+    </div>
+    <div class="modal-version">الإصدار 1.0</div>
+  </div>
+</div>
+
+<!-- ═══════════════ INSTALL BANNER ═══════════════ -->
+<div class="install-banner" id="installBanner">
+  <img src="icon.svg" class="ib-icon" alt="">
+  <div class="ib-text">
+    <strong>ثبّت دفتر البرمجة</strong>
+    <span>أضف التطبيق إلى شاشتك الرئيسية للوصول السريع بدون متصفح</span>
+  </div>
+  <div class="ib-actions">
+    <button id="ibInstall">تثبيت</button>
+    <button id="ibDismiss">لاحقاً</button>
+  </div>
+</div>
+
+<!-- Scroll Top -->
+<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">⬆️</button>
+<div class="toast" id="toast"></div>
+
+<!-- Scripts -->
+<script src="js/data/courses.js"></script>
+<script src="js/progress.js"></script>
+<script>
+
+// ═══════════════ SERVICE WORKER ═══════════════
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').catch((err) => {
+      console.warn('Service Worker registration failed:', err);
+    });
+  });
+}
+</script>
+<script>
+
+// ═══════════════ DARK MODE ═══════════════
+const themeBtn = document.getElementById('themeToggle');
+let isDark = localStorage.getItem('academy-theme') === 'dark';
+
+function applyTheme() {
+  document.body.classList.toggle('dark', isDark);
+  themeBtn.textContent = isDark ? '☀️' : '🌙';
+  themeBtn.title = isDark ? 'وضع نهاري' : 'وضع ليلي';
+  localStorage.setItem('academy-theme', isDark ? 'dark' : 'light');
+  // تحديث theme-color للمتصفح
+  const meta = document.querySelector('meta[name="theme-color"]');
+  if (meta) meta.setAttribute('content', isDark ? '#0f172a' : '#1e3a8a');
+}
+themeBtn.addEventListener('click', () => { isDark = !isDark; applyTheme(); });
+applyTheme();
+
+// ═══════════════ TYPEWRITER ═══════════════
+const words = [
+  'HTML & CSS',
+  'JavaScript',
+  'React.js',
+  'Python',
+  'مشاريع حقيقية',
+  '32+ درس تفاعلي',
+];
+let wi = 0, ci = 0, deleting = false;
+const tw = document.getElementById('typewriter');
+
+function typeLoop() {
+  const word = words[wi];
+  if (!deleting) {
+    tw.textContent = word.slice(0, ++ci);
+    if (ci === word.length) {
+      deleting = true;
+      setTimeout(typeLoop, 1800);
+      return;
+    }
+  } else {
+    tw.textContent = word.slice(0, --ci);
+    if (ci === 0) {
+      deleting = false;
+      wi = (wi + 1) % words.length;
+    }
+  }
+  setTimeout(typeLoop, deleting ? 50 : 95);
+}
+typeLoop();
+
+// ═══════════════ بناء بطاقات المسارات ═══════════════
+function buildCourseCards() {
+  const grid = document.getElementById('coursesGrid');
+  grid.innerHTML = '';
+
+  COURSES.forEach((course, i) => {
+    const pct = course.available
+      ? Progress.getCourseProgress(course.id, course.totalLessons)
+      : 0;
+    const count = course.available
+      ? Progress.getCompletedCount(course.id, course.totalLessons)
+      : 0;
+
+    const card = document.createElement('div');
+    card.className = 'course-card' +
+      (course.available ? (i === 0 ? ' featured' : '') : ' coming-soon');
+    card.style.setProperty('--card-color', course.color);
+    card.dataset.courseId = course.id;
+    card.dataset.searchKey = (
+      course.name + ' ' + course.nameEn + ' ' + course.description
+    ).toLowerCase();
+
+    if (course.available) {
+      card.innerHTML = `
+        <div class="course-card-top"></div>
+        ${i === 0 ? '<span class="featured-label">✅ متاح الآن</span>' : ''}
+        <div class="course-card-body">
+          <span class="course-lessons-badge">📚 ${course.totalLessons} درس</span>
+          <div class="course-icon-wrap">${course.icon}</div>
+          <div class="course-name">${course.name}</div>
+          <span class="course-name-en">${course.nameEn}</span>
+          <p class="course-desc">${course.description}</p>
+          <div class="course-progress-wrap">
+            <div class="course-progress-top">
+              <span class="course-progress-label">
+                التقدم: <span id="count-${course.id}">${count}/${course.totalLessons}</span> درس
+              </span>
+              <span class="course-progress-pct" id="pct-${course.id}">${pct}%</span>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-fill" id="bar-${course.id}" style="width:${pct}%"></div>
+            </div>
+          </div>
+          <a href="${course.path}index.html" class="course-btn">
+            ${pct > 0 ? '📖 كمّل من حيث وقفت' : '🚀 ابدأ الآن'}
+            <span>←</span>
+          </a>
+        </div>
+      `;
+    } else {
+      card.innerHTML = `
+        <div class="course-card-top"></div>
+        <div class="course-card-body">
+          <div class="course-icon-wrap">${course.icon}</div>
+          <div class="course-name">${course.name}</div>
+          <span class="course-name-en">${course.nameEn}</span>
+          <p class="course-desc">${course.description}</p>
+          <div class="coming-soon-badge">🔒 قريباً...</div>
+        </div>
+      `;
+    }
+
+    card.style.animation = `fadeIn 0.5s ease ${i * 0.08}s both`;
+    grid.appendChild(card);
+  });
+}
+
+// ═══════════════ SEARCH FILTER ═══════════════
+function setupSearch() {
+  const input = document.getElementById('searchInput');
+  const grid  = document.getElementById('coursesGrid');
+  let searchTimer;
+
+  input.addEventListener('input', e => {
+    const q = e.target.value.trim().toLowerCase();
+    const cards = grid.querySelectorAll('.course-card');
+    let visible = 0;
+
+    // تتبّع البحث (مع تأخير لتجنّب الإرسال عند كل حرف)
+    if (typeof gtag === 'function' && q.length >= 2) {
+      clearTimeout(searchTimer);
+      searchTimer = setTimeout(() => gtag('event', 'search', { search_term: q }), 900);
+    }
+
+    cards.forEach(card => {
+      const match = !q || card.dataset.searchKey.includes(q);
+      card.style.display = match ? '' : 'none';
+      if (match) visible++;
+    });
+
+    // إزالة أو إضافة "لا توجد نتائج"
+    let nr = grid.querySelector('.no-results');
+    if (visible === 0 && !nr) {
+      nr = document.createElement('div');
+      nr.className = 'no-results';
+      nr.innerHTML = `
+        <span class="nr-icon">🔍</span>
+        <div>لم نجد أي مسار يطابق بحثك</div>
+        <div style="font-size:.9rem; margin-top:6px;">جرّب كلمات أخرى</div>`;
+      grid.appendChild(nr);
+    } else if (visible > 0 && nr) {
+      nr.remove();
+    }
+  });
+}
+
+// ═══════════════ HERO STATS (ديناميكي من البيانات) ═══════════════
+function updateHeroStats() {
+  const available = COURSES.filter(c => c.available);
+  const totalLessons = COURSES.reduce((sum, c) => sum + (c.totalLessons || 0), 0);
+  document.getElementById('statCourses').textContent = COURSES.length;
+  document.getElementById('statLessons').textContent = totalLessons + '+';
+}
+
+// ═══════════════ PROGRESS SUMMARY ═══════════════
+function updateProgressSummary() {
+  let totalDone = 0, totalLessons = 0;
+  COURSES.forEach(c => {
+    if (c.available) {
+      totalDone     += Progress.getCompletedCount(c.id, c.totalLessons);
+      totalLessons  += c.totalLessons;
+    }
+  });
+
+  if (totalDone === 0) return;
+
+  const pct = totalLessons ? Math.round(totalDone / totalLessons * 100) : 0;
+  document.getElementById('psCompleted').textContent = totalDone;
+  document.getElementById('psPct').textContent = pct + '%';
+  document.getElementById('progressSummary').style.display = 'block';
+}
+
+// ═══════════════ QUICK LINKS (في الفوتر) ═══════════════
+function buildQuickLinks() {
+  const ul = document.getElementById('quickLinks');
+  const avail = COURSES.filter(c => c.available).slice(0, 5);
+  ul.innerHTML = avail.map(c => `
+    <li><a href="${c.path}index.html">${c.icon} ${c.name}</a></li>
+  `).join('');
+}
+
+// ═══════════════ Toast ═══════════════
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// ═══════════════ Scroll Top ═══════════════
+window.addEventListener('scroll', () => {
+  const btn = document.getElementById('scrollTop');
+  btn.classList.toggle('show', window.scrollY > 300);
+});
+
+// ═══════════════ HAMBURGER MENU ═══════════════
+const menuToggle = document.getElementById('menuToggle');
+const navMenu = document.getElementById('navMenu');
+
+function closeMenu() {
+  navMenu.classList.remove('show');
+  menuToggle.classList.remove('active');
+  menuToggle.setAttribute('aria-expanded', 'false');
+}
+menuToggle.addEventListener('click', (e) => {
+  e.stopPropagation();
+  const open = navMenu.classList.toggle('show');
+  menuToggle.classList.toggle('active', open);
+  menuToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+});
+document.addEventListener('click', (e) => {
+  if (!navMenu.contains(e.target) && e.target !== menuToggle) closeMenu();
+});
+
+// ═══════════════ ABOUT MODAL ═══════════════
+const aboutModal = document.getElementById('aboutModal');
+document.getElementById('aboutBtn').addEventListener('click', () => {
+  closeMenu();
+  aboutModal.classList.add('show');
+  if (typeof gtag === 'function') gtag('event', 'view_about');
+});
+document.getElementById('aboutClose').addEventListener('click', () => aboutModal.classList.remove('show'));
+aboutModal.addEventListener('click', (e) => {
+  if (e.target === aboutModal) aboutModal.classList.remove('show');
+});
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') aboutModal.classList.remove('show');
+});
+
+// ═══════════════ SHARE ═══════════════
+document.getElementById('shareBtn').addEventListener('click', async () => {
+  closeMenu();
+  if (typeof gtag === 'function') gtag('event', 'share', { method: 'menu', content_type: 'website' });
+  const shareData = {
+    title: 'دفتر البرمجة',
+    text: 'تعلّم البرمجة بالعربي مجاناً مع دفتر البرمجة 🚀',
+    url: location.href,
+  };
+  if (navigator.share) {
+    try { await navigator.share(shareData); } catch (err) { /* أُلغيت المشاركة */ }
+  } else {
+    try {
+      await navigator.clipboard.writeText(location.href);
+      showToast('✅ تم نسخ رابط التطبيق');
+    } catch (err) {
+      showToast('انسخ الرابط: ' + location.href);
+    }
+  }
+});
+
+// ═══════════════ INSTALL (PWA) ═══════════════
+let deferredPrompt = null;
+const installBtn    = document.getElementById('installBtn');
+const installBanner = document.getElementById('installBanner');
+
+const isStandalone = window.matchMedia('(display-mode: standalone)').matches
+  || window.navigator.standalone === true;
+
+// إخفاء خيارات التثبيت إذا كان مثبّتاً بالفعل
+if (isStandalone) { installBtn.style.display = 'none'; }
+
+// التقاط حدث التثبيت من المتصفح
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+});
+
+async function doInstall() {
+  if (deferredPrompt) {
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    if (outcome === 'accepted') showToast('🎉 جارٍ تثبيت دفتر البرمجة');
+    deferredPrompt = null;
+  } else if (isStandalone) {
+    showToast('✅ التطبيق مثبّت بالفعل');
+  } else {
+    // متصفحات لا تدعم beforeinstallprompt (مثل iOS Safari)
+    showToast('للتثبيت: من قائمة المتصفح اختر «إضافة إلى الشاشة الرئيسية»');
+  }
+  installBanner.classList.remove('show');
+}
+
+installBtn.addEventListener('click', () => { closeMenu(); doInstall(); });
+document.getElementById('ibInstall').addEventListener('click', doInstall);
+document.getElementById('ibDismiss').addEventListener('click', () => {
+  installBanner.classList.remove('show');
+  localStorage.setItem('academy-install-dismissed', '1');
+});
+
+window.addEventListener('appinstalled', () => {
+  installBanner.classList.remove('show');
+  deferredPrompt = null;
+  installBtn.style.display = 'none';
+  showToast('🎉 تم تثبيت دفتر البرمجة');
+  if (typeof gtag === 'function') gtag('event', 'app_install');
+});
+
+// أول زيارة: إظهار بانر التثبيت
+function maybeShowInstallBanner() {
+  if (isStandalone) return;
+  if (localStorage.getItem('academy-install-dismissed')) return;
+  setTimeout(() => installBanner.classList.add('show'), 1800);
+}
+
+// ═══════════════ Init ═══════════════
+document.addEventListener('DOMContentLoaded', () => {
+  updateHeroStats();
+  buildCourseCards();
+  setupSearch();
+  updateProgressSummary();
+  buildQuickLinks();
+  maybeShowInstallBanner();
+
+  // تتبّع النقر على بطاقات المسارات
+  document.getElementById('coursesGrid').addEventListener('click', (e) => {
+    const btn = e.target.closest('.course-btn');
+    if (btn && typeof gtag === 'function') {
+      const card = btn.closest('.course-card');
+      gtag('event', 'select_course', { course_id: (card && card.dataset.courseId) || '' });
+    }
+  });
+});
+
+</script>
+</body>
+</html>

@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-V2NCKVL16D"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-V2NCKVL16D');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>مقدمة في CSS والمحددات — دفتر البرمجة</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=Cairo:wght@300;400;500;600;700;900&family=Caveat:wght@400;700&family=Fira+Code:wght@400;500;600&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../css/shared.css">
+<link rel="stylesheet" href="../../css/notebook.css">
+<style>
+body { padding: 20px 10px; }
+
+/* Specificity visual */
+.spec-bar { display: flex; gap: 8px; align-items: center; margin: 8px 0; }
+.spec-box { width: 48px; height: 48px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-family: 'Tajawal', sans-serif; font-size: 1.5rem; font-weight: 900; color: white; }
+.spec-id    { background: var(--ink-red); }
+.spec-class { background: var(--ink-blue); }
+.spec-el    { background: var(--ink-green); }
+.spec-label { font-family: 'Caveat', cursive; font-size: 1.1rem; color: var(--text-muted); }
+
+/* CSS method cards */
+.method-cards { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; margin: 16px 0; }
+@media(max-width:600px){ .method-cards { grid-template-columns: 1fr; } }
+.method-card { background: white; border-radius: 12px; padding: 16px; border-top: 4px solid var(--ink-blue); box-shadow: var(--shadow); text-align: center; }
+.method-card h4 { font-family: 'Aref Ruqaa', serif; color: var(--ink-blue); margin-bottom: 6px; font-size: 1.05rem; }
+.method-card .badge { display: inline-block; font-size: .75rem; font-weight: 700; padding: 2px 10px; border-radius: 20px; margin-bottom: 8px; }
+.badge-good { background: #dcfce7; color: var(--ink-green); }
+.badge-ok   { background: #fef9c3; color: #854d0e; }
+.badge-bad  { background: #fee2e2; color: var(--ink-red); }
+.method-card p { font-size: .88rem; color: var(--text-muted); line-height: 1.6; }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="crumbs">
+    <a href="../../index.html">🏠 الرئيسية</a>
+    <span class="sep">/</span>
+    <a href="./index.html">🌐 الفرونت إند</a>
+    <span class="sep">/</span>
+    <span class="current">🎨 الدرس 6: مقدمة في CSS والمحددات</span>
+  </div>
+  <div class="progress-mini">
+    <div class="progress-bar-mini"><div class="progress-fill-mini" id="progFill"></div></div>
+    <span id="progText">0%</span>
+  </div>
+</div>
+
+<div class="notebook">
+
+  <div class="notebook-header">
+    <div class="lesson-tag">🎨 الدرس السادس</div>
+    <h1><span class="sparkle">✦</span> مقدمة في CSS والمحددات <span class="sparkle">✦</span></h1>
+    <div class="lesson-meta">
+      <span>⏱️ 35 دقيقة</span>
+      <span>📊 مبتدئ</span>
+      <span>🎯 5 تمارين + اختبار</span>
+    </div>
+  </div>
+
+  <div class="toc-card">
+    <h2>📑 فهرس الدرس</h2>
+    <ol>
+      <li><a href="#s1">ما هو CSS؟</a></li>
+      <li><a href="#s2">طرق إضافة CSS</a></li>
+      <li><a href="#s3">تركيب قاعدة CSS</a></li>
+      <li><a href="#s4">المحددات الأساسية</a></li>
+      <li><a href="#s5">المحددات المتقدمة</a></li>
+      <li><a href="#s6">الأولوية (Specificity)</a></li>
+      <li><a href="#s7">محرر الكود الحي</a></li>
+      <li><a href="#exercises">التمارين</a></li>
+      <li><a href="#quiz">اختبر فهمك</a></li>
+    </ol>
+  </div>
+
+  <!-- S1 -->
+  <div class="section" id="s1">
+    <h2 class="section-title"><span class="num">.1</span> ما هو CSS؟ <span class="en">What is CSS?</span></h2>
+    <div class="content">
+      <p><strong>CSS</strong> اختصار لـ <em>Cascading Style Sheets</em>، يعني "صحائف الأنماط المتتالية". ببساطة: هو اللغة اللي بتتحكم في <strong>شكل ومظهر</strong> صفحة HTML.</p>
+
+      <div class="analogy">
+        <div class="analogy-title">🏠 تذكّر تشبيه البيت:</div>
+        <p>HTML = الطوب والخرسانة (الهيكل). <strong>CSS = الدهان، الأثاث، الديكور</strong>. نفس البيت ممكن يبقى شكله مختلف تماماً بأثاث مختلف. نفس الـ HTML ممكن تظهر بـ 1000 شكل مختلف بـ CSS مختلف!</p>
+      </div>
+
+      <p>كلمة "Cascading" (متتالية) مهمة جداً — معناها إن الأنماط بتتراكم وبتورّث من الأب للابن، والأولوية للأقرب والأكثر تحديداً.</p>
+
+      <div class="info-box">أي صفحة ويب بتشوفها دلوقتي — مهما كانت جميلة — مبنية بـ HTML وCSS وJavaScript. افتح أي موقع واضغط <em>F12</em> وشوف!</div>
+    </div>
+  </div>
+
+  <!-- S2 -->
+  <div class="section" id="s2">
+    <h2 class="section-title"><span class="num">.2</span> طرق إضافة CSS <span class="en">Ways to Add CSS</span></h2>
+    <div class="content">
+
+      <div class="method-cards">
+        <div class="method-card">
+          <h4>External CSS</h4>
+          <div class="badge badge-good">✅ الأفضل</div>
+          <p>ملف .css منفصل — كل الصفحات تستخدمه. سهل الصيانة.</p>
+        </div>
+        <div class="method-card">
+          <h4>Internal CSS</h4>
+          <div class="badge badge-ok">⚠️ مقبول</div>
+          <p>داخل &lt;style&gt; في الـ head. لصفحة واحدة أو للتجربة السريعة.</p>
+        </div>
+        <div class="method-card">
+          <h4>Inline CSS</h4>
+          <div class="badge badge-bad">❌ تجنّب</div>
+          <p>داخل الـ attribute style مباشرة. صعب الصيانة ويكسر الفصل بين HTML وCSS.</p>
+        </div>
+      </div>
+
+      <div class="code-box">
+<div class="code-header"><span>📁 الطرق الثلاثة</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">&lt;!-- 1. External: ملف خارجي (الأفضل) --&gt;</span>
+<span class="tag-open">&lt;</span><span class="tag-name">head</span><span class="tag-close">&gt;</span>
+  <span class="tag-open">&lt;</span><span class="tag-name">link</span> <span class="attr">rel</span>=<span class="attr-val">"stylesheet"</span> <span class="attr">href</span>=<span class="attr-val">"style.css"</span><span class="tag-close">&gt;</span>
+<span class="tag-open">&lt;/</span><span class="tag-name">head</span><span class="tag-close">&gt;</span>
+
+<span class="comment">&lt;!-- 2. Internal: داخل &lt;style&gt; في الصفحة --&gt;</span>
+<span class="tag-open">&lt;</span><span class="tag-name">head</span><span class="tag-close">&gt;</span>
+  <span class="tag-open">&lt;</span><span class="tag-name">style</span><span class="tag-close">&gt;</span>
+    p { color: blue; }
+  <span class="tag-open">&lt;/</span><span class="tag-name">style</span><span class="tag-close">&gt;</span>
+<span class="tag-open">&lt;/</span><span class="tag-name">head</span><span class="tag-close">&gt;</span>
+
+<span class="comment">&lt;!-- 3. Inline: داخل الوسم مباشرة (تجنّب) --&gt;</span>
+<span class="tag-open">&lt;</span><span class="tag-name">p</span> <span class="attr">style</span>=<span class="attr-val">"color: blue;"</span><span class="tag-close">&gt;</span>نص أزرق<span class="tag-open">&lt;/</span><span class="tag-name">p</span><span class="tag-close">&gt;</span></pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- S3 -->
+  <div class="section" id="s3">
+    <h2 class="section-title"><span class="num">.3</span> تركيب قاعدة CSS <span class="en">CSS Rule Syntax</span></h2>
+    <div class="content">
+      <p>كل قاعدة CSS بتتكون من <strong>3 أجزاء</strong>:</p>
+
+      <div class="code-box blue">
+<div class="code-header"><span>📐 تركيب القاعدة</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span style="color:#ea580c;font-weight:700;">selector</span> {
+  <span style="color:#7c3aed;font-weight:700;">property</span>: <span style="color:#15803d;font-weight:700;">value</span>;
+  <span style="color:#7c3aed;font-weight:700;">property</span>: <span style="color:#15803d;font-weight:700;">value</span>;
+}
+
+<span class="comment">/* مثال حقيقي */</span>
+h1 {
+  color: #1e3a8a;          <span class="comment">/* لون النص */</span>
+  font-size: 2rem;         <span class="comment">/* حجم الخط */</span>
+  text-align: center;      <span class="comment">/* توسيط النص */</span>
+  margin-bottom: 20px;     <span class="comment">/* مسافة أسفل */</span>
+}</pre>
+      </div>
+
+      <table class="cool-table">
+        <thead><tr><th>المصطلح</th><th>المعنى</th><th>مثال</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Selector</strong></td><td>من الذي سيتأثر؟</td><td><code>h1</code>, <code>.card</code>, <code>#header</code></td></tr>
+          <tr><td><strong>Property</strong></td><td>ماذا نغيّر؟</td><td><code>color</code>, <code>font-size</code>, <code>margin</code></td></tr>
+          <tr><td><strong>Value</strong></td><td>ما هي القيمة الجديدة؟</td><td><code>red</code>, <code>16px</code>, <code>20px</code></td></tr>
+          <tr><td><strong>Declaration</strong></td><td>property + value معاً</td><td><code>color: red;</code></td></tr>
+          <tr><td><strong>Rule</strong></td><td>selector + كل الـ declarations</td><td>الكتلة كلها</td></tr>
+        </tbody>
+      </table>
+
+      <div class="tip-box"><strong>التعليقات في CSS:</strong> بتتكتب هكذا: <em>/* هذا تعليق */</em> — مختلفة عن HTML التي تستخدم &lt;!-- --&gt;</div>
+    </div>
+  </div>
+
+  <!-- S4 -->
+  <div class="section" id="s4">
+    <h2 class="section-title"><span class="num">.4</span> المحددات الأساسية <span class="en">Basic Selectors</span></h2>
+    <div class="content">
+
+      <div class="code-box green">
+<div class="code-header"><span>🎯 المحددات الثلاثة الأساسية</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">/* 1. محدد العنصر: يستهدف كل العناصر من هذا النوع */</span>
+p {
+  color: #333;
+  line-height: 1.8;
+}
+
+<span class="comment">/* 2. محدد الكلاس (.): يستهدف كل من له هذا الكلاس */</span>
+.highlight {
+  background: yellow;
+  font-weight: bold;
+}
+
+<span class="comment">/* 3. محدد المعرّف (#): يستهدف عنصر واحد بعينه */</span>
+#main-title {
+  font-size: 2.5rem;
+  text-align: center;
+}</pre>
+      </div>
+
+      <div class="code-box pink">
+<div class="code-header"><span>📝 الاستخدام في HTML</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">&lt;!-- العنصر: يتأثر كل p تلقائياً --&gt;</span>
+<span class="tag-open">&lt;</span><span class="tag-name">p</span><span class="tag-close">&gt;</span>هذه فقرة تأثرت بمحدد العنصر<span class="tag-open">&lt;/</span><span class="tag-name">p</span><span class="tag-close">&gt;</span>
+
+<span class="comment">&lt;!-- الكلاس: أضف class="highlight" --&gt;</span>
+<span class="tag-open">&lt;</span><span class="tag-name">p</span> <span class="attr">class</span>=<span class="attr-val">"highlight"</span><span class="tag-close">&gt;</span>هذه فقرة مُميَّزة<span class="tag-open">&lt;/</span><span class="tag-name">p</span><span class="tag-close">&gt;</span>
+
+<span class="comment">&lt;!-- المعرّف: استخدم id فريد في الصفحة --&gt;</span>
+<span class="tag-open">&lt;</span><span class="tag-name">h1</span> <span class="attr">id</span>=<span class="attr-val">"main-title"</span><span class="tag-close">&gt;</span>العنوان الرئيسي<span class="tag-open">&lt;/</span><span class="tag-name">h1</span><span class="tag-close">&gt;</span>
+
+<span class="comment">&lt;!-- عنصر بكلاسين في نفس الوقت! --&gt;</span>
+<span class="tag-open">&lt;</span><span class="tag-name">p</span> <span class="attr">class</span>=<span class="attr-val">"highlight big-text"</span><span class="tag-close">&gt;</span>فقرة بكلاسين<span class="tag-open">&lt;/</span><span class="tag-name">p</span><span class="tag-close">&gt;</span></pre>
+      </div>
+
+      <table class="cool-table">
+        <thead><tr><th>المحدد</th><th>الرمز</th><th>الاستخدام</th><th>مرات الاستخدام</th></tr></thead>
+        <tbody>
+          <tr><td>Element</td><td><code>p</code>, <code>h1</code></td><td>تأثير عام على كل العناصر</td><td>لا محدودية</td></tr>
+          <tr><td>Class</td><td><code>.card</code>, <code>.btn</code></td><td>تنسيق مشترك بين عناصر متعددة</td><td>لا محدودية (الأفضل)</td></tr>
+          <tr><td>ID</td><td><code>#header</code>, <code>#logo</code></td><td>عنصر فريد واحد في الصفحة</td><td>مرة واحدة فقط</td></tr>
+        </tbody>
+      </table>
+
+      <div class="warning-box"><strong>لا تستخدم ID للتنسيق!</strong> الـ ID لازم يكون فريداً — استخدمه للـ JavaScript وروابط المرساة فقط. للتنسيق، دايماً استخدم <em>class</em>.</div>
+    </div>
+  </div>
+
+  <!-- S5 -->
+  <div class="section" id="s5">
+    <h2 class="section-title"><span class="num">.5</span> المحددات المتقدمة <span class="en">Advanced Selectors</span></h2>
+    <div class="content">
+
+      <div class="code-box">
+<div class="code-header"><span>🔬 محددات أكثر قوة</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">/* الجميع: يستهدف كل العناصر */</span>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+<span class="comment">/* تجميع محددات: فاصلة بينهم */</span>
+h1, h2, h3 { font-family: 'Cairo', sans-serif; }
+
+<span class="comment">/* السليل (Descendant): مسافة بينهم */</span>
+nav a { color: white; text-decoration: none; }
+<span class="comment">/* يستهدف كل a داخل nav (حتى لو متداخلة) */</span>
+
+<span class="comment">/* الابن المباشر (Child): علامة &gt; */</span>
+ul > li { list-style: disc; }
+<span class="comment">/* يستهدف li ابن مباشر لـ ul فقط */</span>
+
+<span class="comment">/* الأخ المجاور (Adjacent Sibling): علامة + */</span>
+h2 + p { font-size: 1.1rem; }
+<span class="comment">/* أول p بعد h2 مباشرة */</span>
+
+<span class="comment">/* المحددات الشبه-فئوية (Pseudo-classes) */</span>
+a:hover    { color: orange; }       <span class="comment">/* عند التحويم */</span>
+a:visited  { color: purple; }      <span class="comment">/* بعد الزيارة */</span>
+li:first-child { font-weight: bold; } <span class="comment">/* أول عنصر */</span>
+li:last-child  { border: none; }     <span class="comment">/* آخر عنصر */</span>
+li:nth-child(2) { background: #f0f4ff; } <span class="comment">/* العنصر الثاني */</span>
+
+<span class="comment">/* محدد الخاصية (Attribute Selector) */</span>
+input[type="email"] { border-color: green; }
+a[target="_blank"]  { font-style: italic; }</pre>
+      </div>
+
+      <div class="tip-box"><strong>:hover هو الأكثر استخداماً.</strong> كل زر وكل رابط تقريباً عنده :hover لإضافة تفاعل بصري بدون JavaScript.</div>
+    </div>
+  </div>
+
+  <!-- S6 -->
+  <div class="section" id="s6">
+    <h2 class="section-title"><span class="num">.6</span> الأولوية (Specificity) <span class="en">Specificity</span></h2>
+    <div class="content">
+      <p>لما أكتر من قاعدة CSS بتستهدف نفس العنصر، مَن الفائز؟ الجواب هو <strong>Specificity</strong> — نظام نقاط يحدد الأولوية.</p>
+
+      <div class="analogy">
+        <div class="analogy-title">🏆 تخيل نظام نقاط:</div>
+        <p>كل نوع محدد له نقاط مختلفة. اللي عنده أكتر نقاط، أنماطه هي اللي بتطبّق.</p>
+      </div>
+
+      <div style="background:white;border-radius:12px;padding:20px;border:2px solid var(--border);margin:16px 0;">
+        <div class="spec-bar">
+          <div class="spec-box spec-id">1</div>
+          <div class="spec-box spec-class">0</div>
+          <div class="spec-box spec-el">0</div>
+          <span class="spec-label">→ <code>#header</code> (ID) = 100 نقطة</span>
+        </div>
+        <div class="spec-bar">
+          <div class="spec-box spec-id">0</div>
+          <div class="spec-box spec-class">1</div>
+          <div class="spec-box spec-el">0</div>
+          <span class="spec-label">→ <code>.card</code> (Class) = 10 نقاط</span>
+        </div>
+        <div class="spec-bar">
+          <div class="spec-box spec-id">0</div>
+          <div class="spec-box spec-class">0</div>
+          <div class="spec-box spec-el">1</div>
+          <span class="spec-label">→ <code>p</code> (Element) = 1 نقطة</span>
+        </div>
+      </div>
+
+      <div class="code-box blue">
+<div class="code-header"><span>⚖️ مثال على الأولوية</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre>p { color: black; }         <span class="comment">/* 1 نقطة */</span>
+.text { color: blue; }      <span class="comment">/* 10 نقاط */</span>
+#intro { color: red; }      <span class="comment">/* 100 نقطة */</span>
+
+<span class="comment">/* &lt;p class="text" id="intro"&gt; → اللون: red (100 نقطة) */</span>
+
+<span class="comment">/* !important يتغلب على الكل (استخدمه باحتراس) */</span>
+p { color: green !important; }  <span class="comment">/* الأعلى على الإطلاق */</span></pre>
+      </div>
+
+      <div class="warning-box"><strong>تجنّب !important</strong> قدر الإمكان. استخدامه بكثرة يجعل الكود صعب الصيانة. الحل الصح هو كتابة محددات أكثر تحديداً.</div>
+    </div>
+  </div>
+
+  <!-- S7: TRY IT -->
+  <div class="section" id="s7">
+    <h2 class="section-title"><span class="num">.7</span> جرب بنفسك! <span class="en">Try It Live</span></h2>
+    <div class="content">
+      <div class="try-it">
+        <div class="try-it-header">
+          <span>💻 محرر الكود الحي</span>
+          <div class="try-it-controls">
+            <button class="try-btn" onclick="runCode(this)">▶️ تشغيل</button>
+            <button class="try-btn" onclick="resetCode(this)">🔄 إعادة</button>
+          </div>
+        </div>
+        <div class="try-it-body">
+          <textarea class="try-it-editor" spellcheck="false" data-default='<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    /* محدد العنصر */
+    body { font-family: Arial; padding: 20px; background: #f9f9f9; }
+    h1 { color: #1e3a8a; }
+    p  { color: #333; line-height: 1.8; }
+
+    /* محدد الكلاس */
+    .card {
+      background: white;
+      border-radius: 10px;
+      padding: 16px;
+      margin: 10px 0;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+
+    .highlight { background: #fef3c7; border-right: 4px solid orange; }
+    .success   { background: #f0fdf4; border-right: 4px solid green; }
+    .danger    { background: #fee2e2; border-right: 4px solid red; }
+
+    /* Pseudo-class */
+    .card:hover { transform: translateY(-3px); box-shadow: 0 6px 16px rgba(0,0,0,0.12); transition: all 0.2s; }
+
+    /* محدد السليل */
+    .card p { margin: 0; font-size: 0.95rem; }
+    .card h3 { margin-bottom: 6px; }
+  </style>
+</head>
+<body>
+  <h1>تجربة المحددات 🎨</h1>
+
+  <div class="card highlight">
+    <h3>⚠️ تنبيه</h3>
+    <p>هذه بطاقة تنبيه — لديها كلاس .highlight</p>
+  </div>
+
+  <div class="card success">
+    <h3>✅ نجاح</h3>
+    <p>هذه بطاقة نجاح — لديها كلاس .success</p>
+  </div>
+
+  <div class="card danger">
+    <h3>❌ خطأ</h3>
+    <p>هذه بطاقة خطأ — لديها كلاس .danger</p>
+  </div>
+
+  <p>مرّر الماوس على البطاقات وشاهد :hover تعمل!</p>
+</body>
+</html>'><!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    body { font-family: Arial; padding: 20px; background: #f9f9f9; }
+    h1 { color: #1e3a8a; }
+    p  { color: #333; line-height: 1.8; }
+    .card { background: white; border-radius: 10px; padding: 16px; margin: 10px 0; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+    .highlight { background: #fef3c7; border-right: 4px solid orange; }
+    .success   { background: #f0fdf4; border-right: 4px solid green; }
+    .danger    { background: #fee2e2; border-right: 4px solid red; }
+    .card:hover { transform: translateY(-3px); box-shadow: 0 6px 16px rgba(0,0,0,0.12); transition: all 0.2s; }
+    .card p { margin: 0; font-size: 0.95rem; }
+    .card h3 { margin-bottom: 6px; }
+  </style>
+</head>
+<body>
+  <h1>تجربة المحددات 🎨</h1>
+  <div class="card highlight"><h3>⚠️ تنبيه</h3><p>كلاس .highlight</p></div>
+  <div class="card success"><h3>✅ نجاح</h3><p>كلاس .success</p></div>
+  <div class="card danger"><h3>❌ خطأ</h3><p>كلاس .danger</p></div>
+  <p>مرّر الماوس على البطاقات!</p>
+</body>
+</html></textarea>
+          <div class="try-it-preview"><iframe srcdoc="" sandbox="allow-scripts allow-same-origin allow-modals allow-popups allow-forms" title="معاينة الكود"></iframe></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EXERCISES -->
+  <div class="section" id="exercises">
+    <h2 class="section-title"><span class="num">📝</span> التمارين <span class="en">Exercises</span></h2>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 1: ألوان الفقرات</div>
+      <p>اكتب CSS يجعل: كل h2 بلون أزرق غامق، كل p بحجم 1.1rem، العناصر ذات الكلاس .important بخلفية صفراء وخط عريض.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre>h2 { color: #1e3a8a; }
+p  { font-size: 1.1rem; }
+.important { background: yellow; font-weight: bold; }</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 2: تنسيق القائمة</div>
+      <p>اكتب CSS يستهدف: كل li داخل nav (محدد السليل) بـ display: inline، وعند الـ hover يتغير لون الـ a داخل nav.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre>nav li { display: inline; margin-left: 15px; }
+nav a  { color: #1e3a8a; text-decoration: none; }
+nav a:hover { color: #dc2626; text-decoration: underline; }</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 3: تجميع المحددات</div>
+      <p>اكتب قاعدة CSS واحدة تجعل h1 و h2 و h3 و h4 جميعها بنفس الخط 'Cairo' و font-weight: 700.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre>h1, h2, h3, h4 {
+  font-family: 'Cairo', sans-serif;
+  font-weight: 700;
+}</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 4: Pseudo-classes</div>
+      <p>اكتب CSS يجعل: أول li في القائمة بلون أحمر، آخر li بلون أزرق، والباقي بلون رمادي. وعند hover على أي li تصبح خلفيتها صفراء.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre>li { color: gray; }
+li:first-child { color: red; }
+li:last-child  { color: blue; }
+li:hover { background: yellow; }</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 5: صفحة مُنسَّقة كاملة</div>
+      <p>اعمل صفحة HTML + CSS بها: header بخلفية زرقاء وكتابة بيضاء، nav بروابط أفقية، section بـ 3 بطاقات .card، وfooter. كل الـ CSS في &lt;style&gt;.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre><span class="tag-open">&lt;</span><span class="tag-name">style</span><span class="tag-close">&gt;</span>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: Arial; }
+
+  header { background: #1e3a8a; color: white; padding: 20px; text-align: center; }
+
+  nav { background: #f0f4ff; padding: 10px 20px; }
+  nav a { margin-left: 15px; color: #1e3a8a; text-decoration: none; font-weight: bold; }
+  nav a:hover { color: #dc2626; }
+
+  .cards { display: flex; gap: 16px; padding: 20px; flex-wrap: wrap; }
+  .card { flex: 1; min-width: 200px; background: white; border-radius: 10px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+  .card:hover { transform: translateY(-4px); transition: 0.2s; }
+
+  footer { background: #1e3a8a; color: white; text-align: center; padding: 16px; margin-top: 20px; }
+<span class="tag-open">&lt;/</span><span class="tag-name">style</span><span class="tag-close">&gt;</span></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="quiz-container" id="quiz">
+    <div class="quiz-intro"><p>اختبر فهمك!</p></div>
+    <div class="quiz-type-tabs">
+      <button class="qt-tab active" onclick="switchQuiz(this,'tf')">✓✗ صح وخطأ</button>
+      <button class="qt-tab" onclick="switchQuiz(this,'mc')">🔘 اختيار من متعدد</button>
+    </div>
+
+    <div class="quiz-section active" id="quiz-tf">
+      <div class="quiz-question" data-correct="false">
+        <span class="q-num">1</span><span class="q-text">الـ Inline CSS هو الأفضل لأنه أسرع في الكتابة.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">2</span><span class="q-text">محدد الكلاس يبدأ بنقطة (.) في CSS.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">3</span><span class="q-text">يمكن إضافة أكثر من كلاس لعنصر واحد في HTML.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="false">
+        <span class="q-num">4</span><span class="q-text">محدد الـ ID أقل أولوية من محدد الكلاس في الـ Specificity.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">5</span><span class="q-text">:hover هو Pseudo-class يُطبَّق عند تحريك الماوس فوق العنصر.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <button class="quiz-submit" onclick="submitQuiz('tf')">عرض النتيجة 🎯</button>
+      <div class="quiz-result" id="result-tf"><div class="result-score" id="score-tf">0/5</div><div class="result-label">إجابات صحيحة</div><div class="result-message" id="msg-tf"></div><button class="retry-btn" onclick="retryQuiz('tf')">🔄 حاول تاني</button></div>
+    </div>
+
+    <div class="quiz-section" id="quiz-mc">
+      <div class="quiz-question" data-correct="0">
+        <span class="q-num">1</span><span class="q-text">إيه أفضل طريقة لإضافة CSS لموقع بأكثر من صفحة؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">External CSS (ملف .css منفصل)</button>
+          <button class="q-opt" onclick="answerMC(this,1)">Internal CSS (&lt;style&gt;)</button>
+          <button class="q-opt" onclick="answerMC(this,2)">Inline CSS (style="...")</button>
+          <button class="q-opt" onclick="answerMC(this,3)">الثلاثة بنفس الجودة</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="2">
+        <span class="q-num">2</span><span class="q-text">إيه الـ Specificity لقاعدة تستخدم #id .class element معاً؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">1-0-0</button>
+          <button class="q-opt" onclick="answerMC(this,1)">0-1-1</button>
+          <button class="q-opt" onclick="answerMC(this,2)">1-1-1</button>
+          <button class="q-opt" onclick="answerMC(this,3)">0-0-3</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="1">
+        <span class="q-num">3</span><span class="q-text">إيه المحدد اللي بيستهدف a داخل nav فقط؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">nav + a</button>
+          <button class="q-opt" onclick="answerMC(this,1)">nav a</button>
+          <button class="q-opt" onclick="answerMC(this,2)">nav, a</button>
+          <button class="q-opt" onclick="answerMC(this,3)">a.nav</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="3">
+        <span class="q-num">4</span><span class="q-text">إيه Pseudo-class بيستهدف العنصر الأول من نوعه؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">:first</button>
+          <button class="q-opt" onclick="answerMC(this,1)">:primary</button>
+          <button class="q-opt" onclick="answerMC(this,2)">:top</button>
+          <button class="q-opt" onclick="answerMC(this,3)">:first-child</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="0">
+        <span class="q-num">5</span><span class="q-text">إيه الفرق بين nav > a وnav a؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">< للابن المباشر فقط، المسافة لكل السلالة</button>
+          <button class="q-opt" onclick="answerMC(this,1)">مفيش فرق</button>
+          <button class="q-opt" onclick="answerMC(this,2)">المسافة للابن المباشر، < للكل</button>
+          <button class="q-opt" onclick="answerMC(this,3)">< أسرع في الأداء فقط</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <button class="quiz-submit" onclick="submitQuiz('mc')">عرض النتيجة 🎯</button>
+      <div class="quiz-result" id="result-mc"><div class="result-score" id="score-mc">0/5</div><div class="result-label">إجابات صحيحة</div><div class="result-message" id="msg-mc"></div><button class="retry-btn" onclick="retryQuiz('mc')">🔄 حاول تاني</button></div>
+    </div>
+  </div>
+
+  <div class="lesson-nav">
+    <a href="./lesson-05.html" class="nav-btn"><span>⬅️</span><span>الدرس السابق</span></a>
+    <button class="nav-btn complete-btn" id="completeBtn" onclick="markComplete(this)"><span>✅</span><span>علّم كمكتمل</span></button>
+    <a href="./lesson-07.html" class="nav-btn"><span>الدرس التالي</span><span>➡️</span></a>
+  </div>
+
+  <div class="notebook-footer">
+    <h3>🎉 أتقنت أساس CSS!</h3>
+    <p>المحددات هي مفتاح CSS — كل ما تعلمت تستهدف بدقة، كودك أصبح أنظف ❤️<br><strong>الدرس التالي: الألوان والخطوط 🎨</strong></p>
+  </div>
+</div>
+
+<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">⬆️</button>
+<div class="toast" id="toast"></div>
+
+<script src="../../js/data/courses.js"></script>
+<script src="../../js/progress.js"></script>
+<script src="../../js/lesson-editor.js"></script>
+<script>
+const COURSE_ID='frontend',LESSON_ID=6,TOTAL=32;
+function toggleSolution(b){const s=b.nextElementSibling;s.classList.toggle('show');b.textContent=s.classList.contains('show')?'إخفاء الحل ▲':'عرض الحل ▼';}
+function copyCode(b){const p=b.closest('.code-box').querySelector('pre');navigator.clipboard.writeText(p.innerText).then(()=>{b.classList.add('copied');b.textContent='✓ تم النسخ';setTimeout(()=>{b.classList.remove('copied');b.textContent='📋 نسخ';},2000);});}
+function runCode(b){const t=b.closest('.try-it');t.querySelector('iframe').srcdoc=t.querySelector('.try-it-editor').value;}
+function resetCode(b){const t=b.closest('.try-it'),e=t.querySelector('.try-it-editor');e.value=e.dataset.default;t.querySelector('iframe').srcdoc=e.value;}
+window.addEventListener('load',()=>{document.querySelectorAll('.try-it').forEach(t=>{const e=t.querySelector('.try-it-editor');t.querySelector('iframe').srcdoc=e.value;});});
+function switchQuiz(b,t){document.querySelectorAll('.qt-tab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.quiz-section').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.getElementById('quiz-'+t).classList.add('active');}
+const answers={tf:{},mc:{}};
+function answerTF(b,v){const q=b.closest('.quiz-question'),i=Array.from(q.parentNode.querySelectorAll('.quiz-question')).indexOf(q);q.querySelectorAll('.q-opt').forEach(o=>o.classList.remove('selected'));b.classList.add('selected');answers.tf[i]=v;}
+function answerMC(b,i){const q=b.closest('.quiz-question'),qi=Array.from(q.parentNode.querySelectorAll('.quiz-question')).indexOf(q);q.querySelectorAll('.q-opt').forEach(o=>o.classList.remove('selected'));b.classList.add('selected');answers.mc[qi]=i;}
+function submitQuiz(type){const sec=document.getElementById('quiz-'+type),qs=sec.querySelectorAll('.quiz-question');let c=0;qs.forEach((q,i)=>{const ca=type==='tf'?(q.dataset.correct==='true'):parseInt(q.dataset.correct),ua=answers[type][i],fb=q.querySelector('.q-feedback'),opts=q.querySelectorAll('.q-opt');opts.forEach(o=>{o.classList.remove('selected');o.disabled=true;});if(ua===undefined){fb.className='q-feedback wrong show';fb.textContent='⚠️ ما اخترتش إجابة!';return;}if(ua===ca){c++;fb.className='q-feedback correct show';fb.textContent='✓ إجابة صحيحة!';if(type==='tf')opts[ca?0:1].classList.add('correct');else opts[ca].classList.add('correct');}else{fb.className='q-feedback wrong show';if(type==='tf'){opts[ca?0:1].classList.add('correct');opts[ua?0:1].classList.add('wrong');fb.textContent='✗ خطأ.';}else{opts[ca].classList.add('correct');opts[ua].classList.add('wrong');fb.textContent='✗ الإجابة بالأخضر.';}}});const r=document.getElementById('result-'+type);document.getElementById('score-'+type).textContent=c+'/'+qs.length;const m=document.getElementById('msg-'+type);if(c===qs.length){m.textContent='🏆 ممتاز 100%!';m.className='result-message excellent';}else if(c>=3){m.textContent='👍 جيد!';m.className='result-message good';}else{m.textContent='📚 راجع الدرس.';m.className='result-message try-again';}r.classList.add('show');r.scrollIntoView({behavior:'smooth',block:'center'});}
+function retryQuiz(type){const sec=document.getElementById('quiz-'+type);sec.querySelectorAll('.q-opt').forEach(o=>{o.classList.remove('selected','correct','wrong');o.disabled=false;});sec.querySelectorAll('.q-feedback').forEach(f=>{f.classList.remove('show','correct','wrong');f.textContent='';});document.getElementById('result-'+type).classList.remove('show');answers[type]={};}
+function markComplete(btn){const done=Progress.toggleLessonComplete(COURSE_ID,LESSON_ID);btn.classList.toggle('completed',done);btn.querySelector('span:last-child').textContent=done?'مكتمل! ⭐':'علّم كمكتمل';showToast(done?'🎉 أكملت الدرس السادس!':'تم إلغاء الإكمال');}
+if(Progress.isLessonComplete(COURSE_ID,LESSON_ID)){const b=document.getElementById('completeBtn');b.classList.add('completed');b.querySelector('span:last-child').textContent='مكتمل! ⭐';}
+(function(){const p=Progress.getCourseProgress(COURSE_ID,TOTAL);document.getElementById('progFill').style.width=p+'%';document.getElementById('progText').textContent=p+'%';})();
+function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
+window.addEventListener('scroll',()=>{document.getElementById('scrollTop').classList.toggle('show',window.scrollY>300);});
+document.querySelectorAll('.toc-card a').forEach(l=>{l.addEventListener('click',e=>{e.preventDefault();const t=document.querySelector(l.getAttribute('href'));if(t)t.scrollIntoView({behavior:'smooth',block:'start'});});});
+</script>
+</body>
+</html>

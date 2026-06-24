@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-V2NCKVL16D"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-V2NCKVL16D');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>مشروع: قائمة المهام To-Do List — دفتر البرمجة</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=Cairo:wght@300;400;500;600;700;900&family=Caveat:wght@400;700&family=Fira+Code:wght@400;500;600&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../css/shared.css">
+<link rel="stylesheet" href="../../css/notebook.css">
+<style>
+body { padding: 20px 10px; }
+
+/* project badge */
+.project-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: linear-gradient(135deg, #dc2626, #ea580c);
+  color: white; padding: 6px 16px; border-radius: 999px;
+  font-weight: 700; font-size: .9rem; margin-bottom: 8px;
+}
+
+/* feature list */
+.feature-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px; margin: 14px 0;
+}
+.feature-item {
+  background: #f8fafc; border: 1px solid #e2e8f0;
+  border-radius: 10px; padding: 14px;
+  display: flex; align-items: flex-start; gap: 10px;
+}
+.fi-icon { font-size: 1.4rem; flex-shrink: 0; }
+.fi-title { font-weight: 600; font-size: .9rem; }
+.fi-desc  { font-size: .82rem; color: #64748b; }
+
+/* build steps */
+.build-phase {
+  border-right: 3px solid var(--ink-blue);
+  padding-right: 16px; margin: 20px 0;
+}
+.build-phase-title {
+  font-weight: 700; color: var(--ink-blue);
+  font-size: 1rem; margin-bottom: 10px;
+  display: flex; align-items: center; gap: 8px;
+}
+.phase-num {
+  background: var(--ink-blue); color: white;
+  width: 26px; height: 26px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: .82rem; font-weight: 700; flex-shrink: 0;
+}
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="crumbs">
+    <a href="../../index.html">🏠 الرئيسية</a>
+    <span class="sep">/</span>
+    <a href="./index.html">🌐 الفرونت إند</a>
+    <span class="sep">/</span>
+    <span class="current">🏗️ الدرس 30: مشروع To-Do List</span>
+  </div>
+  <div class="progress-mini">
+    <div class="progress-bar-mini"><div class="progress-fill-mini" id="progFill"></div></div>
+    <span id="progText">0%</span>
+  </div>
+</div>
+
+<div class="notebook">
+
+  <div class="notebook-header">
+    <div class="lesson-tag">🏗️ الدرس الثلاثون</div>
+    <h1><span class="sparkle">✦</span> مشروع: قائمة المهام <span class="sparkle">✦</span></h1>
+    <div class="lesson-meta">
+      <span>⏱️ 60 دقيقة</span>
+      <span>📊 متوسط</span>
+      <span>🎯 مشروع كامل</span>
+    </div>
+  </div>
+
+  <div class="toc-card">
+    <h2>📑 فهرس الدرس</h2>
+    <ol>
+      <li><a href="#s1">نظرة عامة على المشروع</a></li>
+      <li><a href="#s2">تخطيط المشروع وهيكل الملفات</a></li>
+      <li><a href="#s3">بناء HTML</a></li>
+      <li><a href="#s4">تنسيق CSS</a></li>
+      <li><a href="#s5">منطق JavaScript</a></li>
+      <li><a href="#s6">Local Storage: حفظ المهام</a></li>
+      <li><a href="#s7">تصفية المهام والإحصائيات</a></li>
+      <li><a href="#s8">المشروع الكامل — جرّبه الآن</a></li>
+      <li><a href="#exercises">تحديات إضافية</a></li>
+      <li><a href="#quiz">اختبر فهمك</a></li>
+    </ol>
+  </div>
+
+  <!-- S1 -->
+  <div class="section" id="s1">
+    <h2 class="section-title"><span class="num">.1</span> نظرة عامة <span class="en">Project Overview</span></h2>
+    <div class="content">
+      <div class="project-badge">🏗️ مشروع عملي كامل</div>
+      <p style="margin-top:10px;">سنبني تطبيق قائمة مهام متكاملاً يجمع كل ما تعلمناه: HTML + CSS + JS + Local Storage.</p>
+
+      <div class="feature-grid">
+        <div class="feature-item">
+          <span class="fi-icon">➕</span>
+          <div>
+            <div class="fi-title">إضافة مهام</div>
+            <div class="fi-desc">أضف مهام جديدة بالكتابة والضغط Enter</div>
+          </div>
+        </div>
+        <div class="feature-item">
+          <span class="fi-icon">✅</span>
+          <div>
+            <div class="fi-title">إكمال المهام</div>
+            <div class="fi-desc">علّم المهام كمكتملة بنقرة واحدة</div>
+          </div>
+        </div>
+        <div class="feature-item">
+          <span class="fi-icon">🗑️</span>
+          <div>
+            <div class="fi-title">حذف المهام</div>
+            <div class="fi-desc">احذف أي مهمة من القائمة</div>
+          </div>
+        </div>
+        <div class="feature-item">
+          <span class="fi-icon">🔍</span>
+          <div>
+            <div class="fi-title">تصفية المهام</div>
+            <div class="fi-desc">عرض الكل / المكتملة / المعلقة</div>
+          </div>
+        </div>
+        <div class="feature-item">
+          <span class="fi-icon">💾</span>
+          <div>
+            <div class="fi-title">حفظ تلقائي</div>
+            <div class="fi-desc">المهام محفوظة في Local Storage</div>
+          </div>
+        </div>
+        <div class="feature-item">
+          <span class="fi-icon">📊</span>
+          <div>
+            <div class="fi-title">إحصائيات</div>
+            <div class="fi-desc">عدد المهام المكتملة والمعلقة</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tip-box"><strong>المهارات المستخدمة:</strong> DOM Manipulation، Event Listeners، Array Methods، Local Storage، CSS Animations، Template Literals.</div>
+    </div>
+  </div>
+
+  <!-- S2 -->
+  <div class="section" id="s2">
+    <h2 class="section-title"><span class="num">.2</span> التخطيط <span class="en">Planning</span></h2>
+    <div class="content">
+      <div class="sub-header">هيكل البيانات:</div>
+      <div class="code-box">
+<div class="code-header"><span>📐 نموذج المهمة</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">// كل مهمة تُخزَّن كـ Object</span>
+{
+  <span class="attr">id</span>:        <span class="attr-val">1700000000000</span>, <span class="comment">// Date.now() فريد</span>
+  <span class="attr">text</span>:      <span class="attr-val">"مراجعة درس JavaScript"</span>,
+  <span class="attr">completed</span>: <span class="attr-val">false</span>,
+  <span class="attr">createdAt</span>: <span class="attr-val">"2024-01-15"</span>
+}</pre>
+      </div>
+
+      <div class="sub-header" style="margin-top:16px;">وظائف JavaScript المطلوبة:</div>
+      <div class="code-box blue">
+<div class="code-header"><span>⚙️ قائمة الوظائف</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre>addTodo(text)          <span class="comment">// إضافة مهمة جديدة</span>
+toggleTodo(id)         <span class="comment">// تبديل حالة الإكمال</span>
+deleteTodo(id)         <span class="comment">// حذف مهمة</span>
+renderTodos(filter)    <span class="comment">// عرض المهام حسب الفلتر</span>
+saveTodos()            <span class="comment">// حفظ في Local Storage</span>
+loadTodos()            <span class="comment">// تحميل من Local Storage</span>
+updateStats()          <span class="comment">// تحديث الإحصائيات</span></pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- S3 -->
+  <div class="section" id="s3">
+    <h2 class="section-title"><span class="num">.3</span> بناء HTML <span class="en">HTML Structure</span></h2>
+    <div class="content">
+      <div class="code-box">
+<div class="code-header"><span>🏗️ هيكل index.html</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre>&lt;<span class="tag-name">div</span> <span class="attr">class</span>=<span class="attr-val">"app"</span>&gt;
+
+  <span class="comment">&lt;!-- العنوان والإحصائيات --&gt;</span>
+  &lt;<span class="tag-name">header</span> <span class="attr">class</span>=<span class="attr-val">"app-header"</span>&gt;
+    &lt;<span class="tag-name">h1</span>&gt;📋 مهامي&lt;/<span class="tag-name">h1</span>&gt;
+    &lt;<span class="tag-name">div</span> <span class="attr">class</span>=<span class="attr-val">"stats"</span>&gt;
+      &lt;<span class="tag-name">span</span> <span class="attr">id</span>=<span class="attr-val">"statTotal"</span>&gt;0 مهمة&lt;/<span class="tag-name">span</span>&gt;
+      &lt;<span class="tag-name">span</span> <span class="attr">id</span>=<span class="attr-val">"statDone"</span>&gt;0 مكتملة&lt;/<span class="tag-name">span</span>&gt;
+    &lt;/<span class="tag-name">div</span>&gt;
+  &lt;/<span class="tag-name">header</span>&gt;
+
+  <span class="comment">&lt;!-- حقل الإدخال --&gt;</span>
+  &lt;<span class="tag-name">div</span> <span class="attr">class</span>=<span class="attr-val">"input-row"</span>&gt;
+    &lt;<span class="tag-name">input</span> <span class="attr">id</span>=<span class="attr-val">"todoInput"</span> <span class="attr">type</span>=<span class="attr-val">"text"</span>
+           <span class="attr">placeholder</span>=<span class="attr-val">"اكتب مهمة جديدة..."</span>&gt;
+    &lt;<span class="tag-name">button</span> <span class="attr">id</span>=<span class="attr-val">"addBtn"</span>&gt;إضافة&lt;/<span class="tag-name">button</span>&gt;
+  &lt;/<span class="tag-name">div</span>&gt;
+
+  <span class="comment">&lt;!-- أزرار الفلتر --&gt;</span>
+  &lt;<span class="tag-name">div</span> <span class="attr">class</span>=<span class="attr-val">"filters"</span>&gt;
+    &lt;<span class="tag-name">button</span> <span class="attr">class</span>=<span class="attr-val">"filter-btn active"</span> <span class="attr">data-filter</span>=<span class="attr-val">"all"</span>&gt;الكل&lt;/<span class="tag-name">button</span>&gt;
+    &lt;<span class="tag-name">button</span> <span class="attr">class</span>=<span class="attr-val">"filter-btn"</span> <span class="attr">data-filter</span>=<span class="attr-val">"active"</span>&gt;معلقة&lt;/<span class="tag-name">button</span>&gt;
+    &lt;<span class="tag-name">button</span> <span class="attr">class</span>=<span class="attr-val">"filter-btn"</span> <span class="attr">data-filter</span>=<span class="attr-val">"done"</span>&gt;مكتملة&lt;/<span class="tag-name">button</span>&gt;
+  &lt;/<span class="tag-name">div</span>&gt;
+
+  <span class="comment">&lt;!-- قائمة المهام --&gt;</span>
+  &lt;<span class="tag-name">ul</span> <span class="attr">id</span>=<span class="attr-val">"todoList"</span>&gt;&lt;/<span class="tag-name">ul</span>&gt;
+
+&lt;/<span class="tag-name">div</span>&gt;</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- S4 -->
+  <div class="section" id="s4">
+    <h2 class="section-title"><span class="num">.4</span> تنسيق CSS <span class="en">Styling</span></h2>
+    <div class="content">
+      <div class="code-box">
+<div class="code-header"><span>🎨 CSS الأساسي</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">/* بطاقة المهمة */</span>
+.todo-item {
+  <span class="attr">display</span>: flex; <span class="attr">align-items</span>: center; <span class="attr">gap</span>: 12px;
+  <span class="attr">background</span>: white; <span class="attr">border-radius</span>: 10px;
+  <span class="attr">padding</span>: 14px 16px; <span class="attr">margin</span>: 8px 0;
+  <span class="attr">border</span>: 1px solid #e2e8f0;
+  <span class="attr">animation</span>: slideIn .3s ease;
+}
+
+<span class="comment">/* مهمة مكتملة */</span>
+.todo-item.done .todo-text {
+  <span class="attr">text-decoration</span>: line-through;
+  <span class="attr">color</span>: #94a3b8;
+}
+
+<span class="comment">/* animation دخول */</span>
+@keyframes slideIn {
+  <span class="attr">from</span> { <span class="attr">opacity</span>: 0; <span class="attr">transform</span>: translateY(-10px); }
+  <span class="attr">to</span>   { <span class="attr">opacity</span>: 1; <span class="attr">transform</span>: translateY(0); }
+}</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- S5 -->
+  <div class="section" id="s5">
+    <h2 class="section-title"><span class="num">.5</span> منطق JavaScript <span class="en">JS Logic</span></h2>
+    <div class="content">
+      <div class="build-phase">
+        <div class="build-phase-title">
+          <span class="phase-num">1</span> إضافة مهمة
+        </div>
+        <div class="code-box">
+<div class="code-header"><span>➕ addTodo</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-name">function</span> <span class="attr">addTodo</span>() {
+  <span class="tag-name">const</span> <span class="attr">text</span> = <span class="attr">input</span>.value.<span class="tag-name">trim</span>();
+  <span class="tag-name">if</span> (!<span class="attr">text</span>) <span class="tag-name">return</span>;
+
+  <span class="tag-name">const</span> <span class="attr">todo</span> = {
+    <span class="attr">id</span>: Date.<span class="tag-name">now</span>(),
+    <span class="attr">text</span>,
+    <span class="attr">completed</span>: <span class="attr-val">false</span>
+  };
+
+  <span class="attr">todos</span>.<span class="tag-name">unshift</span>(<span class="attr">todo</span>); <span class="comment">// إضافة للأول</span>
+  <span class="attr">input</span>.value = <span class="attr-val">''</span>;
+  <span class="tag-name">saveTodos</span>();
+  <span class="tag-name">renderTodos</span>();
+}</pre>
+        </div>
+      </div>
+
+      <div class="build-phase">
+        <div class="build-phase-title">
+          <span class="phase-num">2</span> عرض المهام
+        </div>
+        <div class="code-box">
+<div class="code-header"><span>🖥️ renderTodos</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-name">function</span> <span class="attr">renderTodos</span>() {
+  <span class="tag-name">const</span> <span class="attr">filtered</span> = <span class="attr">todos</span>.<span class="tag-name">filter</span>(<span class="attr">t</span> => {
+    <span class="tag-name">if</span> (<span class="attr">currentFilter</span> === <span class="attr-val">'done'</span>)   <span class="tag-name">return</span> <span class="attr">t</span>.<span class="attr">completed</span>;
+    <span class="tag-name">if</span> (<span class="attr">currentFilter</span> === <span class="attr-val">'active'</span>) <span class="tag-name">return</span> !<span class="attr">t</span>.<span class="attr">completed</span>;
+    <span class="tag-name">return</span> <span class="attr-val">true</span>;
+  });
+
+  <span class="attr">list</span>.innerHTML = <span class="attr">filtered</span>.<span class="tag-name">map</span>(<span class="attr">t</span> => `
+    &lt;li class="todo-item ${<span class="attr">t</span>.<span class="attr">completed</span> ? <span class="attr-val">'done'</span> : <span class="attr-val">''</span>}"
+        data-id="${<span class="attr">t</span>.<span class="attr">id</span>}"&gt;
+      &lt;input type="checkbox" ${<span class="attr">t</span>.<span class="attr">completed</span> ? <span class="attr-val">'checked'</span> : <span class="attr-val">''</span>}
+             onchange="toggleTodo(${<span class="attr">t</span>.<span class="attr">id</span>})"&gt;
+      &lt;span class="todo-text"&gt;${<span class="attr">t</span>.<span class="attr">text</span>}&lt;/span&gt;
+      &lt;button class="del-btn" onclick="deleteTodo(${<span class="attr">t</span>.<span class="attr">id</span>})"&gt;🗑️&lt;/button&gt;
+    &lt;/li&gt;
+  `).<span class="tag-name">join</span>(<span class="attr-val">''</span>);
+
+  <span class="tag-name">updateStats</span>();
+}</pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- S6 -->
+  <div class="section" id="s6">
+    <h2 class="section-title"><span class="num">.6</span> Local Storage <span class="en">Persistence</span></h2>
+    <div class="content">
+      <div class="code-box">
+<div class="code-header"><span>💾 حفظ وتحميل البيانات</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-name">const</span> <span class="attr">KEY</span> = <span class="attr-val">'my-todos'</span>;
+
+<span class="tag-name">function</span> <span class="attr">saveTodos</span>() {
+  localStorage.<span class="tag-name">setItem</span>(<span class="attr">KEY</span>, <span class="attr">JSON</span>.<span class="tag-name">stringify</span>(<span class="attr">todos</span>));
+}
+
+<span class="tag-name">function</span> <span class="attr">loadTodos</span>() {
+  <span class="tag-name">const</span> <span class="attr">saved</span> = localStorage.<span class="tag-name">getItem</span>(<span class="attr">KEY</span>);
+  <span class="tag-name">return</span> <span class="attr">saved</span> ? <span class="attr">JSON</span>.<span class="tag-name">parse</span>(<span class="attr">saved</span>) : [];
+}
+
+<span class="comment">// عند بدء التطبيق:</span>
+<span class="tag-name">let</span> <span class="attr">todos</span> = <span class="tag-name">loadTodos</span>();
+<span class="tag-name">renderTodos</span>();</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- S7 -->
+  <div class="section" id="s7">
+    <h2 class="section-title"><span class="num">.7</span> الإحصائيات والفلاتر <span class="en">Stats & Filters</span></h2>
+    <div class="content">
+      <div class="code-box">
+<div class="code-header"><span>📊 updateStats و toggleFilter</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-name">function</span> <span class="attr">updateStats</span>() {
+  <span class="tag-name">const</span> <span class="attr">done</span>  = <span class="attr">todos</span>.<span class="tag-name">filter</span>(<span class="attr">t</span> => <span class="attr">t</span>.<span class="attr">completed</span>).<span class="attr">length</span>;
+  <span class="tag-name">const</span> <span class="attr">total</span> = <span class="attr">todos</span>.<span class="attr">length</span>;
+  statTotal.textContent = `${<span class="attr">total</span>} مهمة`;
+  statDone.textContent  = `${<span class="attr">done</span>} مكتملة`;
+}
+
+<span class="comment">// ربط أزرار الفلتر:</span>
+document.<span class="tag-name">querySelectorAll</span>(<span class="attr-val">'.filter-btn'</span>).<span class="tag-name">forEach</span>(<span class="attr">btn</span> => {
+  <span class="attr">btn</span>.<span class="tag-name">addEventListener</span>(<span class="attr-val">'click'</span>, () => {
+    document.<span class="tag-name">querySelectorAll</span>(<span class="attr-val">'.filter-btn'</span>)
+      .<span class="tag-name">forEach</span>(<span class="attr">b</span> => <span class="attr">b</span>.classList.<span class="tag-name">remove</span>(<span class="attr-val">'active'</span>));
+    <span class="attr">btn</span>.classList.<span class="tag-name">add</span>(<span class="attr-val">'active'</span>);
+    <span class="attr">currentFilter</span> = <span class="attr">btn</span>.dataset.<span class="attr">filter</span>;
+    <span class="tag-name">renderTodos</span>();
+  });
+});</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- S8: LIVE PROJECT -->
+  <div class="section" id="s8">
+    <h2 class="section-title"><span class="num">.8</span> المشروع الكامل <span class="en">Full Project</span></h2>
+    <div class="content"><p>التطبيق كاملاً — جرّبه وعدّله:</p></div>
+    <div class="try-it">
+      <div class="try-it-header">
+        <span>📋 تطبيق To-Do List الكامل</span>
+        <div class="try-it-controls">
+          <button class="try-btn" onclick="runCode(this)">▶️ تشغيل</button>
+          <button class="try-btn" onclick="resetCode(this)">🔄 إعادة</button>
+        </div>
+      </div>
+      <div class="try-it-body">
+        <textarea class="try-it-editor" spellcheck="false" data-default='<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>📋 مهامي</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: "Segoe UI", Arial, sans-serif;
+    background: linear-gradient(135deg, #1e3a8a 0%, #7c3aed 100%);
+    min-height: 100vh; padding: 24px 16px; direction: rtl;
+  }
+  .app {
+    max-width: 500px; margin: 0 auto;
+    background: white; border-radius: 20px;
+    overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,.3);
+  }
+  .app-header {
+    background: linear-gradient(135deg, #1e3a8a, #7c3aed);
+    color: white; padding: 24px 20px;
+  }
+  .app-header h1 { font-size: 1.5rem; margin-bottom: 8px; }
+  .stats { display: flex; gap: 16px; font-size: .85rem; opacity: .85; }
+
+  /* Input */
+  .input-row { display: flex; gap: 8px; padding: 16px; background: #f8fafc; border-bottom: 1px solid #e2e8f0; }
+  .input-row input {
+    flex: 1; padding: 10px 14px; border: 2px solid #e2e8f0;
+    border-radius: 10px; font-size: 1rem; outline: none;
+    font-family: inherit; direction: rtl; background: white;
+    transition: border-color .2s;
+  }
+  .input-row input:focus { border-color: #7c3aed; }
+  .input-row button {
+    background: #7c3aed; color: white; border: none;
+    padding: 10px 18px; border-radius: 10px; font-size: .95rem;
+    cursor: pointer; font-weight: 600; white-space: nowrap;
+    transition: background .2s;
+  }
+  .input-row button:hover { background: #6d28d9; }
+
+  /* Filters */
+  .filters { display: flex; gap: 6px; padding: 12px 16px; border-bottom: 1px solid #e2e8f0; }
+  .filter-btn {
+    padding: 6px 14px; border: 2px solid #e2e8f0; border-radius: 999px;
+    background: white; font-size: .82rem; cursor: pointer;
+    font-family: inherit; transition: all .2s; color: #475569;
+  }
+  .filter-btn.active { background: #1e3a8a; color: white; border-color: #1e3a8a; }
+
+  /* List */
+  #todoList { list-style: none; padding: 12px 16px; min-height: 100px; }
+  .empty-msg { text-align: center; color: #94a3b8; padding: 30px; font-size: .9rem; }
+
+  .todo-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 12px 14px; margin: 6px 0; border-radius: 10px;
+    border: 1px solid #e2e8f0; background: #f8fafc;
+    animation: fadeIn .25s ease; transition: all .2s;
+  }
+  .todo-item:hover { box-shadow: 0 2px 10px rgba(0,0,0,.08); }
+  @keyframes fadeIn { from { opacity:0; transform:translateY(-8px); } to { opacity:1; transform:none; } }
+
+  .todo-item input[type="checkbox"] {
+    width: 18px; height: 18px; cursor: pointer; flex-shrink: 0;
+    accent-color: #7c3aed;
+  }
+  .todo-text { flex: 1; font-size: .95rem; color: #1e293b; transition: all .2s; }
+  .todo-item.done .todo-text { text-decoration: line-through; color: #94a3b8; }
+  .todo-item.done { background: #f1f5f9; }
+
+  .del-btn {
+    background: none; border: none; cursor: pointer; font-size: 1rem;
+    opacity: 0; transition: opacity .2s; flex-shrink: 0; padding: 4px;
+  }
+  .todo-item:hover .del-btn { opacity: 1; }
+
+  /* Progress bar */
+  .progress-wrap { padding: 0 16px 16px; }
+  .progress-label { font-size: .82rem; color: #64748b; margin-bottom: 6px; text-align: center; }
+  .progress-bar { height: 6px; background: #e2e8f0; border-radius: 999px; overflow: hidden; }
+  .progress-fill { height: 100%; background: linear-gradient(90deg,#1e3a8a,#7c3aed); border-radius: 999px; transition: width .4s; }
+
+  /* Clear completed */
+  .footer { display: flex; justify-content: flex-end; padding: 0 16px 16px; }
+  .clear-btn {
+    background: none; border: none; color: #ef4444; font-size: .82rem;
+    cursor: pointer; font-family: inherit; padding: 4px 8px;
+  }
+  .clear-btn:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="app-header">
+    <h1>📋 قائمة مهامي</h1>
+    <div class="stats">
+      <span id="statTotal">0 مهمة</span>
+      <span>|</span>
+      <span id="statDone">0 مكتملة</span>
+    </div>
+  </header>
+
+  <div class="input-row">
+    <input id="todoInput" type="text" placeholder="اكتب مهمة جديدة...">
+    <button onclick="addTodo()">➕ إضافة</button>
+  </div>
+
+  <div class="filters">
+    <button class="filter-btn active" data-f="all">الكل</button>
+    <button class="filter-btn" data-f="active">معلقة</button>
+    <button class="filter-btn" data-f="done">مكتملة</button>
+  </div>
+
+  <ul id="todoList"></ul>
+
+  <div class="progress-wrap">
+    <div class="progress-label" id="progressLabel">0%</div>
+    <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+  </div>
+
+  <div class="footer">
+    <button class="clear-btn" onclick="clearDone()">🗑️ حذف المكتملة</button>
+  </div>
+</div>
+
+<script>
+  let todos = JSON.parse(localStorage.getItem("todos-v1") || "[]");
+  let filter = "all";
+
+  // مهام افتراضية إن كانت القائمة فارغة
+  if (!todos.length) {
+    todos = [
+      { id: 1, text: "إكمال درس JavaScript", completed: true },
+      { id: 2, text: "بناء مشروع To-Do List", completed: false },
+      { id: 3, text: "رفع المشروع على GitHub", completed: false },
+    ];
+    save();
+  }
+
+  function save() { localStorage.setItem("todos-v1", JSON.stringify(todos)); }
+
+  function addTodo() {
+    const inp = document.getElementById("todoInput");
+    const text = inp.value.trim();
+    if (!text) return;
+    todos.unshift({ id: Date.now(), text, completed: false });
+    inp.value = ""; save(); render();
+  }
+
+  function toggleTodo(id) {
+    todos = todos.map(t => t.id === id ? {...t, completed: !t.completed} : t);
+    save(); render();
+  }
+
+  function deleteTodo(id) {
+    todos = todos.filter(t => t.id !== id);
+    save(); render();
+  }
+
+  function clearDone() {
+    todos = todos.filter(t => !t.completed);
+    save(); render();
+  }
+
+  function render() {
+    const list = document.getElementById("todoList");
+    const visible = todos.filter(t =>
+      filter === "done"   ? t.completed :
+      filter === "active" ? !t.completed : true
+    );
+
+    if (!visible.length) {
+      list.innerHTML = `<li class="empty-msg">
+        ${filter === "done" ? "لا توجد مهام مكتملة 😴" :
+          filter === "active" ? "أحسنت! كل المهام مكتملة 🎉" :
+          "لا توجد مهام، أضف واحدة! 📝"}
+      </li>`;
+    } else {
+      list.innerHTML = visible.map(t => `
+        <li class="todo-item ${t.completed ? "done" : ""}">
+          <input type="checkbox" ${t.completed ? "checked" : ""}
+                 onchange="toggleTodo(${t.id})">
+          <span class="todo-text">${t.text}</span>
+          <button class="del-btn" onclick="deleteTodo(${t.id})" title="حذف">🗑️</button>
+        </li>
+      `).join("");
+    }
+
+    const done  = todos.filter(t => t.completed).length;
+    const total = todos.length;
+    const pct   = total ? Math.round(done / total * 100) : 0;
+    document.getElementById("statTotal").textContent  = `${total} مهمة`;
+    document.getElementById("statDone").textContent   = `${done} مكتملة`;
+    document.getElementById("progressLabel").textContent = `${pct}% مكتمل`;
+    document.getElementById("progressFill").style.width  = pct + "%";
+  }
+
+  document.querySelectorAll(".filter-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      filter = btn.dataset.f;
+      render();
+    });
+  });
+
+  document.getElementById("todoInput").addEventListener("keydown", e => {
+    if (e.key === "Enter") addTodo();
+  });
+
+  render();
+<\/script>
+</body></html>'><!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>📋 مهامي</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: "Segoe UI",Arial,sans-serif; background: linear-gradient(135deg,#1e3a8a,#7c3aed); min-height:100vh; padding:24px 16px; direction:rtl; }
+  .app { max-width:500px; margin:0 auto; background:white; border-radius:20px; overflow:hidden; box-shadow:0 20px 60px rgba(0,0,0,.3); }
+  .app-header { background:linear-gradient(135deg,#1e3a8a,#7c3aed); color:white; padding:24px 20px; }
+  .app-header h1 { font-size:1.5rem; margin-bottom:8px; }
+  .stats { display:flex; gap:16px; font-size:.85rem; opacity:.85; }
+  .input-row { display:flex; gap:8px; padding:16px; background:#f8fafc; border-bottom:1px solid #e2e8f0; }
+  .input-row input { flex:1; padding:10px 14px; border:2px solid #e2e8f0; border-radius:10px; font-size:1rem; outline:none; direction:rtl; transition:border-color .2s; }
+  .input-row input:focus { border-color:#7c3aed; }
+  .input-row button { background:#7c3aed; color:white; border:none; padding:10px 18px; border-radius:10px; font-size:.95rem; cursor:pointer; font-weight:600; }
+  .filters { display:flex; gap:6px; padding:12px 16px; border-bottom:1px solid #e2e8f0; }
+  .filter-btn { padding:6px 14px; border:2px solid #e2e8f0; border-radius:999px; background:white; font-size:.82rem; cursor:pointer; color:#475569; }
+  .filter-btn.active { background:#1e3a8a; color:white; border-color:#1e3a8a; }
+  #todoList { list-style:none; padding:12px 16px; min-height:100px; }
+  .empty-msg { text-align:center; color:#94a3b8; padding:30px; }
+  .todo-item { display:flex; align-items:center; gap:10px; padding:12px 14px; margin:6px 0; border-radius:10px; border:1px solid #e2e8f0; background:#f8fafc; animation:fadeIn .25s ease; }
+  @keyframes fadeIn { from{opacity:0;transform:translateY(-8px)} to{opacity:1;transform:none} }
+  .todo-item input[type="checkbox"] { width:18px; height:18px; cursor:pointer; accent-color:#7c3aed; }
+  .todo-text { flex:1; font-size:.95rem; color:#1e293b; }
+  .todo-item.done .todo-text { text-decoration:line-through; color:#94a3b8; }
+  .todo-item.done { background:#f1f5f9; }
+  .del-btn { background:none; border:none; cursor:pointer; font-size:1rem; opacity:0; padding:4px; }
+  .todo-item:hover .del-btn { opacity:1; }
+  .progress-wrap { padding:0 16px 16px; }
+  .progress-label { font-size:.82rem; color:#64748b; margin-bottom:6px; text-align:center; }
+  .progress-bar { height:6px; background:#e2e8f0; border-radius:999px; overflow:hidden; }
+  .progress-fill { height:100%; background:linear-gradient(90deg,#1e3a8a,#7c3aed); border-radius:999px; transition:width .4s; }
+  .footer { display:flex; justify-content:flex-end; padding:0 16px 16px; }
+  .clear-btn { background:none; border:none; color:#ef4444; font-size:.82rem; cursor:pointer; }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="app-header"><h1>📋 قائمة مهامي</h1><div class="stats"><span id="statTotal">0 مهمة</span><span>|</span><span id="statDone">0 مكتملة</span></div></header>
+  <div class="input-row"><input id="todoInput" type="text" placeholder="اكتب مهمة جديدة..."><button onclick="addTodo()">➕ إضافة</button></div>
+  <div class="filters"><button class="filter-btn active" data-f="all">الكل</button><button class="filter-btn" data-f="active">معلقة</button><button class="filter-btn" data-f="done">مكتملة</button></div>
+  <ul id="todoList"></ul>
+  <div class="progress-wrap"><div class="progress-label" id="progressLabel">0%</div><div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div></div>
+  <div class="footer"><button class="clear-btn" onclick="clearDone()">🗑️ حذف المكتملة</button></div>
+</div>
+<script>
+  let todos=JSON.parse(localStorage.getItem("todos-v1")||"[]"),filter="all";
+  if(!todos.length){todos=[{id:1,text:"إكمال درس JavaScript",completed:true},{id:2,text:"بناء مشروع To-Do List",completed:false},{id:3,text:"رفع المشروع على GitHub",completed:false}];save();}
+  function save(){localStorage.setItem("todos-v1",JSON.stringify(todos));}
+  function addTodo(){const inp=document.getElementById("todoInput"),text=inp.value.trim();if(!text)return;todos.unshift({id:Date.now(),text,completed:false});inp.value="";save();render();}
+  function toggleTodo(id){todos=todos.map(t=>t.id===id?{...t,completed:!t.completed}:t);save();render();}
+  function deleteTodo(id){todos=todos.filter(t=>t.id!==id);save();render();}
+  function clearDone(){todos=todos.filter(t=>!t.completed);save();render();}
+  function render(){const list=document.getElementById("todoList"),visible=todos.filter(t=>filter==="done"?t.completed:filter==="active"?!t.completed:true);if(!visible.length){list.innerHTML=`<li class="empty-msg">${filter==="done"?"لا توجد مهام مكتملة 😴":filter==="active"?"أحسنت! كل المهام مكتملة 🎉":"لا توجد مهام، أضف واحدة! 📝"}</li>`;}else{list.innerHTML=visible.map(t=>`<li class="todo-item ${t.completed?"done":""}"><input type="checkbox" ${t.completed?"checked":""} onchange="toggleTodo(${t.id})"><span class="todo-text">${t.text}</span><button class="del-btn" onclick="deleteTodo(${t.id})">🗑️</button></li>`).join("");}const done=todos.filter(t=>t.completed).length,total=todos.length,pct=total?Math.round(done/total*100):0;document.getElementById("statTotal").textContent=`${total} مهمة`;document.getElementById("statDone").textContent=`${done} مكتملة`;document.getElementById("progressLabel").textContent=`${pct}% مكتمل`;document.getElementById("progressFill").style.width=pct+"%";}
+  document.querySelectorAll(".filter-btn").forEach(btn=>{btn.addEventListener("click",()=>{document.querySelectorAll(".filter-btn").forEach(b=>b.classList.remove("active"));btn.classList.add("active");filter=btn.dataset.f;render();});});
+  document.getElementById("todoInput").addEventListener("keydown",e=>{if(e.key==="Enter")addTodo();});
+  render();
+<\/script>
+</body></html></textarea>
+        <div class="try-it-preview"><iframe srcdoc="" sandbox="allow-scripts allow-same-origin allow-modals allow-popups allow-forms" title="معاينة الكود"></iframe></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EXERCISES -->
+  <div class="section" id="exercises">
+    <h2 class="section-title"><span class="num">📝</span> تحديات إضافية <span class="en">Challenges</span></h2>
+
+    <div class="exercise">
+      <div class="exercise-title">تحدي 1: تحرير المهام</div>
+      <p>أضف زر "تعديل" لكل مهمة يتيح تغيير نصها عند الضغط عليه.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الفكرة ▼</button>
+      <div class="solution">
+        <span class="solution-label">الفكرة:</span>
+        <div class="code-box">
+<pre><span class="tag-name">function</span> <span class="attr">editTodo</span>(<span class="attr">id</span>) {
+  <span class="tag-name">const</span> <span class="attr">todo</span> = <span class="attr">todos</span>.<span class="tag-name">find</span>(<span class="attr">t</span> => <span class="attr">t</span>.<span class="attr">id</span> === <span class="attr">id</span>);
+  <span class="tag-name">const</span> <span class="attr">newText</span> = prompt(<span class="attr-val">"عدّل المهمة:"</span>, <span class="attr">todo</span>.<span class="attr">text</span>);
+  <span class="tag-name">if</span> (<span class="attr">newText</span>?.trim()) {
+    <span class="attr">todo</span>.<span class="attr">text</span> = <span class="attr">newText</span>.<span class="tag-name">trim</span>();
+    <span class="tag-name">save</span>(); <span class="tag-name">render</span>();
+  }
+}</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تحدي 2: أولوية المهام</div>
+      <p>أضف حقل اختيار أولوية (عالية / متوسطة / منخفضة) مع لون مختلف لكل أولوية.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الفكرة ▼</button>
+      <div class="solution">
+        <span class="solution-label">الفكرة:</span>
+        <p>أضف حقل <code>select</code> في نموذج الإضافة، وخزّن <code>priority</code> في كل مهمة. ثم أضف CSS class بناءً على الأولوية.</p>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تحدي 3: تاريخ الاستحقاق</div>
+      <p>أضف حقل تاريخ لكل مهمة، واعرض تحذيراً إذا اقترب الموعد النهائي.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الفكرة ▼</button>
+      <div class="solution">
+        <span class="solution-label">الفكرة:</span>
+        <div class="code-box">
+<pre><span class="tag-name">const</span> <span class="attr">daysLeft</span> = (<span class="attr">dueDate</span>) => {
+  <span class="tag-name">const</span> <span class="attr">diff</span> = <span class="tag-name">new</span> Date(<span class="attr">dueDate</span>) - <span class="tag-name">new</span> Date();
+  <span class="tag-name">return</span> Math.<span class="tag-name">ceil</span>(<span class="attr">diff</span> / (<span class="attr-val">1000</span>*<span class="attr-val">60</span>*<span class="attr-val">60</span>*<span class="attr-val">24</span>));
+};
+<span class="comment">// إذا daysLeft <= 1 أظهر تحذير أحمر</span></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تحدي 4: البحث</div>
+      <p>أضف حقل بحث يفلتر المهام فوراً أثناء الكتابة.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الفكرة ▼</button>
+      <div class="solution">
+        <span class="solution-label">الفكرة:</span>
+        <div class="code-box">
+<pre><span class="attr">searchInput</span>.<span class="tag-name">addEventListener</span>(<span class="attr-val">'input'</span>, () => {
+  <span class="attr">searchQuery</span> = <span class="attr">searchInput</span>.value.<span class="tag-name">toLowerCase</span>();
+  <span class="tag-name">render</span>();
+});
+<span class="comment">// في render: أضف .filter(t => t.text.includes(searchQuery))</span></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تحدي 5: سحب وإفلات (Drag & Drop)</div>
+      <p>أضف إمكانية إعادة ترتيب المهام بالسحب والإفلات.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الفكرة ▼</button>
+      <div class="solution">
+        <span class="solution-label">الفكرة:</span>
+        <p>استخدم <code>draggable="true"</code> على كل بطاقة، و event listeners: <code>dragstart</code>، <code>dragover</code>، <code>drop</code>. أو استخدم مكتبة <code>Sortable.js</code> الجاهزة.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="quiz-container" id="quiz">
+    <div class="quiz-intro"><p>اختبر فهمك لمشروع To-Do List!</p></div>
+    <div class="quiz-type-tabs">
+      <button class="qt-tab active" onclick="switchQuiz(this,'tf')">✓✗ صح وخطأ</button>
+      <button class="qt-tab" onclick="switchQuiz(this,'mc')">🔘 اختيار من متعدد</button>
+    </div>
+
+    <div class="quiz-section active" id="quiz-tf">
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">1</span><span class="q-text">Date.now() تُستخدم لإنشاء ID فريد لكل مهمة.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">2</span><span class="q-text">JSON.stringify ضرورية قبل حفظ المصفوفة في localStorage.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="false">
+        <span class="q-num">3</span><span class="q-text">innerHTML يجب استخدامه دائماً بدل createElement.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">4</span><span class="q-text">unshift() تضيف العنصر في بداية المصفوفة (المهام الجديدة تظهر أولاً).</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="false">
+        <span class="q-num">5</span><span class="q-text">يجب إنشاء ملف قاعدة بيانات منفصل لحفظ مهام التطبيق.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <button class="quiz-submit" onclick="submitQuiz('tf')">عرض النتيجة 🎯</button>
+      <div class="quiz-result" id="result-tf"><div class="result-score" id="score-tf">0/5</div><div class="result-label">إجابات صحيحة</div><div class="result-message" id="msg-tf"></div><button class="retry-btn" onclick="retryQuiz('tf')">🔄 حاول تاني</button></div>
+    </div>
+
+    <div class="quiz-section" id="quiz-mc">
+      <div class="quiz-question" data-correct="2">
+        <span class="q-num">1</span><span class="q-text">لحذف مهمة بمعرّفها id من المصفوفة، أفضل طريقة هي:</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">splice(id, 1)</button>
+          <button class="q-opt" onclick="answerMC(this,1)">delete todos[id]</button>
+          <button class="q-opt" onclick="answerMC(this,2)">todos.filter(t => t.id !== id)</button>
+          <button class="q-opt" onclick="answerMC(this,3)">todos.remove(id)</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="0">
+        <span class="q-num">2</span><span class="q-text">لتبديل حالة completed (true↔false)، أفضل طريقة:</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">todo.completed = !todo.completed</button>
+          <button class="q-opt" onclick="answerMC(this,1)">todo.completed = false</button>
+          <button class="q-opt" onclick="answerMC(this,2)">todo.completed = 0</button>
+          <button class="q-opt" onclick="answerMC(this,3)">todo.completed.toggle()</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="1">
+        <span class="q-num">3</span><span class="q-text">لحفظ مصفوفة في localStorage:</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">localStorage.setItem('k', todos)</button>
+          <button class="q-opt" onclick="answerMC(this,1)">localStorage.setItem('k', JSON.stringify(todos))</button>
+          <button class="q-opt" onclick="answerMC(this,2)">localStorage.save(todos)</button>
+          <button class="q-opt" onclick="answerMC(this,3)">localStorage.todos = todos</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="3">
+        <span class="q-num">4</span><span class="q-text">ما حدث Enter على حقل الإدخال يتيح الإضافة بالضغط Enter؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">onclick</button>
+          <button class="q-opt" onclick="answerMC(this,1)">onsubmit</button>
+          <button class="q-opt" onclick="answerMC(this,2)">onchange</button>
+          <button class="q-opt" onclick="answerMC(this,3)">keydown/keyup مع فحص e.key === 'Enter'</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="2">
+        <span class="q-num">5</span><span class="q-text">لعد المهام المكتملة من مصفوفة todos:</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">todos.count(t => t.completed)</button>
+          <button class="q-opt" onclick="answerMC(this,1)">todos.completed.length</button>
+          <button class="q-opt" onclick="answerMC(this,2)">todos.filter(t => t.completed).length</button>
+          <button class="q-opt" onclick="answerMC(this,3)">todos.reduce(t => t.completed)</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <button class="quiz-submit" onclick="submitQuiz('mc')">عرض النتيجة 🎯</button>
+      <div class="quiz-result" id="result-mc"><div class="result-score" id="score-mc">0/5</div><div class="result-label">إجابات صحيحة</div><div class="result-message" id="msg-mc"></div><button class="retry-btn" onclick="retryQuiz('mc')">🔄 حاول تاني</button></div>
+    </div>
+  </div>
+
+  <div class="lesson-nav">
+    <a href="./lesson-29.html" class="nav-btn"><span>⬅️</span><span>الدرس السابق</span></a>
+    <button class="nav-btn complete-btn" id="completeBtn" onclick="markComplete(this)"><span>✅</span><span>علّم كمكتمل</span></button>
+    <a href="./lesson-31.html" class="nav-btn"><span>الدرس التالي</span><span>➡️</span></a>
+  </div>
+
+  <div class="notebook-footer">
+    <h3>🎉 أنجزت مشروعك الأول!</h3>
+    <p>To-Do List كامل مع حفظ تلقائي — ارفعه على GitHub الآن ❤️<br><strong>الدرس التالي: تطبيق الطقس Weather App 🌤️</strong></p>
+  </div>
+</div>
+
+<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">⬆️</button>
+<div class="toast" id="toast"></div>
+<script src="../../js/data/courses.js"></script>
+<script src="../../js/progress.js"></script>
+<script src="../../js/lesson-editor.js"></script>
+<script>
+const COURSE_ID='frontend',LESSON_ID=30,TOTAL=32;
+function toggleSolution(b){const s=b.nextElementSibling;s.classList.toggle('show');b.textContent=s.classList.contains('show')?'إخفاء الفكرة ▲':'عرض الفكرة ▼';}
+function copyCode(b){const p=b.closest('.code-box').querySelector('pre');navigator.clipboard.writeText(p.innerText).then(()=>{b.classList.add('copied');b.textContent='✓ تم النسخ';setTimeout(()=>{b.classList.remove('copied');b.textContent='📋 نسخ';},2000);});}
+function runCode(b){const t=b.closest('.try-it');t.querySelector('iframe').srcdoc=t.querySelector('.try-it-editor').value;}
+function resetCode(b){const t=b.closest('.try-it'),e=t.querySelector('.try-it-editor');e.value=e.dataset.default;t.querySelector('iframe').srcdoc=e.value;}
+window.addEventListener('load',()=>{document.querySelectorAll('.try-it').forEach(t=>{const e=t.querySelector('.try-it-editor');t.querySelector('iframe').srcdoc=e.value;});});
+function switchQuiz(b,t){document.querySelectorAll('.qt-tab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.quiz-section').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.getElementById('quiz-'+t).classList.add('active');}
+const answers={tf:{},mc:{}};
+function answerTF(b,v){const q=b.closest('.quiz-question'),i=Array.from(q.parentNode.querySelectorAll('.quiz-question')).indexOf(q);q.querySelectorAll('.q-opt').forEach(o=>o.classList.remove('selected'));b.classList.add('selected');answers.tf[i]=v;}
+function answerMC(b,i){const q=b.closest('.quiz-question'),qi=Array.from(q.parentNode.querySelectorAll('.quiz-question')).indexOf(q);q.querySelectorAll('.q-opt').forEach(o=>o.classList.remove('selected'));b.classList.add('selected');answers.mc[qi]=i;}
+function submitQuiz(type){const sec=document.getElementById('quiz-'+type),qs=sec.querySelectorAll('.quiz-question');let c=0;qs.forEach((q,i)=>{const ca=type==='tf'?(q.dataset.correct==='true'):parseInt(q.dataset.correct),ua=answers[type][i],fb=q.querySelector('.q-feedback'),opts=q.querySelectorAll('.q-opt');opts.forEach(o=>{o.classList.remove('selected');o.disabled=true;});if(ua===undefined){fb.className='q-feedback wrong show';fb.textContent='⚠️ ما اخترتش إجابة!';return;}if(ua===ca){c++;fb.className='q-feedback correct show';fb.textContent='✓ إجابة صحيحة!';if(type==='tf')opts[ca?0:1].classList.add('correct');else opts[ca].classList.add('correct');}else{fb.className='q-feedback wrong show';if(type==='tf'){opts[ca?0:1].classList.add('correct');opts[ua?0:1].classList.add('wrong');fb.textContent='✗ خطأ.';}else{opts[ca].classList.add('correct');opts[ua].classList.add('wrong');fb.textContent='✗ الإجابة بالأخضر.';}}});const r=document.getElementById('result-'+type);document.getElementById('score-'+type).textContent=c+'/'+qs.length;const m=document.getElementById('msg-'+type);if(c===qs.length){m.textContent='🏆 ممتاز 100%!';m.className='result-message excellent';}else if(c>=3){m.textContent='👍 جيد!';m.className='result-message good';}else{m.textContent='📚 راجع الدرس.';m.className='result-message try-again';}r.classList.add('show');r.scrollIntoView({behavior:'smooth',block:'center'});}
+function retryQuiz(type){const sec=document.getElementById('quiz-'+type);sec.querySelectorAll('.q-opt').forEach(o=>{o.classList.remove('selected','correct','wrong');o.disabled=false;});sec.querySelectorAll('.q-feedback').forEach(f=>{f.classList.remove('show','correct','wrong');f.textContent='';});document.getElementById('result-'+type).classList.remove('show');answers[type]={};}
+function markComplete(btn){const done=Progress.toggleLessonComplete(COURSE_ID,LESSON_ID);btn.classList.toggle('completed',done);btn.querySelector('span:last-child').textContent=done?'مكتمل! ⭐':'علّم كمكتمل';showToast(done?'🎉 أنجزت مشروع To-Do List!':'تم إلغاء الإكمال');}
+if(Progress.isLessonComplete(COURSE_ID,LESSON_ID)){const b=document.getElementById('completeBtn');b.classList.add('completed');b.querySelector('span:last-child').textContent='مكتمل! ⭐';}
+(function(){const p=Progress.getCourseProgress(COURSE_ID,TOTAL);document.getElementById('progFill').style.width=p+'%';document.getElementById('progText').textContent=p+'%';})();
+function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
+window.addEventListener('scroll',()=>{document.getElementById('scrollTop').classList.toggle('show',window.scrollY>300);});
+document.querySelectorAll('.toc-card a').forEach(l=>{l.addEventListener('click',e=>{e.preventDefault();const t=document.querySelector(l.getAttribute('href'));if(t)t.scrollIntoView({behavior:'smooth',block:'start'});});});
+</script>
+</body>
+</html>

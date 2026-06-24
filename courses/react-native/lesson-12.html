@@ -1,0 +1,1166 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-V2NCKVL16D"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-V2NCKVL16D');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FlatList و SectionList — دفتر البرمجة</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=Cairo:wght@300;400;500;600;700;900&family=Caveat:wght@400;700&family=Fira+Code:wght@400;500;600&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../css/shared.css">
+<link rel="stylesheet" href="../../css/notebook.css">
+<style>
+body { padding: 20px 10px; }
+
+/* comparison table */
+.comp-table {
+  width: 100%; border-collapse: collapse; font-size: .83rem; margin: 14px 0;
+}
+.comp-table th {
+  background: #1e293b; color: white;
+  padding: 10px 14px; text-align: right;
+}
+.comp-table td { padding: 9px 14px; border-bottom: 1px solid var(--border); }
+.comp-table tr:last-child td { border: none; }
+.comp-table tr:nth-child(even) td { background: #f8fafc; }
+.comp-table .check { color: #16a34a; font-weight: 700; }
+.comp-table .cross { color: #dc2626; }
+
+/* props grid */
+.props-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 10px; margin: 14px 0;
+}
+.prop-card {
+  background: white; border: 1.5px solid var(--border); border-radius: 10px;
+  padding: 12px 14px;
+}
+.prop-card-name {
+  font-family: 'Fira Code', monospace; font-size: .75rem; color: #7c3aed;
+  font-weight: 600; background: #ede9fe; padding: 2px 8px; border-radius: 20px;
+  display: inline-block; margin-bottom: 6px;
+}
+.prop-card-type { font-size: .7rem; color: #94a3b8; margin-bottom: 4px; font-family: 'Fira Code', monospace; }
+.prop-card-desc { font-size: .78rem; color: #475569; line-height: 1.5; }
+
+/* contact list demo */
+.contact-list { background: white; border-radius: 12px; overflow: hidden; border: 1.5px solid var(--border); margin: 14px 0; }
+.contact-section-header {
+  background: #f0f9ff; padding: 6px 14px;
+  font-size: .78rem; font-weight: 700; color: #0ea5e9;
+  font-family: 'Fira Code', monospace; border-bottom: 1px solid #bae6fd;
+}
+.contact-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 14px; border-bottom: 1px solid #f1f5f9;
+}
+.contact-item:last-child { border-bottom: none; }
+.contact-avatar {
+  width: 36px; height: 36px; border-radius: 18px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: .95rem; font-weight: 700; color: white; flex-shrink: 0;
+}
+.contact-name { font-size: .82rem; font-weight: 700; color: #0f172a; font-family: 'Cairo', sans-serif; }
+.contact-phone { font-size: .72rem; color: #64748b; font-family: 'Fira Code', monospace; }
+
+/* api flow */
+.api-flow {
+  display: flex; gap: 0; align-items: center; margin: 14px 0; flex-wrap: wrap; gap: 4px;
+}
+.flow-step {
+  background: #f8fafc; border: 1.5px solid var(--border);
+  border-radius: 8px; padding: 8px 12px; font-size: .78rem;
+  font-family: 'Cairo', sans-serif; text-align: center;
+}
+.flow-arrow { color: #94a3b8; font-size: .9rem; }
+.flow-step.active { background: #dbeafe; border-color: #93c5fd; color: #1e40af; }
+.flow-step.done { background: #f0fdf4; border-color: #86efac; color: #15803d; }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="crumbs">
+    <a href="../../index.html">🏠 الرئيسية</a>
+    <span class="sep">/</span>
+    <a href="./index.html">📱 React Native</a>
+    <span class="sep">/</span>
+    <span class="current">📋 الدرس 12: FlatList و SectionList</span>
+  </div>
+  <div class="progress-mini">
+    <div class="progress-bar-mini"><div class="progress-fill-mini" id="progFill"></div></div>
+    <span id="progText">0%</span>
+  </div>
+</div>
+
+<div class="notebook">
+
+  <div class="notebook-header">
+    <div class="lesson-tag">📋 الدرس الثاني عشر</div>
+    <h1><span class="sparkle">✦</span> FlatList و SectionList <span class="sparkle">✦</span></h1>
+    <div class="lesson-meta">
+      <span>⏱️ 50 دقيقة</span>
+      <span>📊 متوسط-متقدم</span>
+      <span>🎯 5 تمارين + اختبار</span>
+    </div>
+  </div>
+
+  <div class="toc-card">
+    <h2>📑 فهرس الدرس</h2>
+    <ol>
+      <li><a href="#s1">لماذا FlatList لا ScrollView؟</a></li>
+      <li><a href="#s2">FlatList — الأساسيات</a></li>
+      <li><a href="#s3">خصائص FlatList المتقدمة</a></li>
+      <li><a href="#s4">Pull to Refresh و Infinite Scroll</a></li>
+      <li><a href="#s5">عرض بيانات من API</a></li>
+      <li><a href="#s6">SectionList — قوائم المجموعات</a></li>
+      <li><a href="#s7">مثال كامل: قائمة جهات اتصال</a></li>
+      <li><a href="#s8">معاينة حية</a></li>
+      <li><a href="#exercises">التمارين</a></li>
+      <li><a href="#quiz">اختبر فهمك</a></li>
+    </ol>
+  </div>
+
+  <!-- S1 -->
+  <div class="section" id="s1">
+    <h2 class="section-title"><span class="num">.1</span> لماذا FlatList لا ScrollView؟ <span class="en">Why FlatList?</span></h2>
+    <div class="content">
+      <p>في الدروس السابقة استخدمنا <code>ScrollView</code> — لكنه يُحمّل كل العناصر في الذاكرة مرة واحدة. تخيّل 1000 جهة اتصال!</p>
+
+      <table class="comp-table">
+        <thead><tr><th>المعيار</th><th>ScrollView</th><th>FlatList ⭐</th></tr></thead>
+        <tbody>
+          <tr><td>طريقة التحميل</td><td class="cross">كل العناصر معاً</td><td class="check">يُحمّل ما هو مرئي فقط</td></tr>
+          <tr><td>الذاكرة</td><td class="cross">ترتفع مع الكم</td><td class="check">ثابتة تقريباً</td></tr>
+          <tr><td>100 عنصر</td><td class="check">يعمل بخير</td><td class="check">مثالي</td></tr>
+          <tr><td>10,000 عنصر</td><td class="cross">يتجمّد / يُتعطّل</td><td class="check">سلس</td></tr>
+          <tr><td>Pull to Refresh</td><td class="cross">يدوي معقد</td><td class="check">مدمج</td></tr>
+          <tr><td>Infinite Scroll</td><td class="cross">يدوي معقد</td><td class="check">onEndReached مدمج</td></tr>
+          <tr><td>Header / Footer</td><td>يدوي</td><td class="check">props مدمجة</td></tr>
+        </tbody>
+      </table>
+
+      <div class="info-box"><strong>Virtualization</strong> — FlatList يستخدم تقنية "النوافذ المتحركة": يُحمّل فقط العناصر المرئية على الشاشة + بضعة عناصر قبلها وبعدها، ثم يُعيد تدوير الخلايا القديمة للعناصر الجديدة.</div>
+    </div>
+  </div>
+
+  <!-- S2 -->
+  <div class="section" id="s2">
+    <h2 class="section-title"><span class="num">.2</span> FlatList — الأساسيات <span class="en">FlatList Basics</span></h2>
+    <div class="content">
+      <p>FlatList يحتاج حداً أدنى من 3 خصائص: <code>data</code>، <code>renderItem</code>، <code>keyExtractor</code>:</p>
+
+      <div class="code-box">
+<div class="code-header"><span>📋 FlatList — الحد الأدنى</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-name">import</span> { FlatList, Text, View, StyleSheet } <span class="tag-name">from</span> <span class="attr-val">'react-native'</span>;
+
+<span class="tag-name">const</span> FRUITS = [
+  { id: <span class="attr-val">'1'</span>, name: <span class="attr-val">'تفاح'</span>,    color: <span class="attr-val">'#f43f5e'</span> },
+  { id: <span class="attr-val">'2'</span>, name: <span class="attr-val">'موز'</span>,     color: <span class="attr-val">'#f59e0b'</span> },
+  { id: <span class="attr-val">'3'</span>, name: <span class="attr-val">'عنب'</span>,     color: <span class="attr-val">'#7c3aed'</span> },
+  { id: <span class="attr-val">'4'</span>, name: <span class="attr-val">'برتقال'</span>, color: <span class="attr-val">'#ea580c'</span> },
+];
+
+<span class="tag-name">function</span> <span class="attr">FruitItem</span>({ item }) {
+  <span class="tag-name">return</span> (
+    &lt;<span class="attr">View</span> style={[s.item, { borderRightColor: item.color }]}&gt;
+      &lt;<span class="attr">Text</span> style={s.name}&gt;{item.name}&lt;/<span class="attr">Text</span>&gt;
+    &lt;/<span class="attr">View</span>&gt;
+  );
+}
+
+<span class="tag-name">export function</span> <span class="attr">FruitList</span>() {
+  <span class="tag-name">return</span> (
+    &lt;<span class="attr">FlatList</span>
+      data={FRUITS}                     <span class="comment">// ✅ مصفوفة البيانات</span>
+      renderItem={({ item }) => (       <span class="comment">// ✅ كيف يُعرض كل عنصر</span>
+        &lt;<span class="attr">FruitItem</span> item={item} /&gt;
+      )}
+      keyExtractor={item => item.id}    <span class="comment">// ✅ مفتاح فريد لكل عنصر</span>
+    /&gt;
+  );
+}
+
+<span class="tag-name">const</span> s = StyleSheet.create({
+  item: {
+    padding: <span class="attr-val">16</span>, backgroundColor: <span class="attr-val">'white'</span>,
+    borderRightWidth: <span class="attr-val">4</span>, marginBottom: <span class="attr-val">8</span>, borderRadius: <span class="attr-val">10</span>,
+  },
+  name: { fontSize: <span class="attr-val">16</span>, fontWeight: <span class="attr-val">'700'</span> },
+});</pre>
+      </div>
+
+      <div class="tip-box"><strong>keyExtractor</strong> — يُعطي FlatList مفتاحاً فريداً لكل عنصر حتى يعرف أيها تغيّر عند التحديث. دائماً استخدم <code>item.id.toString()</code> أو أي حقل فريد. إذا كانت البيانات بدون id استخدم الـ index: <code>(item, index) => index.toString()</code> لكن هذا أقل كفاءة.</div>
+    </div>
+  </div>
+
+  <!-- S3 -->
+  <div class="section" id="s3">
+    <h2 class="section-title"><span class="num">.3</span> خصائص FlatList المتقدمة <span class="en">Advanced Props</span></h2>
+    <div class="content">
+
+      <div class="props-grid">
+        <div class="prop-card">
+          <div class="prop-card-name">ListHeaderComponent</div>
+          <div class="prop-card-type">component | element</div>
+          <div class="prop-card-desc">عنصر يظهر أعلى القائمة</div>
+        </div>
+        <div class="prop-card">
+          <div class="prop-card-name">ListFooterComponent</div>
+          <div class="prop-card-type">component | element</div>
+          <div class="prop-card-desc">عنصر يظهر أسفل القائمة</div>
+        </div>
+        <div class="prop-card">
+          <div class="prop-card-name">ListEmptyComponent</div>
+          <div class="prop-card-type">component | element</div>
+          <div class="prop-card-desc">يظهر عند قائمة فارغة</div>
+        </div>
+        <div class="prop-card">
+          <div class="prop-card-name">ItemSeparatorComponent</div>
+          <div class="prop-card-type">component | element</div>
+          <div class="prop-card-desc">فاصل بين كل عنصرين</div>
+        </div>
+        <div class="prop-card">
+          <div class="prop-card-name">numColumns</div>
+          <div class="prop-card-type">number</div>
+          <div class="prop-card-desc">عدد الأعمدة (grid)</div>
+        </div>
+        <div class="prop-card">
+          <div class="prop-card-name">horizontal</div>
+          <div class="prop-card-type">boolean</div>
+          <div class="prop-card-desc">قائمة أفقية</div>
+        </div>
+        <div class="prop-card">
+          <div class="prop-card-name">inverted</div>
+          <div class="prop-card-type">boolean</div>
+          <div class="prop-card-desc">يعكس الترتيب (للمحادثات)</div>
+        </div>
+        <div class="prop-card">
+          <div class="prop-card-name">initialNumToRender</div>
+          <div class="prop-card-type">number</div>
+          <div class="prop-card-desc">عدد العناصر الأولية</div>
+        </div>
+      </div>
+
+      <div class="code-box">
+<div class="code-header"><span>⚡ FlatList متكامل — كل الخصائص</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre>&lt;<span class="attr">FlatList</span>
+  data={products}
+  renderItem={({ item, index }) => (
+    &lt;<span class="attr">ProductCard</span> item={item} index={index} /&gt;
+  )}
+  keyExtractor={item => item.id.toString()}
+
+  <span class="comment">// Header وFooter</span>
+  ListHeaderComponent={
+    &lt;<span class="attr">View</span> style={s.header}&gt;
+      &lt;<span class="attr">Text</span> style={s.title}&gt;المنتجات ({products.length})&lt;/<span class="attr">Text</span>&gt;
+    &lt;/<span class="attr">View</span>&gt;
+  }
+  ListFooterComponent={loading && &lt;<span class="attr">ActivityIndicator</span> /&gt;}
+  ListEmptyComponent={
+    &lt;<span class="attr">Text</span> style={s.empty}&gt;لا توجد منتجات&lt;/<span class="attr">Text</span>&gt;
+  }
+
+  <span class="comment">// فاصل بين العناصر</span>
+  ItemSeparatorComponent={() => (
+    &lt;<span class="attr">View</span> style={{ height: <span class="attr-val">1</span>, backgroundColor: <span class="attr-val">'#e2e8f0'</span> }} /&gt;
+  )}
+
+  <span class="comment">// Grid — 2 أعمدة</span>
+  numColumns={<span class="attr-val">2</span>}
+  columnWrapperStyle={{ gap: <span class="attr-val">12</span> }}
+
+  <span class="comment">// أفقي (Carousel)</span>
+  horizontal
+  showsHorizontalScrollIndicator={<span class="attr-val">false</span>}
+
+  <span class="comment">// الأداء</span>
+  initialNumToRender={<span class="attr-val">10</span>}
+  maxToRenderPerBatch={<span class="attr-val">10</span>}
+  windowSize={<span class="attr-val">5</span>}
+  removeClippedSubviews={<span class="attr-val">true</span>}
+/&gt;</pre>
+      </div>
+
+      <div class="code-box blue">
+<div class="code-header"><span>🔄 القائمة الأفقية — Carousel</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">// كاروسيل صور/فئات شائع في التطبيقات</span>
+&lt;<span class="attr">FlatList</span>
+  data={categories}
+  renderItem={({ item }) => (
+    &lt;<span class="attr">TouchableOpacity</span> style={s.catItem} onPress={() => setSelected(item.id)}&gt;
+      &lt;<span class="attr">Text</span> style={s.catIcon}&gt;{item.icon}&lt;/<span class="attr">Text</span>&gt;
+      &lt;<span class="attr">Text</span> style={s.catName}&gt;{item.name}&lt;/<span class="attr">Text</span>&gt;
+    &lt;/<span class="attr">TouchableOpacity</span>&gt;
+  )}
+  keyExtractor={item => item.id}
+  horizontal                              <span class="comment">// أفقي</span>
+  showsHorizontalScrollIndicator={<span class="attr-val">false</span>}  <span class="comment">// إخفاء شريط التمرير</span>
+  contentContainerStyle={{ gap: <span class="attr-val">12</span>, paddingHorizontal: <span class="attr-val">16</span> }}
+/&gt;</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- S4 -->
+  <div class="section" id="s4">
+    <h2 class="section-title"><span class="num">.4</span> Pull to Refresh و Infinite Scroll <span class="en">Dynamic Loading</span></h2>
+    <div class="content">
+
+      <div class="code-box">
+<div class="code-header"><span>🔄 Pull to Refresh — سحب للتحديث</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-name">function</span> <span class="attr">NewsScreen</span>() {
+  <span class="tag-name">const</span> [news, setNews] = useState([]);
+  <span class="tag-name">const</span> [refreshing, setRefreshing] = useState(<span class="attr-val">false</span>);
+
+  <span class="tag-name">const</span> fetchNews = <span class="tag-name">async</span> () => {
+    <span class="tag-name">const</span> data = <span class="tag-name">await</span> api.getNews();
+    setNews(data);
+  };
+
+  <span class="tag-name">const</span> handleRefresh = <span class="tag-name">async</span> () => {
+    setRefreshing(<span class="attr-val">true</span>);    <span class="comment">// يُظهر المؤشر الدوار</span>
+    <span class="tag-name">await</span> fetchNews();
+    setRefreshing(<span class="attr-val">false</span>);   <span class="comment">// يُخفي المؤشر</span>
+  };
+
+  <span class="tag-name">return</span> (
+    &lt;<span class="attr">FlatList</span>
+      data={news}
+      renderItem={({ item }) => &lt;<span class="attr">NewsCard</span> item={item} /&gt;}
+      keyExtractor={item => item.id}
+      refreshing={refreshing}         <span class="comment">// ✅ حالة التحديث</span>
+      onRefresh={handleRefresh}       <span class="comment">// ✅ دالة التحديث</span>
+    /&gt;
+  );
+}</pre>
+      </div>
+
+      <div class="code-box blue">
+<div class="code-header"><span>♾️ Infinite Scroll — تحميل لا نهائي</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-name">function</span> <span class="attr">ProductsScreen</span>() {
+  <span class="tag-name">const</span> [products, setProducts] = useState([]);
+  <span class="tag-name">const</span> [page, setPage]         = useState(<span class="attr-val">1</span>);
+  <span class="tag-name">const</span> [loading, setLoading]   = useState(<span class="attr-val">false</span>);
+  <span class="tag-name">const</span> [hasMore, setHasMore]   = useState(<span class="attr-val">true</span>);
+
+  <span class="tag-name">const</span> loadMore = <span class="tag-name">async</span> () => {
+    <span class="tag-name">if</span> (loading || !hasMore) <span class="tag-name">return</span>;  <span class="comment">// لا تُكرّر الطلب</span>
+    setLoading(<span class="attr-val">true</span>);
+
+    <span class="tag-name">const</span> newData = <span class="tag-name">await</span> api.getProducts({ page });
+    <span class="tag-name">if</span> (newData.length === <span class="attr-val">0</span>) {
+      setHasMore(<span class="attr-val">false</span>);  <span class="comment">// وصلنا لآخر البيانات</span>
+    } <span class="tag-name">else</span> {
+      setProducts(prev => [...prev, ...newData]);  <span class="comment">// أضف للقائمة</span>
+      setPage(p => p + <span class="attr-val">1</span>);
+    }
+    setLoading(<span class="attr-val">false</span>);
+  };
+
+  <span class="tag-name">return</span> (
+    &lt;<span class="attr">FlatList</span>
+      data={products}
+      renderItem={({ item }) => &lt;<span class="attr">ProductCard</span> item={item} /&gt;}
+      keyExtractor={item => item.id}
+      onEndReached={loadMore}         <span class="comment">// ✅ يُطلق عند الاقتراب من النهاية</span>
+      onEndReachedThreshold={<span class="attr-val">0.5</span>}    <span class="comment">// ✅ 50% من الأسفل</span>
+      ListFooterComponent={           <span class="comment">// مؤشر التحميل في الأسفل</span>
+        loading
+          ? &lt;<span class="attr">ActivityIndicator</span> size=<span class="attr-val">"large"</span> color=<span class="attr-val">"#0ea5e9"</span> style={{ py: <span class="attr-val">20</span> }} /&gt;
+          : !hasMore && &lt;<span class="attr">Text</span> style={s.endMsg}&gt;وصلت للنهاية ✓&lt;/<span class="attr">Text</span>&gt;
+      }
+    /&gt;
+  );
+}</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- S5 -->
+  <div class="section" id="s5">
+    <h2 class="section-title"><span class="num">.5</span> عرض بيانات من API <span class="en">Data from API</span></h2>
+    <div class="content">
+      <p>النمط الأكثر شيوعاً في التطبيقات الحقيقية — جلب البيانات من API ثم عرضها في FlatList:</p>
+
+      <div class="api-flow">
+        <div class="flow-step">تشغيل الشاشة</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step active">useEffect يُطلق</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step active">fetch / axios</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step done">setData</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step done">FlatList يعرض</div>
+      </div>
+
+      <div class="code-box">
+<div class="code-header"><span>🌐 جلب بيانات من API — النمط الكامل</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-name">import</span> { useState, useEffect } <span class="tag-name">from</span> <span class="attr-val">'react'</span>;
+<span class="tag-name">import</span> { FlatList, View, Text, Image, ActivityIndicator, StyleSheet } <span class="tag-name">from</span> <span class="attr-val">'react-native'</span>;
+
+<span class="tag-name">function</span> <span class="attr">UsersScreen</span>() {
+  <span class="tag-name">const</span> [users, setUsers]     = useState([]);
+  <span class="tag-name">const</span> [loading, setLoading] = useState(<span class="attr-val">true</span>);
+  <span class="tag-name">const</span> [error, setError]     = useState(<span class="attr-val">null</span>);
+
+  useEffect(() => {
+    fetchUsers();
+  }, []);
+
+  <span class="tag-name">const</span> fetchUsers = <span class="tag-name">async</span> () => {
+    <span class="tag-name">try</span> {
+      setLoading(<span class="attr-val">true</span>);
+      setError(<span class="attr-val">null</span>);
+
+      <span class="tag-name">const</span> res  = <span class="tag-name">await</span> fetch(<span class="attr-val">'https://jsonplaceholder.typicode.com/users'</span>);
+      <span class="tag-name">const</span> data = <span class="tag-name">await</span> res.json();
+      setUsers(data);
+    } <span class="tag-name">catch</span> (err) {
+      setError(<span class="attr-val">'فشل تحميل البيانات — تحقق من الاتصال'</span>);
+    } <span class="tag-name">finally</span> {
+      setLoading(<span class="attr-val">false</span>);
+    }
+  };
+
+  <span class="comment">// حالة التحميل</span>
+  <span class="tag-name">if</span> (loading) <span class="tag-name">return</span> (
+    &lt;<span class="attr">View</span> style={s.center}&gt;
+      &lt;<span class="attr">ActivityIndicator</span> size=<span class="attr-val">"large"</span> color=<span class="attr-val">"#0ea5e9"</span> /&gt;
+    &lt;/<span class="attr">View</span>&gt;
+  );
+
+  <span class="comment">// حالة الخطأ</span>
+  <span class="tag-name">if</span> (error) <span class="tag-name">return</span> (
+    &lt;<span class="attr">View</span> style={s.center}&gt;
+      &lt;<span class="attr">Text</span> style={s.errorText}&gt;{error}&lt;/<span class="attr">Text</span>&gt;
+      &lt;<span class="attr">TouchableOpacity</span> onPress={fetchUsers} style={s.retryBtn}&gt;
+        &lt;<span class="attr">Text</span> style={{ color: <span class="attr-val">'white'</span> }}&gt;إعادة المحاولة&lt;/<span class="attr">Text</span>&gt;
+      &lt;/<span class="attr">TouchableOpacity</span>&gt;
+    &lt;/<span class="attr">View</span>&gt;
+  );
+
+  <span class="comment">// البيانات جاهزة</span>
+  <span class="tag-name">return</span> (
+    &lt;<span class="attr">FlatList</span>
+      data={users}
+      keyExtractor={item => item.id.toString()}
+      renderItem={({ item }) => (
+        &lt;<span class="attr">View</span> style={s.userCard}&gt;
+          &lt;<span class="attr">View</span> style={s.avatar}&gt;
+            &lt;<span class="attr">Text</span> style={s.avatarText}&gt;{item.name[0]}&lt;/<span class="attr">Text</span>&gt;
+          &lt;/<span class="attr">View</span>&gt;
+          &lt;<span class="attr">View</span>&gt;
+            &lt;<span class="attr">Text</span> style={s.name}&gt;{item.name}&lt;/<span class="attr">Text</span>&gt;
+            &lt;<span class="attr">Text</span> style={s.email}&gt;{item.email}&lt;/<span class="attr">Text</span>&gt;
+          &lt;/<span class="attr">View</span>&gt;
+        &lt;/<span class="attr">View</span>&gt;
+      )}
+      ItemSeparatorComponent={() => &lt;<span class="attr">View</span> style={s.sep} /&gt;}
+    /&gt;
+  );
+}</pre>
+      </div>
+
+      <div class="warning-box"><strong>لا تنسَ حالات التحميل والخطأ!</strong> تطبيق بدون loading state يظهر شاشة فارغة مربكة. دائماً: <code>loading</code> → مؤشر دوار، <code>error</code> → رسالة + زر إعادة، <code>empty</code> → رسالة توجيهية.</div>
+    </div>
+  </div>
+
+  <!-- S6 -->
+  <div class="section" id="s6">
+    <h2 class="section-title"><span class="num">.6</span> SectionList — قوائم المجموعات <span class="en">SectionList</span></h2>
+    <div class="content">
+      <p><code>SectionList</code> مثل FlatList لكن للقوائم المقسّمة إلى مجموعات — قائمة جهات الاتصال بالحروف، قائمة منتجات بالفئات، جدول أعمال بالتواريخ:</p>
+
+      <div class="code-box">
+<div class="code-header"><span>📑 SectionList — الهيكل والاستخدام</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-name">import</span> { SectionList, Text, View } <span class="tag-name">from</span> <span class="attr-val">'react-native'</span>;
+
+<span class="comment">// هيكل البيانات — مختلف عن FlatList</span>
+<span class="tag-name">const</span> CONTACTS = [
+  {
+    title: <span class="attr-val">'أ'</span>,   <span class="comment">// عنوان القسم</span>
+    data: [   <span class="comment">// بيانات القسم</span>
+      { id: <span class="attr-val">'1'</span>, name: <span class="attr-val">'أحمد محمد'</span>,  phone: <span class="attr-val">'0501234567'</span> },
+      { id: <span class="attr-val">'2'</span>, name: <span class="attr-val">'أمير سالم'</span>,   phone: <span class="attr-val">'0509876543'</span> },
+    ],
+  },
+  {
+    title: <span class="attr-val">'م'</span>,
+    data: [
+      { id: <span class="attr-val">'3'</span>, name: <span class="attr-val">'محمد علي'</span>,   phone: <span class="attr-val">'0555551234'</span> },
+      { id: <span class="attr-val">'4'</span>, name: <span class="attr-val">'مريم حسن'</span>,  phone: <span class="attr-val">'0544449876'</span> },
+      { id: <span class="attr-val">'5'</span>, name: <span class="attr-val">'منال أحمد'</span>, phone: <span class="attr-val">'0533338765'</span> },
+    ],
+  },
+  {
+    title: <span class="attr-val">'ف'</span>,
+    data: [
+      { id: <span class="attr-val">'6'</span>, name: <span class="attr-val">'فاطمة نور'</span>, phone: <span class="attr-val">'0522227654'</span> },
+    ],
+  },
+];
+
+<span class="tag-name">function</span> <span class="attr">ContactsScreen</span>() {
+  <span class="tag-name">return</span> (
+    &lt;<span class="attr">SectionList</span>
+      sections={CONTACTS}              <span class="comment">// ✅ sections لا data</span>
+
+      keyExtractor={item => item.id}
+
+      renderItem={({ item }) => (      <span class="comment">// ✅ عنصر القائمة</span>
+        &lt;<span class="attr">View</span> style={s.contactItem}&gt;
+          &lt;<span class="attr">View</span> style={[s.avatar, { backgroundColor: getColor(item.name) }]}&gt;
+            &lt;<span class="attr">Text</span> style={s.avatarText}&gt;{item.name[0]}&lt;/<span class="attr">Text</span>&gt;
+          &lt;/<span class="attr">View</span>&gt;
+          &lt;<span class="attr">View</span>&gt;
+            &lt;<span class="attr">Text</span> style={s.contactName}&gt;{item.name}&lt;/<span class="attr">Text</span>&gt;
+            &lt;<span class="attr">Text</span> style={s.contactPhone}&gt;{item.phone}&lt;/<span class="attr">Text</span>&gt;
+          &lt;/<span class="attr">View</span>&gt;
+        &lt;/<span class="attr">View</span>&gt;
+      )}
+
+      renderSectionHeader={({ section: { title } }) => (  <span class="comment">// ✅ رأس كل قسم</span>
+        &lt;<span class="attr">View</span> style={s.sectionHeader}&gt;
+          &lt;<span class="attr">Text</span> style={s.sectionTitle}&gt;{title}&lt;/<span class="attr">Text</span>&gt;
+        &lt;/<span class="attr">View</span>&gt;
+      )}
+
+      stickySectionHeadersEnabled={<span class="attr-val">true</span>}    <span class="comment">// ✅ رؤوس ثابتة عند التمرير</span>
+
+      ItemSeparatorComponent={() => (
+        &lt;<span class="attr">View</span> style={s.separator} /&gt;
+      )}
+
+      ListHeaderComponent={
+        &lt;<span class="attr">Text</span> style={s.listTitle}&gt;جهات الاتصال ({CONTACTS.reduce((a, s) => a + s.data.length, <span class="attr-val">0</span>)})&lt;/<span class="attr">Text</span>&gt;
+      }
+    /&gt;
+  );
+}</pre>
+      </div>
+
+      <div class="code-box blue">
+<div class="code-header"><span>🔀 تحويل بيانات API لهيكل SectionList</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">// بيانات خام من API</span>
+<span class="tag-name">const</span> rawContacts = [
+  { id: <span class="attr-val">'1'</span>, name: <span class="attr-val">'أحمد'</span>, phone: <span class="attr-val">'...'</span> },
+  { id: <span class="attr-val">'2'</span>, name: <span class="attr-val">'محمد'</span>, phone: <span class="attr-val">'...'</span> },
+  { id: <span class="attr-val">'3'</span>, name: <span class="attr-val">'أمير'</span>, phone: <span class="attr-val">'...'</span> },
+];
+
+<span class="comment">// تحويل لهيكل SectionList</span>
+<span class="tag-name">function</span> <span class="attr">groupByLetter</span>(contacts) {
+  <span class="tag-name">const</span> grouped = contacts.reduce((acc, contact) => {
+    <span class="tag-name">const</span> letter = contact.name[<span class="attr-val">0</span>];  <span class="comment">// أول حرف</span>
+    <span class="tag-name">if</span> (!acc[letter]) acc[letter] = [];
+    acc[letter].push(contact);
+    <span class="tag-name">return</span> acc;
+  }, {});
+
+  <span class="comment">// حوّل لمصفوفة وارتّبها أبجدياً</span>
+  <span class="tag-name">return</span> Object.keys(grouped)
+    .sort()
+    .map(letter => ({ title: letter, data: grouped[letter] }));
+}
+
+<span class="comment">// النتيجة:</span>
+<span class="comment">// [ { title: 'أ', data: [أحمد, أمير] },</span>
+<span class="comment">//   { title: 'م', data: [محمد] } ]</span>
+
+<span class="comment">// في المكوّن:</span>
+<span class="tag-name">const</span> sections = useMemo(() => groupByLetter(contacts), [contacts]);</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- S7 -->
+  <div class="section" id="s7">
+    <h2 class="section-title"><span class="num">.7</span> مثال كامل: قائمة جهات الاتصال <span class="en">Contacts App</span></h2>
+    <div class="content">
+      <p>نجمع كل ما تعلمناه في تطبيق جهات اتصال كامل مع بحث وتصفية:</p>
+
+      <div class="contact-list">
+        <div class="contact-section-header">أ</div>
+        <div class="contact-item">
+          <div class="contact-avatar" style="background:#0ea5e9;">أ</div>
+          <div><div class="contact-name">أحمد محمد السالم</div><div class="contact-phone">0501234567</div></div>
+        </div>
+        <div class="contact-item">
+          <div class="contact-avatar" style="background:#7c3aed;">أ</div>
+          <div><div class="contact-name">أمير خالد العتيبي</div><div class="contact-phone">0509876543</div></div>
+        </div>
+        <div class="contact-section-header">م</div>
+        <div class="contact-item">
+          <div class="contact-avatar" style="background:#16a34a;">م</div>
+          <div><div class="contact-name">محمد عبدالله القحطاني</div><div class="contact-phone">0555551234</div></div>
+        </div>
+        <div class="contact-item">
+          <div class="contact-avatar" style="background:#ea580c;">م</div>
+          <div><div class="contact-name">مريم سعد الغامدي</div><div class="contact-phone">0544449876</div></div>
+        </div>
+        <div class="contact-section-header">ف</div>
+        <div class="contact-item">
+          <div class="contact-avatar" style="background:#f43f5e;">ف</div>
+          <div><div class="contact-name">فاطمة نور الزهراني</div><div class="contact-phone">0522227654</div></div>
+        </div>
+      </div>
+
+      <div class="code-box">
+<div class="code-header"><span>📱 ContactsApp — التطبيق الكامل</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-name">import</span> { useState, useMemo, useCallback } <span class="tag-name">from</span> <span class="attr-val">'react'</span>;
+<span class="tag-name">import</span> {
+  SectionList, TextInput, View, Text,
+  TouchableOpacity, StyleSheet,
+} <span class="tag-name">from</span> <span class="attr-val">'react-native'</span>;
+
+<span class="tag-name">const</span> COLORS = [<span class="attr-val">'#0ea5e9'</span>,<span class="attr-val">'#7c3aed'</span>,<span class="attr-val">'#16a34a'</span>,<span class="attr-val">'#ea580c'</span>,<span class="attr-val">'#f43f5e'</span>];
+<span class="tag-name">const</span> getColor = name => COLORS[name.charCodeAt(<span class="attr-val">0</span>) % COLORS.length];
+
+<span class="tag-name">export function</span> <span class="attr">ContactsApp</span>({ contacts }) {
+  <span class="tag-name">const</span> [search, setSearch] = useState(<span class="attr-val">''</span>);
+
+  <span class="comment">// فلترة وتجميع — يُعاد احتسابه فقط عند تغيير البيانات</span>
+  <span class="tag-name">const</span> sections = useMemo(() => {
+    <span class="tag-name">const</span> filtered = contacts.filter(c =>
+      c.name.includes(search) || c.phone.includes(search)
+    );
+    <span class="tag-name">const</span> grouped = filtered.reduce((acc, c) => {
+      <span class="tag-name">const</span> l = c.name[<span class="attr-val">0</span>];
+      <span class="tag-name">if</span> (!acc[l]) acc[l] = [];
+      acc[l].push(c);
+      <span class="tag-name">return</span> acc;
+    }, {});
+    <span class="tag-name">return</span> Object.keys(grouped).sort().map(l => ({ title: l, data: grouped[l] }));
+  }, [contacts, search]);
+
+  <span class="comment">// useCallback يمنع إعادة إنشاء الدالة مع كل render</span>
+  <span class="tag-name">const</span> renderItem = useCallback(({ item }) => (
+    &lt;<span class="attr">TouchableOpacity</span>
+      style={s.item}
+      onPress={() => console.log(<span class="attr-val">'اتصل بـ'</span>, item.name)}
+    &gt;
+      &lt;<span class="attr">View</span> style={[s.avatar, { backgroundColor: getColor(item.name) }]}&gt;
+        &lt;<span class="attr">Text</span> style={s.avatarText}&gt;{item.name[<span class="attr-val">0</span>]}&lt;/<span class="attr">Text</span>&gt;
+      &lt;/<span class="attr">View</span>&gt;
+      &lt;<span class="attr">View</span> style={{ flex: <span class="attr-val">1</span> }}&gt;
+        &lt;<span class="attr">Text</span> style={s.name}&gt;{item.name}&lt;/<span class="attr">Text</span>&gt;
+        &lt;<span class="attr">Text</span> style={s.phone}&gt;{item.phone}&lt;/<span class="attr">Text</span>&gt;
+      &lt;/<span class="attr">View</span>&gt;
+      &lt;<span class="attr">Text</span> style={s.callIcon}&gt;📞&lt;/<span class="attr">Text</span>&gt;
+    &lt;/<span class="attr">TouchableOpacity</span>&gt;
+  ), []);
+
+  <span class="tag-name">const</span> renderHeader = useCallback(({ section: { title, data } }) => (
+    &lt;<span class="attr">View</span> style={s.sectionHeader}&gt;
+      &lt;<span class="attr">Text</span> style={s.sectionTitle}&gt;{title}&lt;/<span class="attr">Text</span>&gt;
+      &lt;<span class="attr">Text</span> style={s.sectionCount}&gt;{data.length}&lt;/<span class="attr">Text</span>&gt;
+    &lt;/<span class="attr">View</span>&gt;
+  ), []);
+
+  <span class="tag-name">return</span> (
+    &lt;<span class="attr">View</span> style={{ flex: <span class="attr-val">1</span> }}&gt;
+      &lt;<span class="attr">TextInput</span>
+        style={s.searchInput}
+        placeholder=<span class="attr-val">"🔍 ابحث في جهات الاتصال..."</span>
+        value={search}
+        onChangeText={setSearch}
+        placeholderTextColor=<span class="attr-val">"#94a3b8"</span>
+      /&gt;
+
+      &lt;<span class="attr">SectionList</span>
+        sections={sections}
+        keyExtractor={item => item.id}
+        renderItem={renderItem}
+        renderSectionHeader={renderHeader}
+        stickySectionHeadersEnabled
+        ItemSeparatorComponent={() => &lt;<span class="attr">View</span> style={s.sep} /&gt;}
+        ListEmptyComponent={
+          &lt;<span class="attr">View</span> style={s.empty}&gt;
+            &lt;<span class="attr">Text</span> style={s.emptyText}&gt;لا نتائج لـ "{search}"&lt;/<span class="attr">Text</span>&gt;
+          &lt;/<span class="attr">View</span>&gt;
+        }
+      /&gt;
+    &lt;/<span class="attr">View</span>&gt;
+  );
+}
+
+<span class="tag-name">const</span> s = StyleSheet.create({
+  searchInput: {
+    margin: <span class="attr-val">12</span>, padding: <span class="attr-val">12</span>, borderRadius: <span class="attr-val">12</span>,
+    borderWidth: <span class="attr-val">2</span>, borderColor: <span class="attr-val">'#e2e8f0'</span>, backgroundColor: <span class="attr-val">'white'</span>,
+    fontSize: <span class="attr-val">15</span>,
+  },
+  sectionHeader: {
+    backgroundColor: <span class="attr-val">'#f0f9ff'</span>, paddingHorizontal: <span class="attr-val">16</span>, paddingVertical: <span class="attr-val">6</span>,
+    flexDirection: <span class="attr-val">'row'</span>, justifyContent: <span class="attr-val">'space-between'</span>, alignItems: <span class="attr-val">'center'</span>,
+    borderBottomWidth: <span class="attr-val">1</span>, borderBottomColor: <span class="attr-val">'#bae6fd'</span>,
+  },
+  sectionTitle: { color: <span class="attr-val">'#0ea5e9'</span>, fontWeight: <span class="attr-val">'700'</span>, fontSize: <span class="attr-val">14</span> },
+  sectionCount: { color: <span class="attr-val">'#0ea5e9'</span>, fontSize: <span class="attr-val">12</span>, fontFamily: <span class="attr-val">'monospace'</span> },
+  item: {
+    flexDirection: <span class="attr-val">'row'</span>, alignItems: <span class="attr-val">'center'</span>, gap: <span class="attr-val">12</span>,
+    paddingHorizontal: <span class="attr-val">16</span>, paddingVertical: <span class="attr-val">12</span>, backgroundColor: <span class="attr-val">'white'</span>,
+  },
+  avatar: { width: <span class="attr-val">44</span>, height: <span class="attr-val">44</span>, borderRadius: <span class="attr-val">22</span>, alignItems: <span class="attr-val">'center'</span>, justifyContent: <span class="attr-val">'center'</span> },
+  avatarText: { color: <span class="attr-val">'white'</span>, fontWeight: <span class="attr-val">'700'</span>, fontSize: <span class="attr-val">18</span> },
+  name:  { fontSize: <span class="attr-val">15</span>, fontWeight: <span class="attr-val">'700'</span>, color: <span class="attr-val">'#0f172a'</span> },
+  phone: { fontSize: <span class="attr-val">13</span>, color: <span class="attr-val">'#64748b'</span>, marginTop: <span class="attr-val">2</span> },
+  callIcon: { fontSize: <span class="attr-val">20</span> },
+  sep:   { height: <span class="attr-val">1</span>, backgroundColor: <span class="attr-val">'#f1f5f9'</span>, marginRight: <span class="attr-val">72</span> },
+  empty: { alignItems: <span class="attr-val">'center'</span>, paddingVertical: <span class="attr-val">60</span> },
+  emptyText: { color: <span class="attr-val">'#94a3b8'</span>, fontSize: <span class="attr-val">16</span> },
+});</pre>
+      </div>
+
+      <div class="tip-box"><strong>useCallback في renderItem</strong> — بدونه، React يُنشئ دالة جديدة مع كل render مما يُبطئ FlatList. مع <code>useCallback</code> تُعاد الدالة القديمة ما لم تتغير التبعيات.</div>
+    </div>
+  </div>
+
+  <!-- S8 — Live Preview -->
+  <div class="section" id="s8">
+    <h2 class="section-title"><span class="num">.8</span> معاينة حية <span class="en">Live Preview</span></h2>
+    <div class="content"><p>قائمة جهات اتصال مع SectionList وخاصية البحث والرؤوس الثابتة:</p></div>
+
+    <div class="live-preview">
+      <div class="lp-header">
+        <span>📱 معاينة — Contacts SectionList</span>
+        <span class="lp-tag">SectionList + Search</span>
+      </div>
+      <div class="lp-body">
+        <div class="lp-code">
+<pre><span class="c">// هيكل بيانات SectionList</span>
+<span class="k">const</span> sections = [
+  {
+    title: <span class="s">'أ'</span>,
+    data: [
+      { id:<span class="s">'1'</span>, name:<span class="s">'أحمد'</span> },
+      { id:<span class="s">'2'</span>, name:<span class="s">'أمير'</span> },
+    ]
+  },
+  {
+    title: <span class="s">'م'</span>,
+    data: [
+      { id:<span class="s">'3'</span>, name:<span class="s">'محمد'</span> },
+      { id:<span class="s">'4'</span>, name:<span class="s">'مريم'</span> },
+    ]
+  },
+];
+
+<span class="c">// SectionList مع رأس ثابت</span>
+<span class="p">&lt;</span><span class="t">SectionList</span>
+  <span class="a">sections</span>={sections}
+  <span class="a">keyExtractor</span>={item =&gt; item.id}
+  <span class="a">renderItem</span>={({ item }) =&gt; (
+    <span class="p">&lt;</span><span class="t">ContactRow</span> item={item} <span class="p">/&gt;</span>
+  )}
+  <span class="a">renderSectionHeader</span>={
+    ({ section: { title }}) =&gt; (
+      <span class="p">&lt;</span><span class="t">SectionHeader</span>
+        title={title} <span class="p">/&gt;</span>
+    )
+  }
+  <span class="a">stickySectionHeadersEnabled</span>
+<span class="p">/&gt;</span></pre>
+        </div>
+        <div class="lp-phone-wrap">
+          <div class="lp-phone">
+            <div class="lp-phone-bar"></div>
+            <div class="lp-phone-screen" style="background:#f8fafc; padding:0; gap:0;">
+              <!-- Search bar -->
+              <div style="padding:8px; background:white; border-bottom:1px solid #e2e8f0;">
+                <div style="background:#f1f5f9; border-radius:8px; padding:6px 10px; font-family:'Cairo',sans-serif; font-size:.68rem; color:#94a3b8; text-align:right;">
+                  🔍 ابحث في جهات الاتصال...
+                </div>
+              </div>
+              <!-- Section أ -->
+              <div style="background:#f0f9ff; padding:4px 10px; font-family:'Fira Code',monospace; font-size:.65rem; color:#0ea5e9; font-weight:700; border-bottom:1px solid #bae6fd;">أ</div>
+              <div style="background:white; padding:7px 10px; display:flex; align-items:center; gap:8px; border-bottom:1px solid #f1f5f9;">
+                <div style="width:28px;height:28px;border-radius:14px;background:#0ea5e9;display:flex;align-items:center;justify-content:center;color:white;font-size:.7rem;font-weight:700;">أ</div>
+                <div><div style="font-size:.72rem;font-weight:700;color:#0f172a;font-family:'Cairo',sans-serif;">أحمد محمد</div><div style="font-size:.62rem;color:#64748b;font-family:'Fira Code',monospace;">0501234567</div></div>
+              </div>
+              <div style="background:white; padding:7px 10px; display:flex; align-items:center; gap:8px; border-bottom:1px solid #f1f5f9;">
+                <div style="width:28px;height:28px;border-radius:14px;background:#7c3aed;display:flex;align-items:center;justify-content:center;color:white;font-size:.7rem;font-weight:700;">أ</div>
+                <div><div style="font-size:.72rem;font-weight:700;color:#0f172a;font-family:'Cairo',sans-serif;">أمير سالم</div><div style="font-size:.62rem;color:#64748b;font-family:'Fira Code',monospace;">0509876543</div></div>
+              </div>
+              <!-- Section م -->
+              <div style="background:#f0f9ff; padding:4px 10px; font-family:'Fira Code',monospace; font-size:.65rem; color:#0ea5e9; font-weight:700; border-bottom:1px solid #bae6fd;">م</div>
+              <div style="background:white; padding:7px 10px; display:flex; align-items:center; gap:8px; border-bottom:1px solid #f1f5f9;">
+                <div style="width:28px;height:28px;border-radius:14px;background:#16a34a;display:flex;align-items:center;justify-content:center;color:white;font-size:.7rem;font-weight:700;">م</div>
+                <div><div style="font-size:.72rem;font-weight:700;color:#0f172a;font-family:'Cairo',sans-serif;">محمد علي</div><div style="font-size:.62rem;color:#64748b;font-family:'Fira Code',monospace;">0555551234</div></div>
+              </div>
+              <div style="background:white; padding:7px 10px; display:flex; align-items:center; gap:8px; border-bottom:1px solid #f1f5f9;">
+                <div style="width:28px;height:28px;border-radius:14px;background:#ea580c;display:flex;align-items:center;justify-content:center;color:white;font-size:.7rem;font-weight:700;">م</div>
+                <div><div style="font-size:.72rem;font-weight:700;color:#0f172a;font-family:'Cairo',sans-serif;">مريم حسن</div><div style="font-size:.62rem;color:#64748b;font-family:'Fira Code',monospace;">0544449876</div></div>
+              </div>
+              <!-- Section ف -->
+              <div style="background:#f0f9ff; padding:4px 10px; font-family:'Fira Code',monospace; font-size:.65rem; color:#0ea5e9; font-weight:700; border-bottom:1px solid #bae6fd;">ف</div>
+              <div style="background:white; padding:7px 10px; display:flex; align-items:center; gap:8px;">
+                <div style="width:28px;height:28px;border-radius:14px;background:#f43f5e;display:flex;align-items:center;justify-content:center;color:white;font-size:.7rem;font-weight:700;">ف</div>
+                <div><div style="font-size:.72rem;font-weight:700;color:#0f172a;font-family:'Cairo',sans-serif;">فاطمة نور</div><div style="font-size:.62rem;color:#64748b;font-family:'Fira Code',monospace;">0522227654</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EXERCISES -->
+  <div class="section" id="exercises">
+    <h2 class="section-title"><span class="num">📝</span> التمارين العملية <span class="en">Exercises</span></h2>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 1: FlatList بسيط</div>
+      <p>اكتب FlatList يعرض مصفوفة من المدن السعودية (الرياض، جدة، مكة، المدينة، الدمام). كل مدينة في بطاقة تعرض اسمها وأيقونة 🏙️.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box"><pre><span class="tag-name">const</span> CITIES = [
+  { id: <span class="attr-val">'1'</span>, name: <span class="attr-val">'الرياض'</span> },
+  { id: <span class="attr-val">'2'</span>, name: <span class="attr-val">'جدة'</span> },
+  { id: <span class="attr-val">'3'</span>, name: <span class="attr-val">'مكة المكرمة'</span> },
+  { id: <span class="attr-val">'4'</span>, name: <span class="attr-val">'المدينة المنورة'</span> },
+  { id: <span class="attr-val">'5'</span>, name: <span class="attr-val">'الدمام'</span> },
+];
+
+&lt;<span class="attr">FlatList</span>
+  data={CITIES}
+  keyExtractor={item => item.id}
+  renderItem={({ item }) => (
+    &lt;<span class="attr">View</span>
+      style={{
+        flexDirection: <span class="attr-val">'row'</span>, alignItems: <span class="attr-val">'center'</span>,
+        padding: <span class="attr-val">16</span>, backgroundColor: <span class="attr-val">'white'</span>,
+        marginBottom: <span class="attr-val">8</span>, borderRadius: <span class="attr-val">10</span>,
+      }}
+    &gt;
+      &lt;<span class="attr">Text</span> style={{ fontSize: <span class="attr-val">20</span>, marginLeft: <span class="attr-val">10</span> }}&gt;🏙️&lt;/<span class="attr">Text</span>&gt;
+      &lt;<span class="attr">Text</span> style={{ fontSize: <span class="attr-val">16</span>, fontWeight: <span class="attr-val">'700'</span> }}&gt;{item.name}&lt;/<span class="attr">Text</span>&gt;
+    &lt;/<span class="attr">View</span>&gt;
+  )}
+  ItemSeparatorComponent={() => &lt;<span class="attr">View</span> style={{ height: <span class="attr-val">4</span> }} /&gt;}
+/&gt;</pre></div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 2: FlatList شبكي (Grid)</div>
+      <p>عدّل FlatList السابق ليعرض المدن في شبكة (2 عمودان)، مع حجم مناسب لكل بطاقة.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box"><pre>&lt;<span class="attr">FlatList</span>
+  data={CITIES}
+  keyExtractor={item => item.id}
+  numColumns={<span class="attr-val">2</span>}                   <span class="comment">// ✅ عمودان</span>
+  columnWrapperStyle={{ gap: <span class="attr-val">10</span> }} <span class="comment">// ✅ مسافة بين الأعمدة</span>
+  contentContainerStyle={{ padding: <span class="attr-val">12</span>, gap: <span class="attr-val">10</span> }}
+  renderItem={({ item }) => (
+    &lt;<span class="attr">View</span>
+      style={{
+        flex: <span class="attr-val">1</span>,               <span class="comment">// ✅ flex: 1 لتوزيع المساحة</span>
+        backgroundColor: <span class="attr-val">'white'</span>,
+        borderRadius: <span class="attr-val">12</span>,
+        padding: <span class="attr-val">20</span>,
+        alignItems: <span class="attr-val">'center'</span>,
+      }}
+    &gt;
+      &lt;<span class="attr">Text</span> style={{ fontSize: <span class="attr-val">28</span> }}&gt;🏙️&lt;/<span class="attr">Text</span>&gt;
+      &lt;<span class="attr">Text</span> style={{ fontWeight: <span class="attr-val">'700'</span>, marginTop: <span class="attr-val">8</span> }}&gt;{item.name}&lt;/<span class="attr">Text</span>&gt;
+    &lt;/<span class="attr">View</span>&gt;
+  )}
+/&gt;</pre></div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 3: FlatList مع Header وEmpty</div>
+      <p>اكتب FlatList لقائمة مهام فارغة يعرض: عنواناً في الأعلى "مهامي اليوم"، ورسالة تشجيعية عند القائمة الفارغة.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box"><pre><span class="tag-name">const</span> [todos, setTodos] = useState([]);
+
+&lt;<span class="attr">FlatList</span>
+  data={todos}
+  keyExtractor={item => item.id}
+  renderItem={({ item }) => (
+    &lt;<span class="attr">Text</span> style={{ padding: <span class="attr-val">16</span> }}&gt;{item.text}&lt;/<span class="attr">Text</span>&gt;
+  )}
+  ListHeaderComponent={
+    &lt;<span class="attr">View</span>
+      style={{
+        padding: <span class="attr-val">20</span>, backgroundColor: <span class="attr-val">'#0ea5e9'</span>
+      }}
+    &gt;
+      &lt;<span class="attr">Text</span>
+        style={{ color: <span class="attr-val">'white'</span>, fontSize: <span class="attr-val">22</span>, fontWeight: <span class="attr-val">'900'</span> }}
+      &gt;
+        مهامي اليوم 📋
+      &lt;/<span class="attr">Text</span>&gt;
+    &lt;/<span class="attr">View</span>&gt;
+  }
+  ListEmptyComponent={
+    &lt;<span class="attr">View</span>
+      style={{ alignItems: <span class="attr-val">'center'</span>, paddingVertical: <span class="attr-val">60</span> }}
+    &gt;
+      &lt;<span class="attr">Text</span> style={{ fontSize: <span class="attr-val">48</span> }}&gt;🎉&lt;/<span class="attr">Text</span>&gt;
+      &lt;<span class="attr">Text</span>
+        style={{ fontSize: <span class="attr-val">16</span>, color: <span class="attr-val">'#64748b'</span>, marginTop: <span class="attr-val">12</span> }}
+      &gt;
+        أنجزت كل مهامك! استرح!
+      &lt;/<span class="attr">Text</span>&gt;
+    &lt;/<span class="attr">View</span>&gt;
+  }
+/&gt;</pre></div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 4: SectionList بالتواريخ</div>
+      <p>اكتب SectionList يعرض مهاماً مجمّعة بالتاريخ: اليوم (3 مهام)، الغد (2 مهام)، هذا الأسبوع (4 مهام).</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box"><pre><span class="tag-name">const</span> TASKS = [
+  { title: <span class="attr-val">'اليوم'</span>, data: [
+    { id: <span class="attr-val">'1'</span>, text: <span class="attr-val">'مراجعة الكود'</span>, done: <span class="attr-val">false</span> },
+    { id: <span class="attr-val">'2'</span>, text: <span class="attr-val">'اجتماع الفريق'</span>, done: <span class="attr-val">true</span> },
+    { id: <span class="attr-val">'3'</span>, text: <span class="attr-val">'إرسال التقرير'</span>, done: <span class="attr-val">false</span> },
+  ]},
+  { title: <span class="attr-val">'الغد'</span>, data: [
+    { id: <span class="attr-val">'4'</span>, text: <span class="attr-val">'تصميم الواجهة'</span>, done: <span class="attr-val">false</span> },
+    { id: <span class="attr-val">'5'</span>, text: <span class="attr-val">'مراجعة PR'</span>, done: <span class="attr-val">false</span> },
+  ]},
+  { title: <span class="attr-val">'هذا الأسبوع'</span>, data: [
+    { id: <span class="attr-val">'6'</span>, text: <span class="attr-val">'نشر التطبيق'</span>, done: <span class="attr-val">false</span> },
+  ]},
+];
+
+&lt;<span class="attr">SectionList</span>
+  sections={TASKS}
+  keyExtractor={item => item.id}
+  renderItem={({ item }) => (
+    &lt;<span class="attr">View</span>
+      style={{
+        flexDirection: <span class="attr-val">'row'</span>, alignItems: <span class="attr-val">'center'</span>,
+        padding: <span class="attr-val">14</span>, gap: <span class="attr-val">10</span>, backgroundColor: <span class="attr-val">'white'</span>,
+      }}
+    &gt;
+      &lt;<span class="attr">Text</span>&gt;{item.done ? <span class="attr-val">'✅'</span> : <span class="attr-val">'⬜'</span>}&lt;/<span class="attr">Text</span>&gt;
+      &lt;<span class="attr">Text</span>
+        style={{
+          textDecorationLine: item.done ? <span class="attr-val">'line-through'</span> : <span class="attr-val">'none'</span>,
+          color: item.done ? <span class="attr-val">'#94a3b8'</span> : <span class="attr-val">'#0f172a'</span>,
+        }}
+      &gt;
+        {item.text}
+      &lt;/<span class="attr">Text</span>&gt;
+    &lt;/<span class="attr">View</span>&gt;
+  )}
+  renderSectionHeader={({ section: { title, data } }) => (
+    &lt;<span class="attr">View</span>
+      style={{
+        backgroundColor: <span class="attr-val">'#f0f9ff'</span>, padding: <span class="attr-val">10</span>,
+        flexDirection: <span class="attr-val">'row'</span>, justifyContent: <span class="attr-val">'space-between'</span>,
+      }}
+    &gt;
+      &lt;<span class="attr">Text</span> style={{ fontWeight: <span class="attr-val">'700'</span>, color: <span class="attr-val">'#0ea5e9'</span> }}&gt;{title}&lt;/<span class="attr">Text</span>&gt;
+      &lt;<span class="attr">Text</span> style={{ color: <span class="attr-val">'#64748b'</span> }}&gt;{data.length} مهام&lt;/<span class="attr">Text</span>&gt;
+    &lt;/<span class="attr">View</span>&gt;
+  )}
+  stickySectionHeadersEnabled
+/&gt;</pre></div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 5: Infinite Scroll</div>
+      <p>اكتب FlatList مع Infinite Scroll يُحاكي تحميل بيانات: صفحة 1 تُحمّل 10 عناصر، وعند الوصول للنهاية يُحمّل 10 أخرى، وهكذا حتى 50 عنصراً إجمالاً.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box"><pre><span class="tag-name">const</span> PAGE_SIZE = <span class="attr-val">10</span>;
+<span class="tag-name">const</span> MAX_ITEMS = <span class="attr-val">50</span>;
+
+<span class="tag-name">function</span> <span class="attr">generateItems</span>(page) {
+  <span class="tag-name">return</span> Array.from({ length: PAGE_SIZE }, (_, i) => ({
+    id: `${page}-${i}`,
+    text: `عنصر ${(page - <span class="attr-val">1</span>) * PAGE_SIZE + i + <span class="attr-val">1</span>}`,
+  }));
+}
+
+<span class="tag-name">function</span> <span class="attr">InfiniteList</span>() {
+  <span class="tag-name">const</span> [items, setItems]   = useState(() => generateItems(<span class="attr-val">1</span>));
+  <span class="tag-name">const</span> [page, setPage]     = useState(<span class="attr-val">2</span>);
+  <span class="tag-name">const</span> [loading, setLoading] = useState(<span class="attr-val">false</span>);
+
+  <span class="tag-name">const</span> hasMore = items.length &lt; MAX_ITEMS;
+
+  <span class="tag-name">const</span> loadMore = <span class="tag-name">async</span> () => {
+    <span class="tag-name">if</span> (loading || !hasMore) <span class="tag-name">return</span>;
+    setLoading(<span class="attr-val">true</span>);
+    <span class="comment">// محاكاة تأخر الشبكة</span>
+    <span class="tag-name">await</span> <span class="tag-name">new</span> Promise(r => setTimeout(r, <span class="attr-val">1000</span>));
+    setItems(prev => [...prev, ...generateItems(page)]);
+    setPage(p => p + <span class="attr-val">1</span>);
+    setLoading(<span class="attr-val">false</span>);
+  };
+
+  <span class="tag-name">return</span> (
+    &lt;<span class="attr">FlatList</span>
+      data={items}
+      keyExtractor={item => item.id}
+      renderItem={({ item }) => (
+        &lt;<span class="attr">View</span> style={{ padding: <span class="attr-val">16</span>, borderBottomWidth: <span class="attr-val">1</span>, borderBottomColor: <span class="attr-val">'#e2e8f0'</span> }}&gt;
+          &lt;<span class="attr">Text</span>&gt;{item.text}&lt;/<span class="attr">Text</span>&gt;
+        &lt;/<span class="attr">View</span>&gt;
+      )}
+      onEndReached={loadMore}
+      onEndReachedThreshold={<span class="attr-val">0.3</span>}
+      ListFooterComponent={
+        loading ? &lt;<span class="attr">ActivityIndicator</span> color=<span class="attr-val">"#0ea5e9"</span> style={{ padding: <span class="attr-val">20</span> }} /&gt;
+        : !hasMore ? &lt;<span class="attr">Text</span> style={{ textAlign: <span class="attr-val">'center'</span>, padding: <span class="attr-val">20</span>, color: <span class="attr-val">'#94a3b8'</span> }}&gt;انتهت القائمة ✓&lt;/<span class="attr">Text</span>&gt;
+        : null
+      }
+    /&gt;
+  );
+}</pre></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="quiz-container" id="quiz">
+    <div class="quiz-intro"><p>اختبر فهمك لـ FlatList و SectionList!</p></div>
+    <div class="quiz-type-tabs">
+      <button class="qt-tab active" onclick="switchQuiz(this,'tf')">✓✗ صح وخطأ</button>
+      <button class="qt-tab" onclick="switchQuiz(this,'mc')">🔘 اختيار من متعدد</button>
+    </div>
+
+    <div class="quiz-section active" id="quiz-tf">
+      <div class="quiz-question" data-correct="false">
+        <span class="q-num">1</span><span class="q-text">ScrollView أكفأ من FlatList عند عرض 1000 عنصر لأنه يُحمّل كل شيء مرة واحدة.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">2</span><span class="q-text">SectionList تأخذ خاصية <code>sections</code> بدل <code>data</code>.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">3</span><span class="q-text"><code>onEndReached</code> تُطلق عند اقتراب المستخدم من نهاية القائمة.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="false">
+        <span class="q-num">4</span><span class="q-text">يمكن استخدام <code>numColumns</code> مع <code>horizontal</code> في نفس الوقت.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">5</span><span class="q-text">استخدام <code>useCallback</code> في <code>renderItem</code> يُحسّن أداء FlatList.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <button class="quiz-submit" onclick="submitQuiz('tf')">عرض النتيجة 🎯</button>
+      <div class="quiz-result" id="result-tf"><div class="result-score" id="score-tf">0/5</div><div class="result-label">إجابات صحيحة</div><div class="result-message" id="msg-tf"></div><button class="retry-btn" onclick="retryQuiz('tf')">🔄 حاول تاني</button></div>
+    </div>
+
+    <div class="quiz-section" id="quiz-mc">
+      <div class="quiz-question" data-correct="2">
+        <span class="q-num">1</span><span class="q-text">ما الخاصية التي تجعل قائمة FlatList تعرض أفقياً كـ Carousel؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">direction="row"</button>
+          <button class="q-opt" onclick="answerMC(this,1)">flexDirection="row"</button>
+          <button class="q-opt" onclick="answerMC(this,2)">horizontal={true}</button>
+          <button class="q-opt" onclick="answerMC(this,3)">scroll="horizontal"</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="0">
+        <span class="q-num">2</span><span class="q-text">ما المكوّن الظاهر عند قائمة FlatList فارغة؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">ListEmptyComponent</button>
+          <button class="q-opt" onclick="answerMC(this,1)">EmptyComponent</button>
+          <button class="q-opt" onclick="answerMC(this,2)">renderEmpty</button>
+          <button class="q-opt" onclick="answerMC(this,3)">ListNullComponent</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="3">
+        <span class="q-num">3</span><span class="q-text">ما prop الـ SectionList المسؤول عن عرض رأس كل مجموعة؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">renderHeader</button>
+          <button class="q-opt" onclick="answerMC(this,1)">sectionHeader</button>
+          <button class="q-opt" onclick="answerMC(this,2)">ListHeaderComponent</button>
+          <button class="q-opt" onclick="answerMC(this,3)">renderSectionHeader</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="1">
+        <span class="q-num">4</span><span class="q-text">في Infinite Scroll، ما الذي يمنع تكرار الطلب عند الوصول للنهاية مرات متعددة؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">onEndReachedThreshold منخفض</button>
+          <button class="q-opt" onclick="answerMC(this,1)">التحقق من <code>loading || !hasMore</code> قبل الطلب</button>
+          <button class="q-opt" onclick="answerMC(this,2)">FlatList يمنع ذلك تلقائياً</button>
+          <button class="q-opt" onclick="answerMC(this,3)">useEffect مع dependency</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="0">
+        <span class="q-num">5</span><span class="q-text">ما القيمة المناسبة لـ <code>behavior</code> في KeyboardAvoidingView على iOS؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">padding</button>
+          <button class="q-opt" onclick="answerMC(this,1)">height</button>
+          <button class="q-opt" onclick="answerMC(this,2)">position</button>
+          <button class="q-opt" onclick="answerMC(this,3)">scroll</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <button class="quiz-submit" onclick="submitQuiz('mc')">عرض النتيجة 🎯</button>
+      <div class="quiz-result" id="result-mc"><div class="result-score" id="score-mc">0/5</div><div class="result-label">إجابات صحيحة</div><div class="result-message" id="msg-mc"></div><button class="retry-btn" onclick="retryQuiz('mc')">🔄 حاول تاني</button></div>
+    </div>
+  </div>
+
+  <div class="lesson-nav">
+    <a href="./lesson-11.html" class="nav-btn"><span>⬅️</span><span>الدرس السابق</span></a>
+    <button class="nav-btn complete-btn" id="completeBtn" onclick="markComplete(this)"><span>✅</span><span>علّم كمكتمل</span></button>
+    <a href="./lesson-13.html" class="nav-btn"><span>الدرس التالي</span><span>➡️</span></a>
+  </div>
+
+  <div class="notebook-footer">
+    <h3>🎉 أتقنت القوائم الديناميكية!</h3>
+    <p>FlatList للقوائم، SectionList للمجموعات، وكلاهما سلاح الأداء الأقوى في RN. 📋<br><strong>الدرس التالي: Navigation — التنقل بين الشاشات 🗺️</strong></p>
+  </div>
+</div>
+
+<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">⬆️</button>
+<div class="toast" id="toast"></div>
+<script src="../../js/data/courses.js"></script>
+<script src="../../js/progress.js"></script>
+<script>
+const COURSE_ID='react-native', LESSON_ID=12, TOTAL=28;
+function toggleSolution(b){const s=b.nextElementSibling;s.classList.toggle('show');b.textContent=s.classList.contains('show')?'إخفاء الحل ▲':'عرض الحل ▼';}
+function copyCode(b){const p=b.closest('.code-box').querySelector('pre');navigator.clipboard.writeText(p.innerText).then(()=>{b.classList.add('copied');b.textContent='✓ تم النسخ';setTimeout(()=>{b.classList.remove('copied');b.textContent='📋 نسخ';},2000);});}
+function switchQuiz(b,t){document.querySelectorAll('.qt-tab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.quiz-section').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.getElementById('quiz-'+t).classList.add('active');}
+const answers={tf:{},mc:{}};
+function answerTF(b,v){const q=b.closest('.quiz-question'),i=Array.from(q.parentNode.querySelectorAll('.quiz-question')).indexOf(q);q.querySelectorAll('.q-opt').forEach(o=>o.classList.remove('selected'));b.classList.add('selected');answers.tf[i]=v;}
+function answerMC(b,i){const q=b.closest('.quiz-question'),qi=Array.from(q.parentNode.querySelectorAll('.quiz-question')).indexOf(q);q.querySelectorAll('.q-opt').forEach(o=>o.classList.remove('selected'));b.classList.add('selected');answers.mc[qi]=i;}
+function submitQuiz(type){const sec=document.getElementById('quiz-'+type),qs=sec.querySelectorAll('.quiz-question');let c=0;qs.forEach((q,i)=>{const ca=type==='tf'?(q.dataset.correct==='true'):parseInt(q.dataset.correct),ua=answers[type][i],fb=q.querySelector('.q-feedback'),opts=q.querySelectorAll('.q-opt');opts.forEach(o=>{o.classList.remove('selected');o.disabled=true;});if(ua===undefined){fb.className='q-feedback wrong show';fb.textContent='⚠️ ما اخترتش إجابة!';return;}if(ua===ca){c++;fb.className='q-feedback correct show';fb.textContent='✓ إجابة صحيحة!';if(type==='tf')opts[ca?0:1].classList.add('correct');else opts[ca].classList.add('correct');}else{fb.className='q-feedback wrong show';if(type==='tf'){opts[ca?0:1].classList.add('correct');opts[ua?0:1].classList.add('wrong');fb.textContent='✗ خطأ.';}else{opts[ca].classList.add('correct');opts[ua].classList.add('wrong');fb.textContent='✗ الإجابة بالأخضر.';}}});const r=document.getElementById('result-'+type);document.getElementById('score-'+type).textContent=c+'/'+qs.length;const m=document.getElementById('msg-'+type);if(c===qs.length){m.textContent='🏆 ممتاز 100%!';m.className='result-message excellent';}else if(c>=3){m.textContent='👍 جيد!';m.className='result-message good';}else{m.textContent='📚 راجع الدرس.';m.className='result-message try-again';}r.classList.add('show');r.scrollIntoView({behavior:'smooth',block:'center'});}
+function retryQuiz(type){const sec=document.getElementById('quiz-'+type);sec.querySelectorAll('.q-opt').forEach(o=>{o.classList.remove('selected','correct','wrong');o.disabled=false;});sec.querySelectorAll('.q-feedback').forEach(f=>{f.classList.remove('show','correct','wrong');f.textContent='';});document.getElementById('result-'+type).classList.remove('show');answers[type]={};}
+function markComplete(btn){const done=Progress.toggleLessonComplete(COURSE_ID,LESSON_ID);btn.classList.toggle('completed',done);btn.querySelector('span:last-child').textContent=done?'مكتمل! ⭐':'علّم كمكتمل';showToast(done?'🎉 أكملت درس FlatList!':'تم إلغاء الإكمال');}
+if(Progress.isLessonComplete(COURSE_ID,LESSON_ID)){const b=document.getElementById('completeBtn');b.classList.add('completed');b.querySelector('span:last-child').textContent='مكتمل! ⭐';}
+(function(){const p=Progress.getCourseProgress(COURSE_ID,TOTAL);document.getElementById('progFill').style.width=p+'%';document.getElementById('progText').textContent=p+'%';})();
+function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
+window.addEventListener('scroll',()=>{document.getElementById('scrollTop').classList.toggle('show',window.scrollY>300);});
+document.querySelectorAll('.toc-card a').forEach(l=>{l.addEventListener('click',e=>{e.preventDefault();const t=document.querySelector(l.getAttribute('href'));if(t)t.scrollIntoView({behavior:'smooth',block:'start'});});});
+</script>
+</body>
+</html>

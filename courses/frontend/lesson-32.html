@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-V2NCKVL16D"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-V2NCKVL16D');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>مشروع: موقع Portfolio كامل — دفتر البرمجة</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=Cairo:wght@300;400;500;600;700;900&family=Caveat:wght@400;700&family=Fira+Code:wght@400;500;600&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../css/shared.css">
+<link rel="stylesheet" href="../../css/notebook.css">
+<style>
+body { padding: 20px 10px; }
+.completion-banner {
+  background: linear-gradient(135deg, #1e3a8a 0%, #7c3aed 100%);
+  color: white; border-radius: var(--radius);
+  padding: 30px 28px; margin: 30px 0; text-align: center;
+}
+.completion-banner h3 { font-family: 'Aref Ruqaa', serif; font-size: 1.5rem; margin-bottom: 12px; }
+.completion-banner p { font-size: 1rem; line-height: 1.8; opacity: .9; margin-bottom: 20px; }
+.roadmap-next { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+.road-item { background: rgba(255,255,255,.15); border: 1px solid rgba(255,255,255,.3); padding: 6px 16px; border-radius: 20px; font-size: .9rem; }
+.portfolio-editor .try-it-body { grid-template-columns: 1fr; min-height: 700px; }
+.portfolio-editor .try-it-editor { min-height: 320px; }
+.portfolio-editor .try-it-preview { border-right: none; border-top: 2px dashed var(--border); }
+.portfolio-editor .try-it-preview iframe { min-height: 500px; }
+@media (max-width: 700px) {
+  .portfolio-editor .try-it-editor { min-height: 250px; font-size: 12px; }
+  .portfolio-editor .try-it-preview iframe { min-height: 400px; }
+}
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="crumbs">
+    <a href="../../index.html">🏠 الرئيسية</a>
+    <span class="sep">/</span>
+    <a href="./index.html">🌐 الفرونت إند</a>
+    <span class="sep">/</span>
+    <span class="current">🏗️ الدرس 32: موقع Portfolio كامل</span>
+  </div>
+  <div class="progress-mini">
+    <div class="progress-bar-mini"><div class="progress-fill-mini" id="progFill"></div></div>
+    <span id="progText">0%</span>
+  </div>
+</div>
+
+<div class="notebook">
+
+  <div class="notebook-header">
+    <div class="lesson-tag">🏆 الدرس 32 / 32 — المشروع النهائي</div>
+    <h1><span class="sparkle">✦</span> مشروع: موقع Portfolio كامل <span class="sparkle">✦</span></h1>
+    <div class="lesson-meta">
+      <span>⏱ 90 دقيقة</span>
+      <span>🌐 HTML + CSS + JavaScript</span>
+      <span>🚀 ارفعه على الإنترنت</span>
+    </div>
+  </div>
+
+  <div class="toc-card">
+    <h2>📑 فهرس الدرس</h2>
+    <ol>
+      <li><a href="#s1">ما هو موقع Portfolio؟</a></li>
+      <li><a href="#s2">هيكل المشروع</a></li>
+      <li><a href="#s3">Sticky Navigation</a></li>
+      <li><a href="#s4">Hero + Typewriter Animation</a></li>
+      <li><a href="#s5">المهارات والمشاريع (Dynamic)</a></li>
+      <li><a href="#s6">Dark Mode بـ CSS Variables</a></li>
+      <li><a href="#s7">Scroll Animations بـ IntersectionObserver</a></li>
+      <li><a href="#s8">المشروع الكامل 🎨</a></li>
+      <li><a href="#exercises">التحديات</a></li>
+      <li><a href="#quiz">اختبر نفسك</a></li>
+    </ol>
+  </div>
+
+  <!-- SECTION 1 -->
+  <div class="section" id="s1">
+    <h2 class="section-title"><span class="num">.1</span> ما هو موقع Portfolio؟ <span class="en">Portfolio Website</span></h2>
+    <div class="content">
+      <p>موقع الـ <strong>Portfolio</strong> هو بطاقة تعريفك الرقمية — المكان الذي يرى فيه أصحاب العمل من أنت، ماذا تتقن، وماذا بنيت. إنه <strong>أقوى CV</strong> في مجال البرمجة.</p>
+      <div class="analogy">
+        <div class="analogy-title">💼 تخيل متجراً على الإنترنت:</div>
+        <p>موقع Portfolio هو متجرك الخاص على الويب. المنتج الذي تبيعه هو <strong>مهاراتك ومشاريعك</strong>، والزبون الأهم هو صاحب العمل أو العميل.</p>
+      </div>
+      <p>موقع Portfolio احترافي يضم:</p>
+      <ul>
+        <li><strong>قسم Hero</strong> — اسمك ومسماك الوظيفي وزر CTA</li>
+        <li><strong>قسم عني (About)</strong> — من أنت، مهاراتك، معلوماتك</li>
+        <li><strong>قسم المشاريع (Projects)</strong> — أفضل أعمالك مع روابط مباشرة</li>
+        <li><strong>نموذج التواصل (Contact)</strong> — طريقة للوصول إليك</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- SECTION 2 -->
+  <div class="section" id="s2">
+    <h2 class="section-title"><span class="num">.2</span> هيكل المشروع <span class="en">Project Structure</span></h2>
+    <div class="content">
+      <p>مشروعنا ملف HTML واحد يحتوي على كل شيء: HTML + CSS + JavaScript. هيكل الأقسام:</p>
+      <div class="code-box">
+        <div class="code-header"><span>🏗️ هيكل الصفحة</span></div>
+<pre><span class="tag-open">&lt;</span><span class="tag-name">nav</span><span class="tag-open">&gt;</span>                       <span class="comment">// Navigation ثابتة + Dark Mode</span>
+<span class="tag-open">&lt;</span><span class="tag-name">section</span> <span class="attr">id</span>=<span class="attr-val">"hero"</span><span class="tag-open">&gt;</span>          <span class="comment">// اسمك + Typewriter animation</span>
+<span class="tag-open">&lt;</span><span class="tag-name">section</span> <span class="attr">id</span>=<span class="attr-val">"about"</span><span class="tag-open">&gt;</span>         <span class="comment">// معلوماتك الشخصية</span>
+<span class="tag-open">&lt;</span><span class="tag-name">section</span> <span class="attr">id</span>=<span class="attr-val">"skills"</span><span class="tag-open">&gt;</span>        <span class="comment">// أشرطة المهارات المتحركة</span>
+<span class="tag-open">&lt;</span><span class="tag-name">section</span> <span class="attr">id</span>=<span class="attr-val">"projects"</span><span class="tag-open">&gt;</span>      <span class="comment">// بطاقات المشاريع</span>
+<span class="tag-open">&lt;</span><span class="tag-name">section</span> <span class="attr">id</span>=<span class="attr-val">"contact"</span><span class="tag-open">&gt;</span>       <span class="comment">// نموذج تواصل + تحقق</span>
+<span class="tag-open">&lt;</span><span class="tag-name">footer</span><span class="tag-open">&gt;</span>                    <span class="comment">// روابط سوشيال + حقوق النشر</span></pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 3 -->
+  <div class="section" id="s3">
+    <h2 class="section-title"><span class="num">.3</span> Sticky Navigation <span class="en">Fixed Nav</span></h2>
+    <div class="content">
+      <p>الـ Navigation تبقى ثابتة أعلى الصفحة عند التمرير بفضل <em>position: sticky</em> مع تأثير blur شفاف:</p>
+      <div class="code-box">
+        <div class="code-header"><span>📌 Sticky Nav CSS</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="attr">nav</span> {
+  <span class="tag-name">position</span>: <span class="attr-val">sticky</span>;
+  <span class="tag-name">top</span>: <span class="attr-val">0</span>;
+  <span class="tag-name">z-index</span>: <span class="attr-val">100</span>;
+  <span class="tag-name">backdrop-filter</span>: <span class="attr-val">blur(12px)</span>;
+  <span class="tag-name">background</span>: <span class="attr-val">rgba(255,255,255,.9)</span>;
+}</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 4 -->
+  <div class="section" id="s4">
+    <h2 class="section-title"><span class="num">.4</span> Hero + Typewriter <span class="en">Hero Section</span></h2>
+    <div class="content">
+      <p>تأثير <strong>Typewriter</strong> يعرض مسمياتك الوظيفية بالكتابة والمسح تلقائياً — يجذب انتباه الزائر فور دخوله الموقع:</p>
+      <div class="code-box">
+        <div class="code-header"><span>⌨️ Typewriter Animation</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-name">const</span> roles = [<span class="attr-val">"مطور Frontend"</span>, <span class="attr-val">"مصمم UI/UX"</span>];
+<span class="tag-name">let</span> ri=<span class="attr-val">0</span>, ci=<span class="attr-val">0</span>, dl=<span class="attr-val">false</span>;
+<span class="tag-name">function</span> type() {
+  <span class="tag-name">const</span> w=roles[ri], el=document.getElementById(<span class="attr-val">"typed"</span>);
+  <span class="tag-name">if</span>(!dl){ el.textContent=w.slice(<span class="attr-val">0</span>,++ci);
+    <span class="tag-name">if</span>(ci===w.length){dl=<span class="attr-val">true</span>;setTimeout(type,<span class="attr-val">1600</span>);<span class="tag-name">return</span>;}
+  } <span class="tag-name">else</span> {
+    el.textContent=w.slice(<span class="attr-val">0</span>,--ci);
+    <span class="tag-name">if</span>(ci===<span class="attr-val">0</span>){dl=<span class="attr-val">false</span>;ri=(ri+<span class="attr-val">1</span>)%roles.length;}
+  }
+  setTimeout(type, dl ? <span class="attr-val">55</span> : <span class="attr-val">95</span>);
+}
+type();</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 5 -->
+  <div class="section" id="s5">
+    <h2 class="section-title"><span class="num">.5</span> المهارات والمشاريع <span class="en">Dynamic Content</span></h2>
+    <div class="content">
+      <p>نولّد المهارات والمشاريع ديناميكياً من JavaScript arrays — لتحديث الموقع تغيّر البيانات فقط بدون لمس HTML:</p>
+      <div class="code-box">
+        <div class="code-header"><span>⚡ Dynamic Skills</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-name">const</span> skills = [
+  {name:<span class="attr-val">"HTML"</span>, pct:<span class="attr-val">95</span>, color:<span class="attr-val">"#ea580c"</span>},
+  {name:<span class="attr-val">"CSS"</span>,  pct:<span class="attr-val">88</span>, color:<span class="attr-val">"#7c3aed"</span>},
+];
+document.getElementById(<span class="attr-val">"skillsList"</span>).innerHTML =
+  skills.map(s =&gt; <span class="attr-val">`&lt;div class="skill-item"&gt;
+    &lt;div class="skill-name"&gt;${s.name}&lt;/div&gt;
+    &lt;div class="skill-fill" data-pct="${s.pct}"&gt;&lt;/div&gt;
+  &lt;/div&gt;`</span>).join(<span class="attr-val">""</span>);</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 6 -->
+  <div class="section" id="s6">
+    <h2 class="section-title"><span class="num">.6</span> Dark Mode <span class="en">CSS Variables</span></h2>
+    <div class="content">
+      <p>Dark Mode يعمل بتغيير CSS Variables عبر class واحدة على الـ body — بدون تكرار لأي لون:</p>
+      <div class="code-box">
+        <div class="code-header"><span>🌙 Dark Mode CSS</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">/* Light Mode */</span>
+<span class="attr">:root</span> { <span class="tag-name">--bg</span>:<span class="attr-val">#fff</span>; <span class="tag-name">--text</span>:<span class="attr-val">#1e293b</span>; }
+
+<span class="comment">/* Dark Mode */</span>
+<span class="attr">body.dark</span> { <span class="tag-name">--bg</span>:<span class="attr-val">#0f172a</span>; <span class="tag-name">--text</span>:<span class="attr-val">#e2e8f0</span>; }
+
+<span class="comment">/* يتطبق تلقائياً في كل مكان */</span>
+<span class="attr">body</span> { <span class="tag-name">background</span>:<span class="attr-val">var(--bg)</span>; <span class="tag-name">color</span>:<span class="attr-val">var(--text)</span>; }</pre>
+      </div>
+      <div class="code-box green">
+        <div class="code-header"><span>🌙 Dark Mode JS</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-name">let</span> dark = localStorage.getItem(<span class="attr-val">"theme"</span>) === <span class="attr-val">"dark"</span>;
+document.getElementById(<span class="attr-val">"themeBtn"</span>).addEventListener(<span class="attr-val">"click"</span>, () =&gt; {
+  dark = !dark;
+  document.body.classList.toggle(<span class="attr-val">"dark"</span>, dark);
+  localStorage.setItem(<span class="attr-val">"theme"</span>, dark ? <span class="attr-val">"dark"</span> : <span class="attr-val">"light"</span>);
+});</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 7 -->
+  <div class="section" id="s7">
+    <h2 class="section-title"><span class="num">.7</span> Scroll Animations <span class="en">IntersectionObserver</span></h2>
+    <div class="content">
+      <p><em>IntersectionObserver</em> هو الطريقة الحديثة لتشغيل animations عند ظهور العنصر في الشاشة — أفضل بكثير من scroll event للأداء:</p>
+      <div class="code-box">
+        <div class="code-header"><span>👁️ IntersectionObserver</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-name">const</span> io = <span class="tag-name">new</span> IntersectionObserver(entries =&gt; {
+  entries.forEach(entry =&gt; {
+    <span class="tag-name">if</span>(entry.isIntersecting)
+      entry.target.classList.add(<span class="attr-val">"show"</span>);
+  });
+}, { threshold: <span class="attr-val">0</span> });
+
+document.querySelectorAll(<span class="attr-val">".fade-in"</span>).forEach(el =&gt; io.observe(el));</pre>
+      </div>
+      <div class="tip-box">
+        <strong>لماذا IntersectionObserver؟</strong> لا يستهلك CPU عند كل pixel تمرير، بل يعمل فقط عندما يتغير وضع العنصر في viewport.
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 8: Full Portfolio Project -->
+  <div class="section" id="s8">
+    <h2 class="section-title"><span class="num">.8</span> موقع Portfolio الكامل <span class="en">Full Portfolio</span></h2>
+    <div class="content">
+      <p>هذا هو المشروع النهائي — موقع Portfolio احترافي كامل مع Dark Mode وanimations ومهارات متحركة ومشاريع. <strong>غيّره باسمك ومعلوماتك وانشره على الإنترنت!</strong></p>
+      <div class="note-box">
+        غيّر اسم <strong>"أحمد خالد"</strong> باسمك، عدّل مصفوفة <code>skills</code> بمهاراتك الحقيقية، ومصفوفة <code>projects</code> بمشاريعك الفعلية مع روابط GitHub.
+      </div>
+    </div>
+    <div class="try-it portfolio-editor">
+      <div class="try-it-header">
+        <span>🎨 Portfolio كامل — احترافي وجاهز للنشر</span>
+        <div class="try-it-controls">
+          <button class="try-btn" onclick="runCode(this)">▶️ تشغيل</button>
+          <button class="try-btn" onclick="resetCode(this)">🔄 إعادة</button>
+        </div>
+      </div>
+      <div class="try-it-body">
+        <textarea class="try-it-editor" spellcheck="false" id="portfolioEditor"></textarea>
+        <div class="try-it-preview"><iframe srcdoc="" sandbox="allow-scripts allow-same-origin allow-modals allow-popups allow-forms" title="معاينة الكود"></iframe></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EXERCISES -->
+  <div class="section" id="exercises">
+    <h2 class="section-title"><span class="num">📝</span> تحديات التخصيص <span class="en">Challenges</span></h2>
+
+    <div class="exercise">
+      <div class="exercise-title">تحدي 1: خصّص الموقع باسمك ومعلوماتك</div>
+      <p>غيّر الاسم، البلد، التخصص، والمهارات لتعكس هويتك الحقيقية.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الفكرة ▼</button>
+      <div class="solution">
+        <span class="solution-label">الفكرة:</span>
+        <p>ابحث في الكود عن "أحمد خالد" وغيّره. عدّل مصفوفة <code>skills</code> بنسبك الحقيقية، ومصفوفة <code>projects</code> بمشاريعك الفعلية مع روابط GitHub الحقيقية.</p>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تحدي 2: أضف صورة شخصية حقيقية</div>
+      <p>استبدل الـ emoji بصورتك الشخصية مع border دائري وتأثير hover.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الفكرة ▼</button>
+      <div class="solution">
+        <span class="solution-label">الفكرة:</span>
+        <div class="code-box">
+<pre>&lt;<span class="tag-name">img</span> <span class="attr">src</span>=<span class="attr-val">"./assets/photo.jpg"</span>
+     <span class="attr">class</span>=<span class="attr-val">"hero-img"</span> <span class="attr">alt</span>=<span class="attr-val">"صورتي"</span>&gt;
+
+<span class="comment">/* CSS */</span>
+.hero-img {
+  width: 150px; height: 150px;
+  border-radius: 50%; object-fit: cover;
+  border: 4px solid var(--accent);
+  transition: transform .3s;
+}
+.hero-img:hover { transform: scale(1.05); }</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تحدي 3: أضف قسم تجربة عمل (Timeline)</div>
+      <p>أضف قسماً جديداً يعرض خبراتك أو تعليمك بشكل timeline عمودي.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الفكرة ▼</button>
+      <div class="solution">
+        <span class="solution-label">الفكرة:</span>
+        <div class="code-box">
+<pre>.timeline { border-right: 2px solid var(--border); padding-right: 20px; }
+.tl-item { position: relative; margin-bottom: 24px; }
+.tl-item::before {
+  content: ''; position: absolute; right: -25px; top: 6px;
+  width: 10px; height: 10px; border-radius: 50%;
+  background: var(--accent);
+}</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تحدي 4: ارفع موقعك على الإنترنت</div>
+      <p>استخدم Netlify أو GitHub Pages لرفع موقعك وإرسال الرابط لأصدقائك.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الفكرة ▼</button>
+      <div class="solution">
+        <span class="solution-label">الفكرة:</span>
+        <p>1. احفظ الموقع في مجلد <code>portfolio/</code><br>
+        2. ارفعه على GitHub repo جديد<br>
+        3. فعّل GitHub Pages أو اسحب المجلد على Netlify<br>
+        4. شارك الرابط مع العالم! 🚀</p>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تحدي 5: أضف Animation للأرقام العداد</div>
+      <p>أضف أرقاماً متحركة في قسم "عني" مثل: "32 درس" و"3 مشاريع" تعد من 0 للرقم النهائي.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الفكرة ▼</button>
+      <div class="solution">
+        <span class="solution-label">الفكرة:</span>
+        <div class="code-box">
+<pre><span class="tag-name">function</span> <span class="attr">countUp</span>(<span class="attr">el</span>, <span class="attr">target</span>, <span class="attr">duration</span> = <span class="attr-val">1500</span>) {
+  <span class="tag-name">let</span> <span class="attr">start</span> = <span class="attr-val">0</span>;
+  <span class="tag-name">const</span> <span class="attr">step</span> = <span class="attr">target</span> / (<span class="attr">duration</span> / <span class="attr-val">16</span>);
+  <span class="tag-name">const</span> <span class="attr">timer</span> = setInterval(() =&gt; {
+    <span class="attr">start</span> = Math.<span class="tag-name">min</span>(<span class="attr">start</span> + <span class="attr">step</span>, <span class="attr">target</span>);
+    <span class="attr">el</span>.textContent = Math.<span class="tag-name">floor</span>(<span class="attr">start</span>);
+    <span class="tag-name">if</span> (<span class="attr">start</span> &gt;= <span class="attr">target</span>) clearInterval(<span class="attr">timer</span>);
+  }, <span class="attr-val">16</span>);
+}</pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="quiz-container" id="quiz">
+    <div class="quiz-intro"><p>اختبر معلوماتك النهائية — مراجعة شاملة لمسار الفرونت إند! 🏆</p></div>
+    <div class="quiz-type-tabs">
+      <button class="qt-tab active" onclick="switchQuiz(this,'tf')">✓✗ صح وخطأ</button>
+      <button class="qt-tab" onclick="switchQuiz(this,'mc')">🔘 اختيار من متعدد</button>
+    </div>
+
+    <div class="quiz-section active" id="quiz-tf">
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">1</span><span class="q-text">IntersectionObserver هو الأسلوب الأمثل لإضافة Scroll Animations دون التأثير على الأداء.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">2</span><span class="q-text">CSS Variables (--primary) تسمح بتغيير كامل ثيم الموقع من مكان واحد.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="false">
+        <span class="q-num">3</span><span class="q-text">scroll-behavior: smooth يحتاج JavaScript لكي يعمل.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">4</span><span class="q-text">e.preventDefault() في نموذج HTML يمنع إعادة تحميل الصفحة عند الإرسال.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">5</span><span class="q-text">Portfolio موقعك هو أفضل CV يمكنك تقديمه لصاحب العمل.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <button class="quiz-submit" onclick="submitQuiz('tf')">عرض النتيجة 🎯</button>
+      <div class="quiz-result" id="result-tf"><div class="result-score" id="score-tf">0/5</div><div class="result-label">إجابات صحيحة</div><div class="result-message" id="msg-tf"></div><button class="retry-btn" onclick="retryQuiz('tf')">🔄 حاول تاني</button></div>
+    </div>
+
+    <div class="quiz-section" id="quiz-mc">
+      <div class="quiz-question" data-correct="1">
+        <span class="q-num">1</span><span class="q-text">لتطبيق Dark Mode باستخدام CSS Variables، ماذا تفعل؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">تغيّر كل الألوان يدوياً بـ JS</button>
+          <button class="q-opt" onclick="answerMC(this,1)">تضيف class="dark" على body وتعرّف المتغيرات في body.dark</button>
+          <button class="q-opt" onclick="answerMC(this,2)">تستخدم filter: invert()</button>
+          <button class="q-opt" onclick="answerMC(this,3)">تنشئ ملف CSS منفصل وتحمّله بـ JS</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="2">
+        <span class="q-num">2</span><span class="q-text">ما أفضل طريقة لتحريك عناصر عند ظهورها أثناء التمرير؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">setInterval كل 100ms</button>
+          <button class="q-opt" onclick="answerMC(this,1)">addEventListener scroll مع getBoundingClientRect</button>
+          <button class="q-opt" onclick="answerMC(this,2)">IntersectionObserver</button>
+          <button class="q-opt" onclick="answerMC(this,3)">CSS :hover فقط</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="0">
+        <span class="q-num">3</span><span class="q-text">لبناء navigation تُبرز الرابط النشط أثناء التمرير:</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">IntersectionObserver على كل section</button>
+          <button class="q-opt" onclick="answerMC(this,1)">onclick على كل رابط فقط</button>
+          <button class="q-opt" onclick="answerMC(this,2)">CSS :active فقط</button>
+          <button class="q-opt" onclick="answerMC(this,3)">لا يمكن تحقيقه بـ JS</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="3">
+        <span class="q-num">4</span><span class="q-text">لأين ترفع Portfolio موقعك مجاناً بأسهل طريقة؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">GoDaddy مدفوع</button>
+          <button class="q-opt" onclick="answerMC(this,1)">سيرفر خاص</button>
+          <button class="q-opt" onclick="answerMC(this,2)">WordPress.com</button>
+          <button class="q-opt" onclick="answerMC(this,3)">Netlify أو GitHub Pages</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="2">
+        <span class="q-num">5</span><span class="q-text">ما الذي يجعل موقع Portfolio احترافياً حقاً؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">عدد كبير من الصفحات</button>
+          <button class="q-opt" onclick="answerMC(this,1)">استخدام أكبر عدد من المكتبات</button>
+          <button class="q-opt" onclick="answerMC(this,2)">مشاريع حقيقية + تصميم نظيف + سرعة + استجابة للجوال</button>
+          <button class="q-opt" onclick="answerMC(this,3)">الألوان الكثيرة والمتنوعة</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <button class="quiz-submit" onclick="submitQuiz('mc')">عرض النتيجة 🎯</button>
+      <div class="quiz-result" id="result-mc"><div class="result-score" id="score-mc">0/5</div><div class="result-label">إجابات صحيحة</div><div class="result-message" id="msg-mc"></div><button class="retry-btn" onclick="retryQuiz('mc')">🔄 حاول تاني</button></div>
+    </div>
+  </div>
+
+  <!-- COMPLETION BANNER -->
+  <div class="completion-banner">
+    <h3>🏆 مبروك! أكملت مسار الفرونت إند كاملاً!</h3>
+    <p>
+      32 درس · HTML + CSS + JavaScript + أدوات احترافية + 3 مشاريع حقيقية<br>
+      الآن أنت مطور فرونت إند — انشر موقعك وابدأ رحلتك المهنية! 🚀
+    </p>
+    <div class="roadmap-next">
+      <span class="road-item">⚛️ React.js</span>
+      <span class="road-item">🐍 Python</span>
+      <span class="road-item">⚙️ الباك إند</span>
+      <span class="road-item">🤖 AI Apps</span>
+      <span class="road-item">📱 React Native</span>
+    </div>
+  </div>
+
+  <div class="lesson-nav">
+    <a href="./lesson-31.html" class="nav-btn"><span>⬅️</span><span>الدرس السابق</span></a>
+    <button class="nav-btn complete-btn" id="completeBtn" onclick="markComplete(this)"><span>🏆</span><span>أكمل المسار!</span></button>
+    <a href="../../index.html" class="nav-btn"><span>الرئيسية</span><span>🏠</span></a>
+  </div>
+
+  <div class="notebook-footer">
+    <h3>🎉 أنجزت المسار كاملاً!</h3>
+    <p>من HTML أول سطر حتى Portfolio كامل على الإنترنت ❤️<br><strong>رحلتك لم تنتهِ — هذا هو البداية فقط! 🚀</strong></p>
+  </div>
+</div>
+
+<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">⬆️</button>
+<div class="toast" id="toast"></div>
+
+<!-- Portfolio HTML stored safely (</textarea> inside won't close anything here) -->
+<script type="text/template" id="portfolio-code"><!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>أحمد خالد — Portfolio</title>
+<style>
+:root{--bg:#fff;--bg2:#f8fafc;--text:#1e293b;--text2:#64748b;--primary:#1e3a8a;--accent:#7c3aed;--border:#e2e8f0;--card:#fff;--nav-bg:rgba(255,255,255,.9)}
+body.dark{--bg:#0f172a;--bg2:#1e293b;--text:#e2e8f0;--text2:#94a3b8;--primary:#60a5fa;--accent:#a78bfa;--border:#334155;--card:#1e293b;--nav-bg:rgba(15,23,42,.9)}
+*{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}body{font-family:"Segoe UI",Arial,sans-serif;background:var(--bg);color:var(--text);transition:background .3s,color .3s}
+nav{position:sticky;top:0;z-index:100;background:var(--nav-bg);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:56px}
+.logo{font-weight:800;font-size:1.1rem;color:var(--primary)}.nav-links{display:flex;gap:24px;list-style:none}.nav-links a{color:var(--text2);text-decoration:none;font-size:.9rem}.nav-links a:hover{color:var(--primary)}
+#themeBtn{background:none;border:none;font-size:1.3rem;cursor:pointer;padding:4px 8px;border-radius:8px}
+section{padding:72px 24px;max-width:860px;margin:0 auto}
+.section-title{font-size:1.6rem;font-weight:800;color:var(--primary);margin-bottom:8px;text-align:center}.divider{width:60px;height:4px;background:linear-gradient(90deg,var(--primary),var(--accent));border-radius:2px;margin:10px auto 36px}
+#hero{min-height:90vh;display:flex;align-items:center;justify-content:center;text-align:center}
+.hero-avatar{font-size:5rem;margin-bottom:20px;animation:float 3s ease-in-out infinite}@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+#hero h1{font-size:clamp(1.8rem,5vw,3rem);font-weight:900;margin-bottom:12px}#hero h1 span{color:var(--accent)}
+.tw-wrap{font-size:1.1rem;color:var(--text2);min-height:28px;margin-bottom:28px}.cursor{display:inline-block;width:2px;height:1em;background:var(--accent);margin-right:3px;animation:blink .7s infinite}@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+.hero-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}.btn{padding:12px 28px;border-radius:10px;font-size:.95rem;font-weight:700;cursor:pointer;text-decoration:none;transition:all .2s;display:inline-block}
+.btn-p{background:var(--primary);color:white;border:2px solid var(--primary)}.btn-p:hover{background:var(--accent);border-color:var(--accent)}.btn-o{background:transparent;color:var(--primary);border:2px solid var(--primary)}.btn-o:hover{background:var(--primary);color:white}
+.about-grid{display:grid;grid-template-columns:1fr 2fr;gap:32px;align-items:center}@media(max-width:600px){.about-grid{grid-template-columns:1fr}}.about-avatar{font-size:6rem;text-align:center}.about-text h3{font-size:1.2rem;margin-bottom:10px;color:var(--primary)}.about-text p{color:var(--text2);line-height:1.9;margin-bottom:14px}
+.info-chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.chip{background:var(--bg2);border:1px solid var(--border);padding:4px 12px;border-radius:999px;font-size:.82rem;color:var(--text2)}
+.skills-list{display:flex;flex-direction:column;gap:16px}.skill-item{display:flex;align-items:center;gap:14px}.skill-name{min-width:110px;font-weight:600;font-size:.9rem}.skill-track{flex:1;height:10px;background:var(--border);border-radius:999px;overflow:hidden}.skill-fill{height:100%;border-radius:999px;width:0;transition:width 1.2s cubic-bezier(.4,0,.2,1)}.skill-pct{min-width:36px;font-size:.82rem;color:var(--text2);text-align:left;direction:ltr}
+.projects-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:20px}.project-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px;transition:all .25s}.project-card:hover{transform:translateY(-6px);box-shadow:0 12px 32px rgba(0,0,0,.1);border-color:var(--accent)}.pc-icon{font-size:2.4rem;margin-bottom:12px}.pc-title{font-size:1.05rem;font-weight:700;margin-bottom:8px}.pc-desc{color:var(--text2);font-size:.87rem;line-height:1.7;margin-bottom:14px}.pc-tech{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}.tech-tag{background:var(--bg2);border:1px solid var(--border);padding:2px 8px;border-radius:4px;font-size:.75rem;color:var(--text2);font-family:monospace}.pc-links{display:flex;gap:10px}.pc-links a{color:var(--primary);text-decoration:none;font-size:.85rem;font-weight:600}
+.contact-form{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:32px;max-width:560px;margin:0 auto}.form-group{margin-bottom:18px}.form-group label{display:block;font-weight:600;font-size:.9rem;margin-bottom:6px}.form-group input,.form-group textarea{width:100%;padding:10px 14px;border:2px solid var(--border);border-radius:10px;font-size:.95rem;background:var(--bg);color:var(--text);outline:none;direction:rtl;font-family:inherit;transition:border-color .2s}.form-group input:focus,.form-group textarea:focus{border-color:var(--accent)}.form-group textarea{height:100px;resize:vertical}.form-msg{padding:10px 14px;border-radius:8px;font-size:.9rem;margin-bottom:12px;display:none}.form-msg.ok{background:#dcfce7;color:#166534;display:block}.form-msg.err{background:#fee2e2;color:#991b1b;display:block}
+footer{background:var(--bg2);border-top:1px solid var(--border);padding:28px 24px;text-align:center;color:var(--text2);font-size:.87rem}.social-links{display:flex;gap:16px;justify-content:center;margin-bottom:14px}.social-links a{color:var(--text2);text-decoration:none;font-size:1.3rem}.social-links a:hover{color:var(--primary)}
+.fade-in{opacity:0;transform:translateY(28px);transition:opacity .7s ease,transform .7s ease}.fade-in.show{opacity:1;transform:none}
+.stb{position:fixed;bottom:24px;left:24px;background:var(--primary);color:white;border:none;width:44px;height:44px;border-radius:50%;font-size:1.2rem;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,.2);opacity:0;transition:opacity .3s;z-index:99}.stb.show{opacity:1}
+</style></head>
+<body>
+<nav><div class="logo">&lt;أحمد /&gt;</div><ul class="nav-links"><li><a href="#about">عني</a></li><li><a href="#skills">مهاراتي</a></li><li><a href="#projects">مشاريعي</a></li><li><a href="#contact">تواصل</a></li></ul><button id="themeBtn">🌙</button></nav>
+<section id="hero"><div><div class="hero-avatar">👨‍💻</div><h1>مرحباً، أنا <span>أحمد خالد</span></h1><div class="tw-wrap"><span id="typed"></span><span class="cursor"></span></div><div class="hero-btns"><a href="#projects" class="btn btn-p">🏗️ مشاريعي</a><a href="#contact" class="btn btn-o">📬 تواصل معي</a></div></div></section>
+<section id="about"><h2 class="section-title fade-in">عن نفسي</h2><div class="divider fade-in"></div><div class="about-grid fade-in"><div class="about-avatar">🧑‍🎓</div><div class="about-text"><h3>مطور ويب شغوف بالكود والتصميم</h3><p>أبني تجارب ويب جميلة وسريعة. متخصص في الفرونت إند مع شغف في UX/UI.</p><p>أؤمن بأن الكود الجيد مثل الكتابة الجيدة — واضح، موجز، وسهل القراءة.</p><div class="info-chips"><span class="chip">📍 الرياض</span><span class="chip">💼 متاح للعمل</span><span class="chip">🌐 عربي / English</span></div></div></div></section>
+<section id="skills"><h2 class="section-title fade-in">مهاراتي</h2><div class="divider fade-in"></div><div class="skills-list" id="skillsList"></div></section>
+<section id="projects"><h2 class="section-title fade-in">مشاريعي</h2><div class="divider fade-in"></div><div class="projects-grid" id="projectsGrid"></div></section>
+<section id="contact"><h2 class="section-title fade-in">تواصل معي</h2><div class="divider fade-in"></div><div class="contact-form fade-in"><div class="form-msg" id="formMsg"></div><form id="contactForm"><div class="form-group"><label>الاسم</label><input type="text" id="cname" placeholder="اسمك الكريم"></div><div class="form-group"><label>البريد</label><input type="email" id="cemail" placeholder="email@example.com"></div><div class="form-group"><label>الرسالة</label><textarea id="cmsg" placeholder="اكتب رسالتك..."></textarea></div><button type="submit" class="btn btn-p" style="width:100%">📨 إرسال</button></form></div></section>
+<footer><div class="social-links"><a href="#">⭐</a><a href="#">💼</a><a href="#">🐦</a><a href="#">📧</a></div><p>صُنع بـ ❤️ و JavaScript · © 2024 أحمد خالد</p></footer>
+<button class="stb" id="stb" onclick="window.scrollTo({top:0,behavior:'smooth'})">⬆️</button>
+<script>
+const skills=[{name:"HTML",pct:95,color:"#ea580c"},{name:"CSS",pct:88,color:"#7c3aed"},{name:"JavaScript",pct:80,color:"#ca8a04"},{name:"React",pct:65,color:"#0ea5e9"},{name:"Git",pct:75,color:"#dc2626"}];
+const projects=[{icon:"📋",title:"قائمة المهام",desc:"To-Do List بـ JS النقي مع فلتر وLocal Storage ومؤشر تقدم.",tech:["HTML","CSS","JavaScript"],live:"#",gh:"#"},{icon:"🌤️",title:"تطبيق الطقس",desc:"يعرض الطقس الحالي لأي مدينة من API مع توقعات 5 أيام.",tech:["HTML","CSS","JS","API"],live:"#",gh:"#"},{icon:"🎓",title:"منصة تعليمية",desc:"أكاديمية تفاعلية لتعليم البرمجة بالعربي من الصفر.",tech:["HTML","CSS","JS","PWA"],live:"#",gh:"#"}];
+document.getElementById("skillsList").innerHTML=skills.map(s=>`<div class="skill-item fade-in"><div class="skill-name">${s.name}</div><div class="skill-track"><div class="skill-fill" style="background:${s.color}" data-pct="${s.pct}"></div></div><div class="skill-pct">${s.pct}%</div></div>`).join("");
+document.getElementById("projectsGrid").innerHTML=projects.map(p=>`<div class="project-card fade-in"><div class="pc-icon">${p.icon}</div><div class="pc-title">${p.title}</div><div class="pc-desc">${p.desc}</div><div class="pc-tech">${p.tech.map(t=>`<span class="tech-tag">${t}</span>`).join("")}</div><div class="pc-links"><a href="${p.live}">🔗 عرض</a><a href="${p.gh}">⭐ GitHub</a></div></div>`).join("");
+const roles=["مطور ويب Frontend","مصمم واجهات UI/UX","عاشق JavaScript"];let ri=0,ci=0,dl=false;function type(){const w=roles[ri],el=document.getElementById("typed");if(!dl){el.textContent=w.slice(0,++ci);if(ci===w.length){dl=true;setTimeout(type,1600);return;}}else{el.textContent=w.slice(0,--ci);if(ci===0){dl=false;ri=(ri+1)%roles.length;}}setTimeout(type,dl?55:95);}type();
+let dark=localStorage.getItem("pf-theme")==="dark";function applyTheme(){document.body.classList.toggle("dark",dark);document.getElementById("themeBtn").textContent=dark?"☀️":"🌙";localStorage.setItem("pf-theme",dark?"dark":"light");}document.getElementById("themeBtn").addEventListener("click",()=>{dark=!dark;applyTheme();});applyTheme();
+const io=new IntersectionObserver(e=>{e.forEach(x=>{if(x.isIntersecting){x.target.classList.add("show");if(x.target.classList.contains("skill-fill"))x.target.style.width=x.target.dataset.pct+"%";}});},{threshold:0});
+setTimeout(()=>document.querySelectorAll(".fade-in,.skill-fill").forEach(el=>io.observe(el)),100);
+setTimeout(()=>{document.querySelectorAll(".fade-in").forEach(el=>el.classList.add("show"));document.querySelectorAll(".skill-fill").forEach(el=>el.style.width=el.dataset.pct+"%");},900);
+document.getElementById("contactForm").addEventListener("submit",e=>{e.preventDefault();const n=document.getElementById("cname").value.trim(),em=document.getElementById("cemail").value.trim(),mg=document.getElementById("cmsg").value.trim(),msg=document.getElementById("formMsg");msg.className="form-msg";if(!n){msg.textContent="⚠️ الاسم مطلوب";msg.className="form-msg err";return;}if(!/@/.test(em)){msg.textContent="⚠️ بريد غير صالح";msg.className="form-msg err";return;}if(!mg){msg.textContent="⚠️ الرسالة مطلوبة";msg.className="form-msg err";return;}const msgs=JSON.parse(localStorage.getItem("pf-msgs")||"[]");msgs.push({n,em,mg,d:new Date().toISOString()});localStorage.setItem("pf-msgs",JSON.stringify(msgs));msg.textContent="✅ شكراً! سأرد عليك قريباً 🎉";msg.className="form-msg ok";e.target.reset();});
+window.addEventListener("scroll",()=>document.getElementById("stb").classList.toggle("show",scrollY>400));
+<\/script>
+</body></html>
+</script>
+
+<script src="../../js/data/courses.js"></script>
+<script src="../../js/progress.js"></script>
+<script src="../../js/lesson-editor.js"></script>
+<script>
+const COURSE_ID='frontend',LESSON_ID=32,TOTAL=32;
+// Initialize portfolio editor from template
+(function(){
+  const editor=document.getElementById('portfolioEditor');
+  const code=document.getElementById('portfolio-code').textContent.trim().replace('<\\/script>','<\/script>');
+  editor.value=code;
+  editor.dataset.default=code;
+})();
+function toggleSolution(b){const s=b.nextElementSibling;s.classList.toggle('show');b.textContent=s.classList.contains('show')?'إخفاء الفكرة ▲':'عرض الفكرة ▼';}
+function copyCode(b){const p=b.closest('.code-box').querySelector('pre');navigator.clipboard.writeText(p.innerText).then(()=>{b.classList.add('copied');b.textContent='✓ تم النسخ';setTimeout(()=>{b.classList.remove('copied');b.textContent='📋 نسخ';},2000);});}
+function runCode(b){const t=b.closest('.try-it');t.querySelector('iframe').srcdoc=t.querySelector('.try-it-editor').value;}
+function resetCode(b){const t=b.closest('.try-it'),e=t.querySelector('.try-it-editor');e.value=e.dataset.default;t.querySelector('iframe').srcdoc=e.value;}
+window.addEventListener('load',()=>{
+  const editor=document.getElementById('portfolioEditor');
+  const iframe=editor.closest('.try-it').querySelector('iframe');
+  if(editor.value)iframe.srcdoc=editor.value;
+  document.getElementById('scrollTop').addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
+  window.addEventListener('scroll',()=>document.getElementById('scrollTop').classList.toggle('show',window.scrollY>300));
+});
+function switchQuiz(b,t){document.querySelectorAll('.qt-tab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.quiz-section').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.getElementById('quiz-'+t).classList.add('active');}
+const answers={tf:{},mc:{}};
+function answerTF(b,v){const q=b.closest('.quiz-question'),i=Array.from(q.parentNode.querySelectorAll('.quiz-question')).indexOf(q);q.querySelectorAll('.q-opt').forEach(o=>o.classList.remove('selected'));b.classList.add('selected');answers.tf[i]=v;}
+function answerMC(b,i){const q=b.closest('.quiz-question'),qi=Array.from(q.parentNode.querySelectorAll('.quiz-question')).indexOf(q);q.querySelectorAll('.q-opt').forEach(o=>o.classList.remove('selected'));b.classList.add('selected');answers.mc[qi]=i;}
+function submitQuiz(type){const sec=document.getElementById('quiz-'+type),qs=sec.querySelectorAll('.quiz-question');let c=0;qs.forEach((q,i)=>{const ca=type==='tf'?(q.dataset.correct==='true'):parseInt(q.dataset.correct),ua=answers[type][i],fb=q.querySelector('.q-feedback'),opts=q.querySelectorAll('.q-opt');opts.forEach(o=>{o.classList.remove('selected');o.disabled=true;});if(ua===undefined){fb.className='q-feedback wrong show';fb.textContent='⚠️ ما اخترتش إجابة!';return;}if(ua===ca){c++;fb.className='q-feedback correct show';fb.textContent='✓ إجابة صحيحة!';if(type==='tf')opts[ca?0:1].classList.add('correct');else opts[ca].classList.add('correct');}else{fb.className='q-feedback wrong show';if(type==='tf'){opts[ca?0:1].classList.add('correct');opts[ua?0:1].classList.add('wrong');fb.textContent='✗ خطأ.';}else{opts[ca].classList.add('correct');opts[ua].classList.add('wrong');fb.textContent='✗ الإجابة بالأخضر.';}}});const r=document.getElementById('result-'+type);document.getElementById('score-'+type).textContent=c+'/'+qs.length;const m=document.getElementById('msg-'+type);if(c===qs.length){m.textContent='🏆 ممتاز 100%!';m.className='result-message excellent';}else if(c>=3){m.textContent='👍 جيد!';m.className='result-message good';}else{m.textContent='📚 راجع الدرس.';m.className='result-message try-again';}r.classList.add('show');r.scrollIntoView({behavior:'smooth',block:'center'});}
+function retryQuiz(type){const sec=document.getElementById('quiz-'+type);sec.querySelectorAll('.q-opt').forEach(o=>{o.classList.remove('selected','correct','wrong');o.disabled=false;});sec.querySelectorAll('.q-feedback').forEach(f=>{f.classList.remove('show','correct','wrong');f.textContent='';});document.getElementById('result-'+type).classList.remove('show');answers[type]={};}
+function markComplete(btn){const done=Progress.toggleLessonComplete(COURSE_ID,LESSON_ID);btn.classList.toggle('completed',done);btn.querySelector('span:last-child').textContent=done?'مكتمل! ⭐':'أكمل المسار!';showToast(done?'🏆 مبروك! أكملت مسار الفرونت إند كاملاً!':'تم إلغاء الإكمال');}
+function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
+if(Progress.isLessonComplete(COURSE_ID,LESSON_ID)){const b=document.getElementById('completeBtn');b.classList.add('completed');b.querySelector('span:last-child').textContent='مكتمل! ⭐';}
+(function(){const p=Progress.getCourseProgress(COURSE_ID,TOTAL);document.getElementById('progFill').style.width=p+'%';document.getElementById('progText').textContent=p+'%';})();
+document.querySelectorAll('.toc-card a').forEach(l=>{l.addEventListener('click',e=>{e.preventDefault();const t=document.querySelector(l.getAttribute('href'));if(t)t.scrollIntoView({behavior:'smooth',block:'start'});});});
+</script>
+</body>
+</html>

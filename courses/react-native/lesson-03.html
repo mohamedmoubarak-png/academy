@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-V2NCKVL16D"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-V2NCKVL16D');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>بنية مشروع Expo + Hello World — دفتر البرمجة</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=Cairo:wght@300;400;500;600;700;900&family=Caveat:wght@400;700&family=Fira+Code:wght@400;500;600&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../css/shared.css">
+<link rel="stylesheet" href="../../css/notebook.css">
+<style>
+body { padding: 20px 10px; }
+
+/* phone frame */
+.phone-frame {
+  width: 260px; margin: 20px auto;
+  border: 12px solid #1e293b; border-radius: 34px;
+  background: white; box-shadow: 0 16px 40px rgba(0,0,0,.3);
+  overflow: hidden;
+}
+.phone-notch {
+  background: #1e293b; height: 20px;
+  display: flex; align-items: center; justify-content: center;
+}
+.phone-notch::before {
+  content: ''; width: 56px; height: 12px;
+  background: #0f172a; border-radius: 0 0 8px 8px;
+}
+.phone-screen { min-height: 340px; }
+
+/* file tree */
+.file-tree {
+  background: #1e293b; border-radius: 10px; padding: 16px 20px;
+  font-family: 'Fira Code', monospace; font-size: .84rem;
+  direction: ltr; color: #94a3b8; line-height: 2.2; margin: 12px 0;
+}
+.ft-dir  { color: #7dd3fc; }
+.ft-file { color: #4ade80; }
+.ft-key  { color: #fbbf24; font-weight: 700; }
+.ft-note { color: #475569; font-style: italic; font-size: .78rem; }
+
+/* JSX syntax colors */
+.jsx-tag     { color: #60a5fa; }
+.jsx-attr    { color: #fbbf24; }
+.jsx-str     { color: #4ade80; }
+.jsx-comment { color: #64748b; font-style: italic; }
+.jsx-num     { color: #f472b6; }
+
+/* component cards */
+.component-showcase {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(200px,1fr));
+  gap: 14px; margin: 16px 0;
+}
+.comp-card {
+  background: #f8fafc; border: 1.5px solid var(--border);
+  border-radius: 12px; padding: 14px;
+}
+.comp-card.view    { border-color: #0ea5e9; }
+.comp-card.text    { border-color: #7c3aed; }
+.comp-card.image   { border-color: #ea580c; }
+.comp-card.scroll  { border-color: #16a34a; }
+.comp-name  { font-family: 'Fira Code', monospace; font-weight: 700;
+  font-size: .95rem; margin-bottom: 6px; }
+.comp-desc  { font-size: .85rem; color: var(--text-muted); line-height: 1.6; }
+.comp-equiv { font-size: .78rem; background: var(--border); padding: 2px 8px;
+  border-radius: 4px; display: inline-block; margin-top: 6px;
+  font-family: 'Fira Code', monospace; color: var(--text-muted); }
+
+/* build steps */
+.build-step {
+  display: flex; gap: 14px; margin: 16px 0; align-items: flex-start;
+}
+.bs-num {
+  background: #0ea5e9; color: white; width: 28px; height: 28px;
+  border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  font-weight: 800; font-size: .85rem; flex-shrink: 0; margin-top: 2px;
+}
+.bs-content { flex: 1; }
+.bs-title { font-weight: 700; margin-bottom: 6px; font-size: .95rem; }
+.bs-desc  { font-size: .88rem; color: var(--text-muted); }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="crumbs">
+    <a href="../../index.html">🏠 الرئيسية</a>
+    <span class="sep">/</span>
+    <a href="./index.html">📱 React Native</a>
+    <span class="sep">/</span>
+    <span class="current">🏗️ الدرس 3: بنية المشروع + Hello World</span>
+  </div>
+  <div class="progress-mini">
+    <div class="progress-bar-mini"><div class="progress-fill-mini" id="progFill"></div></div>
+    <span id="progText">0%</span>
+  </div>
+</div>
+
+<div class="notebook">
+
+  <div class="notebook-header">
+    <div class="lesson-tag">🏗️ الدرس الثالث</div>
+    <h1><span class="sparkle">✦</span> بنية المشروع + أول تطبيق <span class="sparkle">✦</span></h1>
+    <div class="lesson-meta">
+      <span>⏱️ 40 دقيقة</span>
+      <span>📊 مبتدئ</span>
+      <span>🎯 5 تمارين + اختبار</span>
+    </div>
+  </div>
+
+  <div class="toc-card">
+    <h2>📑 فهرس الدرس</h2>
+    <ol>
+      <li><a href="#s1">هيكل ملفات Expo بالتفصيل</a></li>
+      <li><a href="#s2">ملف App.js — فهم كل سطر</a></li>
+      <li><a href="#s3">المكونات الأساسية الأربعة</a></li>
+      <li><a href="#s4">StyleSheet — كتابة CSS في JS</a></li>
+      <li><a href="#s5">بناء أول تطبيق خطوة بخطوة</a></li>
+      <li><a href="#s6">import وexport في RN</a></li>
+      <li><a href="#s7">ملف app.json — إعدادات التطبيق</a></li>
+      <li><a href="#s8">محرر الكود الحي</a></li>
+      <li><a href="#exercises">التمارين</a></li>
+      <li><a href="#quiz">اختبر فهمك</a></li>
+    </ol>
+  </div>
+
+  <!-- S1 -->
+  <div class="section" id="s1">
+    <h2 class="section-title"><span class="num">.1</span> هيكل ملفات Expo <span class="en">Project Structure</span></h2>
+    <div class="content">
+      <p>بعد <code>npx create-expo-app MyApp</code>، ستجد هذه الملفات:</p>
+
+      <div class="file-tree">
+<span class="ft-dir">MyApp/</span>
+├── <span class="ft-key">App.js</span>              <span class="ft-note">← نقطة البداية (ابدأ هنا دائماً)</span>
+├── <span class="ft-dir">assets/</span>
+│   ├── adaptive-icon.png   <span class="ft-note">← أيقونة Android</span>
+│   ├── favicon.png         <span class="ft-note">← أيقونة الويب</span>
+│   ├── icon.png            <span class="ft-note">← أيقونة التطبيق</span>
+│   └── splash.png          <span class="ft-note">← شاشة البداية</span>
+├── <span class="ft-file">app.json</span>            <span class="ft-note">← إعدادات التطبيق</span>
+├── <span class="ft-file">babel.config.js</span>     <span class="ft-note">← إعدادات المترجم</span>
+├── <span class="ft-file">package.json</span>        <span class="ft-note">← الحزم والـ scripts</span>
+└── <span class="ft-file">package-lock.json</span>   <span class="ft-note">← إصدارات الحزم الدقيقة</span>
+      </div>
+
+      <div class="tip-box"><strong>قاعدة:</strong> في البداية ستعمل فقط على <code>App.js</code>. باقي الملفات لا تلمسها إلا عند الحاجة!</div>
+    </div>
+  </div>
+
+  <!-- S2 -->
+  <div class="section" id="s2">
+    <h2 class="section-title"><span class="num">.2</span> ملف App.js سطراً بسطر <span class="en">App.js Explained</span></h2>
+    <div class="content">
+      <div class="code-box">
+<div class="code-header"><span>📄 App.js — شرح كل سطر</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">// 1️⃣ استيراد المكونات من react-native</span>
+<span class="tag-name">import</span> { StatusBar } <span class="tag-name">from</span> <span class="attr-val">'expo-status-bar'</span>;
+<span class="tag-name">import</span> { StyleSheet, Text, View } <span class="tag-name">from</span> <span class="attr-val">'react-native'</span>;
+
+<span class="comment">// 2️⃣ المكوّن الرئيسي (اسمه App بالاتفاق)</span>
+<span class="tag-name">export default function</span> <span class="attr">App</span>() {
+
+  <span class="comment">// 3️⃣ return يُعيد JSX — واجهة التطبيق</span>
+  <span class="tag-name">return</span> (
+    <span class="comment">{/* View = صندوق/حاوية */}</span>
+    &lt;<span class="attr">View</span> style={styles.container}&gt;
+
+      <span class="comment">{/* Text = أي نص */}</span>
+      &lt;<span class="attr">Text</span>&gt;Open up App.js to start!&lt;/<span class="attr">Text</span>&gt;
+
+      <span class="comment">{/* StatusBar = شريط الحالة (الوقت، البطارية) */}</span>
+      &lt;<span class="attr">StatusBar</span> style=<span class="attr-val">"auto"</span> /&gt;
+
+    &lt;/<span class="attr">View</span>&gt;
+  );
+}
+
+<span class="comment">// 4️⃣ StyleSheet.create = تعريف الأنماط</span>
+<span class="tag-name">const</span> <span class="attr">styles</span> = StyleSheet.create({
+  container: {
+    flex: <span class="attr-val">1</span>,                      <span class="comment">// اشغل كل الشاشة</span>
+    backgroundColor: <span class="attr-val">'#fff'</span>,    <span class="comment">// خلفية بيضاء</span>
+    alignItems: <span class="attr-val">'center'</span>,        <span class="comment">// توسيط أفقي</span>
+    justifyContent: <span class="attr-val">'center'</span>,    <span class="comment">// توسيط عمودي</span>
+  },
+});</pre>
+      </div>
+
+      <div class="info-box"><strong>لاحظ:</strong> كل شيء في JSX يجب أن يكون داخل <code>&lt;View&gt;</code> واحدة على الأقل. View هي الحاوية الأساسية في RN مثل div في HTML.</div>
+    </div>
+  </div>
+
+  <!-- S3 -->
+  <div class="section" id="s3">
+    <h2 class="section-title"><span class="num">.3</span> المكونات الأربعة الأساسية <span class="en">Core Components</span></h2>
+    <div class="content">
+      <p>كل واجهة في RN تتكون من هذه المكونات:</p>
+
+      <div class="component-showcase">
+        <div class="comp-card view">
+          <div class="comp-name">&lt;View&gt;</div>
+          <div class="comp-desc">الحاوية الأساسية. تجمع المكونات معاً وتُطبّق Flexbox.</div>
+          <span class="comp-equiv">يشبه &lt;div&gt;</span>
+        </div>
+        <div class="comp-card text">
+          <div class="comp-name">&lt;Text&gt;</div>
+          <div class="comp-desc">لعرض أي نص. يجب أن يكون كل نص داخل Text مباشرة — لا يمكن وضع نص خارجها!</div>
+          <span class="comp-equiv">يشبه &lt;p&gt; و &lt;h1&gt;</span>
+        </div>
+        <div class="comp-card image">
+          <div class="comp-name">&lt;Image&gt;</div>
+          <div class="comp-desc">لعرض الصور سواء من الجهاز أو من الإنترنت. يحتاج تحديد حجم دائماً.</div>
+          <span class="comp-equiv">يشبه &lt;img&gt;</span>
+        </div>
+        <div class="comp-card scroll">
+          <div class="comp-name">&lt;ScrollView&gt;</div>
+          <div class="comp-desc">تتيح التمرير. استخدمها عندما المحتوى أطول من الشاشة.</div>
+          <span class="comp-equiv">يشبه overflow:scroll</span>
+        </div>
+      </div>
+
+      <div class="code-box">
+<div class="code-header"><span>🧩 استخدام المكونات الأربعة</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-name">import</span> { View, Text, Image, ScrollView } <span class="tag-name">from</span> <span class="attr-val">'react-native'</span>;
+
+<span class="tag-name">export default function</span> <span class="attr">App</span>() {
+  <span class="tag-name">return</span> (
+    &lt;<span class="attr">ScrollView</span>&gt;   {<span class="comment">/* يتيح التمرير */</span>}
+
+      &lt;<span class="attr">View</span>&gt;
+        &lt;<span class="attr">Text</span> style={{ fontSize: <span class="attr-val">24</span>, fontWeight: <span class="attr-val">'bold'</span> }}&gt;
+          مرحباً بالعالم!
+        &lt;/<span class="attr">Text</span>&gt;
+
+        &lt;<span class="attr">Image</span>
+          source={{ uri: <span class="attr-val">'https://picsum.photos/200'</span> }}
+          style={{ width: <span class="attr-val">200</span>, height: <span class="attr-val">200</span> }}
+        /&gt;
+      &lt;/<span class="attr">View</span>&gt;
+
+    &lt;/<span class="attr">ScrollView</span>&gt;
+  );
+}</pre>
+      </div>
+
+      <div class="warning-box"><strong>خطأ شائع جداً:</strong> وضع نص مباشرة خارج &lt;Text&gt;<br>
+      ❌ <code>&lt;View&gt;مرحبا&lt;/View&gt;</code> — خطأ!<br>
+      ✅ <code>&lt;View&gt;&lt;Text&gt;مرحبا&lt;/Text&gt;&lt;/View&gt;</code> — صح!</div>
+    </div>
+  </div>
+
+  <!-- S4 -->
+  <div class="section" id="s4">
+    <h2 class="section-title"><span class="num">.4</span> StyleSheet — CSS في JavaScript <span class="en">Styling</span></h2>
+    <div class="content">
+      <p>في RN لا يوجد CSS. التنسيق يكون بـ JavaScript Objects:</p>
+
+      <table class="cool-table">
+        <thead><tr><th>CSS</th><th>React Native StyleSheet</th></tr></thead>
+        <tbody>
+          <tr><td><code>font-size: 18px</code></td><td><code>fontSize: 18</code></td></tr>
+          <tr><td><code>background-color: red</code></td><td><code>backgroundColor: 'red'</code></td></tr>
+          <tr><td><code>margin-top: 10px</code></td><td><code>marginTop: 10</code></td></tr>
+          <tr><td><code>border-radius: 8px</code></td><td><code>borderRadius: 8</code></td></tr>
+          <tr><td><code>font-weight: bold</code></td><td><code>fontWeight: 'bold'</code></td></tr>
+          <tr><td><code>text-align: center</code></td><td><code>textAlign: 'center'</code></td></tr>
+        </tbody>
+      </table>
+
+      <div class="code-box blue">
+<div class="code-header"><span>🎨 طريقتا كتابة الأنماط</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">// طريقة 1: Inline (مباشرة في JSX)</span>
+&lt;<span class="attr">Text</span> style={{ color: <span class="attr-val">'blue'</span>, fontSize: <span class="attr-val">20</span> }}&gt;
+  نص أزرق
+&lt;/<span class="attr">Text</span>&gt;
+
+<span class="comment">// طريقة 2: StyleSheet.create (الأفضل)</span>
+<span class="tag-name">const</span> <span class="attr">styles</span> = StyleSheet.create({
+  title: {
+    color: <span class="attr-val">'blue'</span>,
+    fontSize: <span class="attr-val">20</span>,
+    fontWeight: <span class="attr-val">'bold'</span>,
+    textAlign: <span class="attr-val">'center'</span>,
+  },
+});
+
+&lt;<span class="attr">Text</span> style={styles.title}&gt;نص أزرق&lt;/<span class="attr">Text</span>&gt;</pre>
+      </div>
+
+      <div class="tip-box"><strong>لماذا StyleSheet.create أفضل؟</strong> يُحسّن الأداء لأن RN يُحسّب الأنماط مرة واحدة. أما Inline فتُحسَب في كل render.</div>
+    </div>
+  </div>
+
+  <!-- S5 -->
+  <div class="section" id="s5">
+    <h2 class="section-title"><span class="num">.5</span> بناء أول تطبيق خطوة بخطوة <span class="en">Build Step by Step</span></h2>
+    <div class="content">
+      <p>سنبني تطبيق "بطاقة تعريف شخصية" من الصفر:</p>
+
+      <div class="build-step">
+        <div class="bs-num">1</div>
+        <div class="bs-content">
+          <div class="bs-title">تنظيف App.js</div>
+          <div class="code-box">
+<div class="code-header"><span>🧹 ابدأ من صفر</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-name">import</span> { View, Text, StyleSheet } <span class="tag-name">from</span> <span class="attr-val">'react-native'</span>;
+
+<span class="tag-name">export default function</span> <span class="attr">App</span>() {
+  <span class="tag-name">return</span> (
+    &lt;<span class="attr">View</span> style={styles.container}&gt;
+      <span class="comment">{/* سنضيف المحتوى هنا */}</span>
+    &lt;/<span class="attr">View</span>&gt;
+  );
+}
+
+<span class="tag-name">const</span> <span class="attr">styles</span> = StyleSheet.create({
+  container: { flex: <span class="attr-val">1</span>, backgroundColor: <span class="attr-val">'#f0f9ff'</span> },
+});</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="build-step">
+        <div class="bs-num">2</div>
+        <div class="bs-content">
+          <div class="bs-title">إضافة بطاقة التعريف</div>
+          <div class="code-box">
+<div class="code-header"><span>👤 البطاقة الشخصية</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre>&lt;<span class="attr">View</span> style={styles.container}&gt;
+  &lt;<span class="attr">View</span> style={styles.card}&gt;
+    &lt;<span class="attr">Text</span> style={styles.emoji}&gt;👨‍💻&lt;/<span class="attr">Text</span>&gt;
+    &lt;<span class="attr">Text</span> style={styles.name}&gt;أحمد خالد&lt;/<span class="attr">Text</span>&gt;
+    &lt;<span class="attr">Text</span> style={styles.job}&gt;مطور React Native&lt;/<span class="attr">Text</span>&gt;
+    &lt;<span class="attr">Text</span> style={styles.bio}&gt;
+      أبني تطبيقات جوال جميلة بـ JavaScript ❤️
+    &lt;/<span class="attr">Text</span>&gt;
+  &lt;/<span class="attr">View</span>&gt;
+&lt;/<span class="attr">View</span>&gt;</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="build-step">
+        <div class="bs-num">3</div>
+        <div class="bs-content">
+          <div class="bs-title">إضافة الأنماط</div>
+          <div class="code-box">
+<div class="code-header"><span>🎨 StyleSheet كامل</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-name">const</span> <span class="attr">styles</span> = StyleSheet.create({
+  container: {
+    flex: <span class="attr-val">1</span>,
+    backgroundColor: <span class="attr-val">'#f0f9ff'</span>,
+    alignItems: <span class="attr-val">'center'</span>,
+    justifyContent: <span class="attr-val">'center'</span>,
+    padding: <span class="attr-val">20</span>,
+  },
+  card: {
+    backgroundColor: <span class="attr-val">'white'</span>,
+    borderRadius: <span class="attr-val">20</span>,
+    padding: <span class="attr-val">30</span>,
+    alignItems: <span class="attr-val">'center'</span>,
+    width: <span class="attr-val">'100%'</span>,
+    shadowColor: <span class="attr-val">'#000'</span>,
+    shadowOffset: { width: <span class="attr-val">0</span>, height: <span class="attr-val">4</span> },
+    shadowOpacity: <span class="attr-val">0.1</span>,
+    elevation: <span class="attr-val">5</span>,       <span class="comment">// Android shadow</span>
+  },
+  emoji:  { fontSize: <span class="attr-val">64</span>, marginBottom: <span class="attr-val">12</span> },
+  name:   { fontSize: <span class="attr-val">26</span>, fontWeight: <span class="attr-val">'bold'</span>, color: <span class="attr-val">'#0369a1'</span> },
+  job:    { fontSize: <span class="attr-val">16</span>, color: <span class="attr-val">'#7c3aed'</span>, marginTop: <span class="attr-val">4</span> },
+  bio:    { fontSize: <span class="attr-val">14</span>, color: <span class="attr-val">'#64748b'</span>, marginTop: <span class="attr-val">12</span>,
+            textAlign: <span class="attr-val">'center'</span>, lineHeight: <span class="attr-val">22</span> },
+});</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="sub-header">النتيجة على الجوال:</div>
+      <div class="phone-frame">
+        <div class="phone-notch"></div>
+        <div class="phone-screen" style="background:#f0f9ff; display:flex; align-items:center; justify-content:center; padding:16px;">
+          <div style="background:white; border-radius:16px; padding:24px; text-align:center; width:100%;
+            box-shadow:0 4px 20px rgba(0,0,0,.1);">
+            <div style="font-size:3rem; margin-bottom:10px;">👨‍💻</div>
+            <div style="font-size:1.2rem; font-weight:800; color:#0369a1; font-family:'Cairo',sans-serif;">أحمد خالد</div>
+            <div style="font-size:.9rem; color:#7c3aed; margin-top:4px; font-family:'Cairo',sans-serif;">مطور React Native</div>
+            <div style="font-size:.82rem; color:#64748b; margin-top:10px; line-height:1.6; font-family:'Cairo',sans-serif;">أبني تطبيقات جوال جميلة بـ JavaScript ❤️</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- S6 -->
+  <div class="section" id="s6">
+    <h2 class="section-title"><span class="num">.6</span> import و export في RN <span class="en">Modules</span></h2>
+    <div class="content">
+      <div class="code-box">
+<div class="code-header"><span>📦 أنواع الـ import</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">// 1. استيراد من react-native (named imports)</span>
+<span class="tag-name">import</span> { View, Text, Image, StyleSheet } <span class="tag-name">from</span> <span class="attr-val">'react-native'</span>;
+
+<span class="comment">// 2. استيراد من مكتبة خارجية (default import)</span>
+<span class="tag-name">import</span> <span class="attr">React</span> <span class="tag-name">from</span> <span class="attr-val">'react'</span>;
+
+<span class="comment">// 3. استيراد صورة محلية</span>
+<span class="tag-name">import</span> <span class="attr">logo</span> <span class="tag-name">from</span> <span class="attr-val">'./assets/icon.png'</span>;
+
+<span class="comment">// 4. export — لتصدير المكوّن</span>
+<span class="tag-name">export default function</span> <span class="attr">App</span>() { ... }
+<span class="comment">// أو:</span>
+<span class="tag-name">const</span> <span class="attr">App</span> = () => { ... };
+<span class="tag-name">export default</span> <span class="attr">App</span>;</pre>
+      </div>
+
+      <div class="tip-box"><strong>في React 17+</strong> لا تحتاج <code>import React from 'react'</code> في كل ملف — Expo يضيفها تلقائياً!</div>
+    </div>
+  </div>
+
+  <!-- S7 -->
+  <div class="section" id="s7">
+    <h2 class="section-title"><span class="num">.7</span> ملف app.json <span class="en">App Config</span></h2>
+    <div class="content">
+      <p>ملف <code>app.json</code> يتحكم في كيفية ظهور تطبيقك:</p>
+
+      <div class="code-box">
+<div class="code-header"><span>⚙️ app.json — الإعدادات المهمة</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre>{
+  <span class="attr-val">"expo"</span>: {
+    <span class="attr-val">"name"</span>: <span class="attr-val">"تطبيقي الأول"</span>,       <span class="comment">// اسم التطبيق</span>
+    <span class="attr-val">"slug"</span>: <span class="attr-val">"my-first-app"</span>,      <span class="comment">// معرّف فريد</span>
+    <span class="attr-val">"version"</span>: <span class="attr-val">"1.0.0"</span>,          <span class="comment">// الإصدار</span>
+    <span class="attr-val">"icon"</span>: <span class="attr-val">"./assets/icon.png"</span>, <span class="comment">// أيقونة التطبيق</span>
+    <span class="attr-val">"splash"</span>: {
+      <span class="attr-val">"image"</span>: <span class="attr-val">"./assets/splash.png"</span>, <span class="comment">// شاشة البداية</span>
+      <span class="attr-val">"backgroundColor"</span>: <span class="attr-val">"#0ea5e9"</span>
+    },
+    <span class="attr-val">"android"</span>: {
+      <span class="attr-val">"package"</span>: <span class="attr-val">"com.yourname.myapp"</span>  <span class="comment">// Package ID للـ Play Store</span>
+    },
+    <span class="attr-val">"ios"</span>: {
+      <span class="attr-val">"bundleIdentifier"</span>: <span class="attr-val">"com.yourname.myapp"</span>
+    }
+  }
+}</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- S8 -->
+  <div class="section" id="s8">
+    <h2 class="section-title"><span class="num">.8</span> محرر الكود الحي <span class="en">Live Editor</span></h2>
+    <div class="content"><p>جرّب بناء تطبيق بطاقة شخصية وخصّصها باسمك:</p></div>
+    <div class="live-preview">
+      <div class="lp-header">
+        <span>📱 معاينة حية — بطاقة شخصية</span>
+        <span class="lp-tag">JSX</span>
+      </div>
+      <div class="lp-body">
+        <div class="lp-code">
+<pre><span class="k">import</span> { View, Text, StyleSheet } <span class="k">from</span> <span class="s">'react-native'</span>;
+
+<span class="k">export default function</span> <span class="t">App</span>() {
+  <span class="k">return</span> (
+    <span class="p">&lt;</span><span class="t">View</span> style={styles.container}<span class="p">&gt;</span>
+      <span class="p">&lt;</span><span class="t">View</span> style={styles.card}<span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="t">Text</span> style={styles.emoji}<span class="p">&gt;</span>👨‍💻<span class="p">&lt;/</span><span class="t">Text</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="t">Text</span> style={styles.name}<span class="p">&gt;</span>
+          أحمد خالد
+        <span class="p">&lt;/</span><span class="t">Text</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="t">Text</span> style={styles.role}<span class="p">&gt;</span>
+          مطور React Native
+        <span class="p">&lt;/</span><span class="t">Text</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="t">Text</span> style={styles.bio}<span class="p">&gt;</span>
+          أبني تطبيقات جوال جميلة ❤️
+        <span class="p">&lt;/</span><span class="t">Text</span><span class="p">&gt;</span>
+      <span class="p">&lt;/</span><span class="t">View</span><span class="p">&gt;</span>
+    <span class="p">&lt;/</span><span class="t">View</span><span class="p">&gt;</span>
+  );
+}
+
+<span class="k">const</span> styles = StyleSheet.create({
+  container: { flex: <span class="n">1</span>, backgroundColor: <span class="s">'#f0f9ff'</span>,
+    alignItems: <span class="s">'center'</span>, justifyContent: <span class="s">'center'</span>, padding: <span class="n">20</span> },
+  card: { backgroundColor: <span class="s">'white'</span>, borderRadius: <span class="n">20</span>,
+    padding: <span class="n">28</span>, alignItems: <span class="s">'center'</span>,
+    elevation: <span class="n">5</span>, shadowOpacity: <span class="n">0.1</span> },
+  emoji: { fontSize: <span class="n">60</span>, marginBottom: <span class="n">10</span> },
+  name:  { fontSize: <span class="n">22</span>, fontWeight: <span class="s">'bold'</span>, color: <span class="s">'#0369a1'</span> },
+  role:  { fontSize: <span class="n">14</span>, color: <span class="s">'#7c3aed'</span>, marginTop: <span class="n">4</span> },
+  bio:   { fontSize: <span class="n">13</span>, color: <span class="s">'#64748b'</span>, marginTop: <span class="n">10</span>,
+    textAlign: <span class="s">'center'</span> },
+});</pre>
+        </div>
+        <div class="lp-phone-wrap">
+          <div class="lp-phone">
+            <div class="lp-phone-bar"></div>
+            <div class="lp-phone-screen" style="align-items:center; justify-content:center;">
+              <div style="background:white; border-radius:16px; padding:18px 14px; text-align:center; width:100%; box-shadow:0 6px 20px rgba(14,165,233,.15);">
+                <div style="font-size:2.4rem; margin-bottom:6px;">👨‍💻</div>
+                <div style="font-size:1.05rem; font-weight:800; color:#0369a1; font-family:'Cairo',sans-serif;">أحمد خالد</div>
+                <div style="font-size:.72rem; color:#7c3aed; margin-top:3px; font-weight:600; font-family:'Cairo',sans-serif;">مطور React Native</div>
+                <div style="font-size:.68rem; color:#64748b; margin-top:8px; line-height:1.5; font-family:'Cairo',sans-serif;">أبني تطبيقات جوال جميلة ❤️</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EXERCISES -->
+  <div class="section" id="exercises">
+    <h2 class="section-title"><span class="num">📝</span> التمارين العملية <span class="en">Exercises</span></h2>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 1: المكافئات</div>
+      <p>اذكر المكوّن المقابل في RN لكل وسم HTML: <code>&lt;div&gt;</code>، <code>&lt;img&gt;</code>، وماذا تستخدم لو المحتوى أطول من الشاشة؟</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <p><code>&lt;div&gt;</code> → <code>&lt;View&gt;</code><br>
+        <code>&lt;img&gt;</code> → <code>&lt;Image&gt;</code><br>
+        محتوى أطول من الشاشة → <code>&lt;ScrollView&gt;</code></p>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 2: خطأ شائع</div>
+      <p>ما الخطأ في الكود التالي وكيف تصلحه؟</p>
+      <div class="code-box"><pre>&lt;View&gt;مرحبا بالعالم&lt;/View&gt;</pre></div>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <p>الخطأ: وضع نص مباشرة داخل View بدون Text.</p>
+        <div class="code-box">
+<pre><span class="comment">// الصحيح:</span>
+&lt;<span class="attr">View</span>&gt;
+  &lt;<span class="attr">Text</span>&gt;مرحبا بالعالم&lt;/<span class="attr">Text</span>&gt;
+&lt;/<span class="attr">View</span>&gt;</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 3: تحويل CSS إلى RN</div>
+      <p>حوّل هذا الكود CSS إلى StyleSheet في React Native:</p>
+      <div class="code-box"><pre>.title { font-size: 24px; color: #0369a1; font-weight: bold; text-align: center; margin-top: 16px; }</pre></div>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre><span class="tag-name">const</span> <span class="attr">styles</span> = StyleSheet.create({
+  title: {
+    fontSize: <span class="attr-val">24</span>,
+    color: <span class="attr-val">'#0369a1'</span>,
+    fontWeight: <span class="attr-val">'bold'</span>,
+    textAlign: <span class="attr-val">'center'</span>,
+    marginTop: <span class="attr-val">16</span>,
+  },
+});</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 4: ملف app.json</div>
+      <p>اكتب قسم <code>expo</code> في app.json لتطبيق اسمه "تطبيق الطقس" بـ slug: "weather-app" وإصدار 1.0.0.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre>{
+  <span class="attr-val">"expo"</span>: {
+    <span class="attr-val">"name"</span>: <span class="attr-val">"تطبيق الطقس"</span>,
+    <span class="attr-val">"slug"</span>: <span class="attr-val">"weather-app"</span>,
+    <span class="attr-val">"version"</span>: <span class="attr-val">"1.0.0"</span>
+  }
+}</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 5: بناء مكوّن</div>
+      <p>اكتب مكوّن React Native يعرض نص "مرحباً [اسمك]!" بحجم 28 لون أزرق، ونص "مسار React Native" بحجم 16 لون رمادي تحته.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre><span class="tag-name">import</span> { View, Text, StyleSheet } <span class="tag-name">from</span> <span class="attr-val">'react-native'</span>;
+
+<span class="tag-name">export default function</span> <span class="attr">App</span>() {
+  <span class="tag-name">return</span> (
+    &lt;<span class="attr">View</span> style={styles.container}&gt;
+      &lt;<span class="attr">Text</span> style={styles.greeting}&gt;مرحباً أحمد!&lt;/<span class="attr">Text</span>&gt;
+      &lt;<span class="attr">Text</span> style={styles.sub}&gt;مسار React Native&lt;/<span class="attr">Text</span>&gt;
+    &lt;/<span class="attr">View</span>&gt;
+  );
+}
+
+<span class="tag-name">const</span> <span class="attr">styles</span> = StyleSheet.create({
+  container: { flex: <span class="attr-val">1</span>, alignItems: <span class="attr-val">'center'</span>, justifyContent: <span class="attr-val">'center'</span> },
+  greeting:  { fontSize: <span class="attr-val">28</span>, color: <span class="attr-val">'#0369a1'</span>, fontWeight: <span class="attr-val">'bold'</span> },
+  sub:       { fontSize: <span class="attr-val">16</span>, color: <span class="attr-val">'#64748b'</span>, marginTop: <span class="attr-val">8</span> },
+});</pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="quiz-container" id="quiz">
+    <div class="quiz-intro"><p>اختبر فهمك لبنية مشروع Expo!</p></div>
+    <div class="quiz-type-tabs">
+      <button class="qt-tab active" onclick="switchQuiz(this,'tf')">✓✗ صح وخطأ</button>
+      <button class="qt-tab" onclick="switchQuiz(this,'mc')">🔘 اختيار من متعدد</button>
+    </div>
+
+    <div class="quiz-section active" id="quiz-tf">
+      <div class="quiz-question" data-correct="false">
+        <span class="q-num">1</span><span class="q-text">يمكن وضع نص مباشرة داخل View بدون استخدام Text.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">2</span><span class="q-text">StyleSheet.create أفضل من الـ Inline styles من ناحية الأداء.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">3</span><span class="q-text">ملف App.js هو نقطة بداية تطبيق Expo ومنه يبدأ التحميل.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="false">
+        <span class="q-num">4</span><span class="q-text">في React Native، نكتب CSS في ملف .css منفصل مثل الويب.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">5</span><span class="q-text">ScrollView تُستخدم عندما يكون المحتوى أطول من ارتفاع الشاشة.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <button class="quiz-submit" onclick="submitQuiz('tf')">عرض النتيجة 🎯</button>
+      <div class="quiz-result" id="result-tf"><div class="result-score" id="score-tf">0/5</div><div class="result-label">إجابات صحيحة</div><div class="result-message" id="msg-tf"></div><button class="retry-btn" onclick="retryQuiz('tf')">🔄 حاول تاني</button></div>
+    </div>
+
+    <div class="quiz-section" id="quiz-mc">
+      <div class="quiz-question" data-correct="2">
+        <span class="q-num">1</span><span class="q-text">ما الخاصية في StyleSheet لتحديد لون الخلفية؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">background</button>
+          <button class="q-opt" onclick="answerMC(this,1)">bgColor</button>
+          <button class="q-opt" onclick="answerMC(this,2)">backgroundColor</button>
+          <button class="q-opt" onclick="answerMC(this,3)">background-color</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="0">
+        <span class="q-num">2</span><span class="q-text">ما الخاصية التي تجعل View تشغل كامل المساحة المتاحة؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">flex: 1</button>
+          <button class="q-opt" onclick="answerMC(this,1)">width: 100%</button>
+          <button class="q-opt" onclick="answerMC(this,2)">display: block</button>
+          <button class="q-opt" onclick="answerMC(this,3)">position: absolute</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="1">
+        <span class="q-num">3</span><span class="q-text">ما الملف الذي يتحكم في اسم التطبيق وأيقونته؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">package.json</button>
+          <button class="q-opt" onclick="answerMC(this,1)">app.json</button>
+          <button class="q-opt" onclick="answerMC(this,2)">App.js</button>
+          <button class="q-opt" onclick="answerMC(this,3)">babel.config.js</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="3">
+        <span class="q-num">4</span><span class="q-text">ما وظيفة elevation في StyleSheet؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">تحريك العنصر للأعلى</button>
+          <button class="q-opt" onclick="answerMC(this,1)">تحديد ترتيب Z-Index</button>
+          <button class="q-opt" onclick="answerMC(this,2)">ارتفاع العنصر</button>
+          <button class="q-opt" onclick="answerMC(this,3)">ظل العنصر على Android</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="2">
+        <span class="q-num">5</span><span class="q-text">كيف تستورد View وText معاً من react-native؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">import View, Text from 'react-native'</button>
+          <button class="q-opt" onclick="answerMC(this,1)">import * as RN from 'react-native'</button>
+          <button class="q-opt" onclick="answerMC(this,2)">import {'{ View, Text }'} from 'react-native'</button>
+          <button class="q-opt" onclick="answerMC(this,3)">require('react-native')</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <button class="quiz-submit" onclick="submitQuiz('mc')">عرض النتيجة 🎯</button>
+      <div class="quiz-result" id="result-mc"><div class="result-score" id="score-mc">0/5</div><div class="result-label">إجابات صحيحة</div><div class="result-message" id="msg-mc"></div><button class="retry-btn" onclick="retryQuiz('mc')">🔄 حاول تاني</button></div>
+    </div>
+  </div>
+
+  <div class="lesson-nav">
+    <a href="./lesson-02.html" class="nav-btn"><span>⬅️</span><span>الدرس السابق</span></a>
+    <button class="nav-btn complete-btn" id="completeBtn" onclick="markComplete(this)"><span>✅</span><span>علّم كمكتمل</span></button>
+    <a href="./lesson-04.html" class="nav-btn"><span>الدرس التالي</span><span>➡️</span></a>
+  </div>
+
+  <div class="notebook-footer">
+    <h3>🎉 أنجزت أول تطبيق!</h3>
+    <p>بطاقة تعريف حقيقية بـ React Native — ارفعها على GitHub! ❤️<br><strong>الدرس التالي: مراجعة JSX و ES6 ⚡</strong></p>
+  </div>
+</div>
+
+<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">⬆️</button>
+<div class="toast" id="toast"></div>
+<script src="../../js/data/courses.js"></script>
+<script src="../../js/progress.js"></script>
+<script>
+const COURSE_ID='react-native',LESSON_ID=3,TOTAL=28;
+function toggleSolution(b){const s=b.nextElementSibling;s.classList.toggle('show');b.textContent=s.classList.contains('show')?'إخفاء الحل ▲':'عرض الحل ▼';}
+function copyCode(b){const p=b.closest('.code-box').querySelector('pre');navigator.clipboard.writeText(p.innerText).then(()=>{b.classList.add('copied');b.textContent='✓ تم النسخ';setTimeout(()=>{b.classList.remove('copied');b.textContent='📋 نسخ';},2000);});}
+function switchQuiz(b,t){document.querySelectorAll('.qt-tab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.quiz-section').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.getElementById('quiz-'+t).classList.add('active');}
+const answers={tf:{},mc:{}};
+function answerTF(b,v){const q=b.closest('.quiz-question'),i=Array.from(q.parentNode.querySelectorAll('.quiz-question')).indexOf(q);q.querySelectorAll('.q-opt').forEach(o=>o.classList.remove('selected'));b.classList.add('selected');answers.tf[i]=v;}
+function answerMC(b,i){const q=b.closest('.quiz-question'),qi=Array.from(q.parentNode.querySelectorAll('.quiz-question')).indexOf(q);q.querySelectorAll('.q-opt').forEach(o=>o.classList.remove('selected'));b.classList.add('selected');answers.mc[qi]=i;}
+function submitQuiz(type){const sec=document.getElementById('quiz-'+type),qs=sec.querySelectorAll('.quiz-question');let c=0;qs.forEach((q,i)=>{const ca=type==='tf'?(q.dataset.correct==='true'):parseInt(q.dataset.correct),ua=answers[type][i],fb=q.querySelector('.q-feedback'),opts=q.querySelectorAll('.q-opt');opts.forEach(o=>{o.classList.remove('selected');o.disabled=true;});if(ua===undefined){fb.className='q-feedback wrong show';fb.textContent='⚠️ ما اخترتش إجابة!';return;}if(ua===ca){c++;fb.className='q-feedback correct show';fb.textContent='✓ إجابة صحيحة!';if(type==='tf')opts[ca?0:1].classList.add('correct');else opts[ca].classList.add('correct');}else{fb.className='q-feedback wrong show';if(type==='tf'){opts[ca?0:1].classList.add('correct');opts[ua?0:1].classList.add('wrong');fb.textContent='✗ خطأ.';}else{opts[ca].classList.add('correct');opts[ua].classList.add('wrong');fb.textContent='✗ الإجابة بالأخضر.';}}});const r=document.getElementById('result-'+type);document.getElementById('score-'+type).textContent=c+'/'+qs.length;const m=document.getElementById('msg-'+type);if(c===qs.length){m.textContent='🏆 ممتاز 100%!';m.className='result-message excellent';}else if(c>=3){m.textContent='👍 جيد!';m.className='result-message good';}else{m.textContent='📚 راجع الدرس.';m.className='result-message try-again';}r.classList.add('show');r.scrollIntoView({behavior:'smooth',block:'center'});}
+function retryQuiz(type){const sec=document.getElementById('quiz-'+type);sec.querySelectorAll('.q-opt').forEach(o=>{o.classList.remove('selected','correct','wrong');o.disabled=false;});sec.querySelectorAll('.q-feedback').forEach(f=>{f.classList.remove('show','correct','wrong');f.textContent='';});document.getElementById('result-'+type).classList.remove('show');answers[type]={};}
+function markComplete(btn){const done=Progress.toggleLessonComplete(COURSE_ID,LESSON_ID);btn.classList.toggle('completed',done);btn.querySelector('span:last-child').textContent=done?'مكتمل! ⭐':'علّم كمكتمل';showToast(done?'🎉 أكملت درس بنية المشروع!':'تم إلغاء الإكمال');}
+if(Progress.isLessonComplete(COURSE_ID,LESSON_ID)){const b=document.getElementById('completeBtn');b.classList.add('completed');b.querySelector('span:last-child').textContent='مكتمل! ⭐';}
+(function(){const p=Progress.getCourseProgress(COURSE_ID,TOTAL);document.getElementById('progFill').style.width=p+'%';document.getElementById('progText').textContent=p+'%';})();
+function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
+window.addEventListener('scroll',()=>{document.getElementById('scrollTop').classList.toggle('show',window.scrollY>300);});
+document.querySelectorAll('.toc-card a').forEach(l=>{l.addEventListener('click',e=>{e.preventDefault();const t=document.querySelector(l.getAttribute('href'));if(t)t.scrollIntoView({behavior:'smooth',block:'start'});});});
+</script>
+</body>
+</html>

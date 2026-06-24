@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-V2NCKVL16D"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-V2NCKVL16D');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Git و GitHub — دفتر البرمجة</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=Cairo:wght@300;400;500;600;700;900&family=Caveat:wght@400;700&family=Fira+Code:wght@400;500;600&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../css/shared.css">
+<link rel="stylesheet" href="../../css/notebook.css">
+<style>
+body { padding: 20px 10px; }
+
+/* terminal style */
+.terminal {
+  background: #0f172a; border-radius: 10px; padding: 16px 20px;
+  font-family: 'Fira Code', monospace; font-size: .88rem;
+  direction: ltr; color: #e2e8f0; line-height: 2;
+  border: 1px solid #334155;
+}
+.t-prompt { color: #4ade80; }
+.t-prompt::before { content: '$ '; color: #7c3aed; }
+.t-out    { color: #94a3b8; padding-right: 12px; }
+.t-comment { color: #475569; font-style: italic; }
+.t-branch { color: #fbbf24; }
+.t-hash   { color: #f472b6; }
+
+/* git flow visual */
+.git-flow {
+  display: flex; align-items: center; gap: 0;
+  margin: 14px 0; overflow-x: auto; direction: ltr;
+}
+.gf-box {
+  background: white; border: 2px solid var(--ink-blue);
+  border-radius: 8px; padding: 8px 16px; font-size: .82rem;
+  text-align: center; font-family: 'Fira Code', monospace;
+  white-space: nowrap; min-width: 90px;
+}
+.gf-arrow {
+  color: var(--ink-blue); font-size: 1.3rem; padding: 0 4px;
+  flex-shrink: 0;
+}
+.gf-cmd {
+  font-family: 'Caveat', cursive; font-size: .85rem;
+  color: var(--ink-red); text-align: center;
+  display: block; margin-top: 4px;
+}
+
+/* branch visual */
+.branch-vis {
+  background: #0f172a; border-radius: 10px; padding: 20px;
+  direction: ltr; font-family: 'Fira Code', monospace;
+  font-size: .82rem; line-height: 2.2;
+}
+.bv-main   { color: #4ade80; }
+.bv-branch { color: #60a5fa; }
+.bv-merge  { color: #fbbf24; }
+.bv-dot    { display: inline-block; width: 12px; height: 12px;
+             border-radius: 50%; vertical-align: middle; margin: 0 4px; }
+.bv-line   { display: inline-block; width: 30px; height: 2px;
+             vertical-align: middle; margin: 0 2px; }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="crumbs">
+    <a href="../../index.html">🏠 الرئيسية</a>
+    <span class="sep">/</span>
+    <a href="./index.html">🌐 الفرونت إند</a>
+    <span class="sep">/</span>
+    <span class="current">🛠️ الدرس 26: Git و GitHub</span>
+  </div>
+  <div class="progress-mini">
+    <div class="progress-bar-mini"><div class="progress-fill-mini" id="progFill"></div></div>
+    <span id="progText">0%</span>
+  </div>
+</div>
+
+<div class="notebook">
+
+  <div class="notebook-header">
+    <div class="lesson-tag">🛠️ الدرس السادس والعشرون</div>
+    <h1><span class="sparkle">✦</span> Git و GitHub <span class="sparkle">✦</span></h1>
+    <div class="lesson-meta">
+      <span>⏱️ 50 دقيقة</span>
+      <span>📊 مبتدئ-متوسط</span>
+      <span>🎯 5 تمارين + اختبار</span>
+    </div>
+  </div>
+
+  <div class="toc-card">
+    <h2>📑 فهرس الدرس</h2>
+    <ol>
+      <li><a href="#s1">ما هو Git؟ لماذا نستخدمه؟</a></li>
+      <li><a href="#s2">التثبيت والإعداد الأولي</a></li>
+      <li><a href="#s3">الأوامر الأساسية</a></li>
+      <li><a href="#s4">الفروع (Branches)</a></li>
+      <li><a href="#s5">الدمج (Merge) وحل التعارضات</a></li>
+      <li><a href="#s6">GitHub والـ Remote</a></li>
+      <li><a href="#s7">سير عمل احترافي</a></li>
+      <li><a href="#s8">محرر الكود الحي</a></li>
+      <li><a href="#exercises">التمارين</a></li>
+      <li><a href="#quiz">اختبر فهمك</a></li>
+    </ol>
+  </div>
+
+  <!-- S1 -->
+  <div class="section" id="s1">
+    <h2 class="section-title"><span class="num">.1</span> ما هو Git؟ <span class="en">Version Control</span></h2>
+    <div class="content">
+      <p><strong>Git</strong> هو نظام التحكم في الإصدار الأشهر في العالم. يسمح لك بـ:</p>
+      <ul>
+        <li>حفظ كل تغيير في كودك بشكل منظم</li>
+        <li>الرجوع لأي نسخة سابقة في أي وقت</li>
+        <li>العمل مع فريق بدون تعارض</li>
+        <li>تجربة ميزات جديدة بأمان (Branches)</li>
+      </ul>
+
+      <div class="analogy">
+        <div class="analogy-title">🎮 تخيل لعبة فيديو بأنظمة Save:</div>
+        <p>Git = نظام الـ Save. كل <strong>commit</strong> = نقطة حفظ. لو حصل أي شيء غلط، ترجع لأي نقطة حفظ سابقة. GitHub = السحابة اللي تحتفظ بنسختك عبر الإنترنت.</p>
+      </div>
+
+      <div class="sub-header">Git مقابل GitHub:</div>
+      <table class="cool-table">
+        <thead><tr><th></th><th>Git</th><th>GitHub</th></tr></thead>
+        <tbody>
+          <tr><td>ما هو؟</td><td>برنامج محلي</td><td>موقع إنترنت</td></tr>
+          <tr><td>أين يعمل؟</td><td>على جهازك</td><td>في السحابة</td></tr>
+          <tr><td>الوظيفة</td><td>تتبع التغييرات</td><td>مشاركة الكود</td></tr>
+          <tr><td>بديله</td><td>—</td><td>GitLab, Bitbucket</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- S2 -->
+  <div class="section" id="s2">
+    <h2 class="section-title"><span class="num">.2</span> التثبيت والإعداد <span class="en">Setup</span></h2>
+    <div class="content">
+      <div class="sub-header">1. تثبيت Git:</div>
+      <div class="terminal">
+        <div class="t-prompt">تحمّل من: git-scm.com</div>
+        <div class="t-out"># تأكد من التثبيت</div>
+        <div class="t-prompt">git --version</div>
+        <div class="t-out">git version 2.44.0</div>
+      </div>
+
+      <div class="sub-header" style="margin-top:16px;">2. إعداد الهوية (مرة واحدة فقط):</div>
+      <div class="code-box">
+<div class="code-header"><span>⚙️ الإعداد الأولي</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment"># اسمك (يظهر في كل commit)</span>
+git config --global user.name <span class="attr-val">"Ahmed Khalid"</span>
+
+<span class="comment"># بريدك (نفس بريد GitHub)</span>
+git config --global user.email <span class="attr-val">"ahmed@email.com"</span>
+
+<span class="comment"># تأكد من الإعدادات</span>
+git config --list</pre>
+      </div>
+
+      <div class="tip-box"><strong>--global</strong> يعني تنطبق على كل مشاريعك. لمشروع واحد فقط، احذف --global.</div>
+    </div>
+  </div>
+
+  <!-- S3 -->
+  <div class="section" id="s3">
+    <h2 class="section-title"><span class="num">.3</span> الأوامر الأساسية <span class="en">Core Commands</span></h2>
+    <div class="content">
+      <p>دورة حياة الكود مع Git:</p>
+
+      <div class="git-flow">
+        <div class="gf-box">Working Directory<span class="gf-cmd">تعديل ملفاتك</span></div>
+        <span class="gf-arrow">→</span>
+        <div class="gf-box">Staging Area<span class="gf-cmd">git add</span></div>
+        <span class="gf-arrow">→</span>
+        <div class="gf-box">Repository<span class="gf-cmd">git commit</span></div>
+        <span class="gf-arrow">→</span>
+        <div class="gf-box">GitHub<span class="gf-cmd">git push</span></div>
+      </div>
+
+      <div class="code-box" style="margin-top:20px;">
+<div class="code-header"><span>🚀 الأوامر الأساسية</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment"># 1. إنشاء مستودع جديد</span>
+git init
+
+<span class="comment"># 2. رؤية حالة الملفات</span>
+git status
+
+<span class="comment"># 3. إضافة ملف للـ Staging</span>
+git add index.html
+git add .          <span class="comment"># إضافة كل الملفات</span>
+
+<span class="comment"># 4. حفظ نقطة (Commit)</span>
+git commit -m <span class="attr-val">"أضفت الصفحة الرئيسية"</span>
+
+<span class="comment"># 5. رؤية سجل التغييرات</span>
+git log
+git log --oneline  <span class="comment"># ملخص سريع</span></pre>
+      </div>
+
+      <div class="code-box blue" style="margin-top:16px;">
+<div class="code-header"><span>↩️ التراجع والإلغاء</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment"># إلغاء تعديلات ملف (قبل add)</span>
+git checkout -- index.html
+
+<span class="comment"># إزالة ملف من Staging (بعد add قبل commit)</span>
+git restore --staged index.html
+
+<span class="comment"># الرجوع لـ commit سابق (للقراءة فقط)</span>
+git checkout abc1234
+
+<span class="comment"># إلغاء آخر commit (يحافظ على التعديلات)</span>
+git reset --soft HEAD~1</pre>
+      </div>
+
+      <table class="cool-table" style="margin-top:16px;">
+        <thead><tr><th>الأمر</th><th>الوظيفة</th></tr></thead>
+        <tbody>
+          <tr><td><code>git init</code></td><td>ينشئ مستودع Git جديد</td></tr>
+          <tr><td><code>git status</code></td><td>يعرض حالة الملفات</td></tr>
+          <tr><td><code>git add .</code></td><td>يضيف كل التغييرات للـ Staging</td></tr>
+          <tr><td><code>git commit -m</code></td><td>يحفظ نقطة تغيير مع رسالة</td></tr>
+          <tr><td><code>git log --oneline</code></td><td>سجل مختصر للـ commits</td></tr>
+          <tr><td><code>git diff</code></td><td>يعرض التغييرات غير المحفوظة</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- S4 -->
+  <div class="section" id="s4">
+    <h2 class="section-title"><span class="num">.4</span> الفروع (Branches) <span class="en">Branching</span></h2>
+    <div class="content">
+      <p>الفروع تسمح لك بتطوير ميزات جديدة بأمان بدون التأثير على الكود الرئيسي.</p>
+
+      <div class="branch-vis">
+        <div class="bv-main">
+          ● main: C1 ─── C2 ─── C3 ─────────────── C6 (merge)
+        </div>
+        <div class="bv-branch">
+                           └── C4 ─── C5 (feature/login)
+        </div>
+      </div>
+
+      <div class="code-box" style="margin-top:16px;">
+<div class="code-header"><span>🌿 أوامر الفروع</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment"># رؤية الفروع الموجودة</span>
+git branch
+
+<span class="comment"># إنشاء فرع جديد</span>
+git branch feature/login
+
+<span class="comment"># الانتقال للفرع</span>
+git checkout feature/login
+
+<span class="comment"># إنشاء والانتقال معاً (أسرع)</span>
+git checkout -b feature/login
+
+<span class="comment"># رؤية الفرع الحالي</span>
+git branch --show-current
+
+<span class="comment"># حذف فرع (بعد الدمج)</span>
+git branch -d feature/login</pre>
+      </div>
+
+      <div class="tip-box"><strong>تسمية احترافية للفروع:</strong><br>
+      <code>feature/اسم-الميزة</code> — ميزة جديدة<br>
+      <code>fix/وصف-المشكلة</code> — إصلاح خطأ<br>
+      <code>hotfix/إصلاح-عاجل</code> — إصلاح عاجل في الإنتاج</div>
+    </div>
+  </div>
+
+  <!-- S5 -->
+  <div class="section" id="s5">
+    <h2 class="section-title"><span class="num">.5</span> الدمج وحل التعارضات <span class="en">Merge & Conflicts</span></h2>
+    <div class="content">
+      <div class="code-box">
+<div class="code-header"><span>🔀 دمج الفروع</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment"># انتقل لـ main أولاً</span>
+git checkout main
+
+<span class="comment"># ادمج الفرع</span>
+git merge feature/login
+
+<span class="comment"># حذف الفرع بعد الدمج</span>
+git branch -d feature/login</pre>
+      </div>
+
+      <div class="sub-header">حل تعارض (Conflict):</div>
+      <p>يحدث التعارض عندما يعدّل شخصان نفس السطر. Git يوقف الدمج ويطلب منك الحل:</p>
+      <div class="code-box blue">
+<div class="code-header"><span>⚠️ ملف فيه تعارض</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment"><<<<<<< HEAD (نسختك)</span>
+const color = 'blue';
+<span class="comment">=======</span>
+const color = 'red';
+<span class="comment">>>>>>>> feature/login (النسخة الأخرى)</span></pre>
+      </div>
+
+      <div class="code-box green" style="margin-top:10px;">
+<div class="code-header"><span>✅ بعد حل التعارض</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment"># احذف الأسطر <>= واترك الكود الصح</span>
+const color = 'blue';
+
+<span class="comment"># ثم أضف وأكمل الدمج</span>
+git add index.html
+git commit -m <span class="attr-val">"حل تعارض: لون الزر"</span></pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- S6 -->
+  <div class="section" id="s6">
+    <h2 class="section-title"><span class="num">.6</span> GitHub والـ Remote <span class="en">GitHub & Remote</span></h2>
+    <div class="content">
+      <div class="code-box">
+<div class="code-header"><span>☁️ رفع مشروع على GitHub</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment"># 1. أنشئ repo على github.com أولاً
+# 2. اربط مشروعك بـ GitHub</span>
+git remote add origin https://github.com/username/myproject.git
+
+<span class="comment"># 3. ارفع أول مرة</span>
+git push -u origin main
+
+<span class="comment"># 4. بعد كذا: ارفع بشكل عادي</span>
+git push
+
+<span class="comment"># سحب التحديثات من GitHub</span>
+git pull
+
+<span class="comment"># استنساخ مشروع موجود</span>
+git clone https://github.com/username/project.git</pre>
+      </div>
+
+      <div class="sub-header">أوامر Remote مفيدة:</div>
+      <div class="code-box blue">
+<div class="code-header"><span>🔗 إدارة الـ Remotes</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment"># رؤية الـ remotes المتصلة</span>
+git remote -v
+
+<span class="comment"># سحب التحديثات بدون دمج</span>
+git fetch origin
+
+<span class="comment"># رفع فرع جديد لـ GitHub</span>
+git push -u origin feature/login</pre>
+      </div>
+
+      <div class="tip-box"><strong>Pull Request (PR):</strong> طلب دمج فرعك في main عبر GitHub. هو الطريقة الاحترافية للمراجعة والموافقة قبل الدمج في الفريق.</div>
+    </div>
+  </div>
+
+  <!-- S7 -->
+  <div class="section" id="s7">
+    <h2 class="section-title"><span class="num">.7</span> سير عمل احترافي <span class="en">Professional Workflow</span></h2>
+    <div class="content">
+      <p>الطريقة الأشهر في الفرق الاحترافية:</p>
+
+      <div class="code-box">
+<div class="code-header"><span>⚡ الـ Feature Branch Workflow</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment"># 1. تأكد من آخر تحديث لـ main</span>
+git checkout main
+git pull
+
+<span class="comment"># 2. أنشئ فرع للميزة</span>
+git checkout -b feature/dark-mode
+
+<span class="comment"># 3. اشتغل وسجّل التغييرات</span>
+git add .
+git commit -m <span class="attr-val">"أضفت الوضع الليلي للـ navbar"</span>
+git commit -m <span class="attr-val">"أضفت الوضع الليلي للـ footer"</span>
+
+<span class="comment"># 4. ارفع الفرع</span>
+git push -u origin feature/dark-mode
+
+<span class="comment"># 5. افتح Pull Request على GitHub
+# 6. بعد الموافقة، ادمج وامسح الفرع</span>
+git checkout main
+git merge feature/dark-mode
+git branch -d feature/dark-mode
+git push</pre>
+      </div>
+
+      <div class="sub-header">ملف .gitignore:</div>
+      <div class="code-box blue">
+<div class="code-header"><span>🙈 .gitignore</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment"># ملفات يتجاهلها Git</span>
+node_modules/
+.env
+dist/
+*.log
+.DS_Store</pre>
+      </div>
+      <div class="tip-box"><strong>node_modules</strong> يحتوي آلاف الملفات ولا يُرفع أبداً. كل من يستنسخ المشروع يشغّل <code>npm install</code> لتحميلها.</div>
+    </div>
+  </div>
+
+  <!-- S8 -->
+  <div class="section" id="s8">
+    <h2 class="section-title"><span class="num">.8</span> محرر الكود الحي <span class="en">Live Editor</span></h2>
+    <div class="content"><p>شاهد محاكاة لسجل Git:</p></div>
+    <div class="try-it">
+      <div class="try-it-header">
+        <span>🛠️ محاكاة Git Log</span>
+        <div class="try-it-controls">
+          <button class="try-btn" onclick="runCode(this)">▶️ تشغيل</button>
+          <button class="try-btn" onclick="resetCode(this)">🔄 إعادة</button>
+        </div>
+      </div>
+      <div class="try-it-body">
+        <textarea class="try-it-editor" spellcheck="false" data-default='<!DOCTYPE html>
+<html><head><meta charset="UTF-8">
+<style>
+  body { font-family: "Fira Code",monospace; background:#0f172a; color:#e2e8f0; padding:20px; direction:ltr; }
+  h2   { color:#7c3aed; font-family: Arial; direction: rtl; }
+  .commit { display:flex; align-items:flex-start; gap:12px; margin:10px 0; }
+  .dot   { width:12px; height:12px; border-radius:50%; background:#4ade80; margin-top:4px; flex-shrink:0; }
+  .line  { width:2px; background:#334155; margin: 0 5px; flex-shrink:0; }
+  .hash  { color:#f472b6; font-size:.8rem; }
+  .msg   { color:#e2e8f0; }
+  .meta  { color:#94a3b8; font-size:.75rem; }
+  .branch { background:#1e3a8a; color:#60a5fa; padding:2px 8px; border-radius:999px; font-size:.75rem; }
+</style>
+</head>
+<body>
+  <h2>📋 git log --oneline</h2>
+  <div id="log"></div>
+<script>
+const commits = [
+  { hash: "a3f8c12", msg: "أضفت ميزة Dark Mode", author: "Ahmed", time: "منذ ساعتين", branch: "main" },
+  { hash: "b91d4e7", msg: "إصلاح: تنسيق الجوال", author: "Sara", time: "أمس" },
+  { hash: "c55a2b0", msg: "أضفت صفحة التواصل", author: "Ahmed", time: "3 أيام" },
+  { hash: "d120f3e", msg: "مشروع البداية", author: "Ahmed", time: "أسبوع" },
+];
+const log = document.getElementById("log");
+commits.forEach((c, i) => {
+  log.innerHTML += `
+    <div class="commit">
+      <div>
+        <div class="dot" style="background:${i===0?"#4ade80":"#334155"}"></div>
+        ${i < commits.length-1 ? `<div class="line" style="height:40px"></div>` : ""}
+      </div>
+      <div>
+        <div><span class="hash">${c.hash}</span> ${c.branch ? `<span class="branch">${c.branch}</span>` : ""}</div>
+        <div class="msg">${c.msg}</div>
+        <div class="meta">${c.author} · ${c.time}</div>
+      </div>
+    </div>`;
+});
+</script>
+</body></html>'><!DOCTYPE html>
+<html><head><meta charset="UTF-8">
+<style>
+  body { font-family: "Fira Code",monospace; background:#0f172a; color:#e2e8f0; padding:20px; direction:ltr; }
+  h2   { color:#7c3aed; font-family: Arial; direction: rtl; }
+  .commit { display:flex; align-items:flex-start; gap:12px; margin:10px 0; }
+  .dot   { width:12px; height:12px; border-radius:50%; background:#4ade80; margin-top:4px; flex-shrink:0; }
+  .line  { width:2px; background:#334155; margin: 0 5px; flex-shrink:0; }
+  .hash  { color:#f472b6; font-size:.8rem; }
+  .msg   { color:#e2e8f0; }
+  .meta  { color:#94a3b8; font-size:.75rem; }
+  .branch { background:#1e3a8a; color:#60a5fa; padding:2px 8px; border-radius:999px; font-size:.75rem; }
+</style>
+</head>
+<body>
+  <h2>📋 git log --oneline</h2>
+  <div id="log"></div>
+<script>
+const commits = [
+  { hash: "a3f8c12", msg: "أضفت ميزة Dark Mode", author: "Ahmed", time: "منذ ساعتين", branch: "main" },
+  { hash: "b91d4e7", msg: "إصلاح: تنسيق الجوال", author: "Sara", time: "أمس" },
+  { hash: "c55a2b0", msg: "أضفت صفحة التواصل", author: "Ahmed", time: "3 أيام" },
+  { hash: "d120f3e", msg: "مشروع البداية", author: "Ahmed", time: "أسبوع" },
+];
+const log = document.getElementById("log");
+commits.forEach((c, i) => {
+  log.innerHTML += `
+    <div class="commit">
+      <div>
+        <div class="dot" style="background:${i===0?"#4ade80":"#334155"}"></div>
+        ${i < commits.length-1 ? `<div class="line" style="height:40px"></div>` : ""}
+      </div>
+      <div>
+        <div><span class="hash">${c.hash}</span> ${c.branch ? `<span class="branch">${c.branch}</span>` : ""}</div>
+        <div class="msg">${c.msg}</div>
+        <div class="meta">${c.author} · ${c.time}</div>
+      </div>
+    </div>`;
+});
+</script>
+</body></html></textarea>
+        <div class="try-it-preview"><iframe srcdoc="" sandbox="allow-scripts allow-same-origin allow-modals allow-popups allow-forms" title="معاينة الكود"></iframe></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EXERCISES -->
+  <div class="section" id="exercises">
+    <h2 class="section-title"><span class="num">📝</span> التمارين العملية <span class="en">Exercises</span></h2>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 1: أوامر البداية</div>
+      <p>اكتب تسلسل الأوامر لـ: إنشاء مستودع جديد، إضافة ملف <em>index.html</em>، ثم حفظه برسالة "أول commit".</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre>git init
+git add index.html
+git commit -m <span class="attr-val">"أول commit"</span></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 2: العمل بفروع</div>
+      <p>أنشئ فرع اسمه <em>feature/contact-page</em>، انتقل إليه، ثم اكتب أمر للتحقق من الفرع الحالي.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre>git checkout -b feature/contact-page
+git branch --show-current
+<span class="comment"># النتيجة: feature/contact-page</span></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 3: الربط بـ GitHub</div>
+      <p>اكتب الأوامر للربط بـ remote repo على GitHub وأول رفع للكود.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre>git remote add origin https://github.com/username/myproject.git
+git push -u origin main</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 4: ملف .gitignore</div>
+      <p>اكتب محتوى ملف <em>.gitignore</em> يتجاهل: مجلد node_modules، ملف .env، وأي ملف ينتهي بـ .log.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre>node_modules/
+.env
+*.log</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 5: سير عمل كامل</div>
+      <p>ابدأ من main، أنشئ فرع <em>fix/nav-bug</em>، افترض أنك أصلحت الـ navbar وحفظت التغيير، ثم ادمجه في main.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre>git checkout main
+git pull
+git checkout -b fix/nav-bug
+<span class="comment"># (تعديل الملفات)</span>
+git add .
+git commit -m <span class="attr-val">"إصلاح: مشكلة في الـ navbar"</span>
+git checkout main
+git merge fix/nav-bug
+git branch -d fix/nav-bug
+git push</pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="quiz-container" id="quiz">
+    <div class="quiz-intro"><p>اختبر فهمك لـ Git و GitHub!</p></div>
+    <div class="quiz-type-tabs">
+      <button class="qt-tab active" onclick="switchQuiz(this,'tf')">✓✗ صح وخطأ</button>
+      <button class="qt-tab" onclick="switchQuiz(this,'mc')">🔘 اختيار من متعدد</button>
+    </div>
+
+    <div class="quiz-section active" id="quiz-tf">
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">1</span><span class="q-text">git add يضع الملفات في الـ Staging Area قبل الـ commit.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="false">
+        <span class="q-num">2</span><span class="q-text">GitHub و Git هما نفس الشيء.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">3</span><span class="q-text">مجلد node_modules يجب وضعه في .gitignore وعدم رفعه.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="false">
+        <span class="q-num">4</span><span class="q-text">git push يسحب آخر التحديثات من GitHub.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">5</span><span class="q-text">الفروع تسمح بتطوير ميزات جديدة بدون التأثير على main.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <button class="quiz-submit" onclick="submitQuiz('tf')">عرض النتيجة 🎯</button>
+      <div class="quiz-result" id="result-tf"><div class="result-score" id="score-tf">0/5</div><div class="result-label">إجابات صحيحة</div><div class="result-message" id="msg-tf"></div><button class="retry-btn" onclick="retryQuiz('tf')">🔄 حاول تاني</button></div>
+    </div>
+
+    <div class="quiz-section" id="quiz-mc">
+      <div class="quiz-question" data-correct="1">
+        <span class="q-num">1</span><span class="q-text">أي أمر يحفظ نقطة تغيير في Git؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">git add</button>
+          <button class="q-opt" onclick="answerMC(this,1)">git commit</button>
+          <button class="q-opt" onclick="answerMC(this,2)">git push</button>
+          <button class="q-opt" onclick="answerMC(this,3)">git save</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="2">
+        <span class="q-num">2</span><span class="q-text">ما الأمر لإنشاء فرع والانتقال إليه مباشرة؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">git branch new-branch</button>
+          <button class="q-opt" onclick="answerMC(this,1)">git switch new-branch</button>
+          <button class="q-opt" onclick="answerMC(this,2)">git checkout -b new-branch</button>
+          <button class="q-opt" onclick="answerMC(this,3)">git new new-branch</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="0">
+        <span class="q-num">3</span><span class="q-text">ما الأمر لسحب آخر التحديثات من GitHub؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">git pull</button>
+          <button class="q-opt" onclick="answerMC(this,1)">git push</button>
+          <button class="q-opt" onclick="answerMC(this,2)">git fetch</button>
+          <button class="q-opt" onclick="answerMC(this,3)">git sync</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="3">
+        <span class="q-num">4</span><span class="q-text">ما الأمر لاستنساخ مشروع من GitHub؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">git pull URL</button>
+          <button class="q-opt" onclick="answerMC(this,1)">git download URL</button>
+          <button class="q-opt" onclick="answerMC(this,2)">git copy URL</button>
+          <button class="q-opt" onclick="answerMC(this,3)">git clone URL</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="1">
+        <span class="q-num">5</span><span class="q-text">ما هو Pull Request؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">أمر لسحب الكود من GitHub</button>
+          <button class="q-opt" onclick="answerMC(this,1)">طلب دمج فرع في main عبر GitHub</button>
+          <button class="q-opt" onclick="answerMC(this,2)">نسخ مشروع كامل</button>
+          <button class="q-opt" onclick="answerMC(this,3)">أمر لإزالة فرع</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <button class="quiz-submit" onclick="submitQuiz('mc')">عرض النتيجة 🎯</button>
+      <div class="quiz-result" id="result-mc"><div class="result-score" id="score-mc">0/5</div><div class="result-label">إجابات صحيحة</div><div class="result-message" id="msg-mc"></div><button class="retry-btn" onclick="retryQuiz('mc')">🔄 حاول تاني</button></div>
+    </div>
+  </div>
+
+  <div class="lesson-nav">
+    <a href="./lesson-25.html" class="nav-btn"><span>⬅️</span><span>الدرس السابق</span></a>
+    <button class="nav-btn complete-btn" id="completeBtn" onclick="markComplete(this)"><span>✅</span><span>علّم كمكتمل</span></button>
+    <a href="./lesson-27.html" class="nav-btn"><span>الدرس التالي</span><span>➡️</span></a>
+  </div>
+
+  <div class="notebook-footer">
+    <h3>🎉 أتقنت Git و GitHub!</h3>
+    <p>الآن كودك محفوظ وآمن وجاهز للعمل الجماعي ❤️<br><strong>الدرس التالي: NPM ومدراء الحزم 📦</strong></p>
+  </div>
+</div>
+
+<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">⬆️</button>
+<div class="toast" id="toast"></div>
+<script src="../../js/data/courses.js"></script>
+<script src="../../js/progress.js"></script>
+<script src="../../js/lesson-editor.js"></script>
+<script>
+const COURSE_ID='frontend',LESSON_ID=26,TOTAL=32;
+function toggleSolution(b){const s=b.nextElementSibling;s.classList.toggle('show');b.textContent=s.classList.contains('show')?'إخفاء الحل ▲':'عرض الحل ▼';}
+function copyCode(b){const p=b.closest('.code-box').querySelector('pre');navigator.clipboard.writeText(p.innerText).then(()=>{b.classList.add('copied');b.textContent='✓ تم النسخ';setTimeout(()=>{b.classList.remove('copied');b.textContent='📋 نسخ';},2000);});}
+function runCode(b){const t=b.closest('.try-it');t.querySelector('iframe').srcdoc=t.querySelector('.try-it-editor').value;}
+function resetCode(b){const t=b.closest('.try-it'),e=t.querySelector('.try-it-editor');e.value=e.dataset.default;t.querySelector('iframe').srcdoc=e.value;}
+window.addEventListener('load',()=>{document.querySelectorAll('.try-it').forEach(t=>{const e=t.querySelector('.try-it-editor');t.querySelector('iframe').srcdoc=e.value;});});
+function switchQuiz(b,t){document.querySelectorAll('.qt-tab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.quiz-section').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.getElementById('quiz-'+t).classList.add('active');}
+const answers={tf:{},mc:{}};
+function answerTF(b,v){const q=b.closest('.quiz-question'),i=Array.from(q.parentNode.querySelectorAll('.quiz-question')).indexOf(q);q.querySelectorAll('.q-opt').forEach(o=>o.classList.remove('selected'));b.classList.add('selected');answers.tf[i]=v;}
+function answerMC(b,i){const q=b.closest('.quiz-question'),qi=Array.from(q.parentNode.querySelectorAll('.quiz-question')).indexOf(q);q.querySelectorAll('.q-opt').forEach(o=>o.classList.remove('selected'));b.classList.add('selected');answers.mc[qi]=i;}
+function submitQuiz(type){const sec=document.getElementById('quiz-'+type),qs=sec.querySelectorAll('.quiz-question');let c=0;qs.forEach((q,i)=>{const ca=type==='tf'?(q.dataset.correct==='true'):parseInt(q.dataset.correct),ua=answers[type][i],fb=q.querySelector('.q-feedback'),opts=q.querySelectorAll('.q-opt');opts.forEach(o=>{o.classList.remove('selected');o.disabled=true;});if(ua===undefined){fb.className='q-feedback wrong show';fb.textContent='⚠️ ما اخترتش إجابة!';return;}if(ua===ca){c++;fb.className='q-feedback correct show';fb.textContent='✓ إجابة صحيحة!';if(type==='tf')opts[ca?0:1].classList.add('correct');else opts[ca].classList.add('correct');}else{fb.className='q-feedback wrong show';if(type==='tf'){opts[ca?0:1].classList.add('correct');opts[ua?0:1].classList.add('wrong');fb.textContent='✗ خطأ.';}else{opts[ca].classList.add('correct');opts[ua].classList.add('wrong');fb.textContent='✗ الإجابة بالأخضر.';}}});const r=document.getElementById('result-'+type);document.getElementById('score-'+type).textContent=c+'/'+qs.length;const m=document.getElementById('msg-'+type);if(c===qs.length){m.textContent='🏆 ممتاز 100%!';m.className='result-message excellent';}else if(c>=3){m.textContent='👍 جيد!';m.className='result-message good';}else{m.textContent='📚 راجع الدرس.';m.className='result-message try-again';}r.classList.add('show');r.scrollIntoView({behavior:'smooth',block:'center'});}
+function retryQuiz(type){const sec=document.getElementById('quiz-'+type);sec.querySelectorAll('.q-opt').forEach(o=>{o.classList.remove('selected','correct','wrong');o.disabled=false;});sec.querySelectorAll('.q-feedback').forEach(f=>{f.classList.remove('show','correct','wrong');f.textContent='';});document.getElementById('result-'+type).classList.remove('show');answers[type]={};}
+function markComplete(btn){const done=Progress.toggleLessonComplete(COURSE_ID,LESSON_ID);btn.classList.toggle('completed',done);btn.querySelector('span:last-child').textContent=done?'مكتمل! ⭐':'علّم كمكتمل';showToast(done?'🎉 أكملت درس Git و GitHub!':'تم إلغاء الإكمال');}
+if(Progress.isLessonComplete(COURSE_ID,LESSON_ID)){const b=document.getElementById('completeBtn');b.classList.add('completed');b.querySelector('span:last-child').textContent='مكتمل! ⭐';}
+(function(){const p=Progress.getCourseProgress(COURSE_ID,TOTAL);document.getElementById('progFill').style.width=p+'%';document.getElementById('progText').textContent=p+'%';})();
+function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
+window.addEventListener('scroll',()=>{document.getElementById('scrollTop').classList.toggle('show',window.scrollY>300);});
+document.querySelectorAll('.toc-card a').forEach(l=>{l.addEventListener('click',e=>{e.preventDefault();const t=document.querySelector(l.getAttribute('href'));if(t)t.scrollIntoView({behavior:'smooth',block:'start'});});});
+</script>
+</body>
+</html>

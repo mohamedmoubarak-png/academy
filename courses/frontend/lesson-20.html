@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-V2NCKVL16D"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-V2NCKVL16D');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>التعامل مع DOM — دفتر البرمجة</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=Cairo:wght@300;400;500;600;700;900&family=Caveat:wght@400;700&family=Fira+Code:wght@400;500;600&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../css/shared.css">
+<link rel="stylesheet" href="../../css/notebook.css">
+<style>
+body { padding: 20px 10px; }
+.mini-console {
+  background: #1e293b; border-radius: 10px; padding: 14px 16px;
+  margin: 10px 0; font-family: 'Fira Code', monospace; font-size: .88rem; direction: ltr;
+}
+.mc-line { margin: 3px 0; }
+.mc-in { color: #94a3b8; }
+.mc-in::before { content: '> '; color: #7c3aed; }
+.mc-out { color: #4ade80; }
+.mc-out::before { content: '← '; color: #4ade80; }
+.dom-tree {
+  background: white; border: 2px solid var(--ink-blue);
+  border-radius: 12px; padding: 16px 20px; margin: 14px 0;
+  font-family: 'Fira Code', monospace; font-size: .85rem; direction: ltr; line-height: 2;
+}
+.dom-tag { color: var(--ink-blue); font-weight: 700; }
+.dom-text { color: var(--ink-green); }
+.dom-attr { color: var(--ink-orange); }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="crumbs">
+    <a href="../../index.html">🏠 الرئيسية</a>
+    <span class="sep">/</span>
+    <a href="./index.html">🌐 الفرونت إند</a>
+    <span class="sep">/</span>
+    <span class="current">⚡ الدرس 20: التعامل مع DOM</span>
+  </div>
+  <div class="progress-mini">
+    <div class="progress-bar-mini"><div class="progress-fill-mini" id="progFill"></div></div>
+    <span id="progText">0%</span>
+  </div>
+</div>
+
+<div class="notebook">
+
+  <div class="notebook-header">
+    <div class="lesson-tag">⚡ الدرس العشرون</div>
+    <h1><span class="sparkle">✦</span> التعامل مع DOM <span class="sparkle">✦</span></h1>
+    <div class="lesson-meta">
+      <span>⏱️ 50 دقيقة</span>
+      <span>📊 متوسط</span>
+      <span>🎯 5 تمارين + اختبار</span>
+    </div>
+  </div>
+
+  <div class="toc-card">
+    <h2>📑 فهرس الدرس</h2>
+    <ol>
+      <li><a href="#s1">ما هو DOM؟</a></li>
+      <li><a href="#s2">اختيار العناصر</a></li>
+      <li><a href="#s3">قراءة وتعديل المحتوى</a></li>
+      <li><a href="#s4">تعديل CSS والـ Classes</a></li>
+      <li><a href="#s5">إنشاء وإضافة وحذف العناصر</a></li>
+      <li><a href="#s6">الخصائص (Attributes)</a></li>
+      <li><a href="#s7">التنقل في شجرة DOM</a></li>
+      <li><a href="#s8">محرر الكود الحي</a></li>
+      <li><a href="#exercises">التمارين</a></li>
+      <li><a href="#quiz">اختبر فهمك</a></li>
+    </ol>
+  </div>
+
+  <!-- S1 -->
+  <div class="section" id="s1">
+    <h2 class="section-title"><span class="num">.1</span> ما هو DOM؟ <span class="en">What is the DOM?</span></h2>
+    <div class="content">
+      <p><strong>DOM</strong> اختصار لـ <em>Document Object Model</em> — هو تمثيل شجري لصفحة HTML في الذاكرة. JavaScript تستخدمه للوصول لأي عنصر في الصفحة وتعديله.</p>
+      <div class="analogy">
+        <div class="analogy-title">🌳 تخيل شجرة عائلة:</div>
+        <p>document هو الجد الأكبر. html هو الأب. head و body أبناؤه. وكل ما بداخلهم أحفاد. JavaScript تستطيع الوصول لأي فرد في هذه العائلة وتعديله.</p>
+      </div>
+      <div class="dom-tree">
+        <span class="dom-tag">document</span><br>
+        &nbsp;&nbsp;└── <span class="dom-tag">&lt;html&gt;</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── <span class="dom-tag">&lt;head&gt;</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;└── <span class="dom-tag">&lt;title&gt;</span> <span class="dom-text">"أكاديميتي"</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└── <span class="dom-tag">&lt;body&gt;</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── <span class="dom-tag">&lt;h1 <span class="dom-attr">id="title"</span>&gt;</span> <span class="dom-text">"مرحباً"</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└── <span class="dom-tag">&lt;p <span class="dom-attr">class="text"</span>&gt;</span> <span class="dom-text">"فقرة"</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- S2 -->
+  <div class="section" id="s2">
+    <h2 class="section-title"><span class="num">.2</span> اختيار العناصر <span class="en">Selecting Elements</span></h2>
+    <div class="content">
+      <div class="code-box">
+<div class="code-header"><span>🎯 طرق الاختيار</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">// بالـ ID — يعيد عنصر واحد</span>
+<span class="tag-name">const</span> <span class="attr">title</span> = <span class="attr">document</span>.<span class="tag-name">getElementById</span>(<span class="attr-val">'title'</span>);
+
+<span class="comment">// بالـ CSS selector — أول عنصر مطابق</span>
+<span class="tag-name">const</span> <span class="attr">btn</span>   = <span class="attr">document</span>.<span class="tag-name">querySelector</span>(<span class="attr-val">'.btn'</span>);
+<span class="tag-name">const</span> <span class="attr">h1</span>    = <span class="attr">document</span>.<span class="tag-name">querySelector</span>(<span class="attr-val">'h1'</span>);
+<span class="tag-name">const</span> <span class="attr">inp</span>   = <span class="attr">document</span>.<span class="tag-name">querySelector</span>(<span class="attr-val">'#myInput'</span>);
+
+<span class="comment">// كل العناصر المطابقة — NodeList</span>
+<span class="tag-name">const</span> <span class="attr">items</span> = <span class="attr">document</span>.<span class="tag-name">querySelectorAll</span>(<span class="attr-val">'.item'</span>);
+<span class="tag-name">const</span> <span class="attr">paras</span> = <span class="attr">document</span>.<span class="tag-name">querySelectorAll</span>(<span class="attr-val">'p'</span>);
+
+<span class="comment">// التجوال على NodeList</span>
+<span class="attr">items</span>.<span class="tag-name">forEach</span>(<span class="attr">item</span> => <span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr">item</span>));</pre>
+      </div>
+
+      <table class="cool-table">
+        <thead><tr><th>الدالة</th><th>تعيد</th><th>تستخدم مع</th></tr></thead>
+        <tbody>
+          <tr><td><code>getElementById(id)</code></td><td>عنصر واحد</td><td>ID فقط</td></tr>
+          <tr><td><code>querySelector(sel)</code></td><td>أول عنصر</td><td>أي CSS selector</td></tr>
+          <tr><td><code>querySelectorAll(sel)</code></td><td>NodeList (كلهم)</td><td>أي CSS selector</td></tr>
+        </tbody>
+      </table>
+      <div class="tip-box"><strong>القاعدة العملية:</strong> استخدم <em>querySelector</em> و <em>querySelectorAll</em> دائماً — أقوى وأمرن من getElementById.</div>
+    </div>
+  </div>
+
+  <!-- S3 -->
+  <div class="section" id="s3">
+    <h2 class="section-title"><span class="num">.3</span> قراءة وتعديل المحتوى <span class="en">Reading & Changing Content</span></h2>
+    <div class="content">
+      <div class="code-box">
+<div class="code-header"><span>📝 innerHTML, textContent, innerText</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-name">const</span> <span class="attr">el</span> = <span class="attr">document</span>.<span class="tag-name">querySelector</span>(<span class="attr-val">'#box'</span>);
+
+<span class="comment">// قراءة</span>
+<span class="attr">el</span>.<span class="attr">textContent</span>  <span class="comment">// النص فقط بدون HTML</span>
+<span class="attr">el</span>.<span class="attr">innerHTML</span>    <span class="comment">// المحتوى كاملاً بما فيه HTML</span>
+
+<span class="comment">// تعديل</span>
+<span class="attr">el</span>.<span class="attr">textContent</span> = <span class="attr-val">'نص جديد'</span>;
+<span class="attr">el</span>.<span class="attr">innerHTML</span>   = <span class="attr-val">'&lt;strong&gt;نص غامق&lt;/strong&gt;'</span>;
+
+<span class="comment">// قيمة الـ input</span>
+<span class="tag-name">const</span> <span class="attr">inp</span> = <span class="attr">document</span>.<span class="tag-name">querySelector</span>(<span class="attr-val">'input'</span>);
+<span class="attr">inp</span>.<span class="attr">value</span>        <span class="comment">// قراءة ما كتبه المستخدم</span>
+<span class="attr">inp</span>.<span class="attr">value</span> = <span class="attr-val">''</span>   <span class="comment">// تفريغ الحقل</span></pre>
+      </div>
+      <div class="warning-box"><strong>innerHTML vs textContent:</strong> استخدم <em>textContent</em> لو تضع نصاً عادياً — أأمن وأسرع. استخدم <em>innerHTML</em> فقط لو تحتاج إدراج HTML فعلياً وتأكد من سلامة البيانات (XSS).</div>
+    </div>
+  </div>
+
+  <!-- S4 -->
+  <div class="section" id="s4">
+    <h2 class="section-title"><span class="num">.4</span> تعديل CSS والـ Classes <span class="en">Styles & Classes</span></h2>
+    <div class="content">
+      <div class="code-box">
+<div class="code-header"><span>🎨 style و classList</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-name">const</span> <span class="attr">box</span> = <span class="attr">document</span>.<span class="tag-name">querySelector</span>(<span class="attr-val">'.box'</span>);
+
+<span class="comment">// تعديل style مباشر (للتغييرات الديناميكية)</span>
+<span class="attr">box</span>.<span class="attr">style</span>.<span class="attr">color</span>      = <span class="attr-val">'red'</span>;
+<span class="attr">box</span>.<span class="attr">style</span>.<span class="attr">fontSize</span>   = <span class="attr-val">'20px'</span>;     <span class="comment">// camelCase</span>
+<span class="attr">box</span>.<span class="attr">style</span>.<span class="attr">display</span>    = <span class="attr-val">'none'</span>;     <span class="comment">// إخفاء</span>
+<span class="attr">box</span>.<span class="attr">style</span>.<span class="attr">display</span>    = <span class="attr-val">'block'</span>;    <span class="comment">// إظهار</span>
+
+<span class="comment">// classList — الطريقة الأفضل</span>
+<span class="attr">box</span>.<span class="attr">classList</span>.<span class="tag-name">add</span>(<span class="attr-val">'active'</span>);      <span class="comment">// إضافة class</span>
+<span class="attr">box</span>.<span class="attr">classList</span>.<span class="tag-name">remove</span>(<span class="attr-val">'hidden'</span>);   <span class="comment">// إزالة class</span>
+<span class="attr">box</span>.<span class="attr">classList</span>.<span class="tag-name">toggle</span>(<span class="attr-val">'dark'</span>);    <span class="comment">// تبديل (يضيف لو غير موجود، يحذف لو موجود)</span>
+<span class="attr">box</span>.<span class="attr">classList</span>.<span class="tag-name">contains</span>(<span class="attr-val">'active'</span>) <span class="comment">// true/false</span></pre>
+      </div>
+      <div class="tip-box"><strong>classList.toggle</strong> مفيد جداً لزر الإضاءة/الظلام أو أي عنصر بين حالتين.</div>
+    </div>
+  </div>
+
+  <!-- S5 -->
+  <div class="section" id="s5">
+    <h2 class="section-title"><span class="num">.5</span> إنشاء وإضافة وحذف العناصر <span class="en">Create, Append, Remove</span></h2>
+    <div class="content">
+      <div class="code-box">
+<div class="code-header"><span>🏗️ createElement و append</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">// إنشاء عنصر جديد</span>
+<span class="tag-name">const</span> <span class="attr">li</span> = <span class="attr">document</span>.<span class="tag-name">createElement</span>(<span class="attr-val">'li'</span>);
+<span class="attr">li</span>.<span class="attr">textContent</span> = <span class="attr-val">'عنصر جديد'</span>;
+<span class="attr">li</span>.<span class="attr">classList</span>.<span class="tag-name">add</span>(<span class="attr-val">'item'</span>);
+
+<span class="comment">// إضافة للصفحة</span>
+<span class="tag-name">const</span> <span class="attr">list</span> = <span class="attr">document</span>.<span class="tag-name">querySelector</span>(<span class="attr-val">'ul'</span>);
+<span class="attr">list</span>.<span class="tag-name">append</span>(<span class="attr">li</span>);       <span class="comment">// في النهاية</span>
+<span class="attr">list</span>.<span class="tag-name">prepend</span>(<span class="attr">li</span>);      <span class="comment">// في البداية</span>
+
+<span class="comment">// إضافة HTML مباشرة (بدون إنشاء)</span>
+<span class="attr">list</span>.<span class="attr">innerHTML</span> += <span class="attr-val">'&lt;li&gt;عنصر&lt;/li&gt;'</span>;
+
+<span class="comment">// حذف عنصر</span>
+<span class="attr">li</span>.<span class="tag-name">remove</span>();
+
+<span class="comment">// حذف كل الأبناء</span>
+<span class="attr">list</span>.<span class="attr">innerHTML</span> = <span class="attr-val">''</span>;</pre>
+      </div>
+
+      <div class="example">
+        <span class="example-label">📌 نمط شائع جداً — بناء قائمة من مصفوفة:</span>
+        <div class="code-box green">
+<pre><span class="tag-name">const</span> <span class="attr">fruits</span> = [<span class="attr-val">'تفاح'</span>, <span class="attr-val">'موز'</span>, <span class="attr-val">'عنب'</span>];
+<span class="tag-name">const</span> <span class="attr">ul</span>     = <span class="attr">document</span>.<span class="tag-name">querySelector</span>(<span class="attr-val">'ul'</span>);
+
+<span class="attr">ul</span>.<span class="attr">innerHTML</span> = <span class="attr">fruits</span>
+  .<span class="tag-name">map</span>(<span class="attr">f</span> => <span class="attr-val">`&lt;li&gt;${f}&lt;/li&gt;`</span>)
+  .<span class="tag-name">join</span>(<span class="attr-val">''</span>);</pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- S6 -->
+  <div class="section" id="s6">
+    <h2 class="section-title"><span class="num">.6</span> الخصائص (Attributes) <span class="en">Attributes</span></h2>
+    <div class="content">
+      <div class="code-box">
+<div class="code-header"><span>🔧 getAttribute و setAttribute</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-name">const</span> <span class="attr">img</span>  = <span class="attr">document</span>.<span class="tag-name">querySelector</span>(<span class="attr-val">'img'</span>);
+<span class="tag-name">const</span> <span class="attr">link</span> = <span class="attr">document</span>.<span class="tag-name">querySelector</span>(<span class="attr-val">'a'</span>);
+
+<span class="comment">// قراءة attribute</span>
+<span class="attr">img</span>.<span class="tag-name">getAttribute</span>(<span class="attr-val">'src'</span>)     <span class="comment">// 'photo.jpg'</span>
+<span class="attr">img</span>.<span class="tag-name">getAttribute</span>(<span class="attr-val">'alt'</span>)     <span class="comment">// 'صورة'</span>
+
+<span class="comment">// تعديل attribute</span>
+<span class="attr">img</span>.<span class="tag-name">setAttribute</span>(<span class="attr-val">'src'</span>, <span class="attr-val">'new.jpg'</span>);
+<span class="attr">link</span>.<span class="tag-name">setAttribute</span>(<span class="attr-val">'href'</span>, <span class="attr-val">'https://example.com'</span>);
+
+<span class="comment">// حذف attribute</span>
+<span class="attr">img</span>.<span class="tag-name">removeAttribute</span>(<span class="attr-val">'alt'</span>);
+
+<span class="comment">// Shorthand للخصائص الشائعة</span>
+<span class="attr">img</span>.<span class="attr">src</span> = <span class="attr-val">'new.jpg'</span>;    <span class="comment">// مكافئ لـ setAttribute</span>
+<span class="attr">link</span>.<span class="attr">href</span> = <span class="attr-val">'...'</span>;
+<span class="attr">inp</span>.<span class="attr">disabled</span> = <span class="attr-val">true</span>;   <span class="comment">// تعطيل input</span></pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- S7 -->
+  <div class="section" id="s7">
+    <h2 class="section-title"><span class="num">.7</span> التنقل في شجرة DOM <span class="en">DOM Traversal</span></h2>
+    <div class="content">
+      <div class="code-box">
+<div class="code-header"><span>🌲 التنقل بين العناصر</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-name">const</span> <span class="attr">el</span> = <span class="attr">document</span>.<span class="tag-name">querySelector</span>(<span class="attr-val">'.item'</span>);
+
+<span class="comment">// العنصر الأب</span>
+<span class="attr">el</span>.<span class="attr">parentElement</span>
+
+<span class="comment">// الأبناء</span>
+<span class="attr">el</span>.<span class="attr">children</span>           <span class="comment">// HTMLCollection</span>
+<span class="attr">el</span>.<span class="attr">firstElementChild</span>
+<span class="attr">el</span>.<span class="attr">lastElementChild</span>
+
+<span class="comment">// الإخوة</span>
+<span class="attr">el</span>.<span class="attr">nextElementSibling</span>
+<span class="attr">el</span>.<span class="attr">previousElementSibling</span>
+
+<span class="comment">// closest — ابحث في الآباء</span>
+<span class="attr">el</span>.<span class="tag-name">closest</span>(<span class="attr-val">'.card'</span>)    <span class="comment">// أقرب أب بـ class="card"</span></pre>
+      </div>
+      <div class="tip-box"><strong>closest() مفيد جداً</strong> مع Event Delegation — ستتعلمها في درس الأحداث.</div>
+    </div>
+  </div>
+
+  <!-- S8 -->
+  <div class="section" id="s8">
+    <h2 class="section-title"><span class="num">.8</span> محرر الكود الحي <span class="en">Live Editor</span></h2>
+    <div class="content"><p>جرب التعامل مع DOM بنفسك:</p></div>
+    <div class="try-it">
+      <div class="try-it-header">
+        <span>⚡ جرب DOM</span>
+        <div class="try-it-controls">
+          <button class="try-btn" onclick="runCode(this)">▶️ تشغيل</button>
+          <button class="try-btn" onclick="resetCode(this)">🔄 إعادة</button>
+        </div>
+      </div>
+      <div class="try-it-body">
+        <textarea class="try-it-editor" spellcheck="false" data-default='<!DOCTYPE html>
+<html><head><meta charset="UTF-8">
+<style>
+  body { font-family: Arial; padding: 20px; direction: rtl; }
+  .task { display:flex; align-items:center; gap:10px; padding:10px; border-bottom:1px solid #eee; }
+  .task.done span { text-decoration:line-through; color:#94a3b8; }
+  button { padding:6px 14px; border-radius:8px; border:none; cursor:pointer; font-family:Arial; }
+  .add-btn { background:#1e3a8a; color:white; }
+  .del-btn  { background:#fee2e2; color:#dc2626; margin-right:auto; }
+  .done-btn { background:#dcfce7; color:#15803d; }
+  input { padding:8px; border:2px solid #e2e8f0; border-radius:8px; font-size:1rem; width:200px; }
+</style>
+</head>
+<body>
+  <h2>✅ قائمة مهام</h2>
+  <div style="display:flex;gap:8px;margin-bottom:16px;">
+    <input id="inp" placeholder="مهمة جديدة..." />
+    <button class="add-btn" onclick="addTask()">إضافة</button>
+  </div>
+  <div id="list"></div>
+
+<script>
+  function addTask() {
+    const inp = document.getElementById("inp");
+    const text = inp.value.trim();
+    if (!text) return;
+
+    const div = document.createElement("div");
+    div.className = "task";
+    div.innerHTML = `
+      <span>${text}</span>
+      <button class="done-btn" onclick="this.closest(".task").classList.toggle("done")">✓</button>
+      <button class="del-btn" onclick="this.closest(".task").remove()">حذف</button>
+    `;
+    document.getElementById("list").append(div);
+    inp.value = "";
+    inp.focus();
+  }
+
+  document.getElementById("inp").addEventListener("keypress", e => {
+    if (e.key === "Enter") addTask();
+  });
+</script>
+</body></html>'><!DOCTYPE html>
+<html><head><meta charset="UTF-8">
+<style>
+  body { font-family: Arial; padding: 20px; direction: rtl; }
+  .task { display:flex; align-items:center; gap:10px; padding:10px; border-bottom:1px solid #eee; }
+  .task.done span { text-decoration:line-through; color:#94a3b8; }
+  button { padding:6px 14px; border-radius:8px; border:none; cursor:pointer; font-family:Arial; }
+  .add-btn { background:#1e3a8a; color:white; }
+  .del-btn  { background:#fee2e2; color:#dc2626; margin-right:auto; }
+  .done-btn { background:#dcfce7; color:#15803d; }
+  input { padding:8px; border:2px solid #e2e8f0; border-radius:8px; font-size:1rem; width:200px; }
+</style>
+</head>
+<body>
+  <h2>✅ قائمة مهام</h2>
+  <div style="display:flex;gap:8px;margin-bottom:16px;">
+    <input id="inp" placeholder="مهمة جديدة..." />
+    <button class="add-btn" onclick="addTask()">إضافة</button>
+  </div>
+  <div id="list"></div>
+<script>
+  function addTask() {
+    const inp = document.getElementById("inp");
+    const text = inp.value.trim();
+    if (!text) return;
+    const div = document.createElement("div");
+    div.className = "task";
+    div.innerHTML = `<span>${text}</span><button class="done-btn" onclick="this.closest('.task').classList.toggle('done')">✓</button><button class="del-btn" onclick="this.closest('.task').remove()">حذف</button>`;
+    document.getElementById("list").append(div);
+    inp.value = "";
+    inp.focus();
+  }
+  document.getElementById("inp").addEventListener("keypress", e => {
+    if (e.key === "Enter") addTask();
+  });
+</script>
+</body></html></textarea>
+        <div class="try-it-preview"><iframe srcdoc="" sandbox="allow-scripts allow-same-origin allow-modals allow-popups allow-forms" title="معاينة الكود"></iframe></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EXERCISES -->
+  <div class="section" id="exercises">
+    <h2 class="section-title"><span class="num">📝</span> التمارين العملية <span class="en">Exercises</span></h2>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 1: تغيير النص</div>
+      <p>اكتب JS يغيّر نص أي عنصر بـ id="title" إلى "أهلاً بالعالم!".</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre><span class="attr">document</span>.<span class="tag-name">getElementById</span>(<span class="attr-val">'title'</span>).<span class="attr">textContent</span> = <span class="attr-val">'أهلاً بالعالم!'</span>;</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 2: تبديل class</div>
+      <p>اكتب JS يضيف class "active" لعنصر لو لم يكن موجوداً، ويحذفه لو كان موجوداً.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre><span class="tag-name">const</span> <span class="attr">el</span> = <span class="attr">document</span>.<span class="tag-name">querySelector</span>(<span class="attr-val">'.box'</span>);
+<span class="attr">el</span>.<span class="attr">classList</span>.<span class="tag-name">toggle</span>(<span class="attr-val">'active'</span>);</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 3: بناء قائمة</div>
+      <p>من المصفوفة <em>['HTML','CSS','JavaScript']</em>، ابنِ قائمة ul بعناصر li وأضفها للصفحة.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre><span class="tag-name">const</span> <span class="attr">items</span> = [<span class="attr-val">'HTML'</span>, <span class="attr-val">'CSS'</span>, <span class="attr-val">'JavaScript'</span>];
+<span class="tag-name">const</span> <span class="attr">ul</span>    = <span class="attr">document</span>.<span class="tag-name">createElement</span>(<span class="attr-val">'ul'</span>);
+<span class="attr">ul</span>.<span class="attr">innerHTML</span> = <span class="attr">items</span>.<span class="tag-name">map</span>(<span class="attr">i</span> => <span class="attr-val">`&lt;li&gt;${i}&lt;/li&gt;`</span>).<span class="tag-name">join</span>(<span class="attr-val">''</span>);
+<span class="attr">document</span>.<span class="attr">body</span>.<span class="tag-name">append</span>(<span class="attr">ul</span>);</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 4: تعديل خاصية</div>
+      <p>اكتب JS يغيّر src لأول صورة في الصفحة إلى 'new-image.jpg' ويضبط alt إلى 'صورة جديدة'.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre><span class="tag-name">const</span> <span class="attr">img</span> = <span class="attr">document</span>.<span class="tag-name">querySelector</span>(<span class="attr-val">'img'</span>);
+<span class="attr">img</span>.<span class="attr">src</span> = <span class="attr-val">'new-image.jpg'</span>;
+<span class="attr">img</span>.<span class="attr">alt</span> = <span class="attr-val">'صورة جديدة'</span>;</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 5: إخفاء وإظهار</div>
+      <p>اكتب دالة <em>toggle(id)</em> تخفي العنصر لو كان ظاهراً وتظهره لو كان مخفياً.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre><span class="tag-name">function</span> <span class="attr">toggle</span>(<span class="attr">id</span>) {
+  <span class="tag-name">const</span> <span class="attr">el</span> = <span class="attr">document</span>.<span class="tag-name">getElementById</span>(<span class="attr">id</span>);
+  <span class="attr">el</span>.<span class="attr">style</span>.<span class="attr">display</span> = <span class="attr">el</span>.<span class="attr">style</span>.<span class="attr">display</span> === <span class="attr-val">'none'</span> ? <span class="attr-val">'block'</span> : <span class="attr-val">'none'</span>;
+}</pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="quiz-container" id="quiz">
+    <div class="quiz-intro"><p>اختبر فهمك لـ DOM!</p></div>
+    <div class="quiz-type-tabs">
+      <button class="qt-tab active" onclick="switchQuiz(this,'tf')">✓✗ صح وخطأ</button>
+      <button class="qt-tab" onclick="switchQuiz(this,'mc')">🔘 اختيار من متعدد</button>
+    </div>
+    <div class="quiz-section active" id="quiz-tf">
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">1</span><span class="q-text">querySelectorAll تعيد NodeList يمكن التجوال عليه بـ forEach.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="false">
+        <span class="q-num">2</span><span class="q-text">textContent يُعيد وينفّذ وسوم HTML داخل العنصر.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">3</span><span class="q-text">classList.toggle يضيف class لو غير موجود ويحذفه لو موجود.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">4</span><span class="q-text">el.remove() يحذف العنصر من الصفحة نهائياً.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="false">
+        <span class="q-num">5</span><span class="q-text">getElementById يمكنه البحث بأي CSS selector.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <button class="quiz-submit" onclick="submitQuiz('tf')">عرض النتيجة 🎯</button>
+      <div class="quiz-result" id="result-tf"><div class="result-score" id="score-tf">0/5</div><div class="result-label">إجابات صحيحة</div><div class="result-message" id="msg-tf"></div><button class="retry-btn" onclick="retryQuiz('tf')">🔄 حاول تاني</button></div>
+    </div>
+    <div class="quiz-section" id="quiz-mc">
+      <div class="quiz-question" data-correct="2">
+        <span class="q-num">1</span><span class="q-text">أي دالة تختار أول عنصر يطابق CSS selector؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">getElementById</button>
+          <button class="q-opt" onclick="answerMC(this,1)">querySelectorAll</button>
+          <button class="q-opt" onclick="answerMC(this,2)">querySelector</button>
+          <button class="q-opt" onclick="answerMC(this,3)">getElement</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="1">
+        <span class="q-num">2</span><span class="q-text">كيف تقرأ قيمة input أدخلها المستخدم؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">input.textContent</button>
+          <button class="q-opt" onclick="answerMC(this,1)">input.value</button>
+          <button class="q-opt" onclick="answerMC(this,2)">input.innerHTML</button>
+          <button class="q-opt" onclick="answerMC(this,3)">input.text</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="3">
+        <span class="q-num">3</span><span class="q-text">ما الدالة التي تنشئ عنصر HTML جديداً؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">document.newElement()</button>
+          <button class="q-opt" onclick="answerMC(this,1)">document.addElement()</button>
+          <button class="q-opt" onclick="answerMC(this,2)">document.makeElement()</button>
+          <button class="q-opt" onclick="answerMC(this,3)">document.createElement()</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="0">
+        <span class="q-num">4</span><span class="q-text">el.parentElement يعيد؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">العنصر الأب مباشرة</button>
+          <button class="q-opt" onclick="answerMC(this,1)">كل الأسلاف</button>
+          <button class="q-opt" onclick="answerMC(this,2)">الأبناء</button>
+          <button class="q-opt" onclick="answerMC(this,3)">العنصر التالي</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="2">
+        <span class="q-num">5</span><span class="q-text">ما الفرق بين innerHTML و textContent؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">لا فرق</button>
+          <button class="q-opt" onclick="answerMC(this,1)">textContent يفسّر HTML</button>
+          <button class="q-opt" onclick="answerMC(this,2)">innerHTML يفسّر HTML، textContent يعامله كنص عادي</button>
+          <button class="q-opt" onclick="answerMC(this,3)">innerHTML للقراءة فقط</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <button class="quiz-submit" onclick="submitQuiz('mc')">عرض النتيجة 🎯</button>
+      <div class="quiz-result" id="result-mc"><div class="result-score" id="score-mc">0/5</div><div class="result-label">إجابات صحيحة</div><div class="result-message" id="msg-mc"></div><button class="retry-btn" onclick="retryQuiz('mc')">🔄 حاول تاني</button></div>
+    </div>
+  </div>
+
+  <div class="lesson-nav">
+    <a href="./lesson-19.html" class="nav-btn"><span>⬅️</span><span>الدرس السابق</span></a>
+    <button class="nav-btn complete-btn" id="completeBtn" onclick="markComplete(this)"><span>✅</span><span>علّم كمكتمل</span></button>
+    <a href="./lesson-21.html" class="nav-btn"><span>الدرس التالي</span><span>➡️</span></a>
+  </div>
+
+  <div class="notebook-footer">
+    <h3>🎉 أتقنت DOM!</h3>
+    <p>الآن تستطيع التحكم في كل عنصر في صفحتك ❤️<br><strong>الدرس التالي: الأحداث (Events) 🖱️</strong></p>
+  </div>
+</div>
+
+<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">⬆️</button>
+<div class="toast" id="toast"></div>
+<script src="../../js/data/courses.js"></script>
+<script src="../../js/progress.js"></script>
+<script src="../../js/lesson-editor.js"></script>
+<script>
+const COURSE_ID='frontend',LESSON_ID=20,TOTAL=32;
+function toggleSolution(b){const s=b.nextElementSibling;s.classList.toggle('show');b.textContent=s.classList.contains('show')?'إخفاء الحل ▲':'عرض الحل ▼';}
+function copyCode(b){const p=b.closest('.code-box').querySelector('pre');navigator.clipboard.writeText(p.innerText).then(()=>{b.classList.add('copied');b.textContent='✓ تم النسخ';setTimeout(()=>{b.classList.remove('copied');b.textContent='📋 نسخ';},2000);});}
+function runCode(b){const t=b.closest('.try-it');t.querySelector('iframe').srcdoc=t.querySelector('.try-it-editor').value;}
+function resetCode(b){const t=b.closest('.try-it'),e=t.querySelector('.try-it-editor');e.value=e.dataset.default;t.querySelector('iframe').srcdoc=e.value;}
+window.addEventListener('load',()=>{document.querySelectorAll('.try-it').forEach(t=>{const e=t.querySelector('.try-it-editor');t.querySelector('iframe').srcdoc=e.value;});});
+function switchQuiz(b,t){document.querySelectorAll('.qt-tab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.quiz-section').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.getElementById('quiz-'+t).classList.add('active');}
+const answers={tf:{},mc:{}};
+function answerTF(b,v){const q=b.closest('.quiz-question'),i=Array.from(q.parentNode.querySelectorAll('.quiz-question')).indexOf(q);q.querySelectorAll('.q-opt').forEach(o=>o.classList.remove('selected'));b.classList.add('selected');answers.tf[i]=v;}
+function answerMC(b,i){const q=b.closest('.quiz-question'),qi=Array.from(q.parentNode.querySelectorAll('.quiz-question')).indexOf(q);q.querySelectorAll('.q-opt').forEach(o=>o.classList.remove('selected'));b.classList.add('selected');answers.mc[qi]=i;}
+function submitQuiz(type){const sec=document.getElementById('quiz-'+type),qs=sec.querySelectorAll('.quiz-question');let c=0;qs.forEach((q,i)=>{const ca=type==='tf'?(q.dataset.correct==='true'):parseInt(q.dataset.correct),ua=answers[type][i],fb=q.querySelector('.q-feedback'),opts=q.querySelectorAll('.q-opt');opts.forEach(o=>{o.classList.remove('selected');o.disabled=true;});if(ua===undefined){fb.className='q-feedback wrong show';fb.textContent='⚠️ ما اخترتش إجابة!';return;}if(ua===ca){c++;fb.className='q-feedback correct show';fb.textContent='✓ إجابة صحيحة!';if(type==='tf')opts[ca?0:1].classList.add('correct');else opts[ca].classList.add('correct');}else{fb.className='q-feedback wrong show';if(type==='tf'){opts[ca?0:1].classList.add('correct');opts[ua?0:1].classList.add('wrong');fb.textContent='✗ خطأ.';}else{opts[ca].classList.add('correct');opts[ua].classList.add('wrong');fb.textContent='✗ الإجابة بالأخضر.';}}});const r=document.getElementById('result-'+type);document.getElementById('score-'+type).textContent=c+'/'+qs.length;const m=document.getElementById('msg-'+type);if(c===qs.length){m.textContent='🏆 ممتاز 100%!';m.className='result-message excellent';}else if(c>=3){m.textContent='👍 جيد!';m.className='result-message good';}else{m.textContent='📚 راجع الدرس.';m.className='result-message try-again';}r.classList.add('show');r.scrollIntoView({behavior:'smooth',block:'center'});}
+function retryQuiz(type){const sec=document.getElementById('quiz-'+type);sec.querySelectorAll('.q-opt').forEach(o=>{o.classList.remove('selected','correct','wrong');o.disabled=false;});sec.querySelectorAll('.q-feedback').forEach(f=>{f.classList.remove('show','correct','wrong');f.textContent='';});document.getElementById('result-'+type).classList.remove('show');answers[type]={};}
+function markComplete(btn){const done=Progress.toggleLessonComplete(COURSE_ID,LESSON_ID);btn.classList.toggle('completed',done);btn.querySelector('span:last-child').textContent=done?'مكتمل! ⭐':'علّم كمكتمل';showToast(done?'🎉 أكملت درس DOM!':'تم إلغاء الإكمال');}
+if(Progress.isLessonComplete(COURSE_ID,LESSON_ID)){const b=document.getElementById('completeBtn');b.classList.add('completed');b.querySelector('span:last-child').textContent='مكتمل! ⭐';}
+(function(){const p=Progress.getCourseProgress(COURSE_ID,TOTAL);document.getElementById('progFill').style.width=p+'%';document.getElementById('progText').textContent=p+'%';})();
+function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
+window.addEventListener('scroll',()=>{document.getElementById('scrollTop').classList.toggle('show',window.scrollY>300);});
+document.querySelectorAll('.toc-card a').forEach(l=>{l.addEventListener('click',e=>{e.preventDefault();const t=document.querySelector(l.getAttribute('href'));if(t)t.scrollIntoView({behavior:'smooth',block:'start'});});});
+</script>
+</body>
+</html>

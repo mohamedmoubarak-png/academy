@@ -1,0 +1,1281 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-V2NCKVL16D"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-V2NCKVL16D');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>مقدمة في الويب و HTML - دفتر البرمجة</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=Cairo:wght@300;400;500;600;700;900&family=Caveat:wght@400;700&family=Fira+Code:wght@400;500;600&family=Reem+Kufi:wght@400;500;600;700&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --paper: #fffef7;
+  --paper-line: #c5d8e8;
+  --paper-margin: #f4a8a8;
+  --ink-blue: #1e3a8a;
+  --ink-blue-light: #2563eb;
+  --ink-red: #dc2626;
+  --ink-pink: #db2777;
+  --ink-green: #15803d;
+  --ink-purple: #7c3aed;
+  --ink-orange: #ea580c;
+  --ink-teal: #0d9488;
+  --bg: #f5f1e8;
+  --card: #ffffff;
+  --text: #1e293b;
+  --text-muted: #64748b;
+  --border: #e2e8f0;
+  --shadow: 0 4px 24px rgba(30,58,138,0.08);
+  --shadow-lg: 0 20px 60px rgba(0,0,0,0.08);
+  --radius: 16px;
+  --code-bg: #fff9e6;
+  --code-bg-blue: #e6f7ff;
+  --code-bg-green: #f0fdf4;
+  --code-bg-pink: #fdf2f8;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Cairo', sans-serif;
+  background: radial-gradient(ellipse at top, #e8d5b7 0%, #d4b896 100%);
+  min-height: 100vh;
+  padding: 20px 10px;
+  color: var(--text);
+  line-height: 1.8;
+}
+
+/* TOP BAR */
+.top-bar {
+  max-width: 1100px;
+  margin: 0 auto 16px;
+  background: white;
+  border-radius: var(--radius);
+  padding: 14px 22px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: var(--shadow);
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.crumbs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  flex-wrap: wrap;
+}
+
+.crumbs a { color: var(--ink-blue); text-decoration: none; font-weight: 600; }
+.crumbs .sep { color: var(--border); }
+.crumbs .current { color: var(--text); font-weight: 700; }
+
+.progress-mini { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; }
+
+.progress-bar-mini {
+  width: 100px; height: 6px;
+  background: var(--border); border-radius: 3px; overflow: hidden;
+}
+
+.progress-fill-mini {
+  height: 100%;
+  background: linear-gradient(90deg, var(--ink-blue), var(--ink-green));
+  width: 0%; transition: width 0.4s ease;
+}
+
+/* NOTEBOOK */
+.notebook {
+  max-width: 1100px;
+  margin: 0 auto;
+  background: var(--paper);
+  background-image: linear-gradient(var(--paper-line) 1px, transparent 1px);
+  background-size: 100% 32px;
+  background-position: 0 80px;
+  border-radius: 8px;
+  box-shadow: var(--shadow-lg), 0 0 0 1px rgba(0,0,0,0.05);
+  position: relative;
+  overflow: hidden;
+  padding: 30px 40px 40px 60px;
+}
+
+.notebook::before {
+  content: '';
+  position: absolute;
+  top: 0; bottom: 0; right: 50px;
+  width: 2px; background: var(--paper-margin); opacity: 0.6;
+}
+
+.notebook::after {
+  content: '';
+  position: absolute;
+  left: 18px; top: 0; bottom: 0; width: 14px;
+  background-image: radial-gradient(circle at center, #d4b896 0%, #d4b896 50%, transparent 51%);
+  background-size: 14px 14px;
+  background-repeat: repeat-y;
+  background-position: center 80px;
+}
+
+/* HEADER */
+.notebook-header {
+  text-align: center;
+  padding: 20px 0 30px;
+  border-bottom: 2px dashed var(--ink-blue);
+  margin-bottom: 30px;
+}
+
+.lesson-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: white;
+  border: 2px solid var(--ink-orange);
+  color: var(--ink-orange);
+  padding: 5px 14px;
+  border-radius: 20px;
+  font-family: 'Caveat', cursive;
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 12px;
+  transform: rotate(-2deg);
+}
+
+.notebook-header h1 {
+  font-family: 'Aref Ruqaa', serif;
+  font-size: clamp(1.7rem, 4.5vw, 2.6rem);
+  color: var(--ink-blue);
+  font-weight: 700;
+  display: inline-block;
+  text-decoration: underline;
+  text-decoration-color: var(--ink-red);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 8px;
+  margin-bottom: 12px;
+}
+
+.sparkle {
+  color: var(--ink-red); font-size: 1.2rem; margin: 0 8px;
+  display: inline-block; animation: twinkle 2s ease-in-out infinite;
+}
+
+@keyframes twinkle {
+  0%, 100% { opacity: 1; transform: scale(1) rotate(0deg); }
+  50% { opacity: 0.6; transform: scale(1.2) rotate(20deg); }
+}
+
+.lesson-meta {
+  display: flex; justify-content: center; gap: 20px;
+  flex-wrap: wrap; margin-top: 12px;
+  font-family: 'Caveat', cursive; font-size: 1.15rem; color: var(--ink-purple);
+}
+
+.meta-item { display: inline-flex; align-items: center; gap: 5px; }
+
+/* TOC */
+.toc-card {
+  background: rgba(30, 58, 138, 0.05);
+  border: 2px solid var(--ink-blue);
+  border-radius: var(--radius);
+  padding: 18px 22px; margin-bottom: 30px;
+}
+
+.toc-card h2 {
+  font-family: 'Aref Ruqaa', serif;
+  color: var(--ink-blue); margin-bottom: 12px; text-align: center; font-size: 1.2rem;
+}
+
+.toc-card ol { padding-right: 25px; columns: 2; column-gap: 25px; }
+.toc-card li { padding: 4px 0; font-size: 0.95rem; break-inside: avoid; }
+.toc-card a { color: var(--ink-blue); text-decoration: none; border-bottom: 1px dotted var(--ink-blue); transition: all 0.2s; }
+.toc-card a:hover { color: var(--ink-red); border-color: var(--ink-red); }
+
+@media (max-width: 700px) { .toc-card ol { columns: 1; } }
+
+/* SECTION */
+.section { margin-bottom: 45px; position: relative; scroll-margin-top: 20px; }
+
+.section-title {
+  font-family: 'Aref Ruqaa', serif;
+  font-size: 1.6rem; color: var(--ink-blue); font-weight: 700;
+  margin-bottom: 18px; display: flex; align-items: center; gap: 10px;
+}
+
+.section-title .num { color: var(--ink-red); font-family: 'Caveat', cursive; font-size: 1.9rem; font-weight: 700; }
+.section-title .en { font-family: 'Caveat', cursive; color: var(--ink-pink); font-size: 1.3rem; font-weight: 400; margin-right: auto; }
+
+/* CONTENT */
+.content { padding-right: 15px; font-size: 1.05rem; line-height: 1.95; }
+.content p { margin-bottom: 14px; }
+.content strong { color: var(--ink-red); font-weight: 700; }
+.content em {
+  color: var(--ink-green); font-style: normal; font-weight: 600;
+  font-family: 'Fira Code', monospace;
+  background: rgba(21, 128, 61, 0.08); padding: 1px 7px;
+  border-radius: 4px; font-size: 0.92em;
+}
+
+.content ul { list-style: none; padding: 0; margin: 14px 0; }
+.content ul li { position: relative; padding-right: 22px; margin-bottom: 10px; line-height: 1.9; }
+.content ul li::before { content: '◆'; position: absolute; right: 0; color: var(--ink-red); font-size: 0.7rem; top: 10px; }
+.content ol { padding-right: 25px; margin: 14px 0; }
+.content ol li { padding: 4px 0; line-height: 1.9; padding-right: 5px; }
+
+/* SUBHEADERS */
+.sub-header {
+  font-family: 'Aref Ruqaa', serif; color: var(--ink-red); font-size: 1.2rem;
+  font-weight: 700; margin: 22px 0 12px;
+  border-right: 4px solid var(--ink-red); padding-right: 14px;
+}
+
+.mini-header { font-family: 'Caveat', cursive; color: var(--ink-purple); font-size: 1.5rem; font-weight: 700; margin: 18px 0 10px; }
+
+/* ANALOGY */
+.analogy {
+  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+  border: 2px solid #f59e0b; border-radius: var(--radius);
+  padding: 16px 20px; margin: 20px 0; position: relative;
+}
+
+
+.analogy-title { font-family: 'Aref Ruqaa', serif; color: #92400e; font-weight: 700; margin-bottom: 8px; }
+
+/* CODE BOX */
+.code-box {
+  background: var(--code-bg); border: 1.5px solid #d4a574;
+  border-radius: 10px; padding: 16px 20px; margin: 14px 0;
+  font-family: 'Fira Code', 'Courier New', monospace; font-size: 0.95rem;
+  direction: ltr; text-align: left; overflow-x: auto;
+  box-shadow: 2px 2px 0 rgba(212, 165, 116, 0.3); line-height: 1.7; position: relative;
+}
+
+.code-box.blue { background: var(--code-bg-blue); border-color: #7dd3fc; box-shadow: 2px 2px 0 rgba(125,211,252,0.3); }
+.code-box.green { background: var(--code-bg-green); border-color: #86efac; box-shadow: 2px 2px 0 rgba(134,239,172,0.3); }
+.code-box.pink { background: var(--code-bg-pink); border-color: #f9a8d4; box-shadow: 2px 2px 0 rgba(249,168,212,0.3); }
+
+.code-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-family: 'Cairo', sans-serif; font-size: 0.78rem; color: var(--text-muted); direction: rtl; font-weight: 600; }
+
+.copy-btn { background: white; border: 1px solid var(--border); border-radius: 6px; padding: 4px 10px; font-family: 'Cairo', sans-serif; font-size: 0.75rem; font-weight: 600; cursor: pointer; transition: all 0.2s; color: var(--text-muted); }
+.copy-btn:hover { background: var(--ink-blue); color: white; border-color: var(--ink-blue); }
+.copy-btn.copied { background: var(--ink-green); color: white; border-color: var(--ink-green); }
+
+.tag-open { color: #2563eb; }
+.tag-close { color: #2563eb; }
+.tag-name { color: #7c3aed; font-weight: 600; }
+.attr { color: #ea580c; }
+.attr-val { color: #15803d; }
+.text { color: #1e293b; }
+.comment { color: #94a3b8; font-style: italic; }
+
+/* TRY IT */
+.try-it { background: white; border: 2px solid var(--ink-purple); border-radius: var(--radius); margin: 20px 0; overflow: hidden; box-shadow: var(--shadow); }
+.try-it-header { background: linear-gradient(135deg, var(--ink-purple), #a78bfa); color: white; padding: 10px 16px; display: flex; justify-content: space-between; align-items: center; font-weight: 700; font-size: 0.95rem; }
+.try-it-controls { display: flex; gap: 8px; }
+.try-btn { background: white; color: var(--ink-purple); border: none; padding: 5px 12px; border-radius: 6px; font-family: 'Cairo', sans-serif; font-size: 0.78rem; font-weight: 700; cursor: pointer; }
+.try-it-body { display: grid; grid-template-columns: 1fr 1fr; min-height: 200px; }
+.try-it-editor { background: #1e293b; color: white; padding: 14px; font-family: 'Fira Code', monospace; font-size: 0.85rem; direction: ltr; text-align: left; border: none; resize: vertical; outline: none; line-height: 1.6; min-height: 200px; }
+.try-it-preview { background: white; padding: 14px; overflow: auto; border-right: 2px dashed var(--border); direction: ltr; }
+.try-it-preview iframe { width: 100%; height: 100%; border: none; min-height: 180px; }
+
+@media (max-width: 700px) {
+  .try-it-body { grid-template-columns: 1fr; }
+  .try-it-preview { border-right: none; border-bottom: 2px dashed var(--border); }
+}
+
+/* EXAMPLE */
+.example { background: rgba(255,255,255,0.7); border-right: 4px solid var(--ink-green); padding: 14px 18px; margin: 14px 0; border-radius: 0 8px 8px 0; }
+.example-label { font-family: 'Aref Ruqaa', serif; color: var(--ink-green); font-weight: 700; display: block; margin-bottom: 8px; }
+
+/* ALERTS */
+.warning-box, .tip-box, .note-box, .info-box { border-radius: 10px; padding: 14px 18px; margin: 14px 0; font-size: 0.98rem; position: relative; padding-right: 50px; }
+.warning-box::before, .tip-box::before, .note-box::before, .info-box::before { position: absolute; right: 14px; top: 12px; font-size: 1.3rem; }
+.warning-box { background: #fee2e2; border-right: 4px solid var(--ink-red); }
+.warning-box::before { content: '⚠️'; }
+.tip-box { background: #dbeafe; border-right: 4px solid var(--ink-blue); }
+.tip-box::before { content: '💡'; }
+.note-box { background: #fef9c3; border-right: 4px solid #facc15; }
+.note-box::before { content: '📌'; }
+.info-box { background: #e0f2fe; border-right: 4px solid var(--ink-teal); }
+.info-box::before { content: 'ℹ️'; }
+
+/* EXERCISE */
+.exercise { background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border: 2px dashed var(--ink-orange); border-radius: var(--radius); padding: 20px 22px; margin: 20px 0; position: relative; }
+.exercise::before { content: '✏️'; position: absolute; top: -15px; right: 20px; background: var(--paper); padding: 0 8px; font-size: 1.5rem; }
+.exercise-title { font-family: 'Aref Ruqaa', serif; color: var(--ink-orange); font-weight: 700; font-size: 1.15rem; margin-bottom: 10px; }
+
+.solution-toggle { background: var(--ink-green); color: white; border: none; padding: 8px 20px; border-radius: 20px; font-family: 'Cairo', sans-serif; font-size: 0.95rem; cursor: pointer; margin-top: 10px; font-weight: 600; transition: all 0.2s; min-height: 44px; }
+.solution-toggle:hover { background: #166534; transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.15); }
+.solution { display: none; margin-top: 12px; padding: 14px 16px; background: rgba(21,128,61,0.08); border-radius: 8px; border-right: 3px solid var(--ink-green); }
+.solution.show { display: block; animation: slideDown 0.3s ease-out; }
+
+@keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+
+.solution-label { font-family: 'Caveat', cursive; color: var(--ink-green); font-weight: 700; font-size: 1.3rem; margin-bottom: 8px; display: block; }
+
+/* QUIZ */
+.quiz-container { background: linear-gradient(135deg, #ede9fe 0%, #ddd6fe 100%); border: 3px solid var(--ink-purple); border-radius: var(--radius); padding: 24px; margin: 30px 0; position: relative; }
+.quiz-container::before { content: '🎯 اختبر فهمك'; position: absolute; top: -18px; right: 30px; background: var(--ink-purple); color: white; padding: 6px 16px; border-radius: 20px; font-family: 'Aref Ruqaa', serif; font-size: 1rem; font-weight: 700; }
+.quiz-intro { text-align: center; margin-bottom: 20px; margin-top: 10px; color: var(--text); font-size: 0.95rem; }
+.quiz-type-tabs { display: flex; gap: 8px; margin-bottom: 20px; justify-content: center; flex-wrap: wrap; }
+.qt-tab { background: white; border: 2px solid var(--ink-purple); color: var(--ink-purple); padding: 8px 18px; border-radius: 20px; font-family: 'Cairo', sans-serif; font-size: 0.9rem; font-weight: 700; cursor: pointer; transition: all 0.2s; }
+.qt-tab.active { background: var(--ink-purple); color: white; }
+.quiz-section { display: none; }
+.quiz-section.active { display: block; }
+.quiz-question { background: white; padding: 16px 18px; border-radius: 12px; margin-bottom: 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+.q-num { display: inline-block; background: var(--ink-purple); color: white; width: 28px; height: 28px; border-radius: 50%; text-align: center; line-height: 28px; font-weight: 700; margin-left: 10px; font-size: 0.9rem; }
+.q-text { font-weight: 600; font-size: 1rem; margin-bottom: 14px; display: inline; }
+.q-options { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }
+.q-opt { padding: 11px 16px; background: #f8fafc; border: 2px solid var(--border); border-radius: 10px; cursor: pointer; transition: all 0.2s; font-size: 0.95rem; text-align: right; font-family: 'Cairo', sans-serif; width: 100%; }
+.q-opt:hover { border-color: var(--ink-purple); background: white; }
+.q-opt.selected { border-color: var(--ink-purple); background: #ede9fe; }
+.q-opt.correct { border-color: var(--ink-green); background: #f0fdf4; color: var(--ink-green); font-weight: 700; }
+.q-opt.wrong { border-color: var(--ink-red); background: #fee2e2; color: var(--ink-red); }
+.q-feedback { margin-top: 10px; padding: 10px 14px; border-radius: 8px; font-size: 0.9rem; display: none; line-height: 1.7; }
+.q-feedback.show { display: block; animation: slideDown 0.3s; }
+.q-feedback.correct { background: #f0fdf4; color: var(--ink-green); border-right: 3px solid var(--ink-green); }
+.q-feedback.wrong { background: #fee2e2; color: var(--ink-red); border-right: 3px solid var(--ink-red); }
+.quiz-submit { width: 100%; padding: 14px; background: linear-gradient(135deg, var(--ink-purple), #a78bfa); color: white; border: none; border-radius: 10px; font-family: 'Cairo', sans-serif; font-size: 1rem; font-weight: 700; cursor: pointer; margin-top: 12px; transition: all 0.2s; }
+.quiz-submit:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(124,58,237,0.4); }
+.quiz-submit:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+.quiz-result { display: none; background: white; padding: 24px; border-radius: 12px; margin-top: 16px; text-align: center; }
+.quiz-result.show { display: block; animation: slideDown 0.4s; }
+.result-score { font-family: 'Tajawal', sans-serif; font-size: 3.5rem; font-weight: 900; color: var(--ink-purple); line-height: 1; }
+.result-label { font-size: 1rem; color: var(--text-muted); margin: 6px 0 16px; }
+.result-message { font-size: 1.05rem; font-weight: 700; margin-bottom: 10px; }
+.result-message.excellent { color: var(--ink-green); }
+.result-message.good { color: var(--ink-blue); }
+.result-message.try-again { color: var(--ink-orange); }
+.retry-btn { background: var(--ink-purple); color: white; border: none; padding: 10px 24px; border-radius: 20px; font-family: 'Cairo', sans-serif; font-weight: 700; cursor: pointer; margin-top: 10px; }
+
+/* NAVIGATION */
+.lesson-nav { display: flex; justify-content: space-between; align-items: center; margin-top: 40px; padding-top: 30px; border-top: 2px dashed var(--ink-blue); gap: 12px; flex-wrap: wrap; }
+.nav-btn { display: flex; align-items: center; gap: 8px; padding: 12px 20px; background: white; border: 2px solid var(--ink-blue); border-radius: 10px; color: var(--ink-blue); font-family: 'Cairo', sans-serif; font-weight: 700; font-size: 0.95rem; cursor: pointer; transition: all 0.2s; text-decoration: none; }
+.nav-btn:hover { background: var(--ink-blue); color: white; transform: translateY(-2px); }
+.nav-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none !important; }
+.complete-btn { background: var(--ink-green); color: white; border-color: var(--ink-green); flex: 1; justify-content: center; max-width: 300px; }
+.complete-btn:hover { background: #166534; border-color: #166534; }
+.complete-btn.completed { background: var(--ink-purple); border-color: var(--ink-purple); }
+
+/* FOOTER */
+.notebook-footer { text-align: center; margin-top: 30px; padding: 22px 25px; background: linear-gradient(135deg, #fce7f3 0%, #fbcfe8 100%); border: 2px solid var(--ink-pink); border-radius: var(--radius); }
+.notebook-footer h3 { font-family: 'Aref Ruqaa', serif; color: var(--ink-pink); font-size: 1.3rem; margin-bottom: 8px; }
+.notebook-footer p { font-family: 'Caveat', cursive; color: var(--ink-purple); font-size: 1.2rem; line-height: 1.7; }
+
+/* TABLES */
+.cool-table { width: 100%; border-collapse: collapse; margin: 16px 0; background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.05); font-size: 0.95rem; }
+.cool-table thead { background: linear-gradient(135deg, var(--ink-blue), var(--ink-blue-light)); color: white; }
+.cool-table th { padding: 12px 14px; text-align: right; font-family: 'Aref Ruqaa', serif; font-weight: 600; }
+.cool-table td { padding: 11px 14px; border-bottom: 1px solid var(--border); border-left: 1px solid var(--border); }
+.cool-table td:last-child { border-left: none; }
+.cool-table tbody tr:hover { background: #f9fafb; }
+.cool-table code { background: var(--code-bg); padding: 2px 8px; border-radius: 4px; font-family: 'Fira Code', monospace; font-size: 0.9em; color: var(--ink-purple); }
+
+/* DIAGRAM */
+.diagram { background: white; border: 2px solid var(--ink-blue); border-radius: 12px; padding: 20px; margin: 20px 0; text-align: center; box-shadow: var(--shadow); }
+.diagram-title { font-family: 'Aref Ruqaa', serif; color: var(--ink-blue); font-weight: 700; margin-bottom: 16px; font-size: 1.05rem; }
+.diagram-flow { display: flex; align-items: center; justify-content: center; gap: 6px; flex-wrap: wrap; }
+.diagram-node { background: linear-gradient(135deg, var(--ink-blue), var(--ink-blue-light)); color: white; padding: 14px 16px; border-radius: 12px; min-width: 100px; font-weight: 700; box-shadow: 0 4px 12px rgba(30,58,138,0.2); }
+.diagram-node.client { background: linear-gradient(135deg, var(--ink-green), #16a34a); }
+.diagram-node.server { background: linear-gradient(135deg, var(--ink-purple), #a78bfa); }
+.diagram-node.cloud { background: linear-gradient(135deg, var(--ink-teal), #06b6d4); }
+.diagram-arrow { font-size: 1.5rem; color: var(--ink-blue); }
+.diagram-emoji { font-size: 2rem; margin-bottom: 6px; display: block; }
+.diagram-label { font-family: 'Caveat', cursive; font-size: 1rem; }
+
+/* MISC */
+.toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(20px); background: #1e293b; color: white; padding: 12px 24px; border-radius: 30px; font-size: 0.9rem; font-weight: 600; z-index: 200; opacity: 0; transition: all 0.3s; }
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+.scroll-top { position: fixed; bottom: 30px; right: 30px; width: 50px; height: 50px; border-radius: 50%; background: var(--ink-blue); color: white; border: none; cursor: pointer; font-size: 1.3rem; box-shadow: var(--shadow-lg); display: none; z-index: 100; transition: all 0.2s; }
+.scroll-top:hover { transform: scale(1.1); background: var(--ink-blue-light); }
+.scroll-top.show { display: block; }
+
+@media (max-width: 700px) {
+  .notebook { padding: 20px 20px 25px 35px; }
+  .notebook::before { right: 28px; }
+  .notebook::after { left: 10px; width: 10px; background-size: 10px 10px; }
+  .notebook-header h1 { font-size: 1.5rem; }
+  .section-title { font-size: 1.3rem; }
+  .code-box { font-size: 0.82rem; padding: 12px; }
+  .crumbs { font-size: 0.78rem; }
+  .cool-table { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .try-btn { min-height: 44px; padding: 8px 14px; font-size: 0.85rem; }
+  .try-it-editor { font-size: 13px; resize: none; }
+  .diagram-flow { flex-direction: column; align-items: center; }
+  .diagram-arrow { transform: rotate(90deg); display: inline-block; }
+}
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="top-bar">
+  <div class="crumbs">
+    <a href="../../index.html">🏠 الرئيسية</a>
+    <span class="sep">/</span>
+    <a href="./index.html">🌐 الفرونت إند</a>
+    <span class="sep">/</span>
+    <span class="current">📘 الدرس 1: مقدمة في الويب و HTML</span>
+  </div>
+  <div class="progress-mini">
+    <div class="progress-bar-mini"><div class="progress-fill-mini" id="progFill"></div></div>
+    <span id="progText">0%</span>
+  </div>
+</div>
+
+<div class="notebook">
+
+  <!-- HEADER -->
+  <div class="notebook-header">
+    <div class="lesson-tag">📘 الدرس الأول</div>
+    <h1><span class="sparkle">✦</span> مقدمة في الويب و HTML <span class="sparkle">✦</span></h1>
+    <div class="lesson-meta">
+      <span class="meta-item">⏱️ 30 دقيقة</span>
+      <span class="meta-item">📊 مبتدئ</span>
+      <span class="meta-item">🎯 5 تمارين + اختبار</span>
+    </div>
+  </div>
+
+  <!-- TOC -->
+  <div class="toc-card">
+    <h2>📑 فهرس الدرس</h2>
+    <ol>
+      <li><a href="#s1">إيه هو الويب أصلاً؟</a></li>
+      <li><a href="#s2">إزاي الويب بيشتغل؟</a></li>
+      <li><a href="#s3">ثلاثي الويب: HTML, CSS, JS</a></li>
+      <li><a href="#s4">إيه هو HTML؟</a></li>
+      <li><a href="#s5">هيكل صفحة HTML</a></li>
+      <li><a href="#s6">الوسوم (Tags)</a></li>
+      <li><a href="#s7">الخصائص (Attributes)</a></li>
+      <li><a href="#s8">أول صفحة لك!</a></li>
+      <li><a href="#exercises">التمارين</a></li>
+      <li><a href="#quiz">اختبر فهمك</a></li>
+    </ol>
+  </div>
+
+  <!-- SECTION 1 -->
+  <div class="section" id="s1">
+    <h2 class="section-title">
+      <span class="num">.1</span> إيه هو الويب أصلاً؟
+      <span class="en">What is the Web?</span>
+    </h2>
+    <div class="content">
+      <p>قبل ما نتعلم نبني مواقع، خلينا نفهم الأول إحنا بنبني فين وعلى إيه. لما تفتح المتصفح بتاعك (Chrome, Firefox, Safari, Edge) وتدخل على Facebook أو YouTube أو Google، إنت بتكون <strong>"على الويب"</strong>. الويب هو شبكة عملاقة من الصفحات والمواقع المربوطة ببعضها عبر <em>الإنترنت</em>.</p>
+      <div class="analogy">
+        <div class="analogy-title">🤔 تشبيه يقرب الفكرة:</div>
+        <p>تخيل إن <strong>الإنترنت</strong> هو شبكة الطرق والكباري في مدينة كبيرة. أما <strong>الويب</strong> فهو المباني والمحلات والبيوت اللي على الطرق دي. الإنترنت موجود من 1969، لكن الويب اختُرع سنة <em>1989</em> على إيد عالم اسمه <strong>Tim Berners-Lee</strong>.</p>
+      </div>
+      <div class="sub-header">إيه الفرق بين الإنترنت والويب؟</div>
+      <table class="cool-table">
+        <thead><tr><th>الإنترنت</th><th>الويب</th></tr></thead>
+        <tbody>
+          <tr><td>شبكة عالمية من الكومبيوترات المرتبطة ببعض</td><td>مجموعة من الصفحات والمواقع اللي بتشتغل على الإنترنت</td></tr>
+          <tr><td>زي طريق سريع</td><td>زي المحلات والمعالم على الطريق</td></tr>
+          <tr><td>بيشمل: واتساب، إيميل، تورنت، ألعاب أونلاين...</td><td>بيشمل: المواقع اللي بتفتحها بالمتصفح بس</td></tr>
+        </tbody>
+      </table>
+      <div class="info-box"><strong>معلومة مهمة:</strong> الويب جزء من الإنترنت. كل ويب هو إنترنت، لكن مش كل إنترنت هو ويب.</div>
+    </div>
+  </div>
+
+  <!-- SECTION 2 -->
+  <div class="section" id="s2">
+    <h2 class="section-title">
+      <span class="num">.2</span> إزاي الويب بيشتغل؟
+      <span class="en">How the Web Works</span>
+    </h2>
+    <div class="content">
+      <p>دلوقتي خلينا نفهم إيه اللي بيحصل لما تكتب <em>google.com</em> في المتصفح وتضغط Enter:</p>
+      <div class="diagram">
+        <div class="diagram-title">رحلة طلب صفحة ويب 🚀</div>
+        <div class="diagram-flow">
+          <div class="diagram-node client"><span class="diagram-emoji">💻</span><div class="diagram-label">جهازك<br>(Client)</div></div>
+          <span class="diagram-arrow">←</span>
+          <div class="diagram-node"><span class="diagram-emoji">🌐</span><div class="diagram-label">المتصفح<br>(Browser)</div></div>
+          <span class="diagram-arrow">←</span>
+          <div class="diagram-node cloud"><span class="diagram-emoji">☁️</span><div class="diagram-label">الإنترنت<br>(Network)</div></div>
+          <span class="diagram-arrow">←</span>
+          <div class="diagram-node server"><span class="diagram-emoji">🖥️</span><div class="diagram-label">السيرفر<br>(Server)</div></div>
+        </div>
+      </div>
+      <div class="sub-header">الخطوات بالتفصيل:</div>
+      <ol>
+        <li><strong>إنت بتطلب:</strong> بتكتب <em>google.com</em> في المتصفح وتضغط Enter</li>
+        <li><strong>المتصفح بيحول الاسم لرقم:</strong> كل موقع له عنوان رقمي اسمه <em>IP Address</em> زي 172.217.16.142</li>
+        <li><strong>المتصفح بيبعت طلب (Request):</strong> رسالة تقول "ابعتلي صفحة Google من فضلك"</li>
+        <li><strong>الطلب بيعدي عبر الإنترنت:</strong> بيسافر من بلدك لحد ما يوصل لسيرفرات Google</li>
+        <li><strong>السيرفر بيرد (Response):</strong> بيبعت لك ملفات الصفحة (HTML, CSS, JS, صور...)</li>
+        <li><strong>المتصفح بيركّب الصفحة:</strong> بيقرا الملفات ويعرضلك الصفحة جاهزة على شاشتك</li>
+      </ol>
+      <div class="tip-box"><strong>كل ده بيحصل في أقل من ثانية!</strong> لما تفتح أي موقع، فعلياً جهازك بيرسل طلب لجهاز تاني في الجانب التاني من العالم، والرد بيرجعلك في لحظات.</div>
+      <div class="mini-header">مصطلحات مهمة:</div>
+      <ul>
+        <li><strong>Client (العميل):</strong> الجهاز اللي بيطلب، يعني جهازك إنت</li>
+        <li><strong>Server (الخادم):</strong> الجهاز اللي بيرد ويقدم البيانات</li>
+        <li><strong>Browser (المتصفح):</strong> البرنامج اللي بيعرض الصفحات (Chrome, Firefox...)</li>
+        <li><strong>URL:</strong> عنوان الصفحة، زي <em>https://google.com</em></li>
+        <li><strong>HTTP/HTTPS:</strong> اللغة اللي بيها المتصفح والسيرفر بيتكلموا. الـ S في HTTPS معناها <em>Secure</em> (مشفّر وآمن)</li>
+        <li><strong>Domain:</strong> اسم الموقع، زي <em>google.com</em> أو <em>facebook.com</em></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- SECTION 3 -->
+  <div class="section" id="s3">
+    <h2 class="section-title">
+      <span class="num">.3</span> ثلاثي الويب
+      <span class="en">HTML + CSS + JavaScript</span>
+    </h2>
+    <div class="content">
+      <p>أي موقع في الدنيا، من بسيط لمعقد، بيتكوّن من <strong>ثلاث لغات أساسية</strong>. لو فهمت الثلاثة دول، تقدر تبني أي حاجة تتخيلها على الويب.</p>
+      <div class="analogy">
+        <div class="analogy-title">🏠 تخيل إنك بتبني بيت:</div>
+        <ul style="margin-top:8px;">
+          <li><strong>HTML</strong> = الطوب والخرسانة (الهيكل والمحتوى)</li>
+          <li><strong>CSS</strong> = الدهان والديكور والأثاث (الشكل والتنسيق)</li>
+          <li><strong>JavaScript</strong> = الكهرباء والمكيف والريموت (الحركة والتفاعل)</li>
+        </ul>
+        <p style="margin-top:8px;">من غير الطوب، البيت مش هيقوم. من غير الدهان، البيت هيبقى وحش. من غير الكهرباء، هيبقى ميت.</p>
+      </div>
+      <table class="cool-table">
+        <thead><tr><th>اللغة</th><th>الدور</th><th>مثال</th></tr></thead>
+        <tbody>
+          <tr><td><code>HTML</code></td><td>المحتوى والهيكل (نصوص، صور، أزرار...)</td><td>الكلام اللي بتقراه دلوقتي</td></tr>
+          <tr><td><code>CSS</code></td><td>التنسيق (ألوان، أحجام، خطوط، توزيع)</td><td>الألوان والخطوط اللي شايفها</td></tr>
+          <tr><td><code>JavaScript</code></td><td>التفاعل والحركة والمنطق</td><td>زرار "عرض الحل" لما تضغط عليه</td></tr>
+        </tbody>
+      </table>
+      <div class="note-box">إحنا في الدرس ده هنركز على <strong>HTML بس</strong>. CSS و JavaScript ليهم دروس منفصلة جاية.</div>
+    </div>
+  </div>
+
+  <!-- SECTION 4 -->
+  <div class="section" id="s4">
+    <h2 class="section-title">
+      <span class="num">.4</span> إيه هو HTML؟
+      <span class="en">What is HTML?</span>
+    </h2>
+    <div class="content">
+      <p><strong>HTML</strong> اختصار لـ <em>HyperText Markup Language</em>، يعني "لغة الترميز للنصوص الفائقة". الاسم معقد، بس الفكرة بسيطة جداً.</p>
+      <div class="analogy">
+        <div class="analogy-title">📄 تخيل ورقة Word:</div>
+        <p>لما بتكتب وثيقة في Word، بتختار: العنوان الرئيسي بخط كبير، العنوان الفرعي أصغر، وفقرة عادية. بعدين بتضيف صور، جداول، قوائم...</p>
+        <p style="margin-top:8px;"><strong>HTML بتعمل نفس الفكرة بالظبط</strong>، بس بدل ما تستخدم أزرار، بتكتب <em>وسوم (Tags)</em> تقول للمتصفح: "ده عنوان"، "دي فقرة"، "دي صورة"، "ده زر"... وهكذا.</p>
+      </div>
+      <div class="sub-header">خصائص HTML:</div>
+      <ul>
+        <li><strong>مش لغة برمجة:</strong> هي "لغة ترميز" بس. مش بتعمل عمليات حسابية أو شروط أو حلقات</li>
+        <li><strong>سهلة جداً:</strong> في يوم أو يومين تقدر تعمل أي صفحة محتوى</li>
+        <li><strong>أساس كل موقع:</strong> مفيش موقع في الدنيا من غير HTML</li>
+        <li><strong>بيقراها المتصفح:</strong> بتفتح في أي متصفح بدون أي إعدادات</li>
+        <li><strong>الملفات بتنتهي بـ</strong> <em>.html</em></li>
+      </ul>
+      <div class="info-box"><strong>أهم حاجة تفهمها:</strong> HTML بتقول "إيه" - يعني إيه المحتوى. CSS بتقول "إزاي" - يعني إزاي يطلع الشكل. JavaScript بتقول "إمتى" - يعني إمتى يحصل التفاعل.</div>
+    </div>
+  </div>
+
+  <!-- SECTION 5 -->
+  <div class="section" id="s5">
+    <h2 class="section-title">
+      <span class="num">.5</span> هيكل صفحة HTML
+      <span class="en">HTML Structure</span>
+    </h2>
+    <div class="content">
+      <p>كل صفحة HTML بتبدأ بنفس الهيكل الأساسي. خليني أوريك إياه وبعدين نفصل كل جزء:</p>
+      <div class="code-box">
+<div class="code-header"><span>📄 الهيكل الأساسي لصفحة HTML</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-open">&lt;!</span><span class="tag-name">DOCTYPE</span> <span class="attr">html</span><span class="tag-close">&gt;</span>
+<span class="tag-open">&lt;</span><span class="tag-name">html</span> <span class="attr">lang</span>=<span class="attr-val">"ar"</span> <span class="attr">dir</span>=<span class="attr-val">"rtl"</span><span class="tag-close">&gt;</span>
+<span class="tag-open">&lt;</span><span class="tag-name">head</span><span class="tag-close">&gt;</span>
+    <span class="tag-open">&lt;</span><span class="tag-name">meta</span> <span class="attr">charset</span>=<span class="attr-val">"UTF-8"</span><span class="tag-close">&gt;</span>
+    <span class="tag-open">&lt;</span><span class="tag-name">title</span><span class="tag-close">&gt;</span><span class="text">عنوان الصفحة</span><span class="tag-open">&lt;/</span><span class="tag-name">title</span><span class="tag-close">&gt;</span>
+<span class="tag-open">&lt;/</span><span class="tag-name">head</span><span class="tag-close">&gt;</span>
+<span class="tag-open">&lt;</span><span class="tag-name">body</span><span class="tag-close">&gt;</span>
+    <span class="comment">&lt;!-- محتوى الصفحة هنا --&gt;</span>
+    <span class="tag-open">&lt;</span><span class="tag-name">h1</span><span class="tag-close">&gt;</span><span class="text">أهلاً بالعالم!</span><span class="tag-open">&lt;/</span><span class="tag-name">h1</span><span class="tag-close">&gt;</span>
+<span class="tag-open">&lt;/</span><span class="tag-name">body</span><span class="tag-close">&gt;</span>
+<span class="tag-open">&lt;/</span><span class="tag-name">html</span><span class="tag-close">&gt;</span></pre>
+      </div>
+      <div class="sub-header">شرح كل سطر:</div>
+      <div class="mini-header">السطر 1: &lt;!DOCTYPE html&gt;</div>
+      <p>دي بتقول للمتصفح: "الصفحة دي HTML بآخر إصدار (HTML5)". لازم تبقى في أول سطر، وملهاش وسم إغلاق.</p>
+      <div class="mini-header">السطر 2: &lt;html lang="ar" dir="rtl"&gt;</div>
+      <p>هو <strong>الوسم الرئيسي</strong> اللي بيغلف كل الصفحة. <em>lang="ar"</em> معناها اللغة عربي، و <em>dir="rtl"</em> معناها الكتابة من اليمين لليسار.</p>
+      <div class="mini-header">السطر 3-6: قسم الـ &lt;head&gt;</div>
+      <p>ده القسم <strong>الخفي</strong> من الصفحة. مش بيظهر للمستخدم، بس بيحتوي على معلومات مهمة:</p>
+      <ul>
+        <li><em>&lt;meta charset="UTF-8"&gt;</em>: لدعم اللغة العربية وكل لغات العالم</li>
+        <li><em>&lt;title&gt;</em>: عنوان الصفحة اللي بيظهر في تبويب المتصفح (Tab)</li>
+      </ul>
+      <div class="mini-header">السطر 7-10: قسم الـ &lt;body&gt;</div>
+      <p>ده القسم اللي <strong>بيشوفه المستخدم</strong>. كل المحتوى من نصوص وصور وأزرار وفيديوهات بيتكتب هنا.</p>
+      <div class="warning-box">
+        <strong>الفرق المهم:</strong>
+        <ul style="margin-top:8px;">
+          <li><em>&lt;head&gt;</em> = إعدادات الصفحة (مش بتظهر)</li>
+          <li><em>&lt;body&gt;</em> = محتوى الصفحة (بيظهر للمستخدم)</li>
+        </ul>
+      </div>
+      <div class="example">
+        <span class="example-label">📌 مثال يوضح الفرق:</span>
+        <p>تخيل كتاب. <strong>الـ &lt;head&gt;</strong> هو زي صفحة الغلاف والمعلومات (اسم الكاتب، دار النشر، الفهرس). أما <strong>الـ &lt;body&gt;</strong> فهو الصفحات اللي بتقراها فعلياً.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 6 -->
+  <div class="section" id="s6">
+    <h2 class="section-title">
+      <span class="num">.6</span> الوسوم (Tags)
+      <span class="en">HTML Tags</span>
+    </h2>
+    <div class="content">
+      <p>الـ <strong>Tag</strong> أو "الوسم" هو وحدة البناء الأساسية في HTML. معظم الوسوم بتكون <strong>زوجين</strong>: وسم فتح ووسم إغلاق، والمحتوى بينهم.</p>
+      <div class="code-box blue">
+<div class="code-header"><span>🏷️ شكل الوسم</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-open">&lt;</span><span class="tag-name">tagname</span><span class="tag-close">&gt;</span><span class="text">المحتوى</span><span class="tag-open">&lt;/</span><span class="tag-name">tagname</span><span class="tag-close">&gt;</span>
+
+<span class="comment">// مثال حقيقي:</span>
+<span class="tag-open">&lt;</span><span class="tag-name">h1</span><span class="tag-close">&gt;</span><span class="text">أنا عنوان رئيسي</span><span class="tag-open">&lt;/</span><span class="tag-name">h1</span><span class="tag-close">&gt;</span>
+<span class="tag-open">&lt;</span><span class="tag-name">p</span><span class="tag-close">&gt;</span><span class="text">أنا فقرة عادية</span><span class="tag-open">&lt;/</span><span class="tag-name">p</span><span class="tag-close">&gt;</span></pre>
+      </div>
+      <div class="sub-header">أشهر الوسوم اللي هتستخدمها:</div>
+      <table class="cool-table">
+        <thead><tr><th>الوسم</th><th>وظيفته</th><th>مثال</th></tr></thead>
+        <tbody>
+          <tr><td><code>&lt;h1&gt;</code> إلى <code>&lt;h6&gt;</code></td><td>عناوين بأحجام مختلفة (h1 الأكبر، h6 الأصغر)</td><td><code>&lt;h1&gt;عنوان رئيسي&lt;/h1&gt;</code></td></tr>
+          <tr><td><code>&lt;p&gt;</code></td><td>فقرة نصية</td><td><code>&lt;p&gt;ده كلام عادي&lt;/p&gt;</code></td></tr>
+          <tr><td><code>&lt;a&gt;</code></td><td>رابط (لينك)</td><td><code>&lt;a href="..."&gt;اضغط&lt;/a&gt;</code></td></tr>
+          <tr><td><code>&lt;img&gt;</code></td><td>صورة (وسم مفرد)</td><td><code>&lt;img src="pic.jpg"&gt;</code></td></tr>
+          <tr><td><code>&lt;ul&gt;</code> و <code>&lt;li&gt;</code></td><td>قائمة بنقاط</td><td><code>&lt;ul&gt;&lt;li&gt;عنصر&lt;/li&gt;&lt;/ul&gt;</code></td></tr>
+          <tr><td><code>&lt;button&gt;</code></td><td>زر</td><td><code>&lt;button&gt;اضغطني&lt;/button&gt;</code></td></tr>
+          <tr><td><code>&lt;div&gt;</code></td><td>حاوية لتجميع عناصر</td><td><code>&lt;div&gt;...&lt;/div&gt;</code></td></tr>
+          <tr><td><code>&lt;br&gt;</code></td><td>سطر جديد (وسم مفرد)</td><td><code>سطر&lt;br&gt;تاني</code></td></tr>
+        </tbody>
+      </table>
+      <div class="mini-header">نوعين من الوسوم:</div>
+      <ol>
+        <li><strong>وسوم زوجية:</strong> بتحتاج فتح وإغلاق، زي <em>&lt;p&gt;...&lt;/p&gt;</em></li>
+        <li><strong>وسوم مفردة:</strong> ملهاش إغلاق، زي <em>&lt;img&gt;</em> و <em>&lt;br&gt;</em></li>
+      </ol>
+      <div class="tip-box"><strong>قاعدة ذهبية:</strong> كل وسم تفتحه، لازم تقفله. النسيان ده أكتر خطأ شائع عند المبتدئين.</div>
+      <div class="example">
+        <span class="example-label">📌 مثال كامل:</span>
+        <div class="code-box green">
+<pre><span class="tag-open">&lt;</span><span class="tag-name">body</span><span class="tag-close">&gt;</span>
+    <span class="tag-open">&lt;</span><span class="tag-name">h1</span><span class="tag-close">&gt;</span><span class="text">اسمي محمد</span><span class="tag-open">&lt;/</span><span class="tag-name">h1</span><span class="tag-close">&gt;</span>
+    <span class="tag-open">&lt;</span><span class="tag-name">h2</span><span class="tag-close">&gt;</span><span class="text">أنا مبرمج</span><span class="tag-open">&lt;/</span><span class="tag-name">h2</span><span class="tag-close">&gt;</span>
+    <span class="tag-open">&lt;</span><span class="tag-name">p</span><span class="tag-close">&gt;</span><span class="text">أتعلم HTML من دفتر البرمجة.</span><span class="tag-open">&lt;/</span><span class="tag-name">p</span><span class="tag-close">&gt;</span>
+    <span class="tag-open">&lt;</span><span class="tag-name">button</span><span class="tag-close">&gt;</span><span class="text">اضغط هنا</span><span class="tag-open">&lt;/</span><span class="tag-name">button</span><span class="tag-close">&gt;</span>
+<span class="tag-open">&lt;/</span><span class="tag-name">body</span><span class="tag-close">&gt;</span></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 7 -->
+  <div class="section" id="s7">
+    <h2 class="section-title">
+      <span class="num">.7</span> الخصائص (Attributes)
+      <span class="en">HTML Attributes</span>
+    </h2>
+    <div class="content">
+      <p>الـ <strong>Attribute</strong> أو "الخاصية" هي معلومة إضافية بتديها للوسم عشان تتحكم في سلوكه أو شكله. بتتكتب جوه وسم الفتح.</p>
+      <div class="code-box pink">
+<div class="code-header"><span>🎯 شكل الخصائص</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-open">&lt;</span><span class="tag-name">tagname</span> <span class="attr">attribute</span>=<span class="attr-val">"value"</span><span class="tag-close">&gt;</span><span class="text">محتوى</span><span class="tag-open">&lt;/</span><span class="tag-name">tagname</span><span class="tag-close">&gt;</span>
+
+<span class="comment">// مثال: رابط بيوديك لجوجل</span>
+<span class="tag-open">&lt;</span><span class="tag-name">a</span> <span class="attr">href</span>=<span class="attr-val">"https://google.com"</span><span class="tag-close">&gt;</span><span class="text">روح جوجل</span><span class="tag-open">&lt;/</span><span class="tag-name">a</span><span class="tag-close">&gt;</span>
+
+<span class="comment">// مثال: صورة</span>
+<span class="tag-open">&lt;</span><span class="tag-name">img</span> <span class="attr">src</span>=<span class="attr-val">"cat.jpg"</span> <span class="attr">alt</span>=<span class="attr-val">"قطة لطيفة"</span><span class="tag-close">&gt;</span></pre>
+      </div>
+      <div class="sub-header">أشهر الخصائص:</div>
+      <table class="cool-table">
+        <thead><tr><th>الخاصية</th><th>وظيفتها</th><th>تُستخدم مع</th></tr></thead>
+        <tbody>
+          <tr><td><code>href</code></td><td>عنوان الرابط</td><td><code>&lt;a&gt;</code></td></tr>
+          <tr><td><code>src</code></td><td>مصدر الصورة أو الفيديو</td><td><code>&lt;img&gt;, &lt;video&gt;</code></td></tr>
+          <tr><td><code>alt</code></td><td>نص بديل لو الصورة ما حملتش</td><td><code>&lt;img&gt;</code></td></tr>
+          <tr><td><code>id</code></td><td>معرّف فريد للعنصر</td><td>أي وسم</td></tr>
+          <tr><td><code>class</code></td><td>تصنيف العنصر (للتنسيق بـ CSS)</td><td>أي وسم</td></tr>
+          <tr><td><code>style</code></td><td>تنسيق مباشر بـ CSS</td><td>أي وسم</td></tr>
+          <tr><td><code>title</code></td><td>نص يظهر عند الـ hover</td><td>أي وسم</td></tr>
+        </tbody>
+      </table>
+      <div class="example">
+        <span class="example-label">📌 مثال متكامل:</span>
+        <div class="code-box">
+<pre><span class="comment">&lt;!-- رابط بيفتح في تبويب جديد --&gt;</span>
+<span class="tag-open">&lt;</span><span class="tag-name">a</span> <span class="attr">href</span>=<span class="attr-val">"https://youtube.com"</span> <span class="attr">target</span>=<span class="attr-val">"_blank"</span><span class="tag-close">&gt;</span>
+    <span class="text">يوتيوب</span>
+<span class="tag-open">&lt;/</span><span class="tag-name">a</span><span class="tag-close">&gt;</span>
+
+<span class="comment">&lt;!-- صورة بعرض 300 بكسل --&gt;</span>
+<span class="tag-open">&lt;</span><span class="tag-name">img</span> <span class="attr">src</span>=<span class="attr-val">"profile.jpg"</span> <span class="attr">alt</span>=<span class="attr-val">"صورتي"</span> <span class="attr">width</span>=<span class="attr-val">"300"</span><span class="tag-close">&gt;</span>
+
+<span class="comment">&lt;!-- زر بلون خلفية أحمر --&gt;</span>
+<span class="tag-open">&lt;</span><span class="tag-name">button</span> <span class="attr">style</span>=<span class="attr-val">"background: red; color: white;"</span><span class="tag-close">&gt;</span>
+    <span class="text">احذف</span>
+<span class="tag-open">&lt;/</span><span class="tag-name">button</span><span class="tag-close">&gt;</span></pre>
+        </div>
+      </div>
+      <div class="note-box"><strong>القاعدة:</strong> الخصائص دايماً بتتكتب بالشكل ده: <em>اسم_الخاصية="القيمة"</em>. القيمة بين علامتي تنصيص.</div>
+    </div>
+  </div>
+
+  <!-- SECTION 8 -->
+  <div class="section" id="s8">
+    <h2 class="section-title">
+      <span class="num">.8</span> أول صفحة لك!
+      <span class="en">Your First Page</span>
+    </h2>
+    <div class="content">
+      <p>دلوقتي وقت العملي! خليني أوريك إزاي تعمل أول صفحة HTML بنفسك:</p>
+      <div class="sub-header">طريقة 1: على الكمبيوتر (للحفظ والمراجعة)</div>
+      <ol>
+        <li>افتح <em>Notepad</em> (على ويندوز) أو أي محرر نصوص</li>
+        <li>اكتب الكود اللي تحت</li>
+        <li>احفظ الملف باسم <em>index.html</em> (لازم بامتداد <em>.html</em>)</li>
+        <li>افتح الملف بأي متصفح</li>
+        <li>تهانينا! إنت عملت أول صفحة ويب 🎉</li>
+      </ol>
+      <div class="sub-header">طريقة 2: جرب هنا مباشرة!</div>
+      <p>اكتب أي HTML في المربع، واضغط "تشغيل" تشوف النتيجة:</p>
+      <div class="try-it">
+        <div class="try-it-header">
+          <span>💻 جرب الكود</span>
+          <div class="try-it-controls">
+            <button class="try-btn" onclick="runCode(this)">▶️ تشغيل</button>
+            <button class="try-btn" onclick="resetCode(this)">🔄 إعادة</button>
+          </div>
+        </div>
+        <div class="try-it-body">
+          <textarea class="try-it-editor" spellcheck="false" data-default='<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>صفحتي الأولى</title>
+</head>
+<body style="font-family: Arial; padding: 20px;">
+  <h1 style="color: #1e3a8a;">أهلاً بالعالم! 🌍</h1>
+  <h2>أنا بتعلم HTML</h2>
+  <p>دي أول صفحة بعملها بنفسي!</p>
+  <ul>
+    <li>عنصر أول</li>
+    <li>عنصر تاني</li>
+    <li>عنصر تالت</li>
+  </ul>
+  <button style="background:#2563eb; color:white; padding:10px 20px; border:none; border-radius:8px; cursor:pointer;">
+    اضغطني
+  </button>
+</body>
+</html>'><!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>صفحتي الأولى</title>
+</head>
+<body style="font-family: Arial; padding: 20px;">
+  <h1 style="color: #1e3a8a;">أهلاً بالعالم! 🌍</h1>
+  <h2>أنا بتعلم HTML</h2>
+  <p>دي أول صفحة بعملها بنفسي!</p>
+  <ul>
+    <li>عنصر أول</li>
+    <li>عنصر تاني</li>
+    <li>عنصر تالت</li>
+  </ul>
+  <button style="background:#2563eb; color:white; padding:10px 20px; border:none; border-radius:8px; cursor:pointer;">
+    اضغطني
+  </button>
+</body>
+</html></textarea>
+          <div class="try-it-preview"><iframe srcdoc="" sandbox="allow-scripts allow-same-origin allow-modals allow-popups allow-forms" title="معاينة الكود"></iframe></div>
+        </div>
+      </div>
+      <div class="tip-box"><strong>عدّل الكود وشوف النتيجة!</strong> غيّر النصوص، ضيف فقرات تانية، جرب لون مختلف. ده أفضل طريقة للتعلم.</div>
+    </div>
+  </div>
+
+  <!-- EXERCISES -->
+  <div class="section" id="exercises">
+    <h2 class="section-title">
+      <span class="num">📝</span> التمارين العملية
+      <span class="en">Exercises</span>
+    </h2>
+    <div class="content">
+      <p>دلوقتي وقت تطبق اللي اتعلمته. حاول تحل التمرين بنفسك الأول، وبعدين شوف الحل.</p>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 1: تعريف بنفسك</div>
+      <p>اكتب صفحة HTML كاملة فيها: عنوان رئيسي باسمك، عنوان فرعي بوظيفتك أو هوايتك، فقرة قصيرة عن نفسك.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre><span class="tag-open">&lt;!</span><span class="tag-name">DOCTYPE</span> <span class="attr">html</span><span class="tag-close">&gt;</span>
+<span class="tag-open">&lt;</span><span class="tag-name">html</span> <span class="attr">lang</span>=<span class="attr-val">"ar"</span> <span class="attr">dir</span>=<span class="attr-val">"rtl"</span><span class="tag-close">&gt;</span>
+<span class="tag-open">&lt;</span><span class="tag-name">head</span><span class="tag-close">&gt;</span>
+    <span class="tag-open">&lt;</span><span class="tag-name">meta</span> <span class="attr">charset</span>=<span class="attr-val">"UTF-8"</span><span class="tag-close">&gt;</span>
+    <span class="tag-open">&lt;</span><span class="tag-name">title</span><span class="tag-close">&gt;</span><span class="text">عن أحمد</span><span class="tag-open">&lt;/</span><span class="tag-name">title</span><span class="tag-close">&gt;</span>
+<span class="tag-open">&lt;/</span><span class="tag-name">head</span><span class="tag-close">&gt;</span>
+<span class="tag-open">&lt;</span><span class="tag-name">body</span><span class="tag-close">&gt;</span>
+    <span class="tag-open">&lt;</span><span class="tag-name">h1</span><span class="tag-close">&gt;</span><span class="text">أحمد محمد</span><span class="tag-open">&lt;/</span><span class="tag-name">h1</span><span class="tag-close">&gt;</span>
+    <span class="tag-open">&lt;</span><span class="tag-name">h2</span><span class="tag-close">&gt;</span><span class="text">مطور ويب</span><span class="tag-open">&lt;/</span><span class="tag-name">h2</span><span class="tag-close">&gt;</span>
+    <span class="tag-open">&lt;</span><span class="tag-name">p</span><span class="tag-close">&gt;</span><span class="text">أنا شغوف بتعلم البرمجة وبناء مواقع.</span><span class="tag-open">&lt;/</span><span class="tag-name">p</span><span class="tag-close">&gt;</span>
+<span class="tag-open">&lt;/</span><span class="tag-name">body</span><span class="tag-close">&gt;</span>
+<span class="tag-open">&lt;/</span><span class="tag-name">html</span><span class="tag-close">&gt;</span></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 2: قائمة هواياتك</div>
+      <p>اكتب كود HTML فيه قائمة بـ 5 هوايات بتحبها. استخدم <em>&lt;ul&gt;</em> و <em>&lt;li&gt;</em>.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre><span class="tag-open">&lt;</span><span class="tag-name">h2</span><span class="tag-close">&gt;</span><span class="text">هواياتي</span><span class="tag-open">&lt;/</span><span class="tag-name">h2</span><span class="tag-close">&gt;</span>
+<span class="tag-open">&lt;</span><span class="tag-name">ul</span><span class="tag-close">&gt;</span>
+    <span class="tag-open">&lt;</span><span class="tag-name">li</span><span class="tag-close">&gt;</span><span class="text">قراءة الكتب</span><span class="tag-open">&lt;/</span><span class="tag-name">li</span><span class="tag-close">&gt;</span>
+    <span class="tag-open">&lt;</span><span class="tag-name">li</span><span class="tag-close">&gt;</span><span class="text">لعب كرة القدم</span><span class="tag-open">&lt;/</span><span class="tag-name">li</span><span class="tag-close">&gt;</span>
+    <span class="tag-open">&lt;</span><span class="tag-name">li</span><span class="tag-close">&gt;</span><span class="text">السباحة</span><span class="tag-open">&lt;/</span><span class="tag-name">li</span><span class="tag-close">&gt;</span>
+    <span class="tag-open">&lt;</span><span class="tag-name">li</span><span class="tag-close">&gt;</span><span class="text">البرمجة</span><span class="tag-open">&lt;/</span><span class="tag-name">li</span><span class="tag-close">&gt;</span>
+    <span class="tag-open">&lt;</span><span class="tag-name">li</span><span class="tag-close">&gt;</span><span class="text">السفر</span><span class="tag-open">&lt;/</span><span class="tag-name">li</span><span class="tag-close">&gt;</span>
+<span class="tag-open">&lt;/</span><span class="tag-name">ul</span><span class="tag-close">&gt;</span></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 3: روابط مفيدة</div>
+      <p>اكتب 3 روابط لمواقع بتحبها، كل رابط يفتح في تبويب جديد. استخدم <em>target="_blank"</em>.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre><span class="tag-open">&lt;</span><span class="tag-name">a</span> <span class="attr">href</span>=<span class="attr-val">"https://google.com"</span> <span class="attr">target</span>=<span class="attr-val">"_blank"</span><span class="tag-close">&gt;</span><span class="text">جوجل</span><span class="tag-open">&lt;/</span><span class="tag-name">a</span><span class="tag-close">&gt;</span>
+<span class="tag-open">&lt;</span><span class="tag-name">br</span><span class="tag-close">&gt;</span>
+<span class="tag-open">&lt;</span><span class="tag-name">a</span> <span class="attr">href</span>=<span class="attr-val">"https://youtube.com"</span> <span class="attr">target</span>=<span class="attr-val">"_blank"</span><span class="tag-close">&gt;</span><span class="text">يوتيوب</span><span class="tag-open">&lt;/</span><span class="tag-name">a</span><span class="tag-close">&gt;</span>
+<span class="tag-open">&lt;</span><span class="tag-name">br</span><span class="tag-close">&gt;</span>
+<span class="tag-open">&lt;</span><span class="tag-name">a</span> <span class="attr">href</span>=<span class="attr-val">"https://github.com"</span> <span class="attr">target</span>=<span class="attr-val">"_blank"</span><span class="tag-close">&gt;</span><span class="text">جيت هاب</span><span class="tag-open">&lt;/</span><span class="tag-name">a</span><span class="tag-close">&gt;</span></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 4: العناوين بأحجام مختلفة</div>
+      <p>استخدم العناوين من <em>h1</em> لـ <em>h6</em> واكتب جملة في كل واحد فيهم. شوف الفرق في الحجم!</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre><span class="tag-open">&lt;</span><span class="tag-name">h1</span><span class="tag-close">&gt;</span><span class="text">العنوان رقم 1 - الأكبر</span><span class="tag-open">&lt;/</span><span class="tag-name">h1</span><span class="tag-close">&gt;</span>
+<span class="tag-open">&lt;</span><span class="tag-name">h2</span><span class="tag-close">&gt;</span><span class="text">العنوان رقم 2</span><span class="tag-open">&lt;/</span><span class="tag-name">h2</span><span class="tag-close">&gt;</span>
+<span class="tag-open">&lt;</span><span class="tag-name">h3</span><span class="tag-close">&gt;</span><span class="text">العنوان رقم 3</span><span class="tag-open">&lt;/</span><span class="tag-name">h3</span><span class="tag-close">&gt;</span>
+<span class="tag-open">&lt;</span><span class="tag-name">h4</span><span class="tag-close">&gt;</span><span class="text">العنوان رقم 4</span><span class="tag-open">&lt;/</span><span class="tag-name">h4</span><span class="tag-close">&gt;</span>
+<span class="tag-open">&lt;</span><span class="tag-name">h5</span><span class="tag-close">&gt;</span><span class="text">العنوان رقم 5</span><span class="tag-open">&lt;/</span><span class="tag-name">h5</span><span class="tag-close">&gt;</span>
+<span class="tag-open">&lt;</span><span class="tag-name">h6</span><span class="tag-close">&gt;</span><span class="text">العنوان رقم 6 - الأصغر</span><span class="tag-open">&lt;/</span><span class="tag-name">h6</span><span class="tag-close">&gt;</span></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 5: صفحة عن مدينة</div>
+      <p>اعمل صفحة عن مدينتك المفضلة، فيها: عنوان رئيسي (اسم المدينة)، فقرة وصف قصيرة، قائمة بـ 3 معالم سياحية، رابط لخريطة المدينة على Google Maps.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre><span class="tag-open">&lt;!</span><span class="tag-name">DOCTYPE</span> <span class="attr">html</span><span class="tag-close">&gt;</span>
+<span class="tag-open">&lt;</span><span class="tag-name">html</span> <span class="attr">lang</span>=<span class="attr-val">"ar"</span> <span class="attr">dir</span>=<span class="attr-val">"rtl"</span><span class="tag-close">&gt;</span>
+<span class="tag-open">&lt;</span><span class="tag-name">head</span><span class="tag-close">&gt;</span>
+    <span class="tag-open">&lt;</span><span class="tag-name">meta</span> <span class="attr">charset</span>=<span class="attr-val">"UTF-8"</span><span class="tag-close">&gt;</span>
+    <span class="tag-open">&lt;</span><span class="tag-name">title</span><span class="tag-close">&gt;</span><span class="text">القاهرة</span><span class="tag-open">&lt;/</span><span class="tag-name">title</span><span class="tag-close">&gt;</span>
+<span class="tag-open">&lt;/</span><span class="tag-name">head</span><span class="tag-close">&gt;</span>
+<span class="tag-open">&lt;</span><span class="tag-name">body</span><span class="tag-close">&gt;</span>
+    <span class="tag-open">&lt;</span><span class="tag-name">h1</span><span class="tag-close">&gt;</span><span class="text">القاهرة - أم الدنيا</span><span class="tag-open">&lt;/</span><span class="tag-name">h1</span><span class="tag-close">&gt;</span>
+    <span class="tag-open">&lt;</span><span class="tag-name">p</span><span class="tag-close">&gt;</span><span class="text">القاهرة عاصمة مصر، وأكبر مدنها وأكثرها سكاناً.</span><span class="tag-open">&lt;/</span><span class="tag-name">p</span><span class="tag-close">&gt;</span>
+    <span class="tag-open">&lt;</span><span class="tag-name">h2</span><span class="tag-close">&gt;</span><span class="text">أشهر معالمها</span><span class="tag-open">&lt;/</span><span class="tag-name">h2</span><span class="tag-close">&gt;</span>
+    <span class="tag-open">&lt;</span><span class="tag-name">ul</span><span class="tag-close">&gt;</span>
+        <span class="tag-open">&lt;</span><span class="tag-name">li</span><span class="tag-close">&gt;</span><span class="text">الأهرامات</span><span class="tag-open">&lt;/</span><span class="tag-name">li</span><span class="tag-close">&gt;</span>
+        <span class="tag-open">&lt;</span><span class="tag-name">li</span><span class="tag-close">&gt;</span><span class="text">برج القاهرة</span><span class="tag-open">&lt;/</span><span class="tag-name">li</span><span class="tag-close">&gt;</span>
+        <span class="tag-open">&lt;</span><span class="tag-name">li</span><span class="tag-close">&gt;</span><span class="text">المتحف المصري</span><span class="tag-open">&lt;/</span><span class="tag-name">li</span><span class="tag-close">&gt;</span>
+    <span class="tag-open">&lt;/</span><span class="tag-name">ul</span><span class="tag-close">&gt;</span>
+    <span class="tag-open">&lt;</span><span class="tag-name">a</span> <span class="attr">href</span>=<span class="attr-val">"https://maps.google.com/?q=Cairo"</span> <span class="attr">target</span>=<span class="attr-val">"_blank"</span><span class="tag-close">&gt;</span>
+        <span class="text">شاهد القاهرة على الخريطة</span>
+    <span class="tag-open">&lt;/</span><span class="tag-name">a</span><span class="tag-close">&gt;</span>
+<span class="tag-open">&lt;/</span><span class="tag-name">body</span><span class="tag-close">&gt;</span>
+<span class="tag-open">&lt;/</span><span class="tag-name">html</span><span class="tag-close">&gt;</span></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="quiz-container" id="quiz">
+    <div class="quiz-intro"><p>اختبر فهمك للدرس! جاوب على الأسئلة وشوف نتيجتك في الآخر.</p></div>
+    <div class="quiz-type-tabs">
+      <button class="qt-tab active" onclick="switchQuiz(this, 'tf')">✓✗ صح وخطأ</button>
+      <button class="qt-tab" onclick="switchQuiz(this, 'mc')">🔘 اختيار من متعدد</button>
+    </div>
+
+    <!-- True/False Quiz -->
+    <div class="quiz-section active" id="quiz-tf">
+      <div class="quiz-question" data-correct="false">
+        <span class="q-num">1</span>
+        <span class="q-text">HTML هي لغة برمجة كاملة زي JavaScript و Python.</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerTF(this, true)">✓ صح</button>
+          <button class="q-opt" onclick="answerTF(this, false)">✗ خطأ</button>
+        </div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">2</span>
+        <span class="q-text">وسم <em>&lt;title&gt;</em> بيظهر في تبويب المتصفح مش في الصفحة نفسها.</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerTF(this, true)">✓ صح</button>
+          <button class="q-opt" onclick="answerTF(this, false)">✗ خطأ</button>
+        </div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="false">
+        <span class="q-num">3</span>
+        <span class="q-text">كل وسم في HTML لازم يبقى ليه وسم إغلاق.</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerTF(this, true)">✓ صح</button>
+          <button class="q-opt" onclick="answerTF(this, false)">✗ خطأ</button>
+        </div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">4</span>
+        <span class="q-text">قسم <em>&lt;head&gt;</em> مش بيظهر للمستخدم، ولكن بيحتوي على معلومات مهمة عن الصفحة.</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerTF(this, true)">✓ صح</button>
+          <button class="q-opt" onclick="answerTF(this, false)">✗ خطأ</button>
+        </div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">5</span>
+        <span class="q-text">الخاصية <em>href</em> بتُستخدم مع وسم <em>&lt;a&gt;</em> لتحديد عنوان الرابط.</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerTF(this, true)">✓ صح</button>
+          <button class="q-opt" onclick="answerTF(this, false)">✗ خطأ</button>
+        </div>
+        <div class="q-feedback"></div>
+      </div>
+      <button class="quiz-submit" onclick="submitQuiz('tf')">عرض النتيجة 🎯</button>
+      <div class="quiz-result" id="result-tf">
+        <div class="result-score" id="score-tf">0/5</div>
+        <div class="result-label">إجابات صحيحة</div>
+        <div class="result-message" id="msg-tf"></div>
+        <button class="retry-btn" onclick="retryQuiz('tf')">🔄 حاول تاني</button>
+      </div>
+    </div>
+
+    <!-- Multiple Choice Quiz -->
+    <div class="quiz-section" id="quiz-mc">
+      <div class="quiz-question" data-correct="2">
+        <span class="q-num">1</span>
+        <span class="q-text">إيه الوسم اللي بيُستخدم لعمل أكبر عنوان؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this, 0)">&lt;h6&gt;</button>
+          <button class="q-opt" onclick="answerMC(this, 1)">&lt;heading&gt;</button>
+          <button class="q-opt" onclick="answerMC(this, 2)">&lt;h1&gt;</button>
+          <button class="q-opt" onclick="answerMC(this, 3)">&lt;title&gt;</button>
+        </div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="1">
+        <span class="q-num">2</span>
+        <span class="q-text">إيه الـ Attribute اللي بنحدد بيه عنوان الرابط؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this, 0)">src</button>
+          <button class="q-opt" onclick="answerMC(this, 1)">href</button>
+          <button class="q-opt" onclick="answerMC(this, 2)">link</button>
+          <button class="q-opt" onclick="answerMC(this, 3)">url</button>
+        </div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="3">
+        <span class="q-num">3</span>
+        <span class="q-text">إيه الفرق بين &lt;head&gt; و &lt;body&gt;؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this, 0)">مفيش فرق، الاتنين نفس الحاجة</button>
+          <button class="q-opt" onclick="answerMC(this, 1)">&lt;head&gt; للصور و &lt;body&gt; للنصوص</button>
+          <button class="q-opt" onclick="answerMC(this, 2)">&lt;head&gt; بيظهر و &lt;body&gt; مش بيظهر</button>
+          <button class="q-opt" onclick="answerMC(this, 3)">&lt;head&gt; للمعلومات و &lt;body&gt; للمحتوى اللي بيظهر</button>
+        </div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="0">
+        <span class="q-num">4</span>
+        <span class="q-text">أنهي وسم من دول مفرد (مالوش إغلاق)؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this, 0)">&lt;img&gt;</button>
+          <button class="q-opt" onclick="answerMC(this, 1)">&lt;p&gt;</button>
+          <button class="q-opt" onclick="answerMC(this, 2)">&lt;div&gt;</button>
+          <button class="q-opt" onclick="answerMC(this, 3)">&lt;button&gt;</button>
+        </div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="2">
+        <span class="q-num">5</span>
+        <span class="q-text">إيه الـ 3 لغات اللي بيتبني بيها أي موقع؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this, 0)">Python, Java, C++</button>
+          <button class="q-opt" onclick="answerMC(this, 1)">HTML, Python, Java</button>
+          <button class="q-opt" onclick="answerMC(this, 2)">HTML, CSS, JavaScript</button>
+          <button class="q-opt" onclick="answerMC(this, 3)">PHP, MySQL, HTML</button>
+        </div>
+        <div class="q-feedback"></div>
+      </div>
+      <button class="quiz-submit" onclick="submitQuiz('mc')">عرض النتيجة 🎯</button>
+      <div class="quiz-result" id="result-mc">
+        <div class="result-score" id="score-mc">0/5</div>
+        <div class="result-label">إجابات صحيحة</div>
+        <div class="result-message" id="msg-mc"></div>
+        <button class="retry-btn" onclick="retryQuiz('mc')">🔄 حاول تاني</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- NAVIGATION -->
+  <div class="lesson-nav">
+    <a href="./index.html" class="nav-btn">
+      <span>⬅️</span><span>قائمة الدروس</span>
+    </a>
+    <button class="nav-btn complete-btn" id="completeBtn" onclick="markComplete(this)">
+      <span>✅</span><span>علّم كمكتمل</span>
+    </button>
+    <a href="./lesson-02.html" class="nav-btn">
+      <span>الدرس التالي</span><span>➡️</span>
+    </a>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="notebook-footer">
+    <h3>🎉 برافو عليك!</h3>
+    <p>
+      خلصت أول درس في رحلتك مع الويب<br>
+      كمل بنفس الجدية والشغف ❤️<br><br>
+      <strong>Keep Learning, Keep Building 🚀</strong>
+    </p>
+  </div>
+
+</div>
+
+<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">⬆️</button>
+<div class="toast" id="toast"></div>
+
+<script src="../../js/data/courses.js"></script>
+<script src="../../js/progress.js"></script>
+<script src="../../js/lesson-editor.js"></script>
+<script>
+
+const COURSE_ID = 'frontend';
+const LESSON_ID = 1;
+const TOTAL_LESSONS = 32;
+
+// ═══════════════ SOLUTION TOGGLE ═══════════════
+function toggleSolution(btn) {
+  const solution = btn.nextElementSibling;
+  solution.classList.toggle('show');
+  btn.textContent = solution.classList.contains('show') ? 'إخفاء الحل ▲' : 'عرض الحل ▼';
+}
+
+// ═══════════════ COPY CODE ═══════════════
+function copyCode(btn) {
+  const pre = btn.closest('.code-box').querySelector('pre');
+  navigator.clipboard.writeText(pre.innerText).then(() => {
+    btn.classList.add('copied');
+    btn.textContent = '✓ تم النسخ';
+    setTimeout(() => { btn.classList.remove('copied'); btn.textContent = '📋 نسخ'; }, 2000);
+  });
+}
+
+// ═══════════════ TRY IT EDITOR ═══════════════
+function runCode(btn) {
+  const tryIt = btn.closest('.try-it');
+  tryIt.querySelector('iframe').srcdoc = tryIt.querySelector('.try-it-editor').value;
+}
+
+function resetCode(btn) {
+  const tryIt = btn.closest('.try-it');
+  const editor = tryIt.querySelector('.try-it-editor');
+  editor.value = editor.dataset.default;
+  tryIt.querySelector('iframe').srcdoc = editor.value;
+}
+
+// iframe auto-init and Tab key are handled by lesson-editor.js
+
+// ═══════════════ QUIZ ═══════════════
+function switchQuiz(btn, type) {
+  document.querySelectorAll('.qt-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.quiz-section').forEach(s => s.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('quiz-' + type).classList.add('active');
+}
+
+const answers = { tf: {}, mc: {} };
+
+function answerTF(btn, value) {
+  const q = btn.closest('.quiz-question');
+  const idx = Array.from(q.parentNode.querySelectorAll('.quiz-question')).indexOf(q);
+  q.querySelectorAll('.q-opt').forEach(o => o.classList.remove('selected'));
+  btn.classList.add('selected');
+  answers.tf[idx] = value;
+}
+
+function answerMC(btn, idx) {
+  const q = btn.closest('.quiz-question');
+  const qIdx = Array.from(q.parentNode.querySelectorAll('.quiz-question')).indexOf(q);
+  q.querySelectorAll('.q-opt').forEach(o => o.classList.remove('selected'));
+  btn.classList.add('selected');
+  answers.mc[qIdx] = idx;
+}
+
+function submitQuiz(type) {
+  const section = document.getElementById('quiz-' + type);
+  const questions = section.querySelectorAll('.quiz-question');
+  let correct = 0;
+
+  questions.forEach((q, idx) => {
+    const correctAnswer = type === 'tf' ? (q.dataset.correct === 'true') : parseInt(q.dataset.correct);
+    const userAnswer = answers[type][idx];
+    const feedback = q.querySelector('.q-feedback');
+    const opts = q.querySelectorAll('.q-opt');
+
+    opts.forEach(o => { o.classList.remove('selected'); o.disabled = true; });
+
+    if (userAnswer === undefined) {
+      feedback.className = 'q-feedback wrong show';
+      feedback.textContent = '⚠️ ما اخترتش إجابة!';
+      return;
+    }
+
+    if (userAnswer === correctAnswer) {
+      correct++;
+      feedback.className = 'q-feedback correct show';
+      feedback.textContent = '✓ إجابة صحيحة!';
+      if (type === 'tf') opts[correctAnswer ? 0 : 1].classList.add('correct');
+      else opts[correctAnswer].classList.add('correct');
+    } else {
+      feedback.className = 'q-feedback wrong show';
+      if (type === 'tf') {
+        opts[correctAnswer ? 0 : 1].classList.add('correct');
+        opts[userAnswer ? 0 : 1].classList.add('wrong');
+        feedback.textContent = '✗ خطأ. الإجابة الصحيحة: ' + (correctAnswer ? 'صح' : 'خطأ');
+      } else {
+        opts[correctAnswer].classList.add('correct');
+        opts[userAnswer].classList.add('wrong');
+        feedback.textContent = '✗ خطأ. الإجابة الصحيحة موضحة بالأخضر.';
+      }
+    }
+  });
+
+  const result = document.getElementById('result-' + type);
+  const scoreEl = document.getElementById('score-' + type);
+  const msgEl = document.getElementById('msg-' + type);
+
+  scoreEl.textContent = correct + '/' + questions.length;
+  if (correct === questions.length) { msgEl.textContent = '🏆 ممتاز! إجابات صحيحة 100%!'; msgEl.className = 'result-message excellent'; }
+  else if (correct >= 3) { msgEl.textContent = '👍 جيد! بس راجع الأخطاء.'; msgEl.className = 'result-message good'; }
+  else { msgEl.textContent = '📚 محتاج تراجع الدرس تاني.'; msgEl.className = 'result-message try-again'; }
+
+  result.classList.add('show');
+  result.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+function retryQuiz(type) {
+  const section = document.getElementById('quiz-' + type);
+  section.querySelectorAll('.q-opt').forEach(o => { o.classList.remove('selected', 'correct', 'wrong'); o.disabled = false; });
+  section.querySelectorAll('.q-feedback').forEach(f => { f.classList.remove('show', 'correct', 'wrong'); f.textContent = ''; });
+  document.getElementById('result-' + type).classList.remove('show');
+  answers[type] = {};
+}
+
+// ═══════════════ PROGRESS TRACKING ═══════════════
+function updateProgressBar() {
+  const pct = Progress.getCourseProgress(COURSE_ID, TOTAL_LESSONS);
+  document.getElementById('progFill').style.width = pct + '%';
+  document.getElementById('progText').textContent = pct + '%';
+}
+
+// Track visited sections
+let visitedSections = new Set();
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting && !visitedSections.has(e.target.id)) {
+      visitedSections.add(e.target.id);
+    }
+  });
+}, { threshold: 0.3 });
+document.querySelectorAll('.section').forEach(s => observer.observe(s));
+
+// ═══════════════ COMPLETE BUTTON ═══════════════
+function markComplete(btn) {
+  const nowComplete = Progress.toggleLessonComplete(COURSE_ID, LESSON_ID);
+  btn.classList.toggle('completed', nowComplete);
+  btn.querySelector('span:last-child').textContent = nowComplete ? 'مكتمل! ⭐' : 'علّم كمكتمل';
+  if (nowComplete) {
+    showToast('🎉 تهانينا! أكملت الدرس الأول');
+    document.getElementById('progFill').style.width = '100%';
+    document.getElementById('progText').textContent = '100%';
+  } else {
+    updateProgressBar();
+  }
+}
+
+// Restore complete state on load
+if (Progress.isLessonComplete(COURSE_ID, LESSON_ID)) {
+  const btn = document.getElementById('completeBtn');
+  btn.classList.add('completed');
+  btn.querySelector('span:last-child').textContent = 'مكتمل! ⭐';
+}
+
+updateProgressBar();
+
+// ═══════════════ NEXT LESSON ═══════════════
+function goNext() {
+  showToast('🚀 الدرس الثاني قريباً! اكمل بالجهد ده 💪');
+}
+
+// ═══════════════ TOAST ═══════════════
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// ═══════════════ SCROLL TOP ═══════════════
+window.addEventListener('scroll', () => {
+  document.getElementById('scrollTop').classList.toggle('show', window.scrollY > 300);
+});
+
+// ═══════════════ SMOOTH SCROLL ═══════════════
+document.querySelectorAll('.toc-card a').forEach(link => {
+  link.addEventListener('click', e => {
+    e.preventDefault();
+    const target = document.querySelector(link.getAttribute('href'));
+    if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+});
+
+</script>
+</body>
+</html>

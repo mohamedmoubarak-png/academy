@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-V2NCKVL16D"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-V2NCKVL16D');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Flexbox — دفتر البرمجة</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=Cairo:wght@300;400;500;600;700;900&family=Caveat:wght@400;700&family=Fira+Code:wght@400;500;600&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../css/shared.css">
+<link rel="stylesheet" href="../../css/notebook.css">
+<style>
+body { padding: 20px 10px; }
+
+/* Flex demos */
+.flex-demo { background: #f0f4ff; border-radius: 10px; padding: 12px; margin: 10px 0; }
+.flex-demo .fd-label { font-family: 'Fira Code', monospace; font-size: .78rem; color: var(--ink-purple); margin-bottom: 8px; }
+.flex-row  { display: flex; gap: 6px; }
+.fb { background: var(--ink-blue); color: white; padding: 8px 12px; border-radius: 6px; font-size: .8rem; font-weight: 700; text-align: center; min-width: 36px; }
+.fb.r { background: var(--ink-red); }
+.fb.g { background: var(--ink-green); }
+.fb.p { background: var(--ink-purple); }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="crumbs">
+    <a href="../../index.html">🏠 الرئيسية</a>
+    <span class="sep">/</span>
+    <a href="./index.html">🌐 الفرونت إند</a>
+    <span class="sep">/</span>
+    <span class="current">🎨 الدرس 10: Flexbox</span>
+  </div>
+  <div class="progress-mini">
+    <div class="progress-bar-mini"><div class="progress-fill-mini" id="progFill"></div></div>
+    <span id="progText">0%</span>
+  </div>
+</div>
+
+<div class="notebook">
+
+  <div class="notebook-header">
+    <div class="lesson-tag">🎨 الدرس العاشر</div>
+    <h1><span class="sparkle">✦</span> Flexbox — التخطيط المرن <span class="sparkle">✦</span></h1>
+    <div class="lesson-meta">
+      <span>⏱️ 45 دقيقة</span>
+      <span>📊 متوسط</span>
+      <span>🎯 5 تمارين + اختبار</span>
+    </div>
+  </div>
+
+  <div class="toc-card">
+    <h2>📑 فهرس الدرس</h2>
+    <ol>
+      <li><a href="#s1">ما هو Flexbox؟</a></li>
+      <li><a href="#s2">Container Properties</a></li>
+      <li><a href="#s3">justify-content</a></li>
+      <li><a href="#s4">align-items</a></li>
+      <li><a href="#s5">flex-wrap و flex-direction</a></li>
+      <li><a href="#s6">Item Properties</a></li>
+      <li><a href="#s7">أنماط شائعة</a></li>
+      <li><a href="#s8">محرر الكود الحي</a></li>
+      <li><a href="#exercises">التمارين</a></li>
+      <li><a href="#quiz">اختبر فهمك</a></li>
+    </ol>
+  </div>
+
+  <!-- S1 -->
+  <div class="section" id="s1">
+    <h2 class="section-title"><span class="num">.1</span> ما هو Flexbox؟ <span class="en">What is Flexbox?</span></h2>
+    <div class="content">
+      <p><strong>Flexbox</strong> (Flexible Box) هو نظام تخطيط أحادي المحور — يرتّب العناصر أفقياً أو عمودياً بشكل مرن ومتجاوب.</p>
+
+      <div class="analogy">
+        <div class="analogy-title">📦 تخيل صف من الصناديق على رف:</div>
+        <p>الـ <strong>Container</strong> هو الرف. الـ <strong>Items</strong> هي الصناديق. Flexbox يتيح لك التحكم في: كيف تُرتَّب الصناديق على الرف؟ ماذا يحدث لو فاضت؟ كيف تتوزع المساحة بينها؟</p>
+      </div>
+
+      <div class="code-box">
+<div class="code-header"><span>🚀 تفعيل Flexbox</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">/* خطوة واحدة فقط! */</span>
+.container {
+  display: flex;
+}
+<span class="comment">/* الآن كل الأبناء المباشرين أصبحوا flex items */</span></pre>
+      </div>
+
+      <div class="info-box"><strong>مصطلحان أساسيان:</strong><br>
+        • <em>Main Axis</em> (المحور الرئيسي) — الاتجاه الذي تُرتَّب فيه العناصر (افتراضياً: أفقي)<br>
+        • <em>Cross Axis</em> (المحور العرضي) — العمودي على الرئيسي
+      </div>
+    </div>
+  </div>
+
+  <!-- S2 -->
+  <div class="section" id="s2">
+    <h2 class="section-title"><span class="num">.2</span> خصائص الحاوية <span class="en">Container Properties</span></h2>
+    <div class="content">
+      <table class="cool-table">
+        <thead><tr><th>الخاصية</th><th>وظيفتها</th><th>القيم الشائعة</th></tr></thead>
+        <tbody>
+          <tr><td><code>display: flex</code></td><td>تفعيل Flexbox</td><td>flex | inline-flex</td></tr>
+          <tr><td><code>flex-direction</code></td><td>اتجاه المحور الرئيسي</td><td>row | column | row-reverse | column-reverse</td></tr>
+          <tr><td><code>flex-wrap</code></td><td>هل تنتقل للسطر التالي؟</td><td>nowrap | wrap | wrap-reverse</td></tr>
+          <tr><td><code>justify-content</code></td><td>التوزيع على المحور الرئيسي</td><td>flex-start | center | flex-end | space-between | space-around | space-evenly</td></tr>
+          <tr><td><code>align-items</code></td><td>المحاذاة على المحور العرضي</td><td>stretch | flex-start | center | flex-end | baseline</td></tr>
+          <tr><td><code>align-content</code></td><td>توزيع الصفوف المتعددة</td><td>مثل justify-content لكن للمحور العرضي</td></tr>
+          <tr><td><code>gap</code></td><td>المسافة بين العناصر</td><td>16px | 1rem | 10px 20px</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- S3 -->
+  <div class="section" id="s3">
+    <h2 class="section-title"><span class="num">.3</span> justify-content <span class="en">Main Axis Alignment</span></h2>
+    <div class="content">
+
+      <div class="flex-demo">
+        <div class="fd-label">justify-content: flex-start (افتراضي)</div>
+        <div class="flex-row" style="justify-content:flex-start;">
+          <div class="fb">1</div><div class="fb r">2</div><div class="fb g">3</div>
+        </div>
+      </div>
+      <div class="flex-demo">
+        <div class="fd-label">justify-content: center</div>
+        <div class="flex-row" style="justify-content:center;">
+          <div class="fb">1</div><div class="fb r">2</div><div class="fb g">3</div>
+        </div>
+      </div>
+      <div class="flex-demo">
+        <div class="fd-label">justify-content: flex-end</div>
+        <div class="flex-row" style="justify-content:flex-end;">
+          <div class="fb">1</div><div class="fb r">2</div><div class="fb g">3</div>
+        </div>
+      </div>
+      <div class="flex-demo">
+        <div class="fd-label">justify-content: space-between</div>
+        <div class="flex-row" style="justify-content:space-between;">
+          <div class="fb">1</div><div class="fb r">2</div><div class="fb g">3</div>
+        </div>
+      </div>
+      <div class="flex-demo">
+        <div class="fd-label">justify-content: space-evenly</div>
+        <div class="flex-row" style="justify-content:space-evenly;">
+          <div class="fb">1</div><div class="fb r">2</div><div class="fb g">3</div>
+        </div>
+      </div>
+
+      <div class="code-box blue">
+<div class="code-header"><span>↔️ justify-content</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre>.container {
+  display: flex;
+  justify-content: flex-start;   <span class="comment">/* يسار (RTL: يمين) */</span>
+  justify-content: center;       <span class="comment">/* المنتصف ← الأكثر استخداماً! */</span>
+  justify-content: flex-end;     <span class="comment">/* يمين (RTL: يسار) */</span>
+  justify-content: space-between;<span class="comment">/* مساحة متساوية بين العناصر */</span>
+  justify-content: space-around; <span class="comment">/* مساحة حول كل عنصر */</span>
+  justify-content: space-evenly; <span class="comment">/* مساحة متساوية تماماً */</span>
+}</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- S4 -->
+  <div class="section" id="s4">
+    <h2 class="section-title"><span class="num">.4</span> align-items <span class="en">Cross Axis Alignment</span></h2>
+    <div class="content">
+
+      <div class="flex-demo">
+        <div class="fd-label">align-items: stretch (افتراضي)</div>
+        <div class="flex-row" style="align-items:stretch;height:80px;">
+          <div class="fb" style="height:auto;">1</div>
+          <div class="fb r" style="height:auto;">2</div>
+          <div class="fb g" style="height:auto;">3</div>
+        </div>
+      </div>
+      <div class="flex-demo">
+        <div class="fd-label">align-items: center</div>
+        <div class="flex-row" style="align-items:center;height:80px;">
+          <div class="fb" style="height:30px;">1</div>
+          <div class="fb r" style="height:50px;">2</div>
+          <div class="fb g" style="height:40px;">3</div>
+        </div>
+      </div>
+      <div class="flex-demo">
+        <div class="fd-label">align-items: flex-start</div>
+        <div class="flex-row" style="align-items:flex-start;height:80px;">
+          <div class="fb" style="height:30px;">1</div>
+          <div class="fb r" style="height:50px;">2</div>
+          <div class="fb g" style="height:40px;">3</div>
+        </div>
+      </div>
+
+      <div class="code-box green">
+<div class="code-header"><span>↕️ align-items</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre>.container {
+  display: flex;
+  align-items: stretch;      <span class="comment">/* يمتد لملء الارتفاع (افتراضي) */</span>
+  align-items: center;       <span class="comment">/* التوسيط العمودي ← الأكثر استخداماً! */</span>
+  align-items: flex-start;   <span class="comment">/* يلتصق بالأعلى */</span>
+  align-items: flex-end;     <span class="comment">/* يلتصق بالأسفل */</span>
+  align-items: baseline;     <span class="comment">/* محاذاة على خط النص */</span>
+}
+
+<span class="comment">/* التوسيط الكامل (أفقي + عمودي) */</span>
+.center-everything {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- S5 -->
+  <div class="section" id="s5">
+    <h2 class="section-title"><span class="num">.5</span> flex-direction و flex-wrap <span class="en">Direction & Wrap</span></h2>
+    <div class="content">
+
+      <div class="code-box">
+<div class="code-header"><span>🔄 الاتجاه والتفاف</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">/* flex-direction: اتجاه المحور الرئيسي */</span>
+.container { flex-direction: row; }           <span class="comment">/* أفقي (افتراضي) */</span>
+.container { flex-direction: column; }        <span class="comment">/* عمودي ↓ */</span>
+.container { flex-direction: row-reverse; }   <span class="comment">/* أفقي معكوس */</span>
+.container { flex-direction: column-reverse; }<span class="comment">/* عمودي معكوس ↑ */</span>
+
+<span class="comment">/* flex-wrap: ماذا يحدث لو العناصر تفيض؟ */</span>
+.container { flex-wrap: nowrap; }   <span class="comment">/* كلها في سطر واحد (افتراضي) */</span>
+.container { flex-wrap: wrap; }     <span class="comment">/* تنتقل للسطر التالي عند الفيضان */</span>
+
+<span class="comment">/* gap: المسافة بين العناصر (أحسن من margin!) */</span>
+.container { gap: 16px; }          <span class="comment">/* بين كل الاتجاهات */</span>
+.container { gap: 10px 20px; }     <span class="comment">/* عمودي أفقي */</span>
+.container { row-gap: 10px; column-gap: 20px; }
+
+<span class="comment">/* flex-flow: اختصار لـ direction + wrap */</span>
+.container { flex-flow: row wrap; }</pre>
+      </div>
+
+      <div class="tip-box"><strong>column للقوائم العمودية:</strong> استخدم <em>flex-direction: column</em> لعمل قوائم عمودية مع justify-content لتوزيع العناصر.</div>
+    </div>
+  </div>
+
+  <!-- S6 -->
+  <div class="section" id="s6">
+    <h2 class="section-title"><span class="num">.6</span> خصائص العنصر <span class="en">Item Properties</span></h2>
+    <div class="content">
+
+      <div class="code-box pink">
+<div class="code-header"><span>📦 خصائص الـ Item</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">/* flex-grow: كم يأخذ من المساحة الزائدة؟ */</span>
+.item { flex-grow: 0; }    <span class="comment">/* لا يكبر (افتراضي) */</span>
+.item { flex-grow: 1; }    <span class="comment">/* يأخذ مساحة متساوية */</span>
+.main { flex-grow: 2; }    <span class="comment">/* يأخذ ضعف الباقين */</span>
+
+<span class="comment">/* flex-shrink: هل يصغر لو المساحة ضيقة؟ */</span>
+.item { flex-shrink: 1; }  <span class="comment">/* يصغر (افتراضي) */</span>
+.logo { flex-shrink: 0; }  <span class="comment">/* لا يصغر أبداً */</span>
+
+<span class="comment">/* flex-basis: الحجم الابتدائي قبل الحساب */</span>
+.item { flex-basis: auto; }   <span class="comment">/* حسب المحتوى (افتراضي) */</span>
+.item { flex-basis: 200px; }  <span class="comment">/* ابدأ بـ 200px */</span>
+.item { flex-basis: 0; }      <span class="comment">/* ابدأ من الصفر */</span>
+
+<span class="comment">/* flex: اختصار grow + shrink + basis */</span>
+.item { flex: 1; }        <span class="comment">/* = flex: 1 1 0 */</span>
+.item { flex: 0 0 200px; }<span class="comment">/* عرض ثابت 200px */</span>
+
+<span class="comment">/* align-self: تجاوز align-items للعنصر وحده */</span>
+.special { align-self: flex-start; }
+
+<span class="comment">/* order: ترتيب العرض (بدون تغيير HTML) */</span>
+.last-first { order: -1; } <span class="comment">/* يظهر أول */</span>
+.first-last { order: 1; }  <span class="comment">/* يظهر آخر */</span></pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- S7 -->
+  <div class="section" id="s7">
+    <h2 class="section-title"><span class="num">.7</span> أنماط شائعة <span class="en">Common Patterns</span></h2>
+    <div class="content">
+
+      <div class="code-box">
+<div class="code-header"><span>🏗️ أنماط Flexbox عملية</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">/* 1. Navbar: لوجو يسار + روابط يمين */</span>
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 24px;
+}
+
+<span class="comment">/* 2. توسيط كامل (أفقي + عمودي) */</span>
+.hero {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+<span class="comment">/* 3. بطاقات متساوية العرض */</span>
+.cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.card { flex: 1 1 280px; }  <span class="comment">/* ← كل بطاقة لا تقل عن 280px */</span>
+
+<span class="comment">/* 4. Sidebar + Main (تخطيط جانبي) */</span>
+.layout { display: flex; gap: 20px; }
+.sidebar { flex: 0 0 260px; }  <span class="comment">/* عرض ثابت */</span>
+.main    { flex: 1; }           <span class="comment">/* يأخذ باقي المساحة */</span>
+
+<span class="comment">/* 5. Push to end (ادفع لليمين/اليسار) */</span>
+.nav-items { display: flex; }
+.nav-login { margin-right: auto; } <span class="comment">/* يُدفع لأقصى اليمين */</span></pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- S8: TRY IT -->
+  <div class="section" id="s8">
+    <h2 class="section-title"><span class="num">.8</span> جرب بنفسك! <span class="en">Try It Live</span></h2>
+    <div class="content">
+      <div class="try-it">
+        <div class="try-it-header">
+          <span>💻 محرر الكود الحي</span>
+          <div class="try-it-controls">
+            <button class="try-btn" onclick="runCode(this)">▶️ تشغيل</button>
+            <button class="try-btn" onclick="resetCode(this)">🔄 إعادة</button>
+          </div>
+        </div>
+        <div class="try-it-body">
+          <textarea class="try-it-editor" spellcheck="false" data-default='<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: Arial; background: #f0f4ff; }
+
+  /* Navbar بـ Flexbox */
+  .navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #1e3a8a;
+    color: white;
+    padding: 14px 24px;
+  }
+  .navbar-logo { font-size: 1.2rem; font-weight: 700; }
+  .navbar-links { display: flex; gap: 20px; list-style: none; }
+  .navbar-links a { color: white; text-decoration: none; font-size: 0.9rem; }
+  .navbar-links a:hover { opacity: 0.8; }
+
+  .page { padding: 24px; }
+
+  /* Hero: توسيط كامل */
+  .hero {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, #1e3a8a, #7c3aed);
+    color: white;
+    padding: 60px 24px;
+    text-align: center;
+    border-radius: 16px;
+    margin-bottom: 24px;
+  }
+  .hero h1 { font-size: 2rem; margin-bottom: 12px; }
+  .hero p  { opacity: 0.85; margin-bottom: 20px; }
+  .hero .btns { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+  .btn { padding: 10px 24px; border-radius: 20px; border: none; font-weight: 700; cursor: pointer; }
+  .btn-primary { background: white; color: #1e3a8a; }
+  .btn-outline { background: transparent; border: 2px solid white; color: white; }
+
+  /* Cards: flex-wrap */
+  .cards-title { font-size: 1.2rem; font-weight: 700; color: #1e293b; margin-bottom: 16px; }
+  .cards {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .card {
+    flex: 1 1 200px;
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 8px;
+  }
+  .card .icon { font-size: 2rem; }
+  .card h3 { font-size: 1rem; color: #1e293b; }
+  .card p  { font-size: 0.85rem; color: #64748b; flex: 1; }
+  .card .tag { background: #dbeafe; color: #1e3a8a; padding: 3px 10px; border-radius: 20px; font-size: 0.78rem; font-weight: 700; }
+</style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="navbar-logo">🎓 الأكاديمية</div>
+  <ul class="navbar-links">
+    <li><a href="#">الدروس</a></li>
+    <li><a href="#">المسارات</a></li>
+    <li><a href="#">تواصل</a></li>
+  </ul>
+</nav>
+
+<div class="page">
+  <div class="hero">
+    <h1>تعلّم البرمجة بالعربي 🚀</h1>
+    <p>دروس تفاعلية، تمارين عملية، ومشاريع حقيقية</p>
+    <div class="btns">
+      <button class="btn btn-primary">ابدأ الآن</button>
+      <button class="btn btn-outline">اعرف أكثر</button>
+    </div>
+  </div>
+
+  <p class="cards-title">🗺️ المسارات المتاحة</p>
+  <div class="cards">
+    <div class="card">
+      <div class="icon">🌐</div>
+      <h3>الفرونت إند</h3>
+      <p>HTML, CSS, JavaScript, React</p>
+      <span class="tag">32 درس</span>
+    </div>
+    <div class="card">
+      <div class="icon">🐍</div>
+      <h3>Python</h3>
+      <p>من الصفر لمشاريع البيانات</p>
+      <span class="tag">قريباً</span>
+    </div>
+    <div class="card">
+      <div class="icon">⚙️</div>
+      <h3>الباك إند</h3>
+      <p>APIs وقواعد البيانات</p>
+      <span class="tag">قريباً</span>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>'><!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:Arial;background:#f0f4ff;}
+  .navbar{display:flex;justify-content:space-between;align-items:center;background:#1e3a8a;color:white;padding:14px 24px;}
+  .navbar-logo{font-size:1.2rem;font-weight:700;}
+  .navbar-links{display:flex;gap:20px;list-style:none;}
+  .navbar-links a{color:white;text-decoration:none;font-size:0.9rem;}
+  .page{padding:24px;}
+  .hero{display:flex;flex-direction:column;justify-content:center;align-items:center;background:linear-gradient(135deg,#1e3a8a,#7c3aed);color:white;padding:60px 24px;text-align:center;border-radius:16px;margin-bottom:24px;}
+  .hero h1{font-size:2rem;margin-bottom:12px;}
+  .hero p{opacity:.85;margin-bottom:20px;}
+  .hero .btns{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;}
+  .btn{padding:10px 24px;border-radius:20px;border:none;font-weight:700;cursor:pointer;}
+  .btn-primary{background:white;color:#1e3a8a;}
+  .btn-outline{background:transparent;border:2px solid white;color:white;}
+  .cards-title{font-size:1.2rem;font-weight:700;color:#1e293b;margin-bottom:16px;}
+  .cards{display:flex;flex-wrap:wrap;gap:16px;}
+  .card{flex:1 1 200px;background:white;border-radius:12px;padding:20px;box-shadow:0 2px 8px rgba(0,0,0,0.06);display:flex;flex-direction:column;align-items:center;text-align:center;gap:8px;}
+  .card .icon{font-size:2rem;}
+  .card h3{font-size:1rem;color:#1e293b;}
+  .card p{font-size:.85rem;color:#64748b;flex:1;}
+  .card .tag{background:#dbeafe;color:#1e3a8a;padding:3px 10px;border-radius:20px;font-size:.78rem;font-weight:700;}
+</style>
+</head>
+<body>
+<nav class="navbar">
+  <div class="navbar-logo">🎓 الأكاديمية</div>
+  <ul class="navbar-links"><li><a href="#">الدروس</a></li><li><a href="#">المسارات</a></li></ul>
+</nav>
+<div class="page">
+  <div class="hero">
+    <h1>تعلّم البرمجة بالعربي 🚀</h1>
+    <p>دروس تفاعلية، تمارين عملية</p>
+    <div class="btns"><button class="btn btn-primary">ابدأ الآن</button><button class="btn btn-outline">اعرف أكثر</button></div>
+  </div>
+  <p class="cards-title">🗺️ المسارات</p>
+  <div class="cards">
+    <div class="card"><div class="icon">🌐</div><h3>الفرونت إند</h3><p>HTML, CSS, JavaScript</p><span class="tag">32 درس</span></div>
+    <div class="card"><div class="icon">🐍</div><h3>Python</h3><p>من الصفر</p><span class="tag">قريباً</span></div>
+    <div class="card"><div class="icon">⚙️</div><h3>الباك إند</h3><p>APIs وقواعد البيانات</p><span class="tag">قريباً</span></div>
+  </div>
+</div>
+</body>
+</html></textarea>
+          <div class="try-it-preview"><iframe srcdoc="" sandbox="allow-scripts allow-same-origin allow-modals allow-popups allow-forms" title="معاينة الكود"></iframe></div>
+        </div>
+      </div>
+      <div class="tip-box"><strong>جرب:</strong> غيّر <em>justify-content</em> في .cards أو <em>flex-direction</em> في .hero!</div>
+    </div>
+  </div>
+
+  <!-- EXERCISES -->
+  <div class="section" id="exercises">
+    <h2 class="section-title"><span class="num">📝</span> التمارين</h2>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 1: توسيط عمودي وأفقي</div>
+      <p>اعمل div بارتفاع 300px يحتوي نص في المنتصف تماماً (أفقي وعمودي) باستخدام Flexbox.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution"><span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre>.hero {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 300px;
+  background: #f0f4ff;
+  border-radius: 12px;
+}
+
+.hero h1 { color: #1e3a8a; font-size: 2rem; }</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 2: Navbar كاملة</div>
+      <p>اعمل navbar فيها: لوجو يمين + روابط في الوسط + زر تسجيل يسار — كلها بـ Flexbox.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution"><span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre>.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 24px;
+  background: #1e3a8a;
+  color: white;
+}
+
+.nav-logo  { font-weight: 700; font-size: 1.2rem; }
+.nav-links { display: flex; gap: 20px; list-style: none; }
+.nav-links a { color: white; text-decoration: none; }
+.nav-btn   { background: white; color: #1e3a8a; border: none; padding: 8px 18px; border-radius: 20px; font-weight: 700; cursor: pointer; }</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 3: بطاقات متساوية</div>
+      <p>اعمل صف من 3 بطاقات متساوية العرض تستخدم flex: 1. عند الشاشة الصغيرة تصبح عمودية بـ flex-wrap: wrap وflex-basis: 100%.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution"><span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre>.cards { display: flex; flex-wrap: wrap; gap: 16px; }
+.card  { flex: 1 1 280px; background: white; border-radius: 12px; padding: 20px; }</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 4: تخطيط جانبي (Sidebar)</div>
+      <p>اعمل تخطيط فيه: sidebar عرضه 260px ثابت + main يأخذ باقي المساحة، بمسافة 20px بينهما.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution"><span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre>.layout  { display: flex; gap: 20px; min-height: 100vh; }
+.sidebar { flex: 0 0 260px; background: #f8fafc; padding: 20px; }
+.main    { flex: 1; padding: 20px; }</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 5: Footer بـ 3 أعمدة</div>
+      <p>اعمل footer بـ 3 أعمدة متساوية بـ Flexbox: "عن الموقع"، "روابط سريعة"، "تواصل معنا".</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution"><span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre>.footer {
+  display: flex;
+  gap: 40px;
+  background: #1e293b;
+  color: white;
+  padding: 40px 24px;
+  flex-wrap: wrap;
+}
+
+.footer-col { flex: 1 1 200px; }
+.footer-col h3 { margin-bottom: 16px; font-size: 1rem; color: #cbd5e1; }
+.footer-col ul { list-style: none; }
+.footer-col li { margin-bottom: 8px; font-size: 0.9rem; opacity: 0.7; }</pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="quiz-container" id="quiz">
+    <div class="quiz-intro"><p>اختبر فهمك!</p></div>
+    <div class="quiz-type-tabs">
+      <button class="qt-tab active" onclick="switchQuiz(this,'tf')">✓✗ صح وخطأ</button>
+      <button class="qt-tab" onclick="switchQuiz(this,'mc')">🔘 اختيار من متعدد</button>
+    </div>
+
+    <div class="quiz-section active" id="quiz-tf">
+      <div class="quiz-question" data-correct="false">
+        <span class="q-num">1</span><span class="q-text">justify-content يتحكم في المحور العرضي (Cross Axis).</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">2</span><span class="q-text">flex: 1 تجعل العناصر تتوزع بالتساوي في المساحة المتاحة.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">3</span><span class="q-text">flex-wrap: wrap يسمح للعناصر بالانتقال للسطر التالي عند الفيضان.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="false">
+        <span class="q-num">4</span><span class="q-text">gap في Flexbox تحل محل padding للمسافات بين العناصر.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">5</span><span class="q-text">للتوسيط الكامل (أفقي وعمودي) نحتاج justify-content: center وalign-items: center معاً.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <button class="quiz-submit" onclick="submitQuiz('tf')">عرض النتيجة 🎯</button>
+      <div class="quiz-result" id="result-tf"><div class="result-score" id="score-tf">0/5</div><div class="result-label">إجابات صحيحة</div><div class="result-message" id="msg-tf"></div><button class="retry-btn" onclick="retryQuiz('tf')">🔄 حاول تاني</button></div>
+    </div>
+
+    <div class="quiz-section" id="quiz-mc">
+      <div class="quiz-question" data-correct="2">
+        <span class="q-num">1</span><span class="q-text">إيه قيمة justify-content اللي بتوزع المساحة بالتساوي بين العناصر؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">center</button>
+          <button class="q-opt" onclick="answerMC(this,1)">flex-end</button>
+          <button class="q-opt" onclick="answerMC(this,2)">space-between</button>
+          <button class="q-opt" onclick="answerMC(this,3)">stretch</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="1">
+        <span class="q-num">2</span><span class="q-text">إيه الـ default value لـ align-items؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">center</button>
+          <button class="q-opt" onclick="answerMC(this,1)">stretch</button>
+          <button class="q-opt" onclick="answerMC(this,2)">flex-start</button>
+          <button class="q-opt" onclick="answerMC(this,3)">baseline</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="3">
+        <span class="q-num">3</span><span class="q-text">لعمل تخطيط عمودي بـ Flexbox، نستخدم؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">flex-direction: horizontal</button>
+          <button class="q-opt" onclick="answerMC(this,1)">align-items: column</button>
+          <button class="q-opt" onclick="answerMC(this,2)">justify-content: column</button>
+          <button class="q-opt" onclick="answerMC(this,3)">flex-direction: column</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="0">
+        <span class="q-num">4</span><span class="q-text">flex: 0 0 200px يعني؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">لا يكبر، لا يصغر، عرضه 200px ثابت</button>
+          <button class="q-opt" onclick="answerMC(this,1)">يكبر ويصغر بحرية</button>
+          <button class="q-opt" onclick="answerMC(this,2)">يبدأ من 200px ويكبر</button>
+          <button class="q-opt" onclick="answerMC(this,3)">عرضه 200% من الأب</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="2">
+        <span class="q-num">5</span><span class="q-text">إيه الفرق بين gap وmargin في Flexbox؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">مفيش فرق</button>
+          <button class="q-opt" onclick="answerMC(this,1)">margin أحسن</button>
+          <button class="q-opt" onclick="answerMC(this,2)">gap يضع مسافة بين العناصر فقط (لا يضيف للحواف الخارجية)</button>
+          <button class="q-opt" onclick="answerMC(this,3)">gap للعرض فقط</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <button class="quiz-submit" onclick="submitQuiz('mc')">عرض النتيجة 🎯</button>
+      <div class="quiz-result" id="result-mc"><div class="result-score" id="score-mc">0/5</div><div class="result-label">إجابات صحيحة</div><div class="result-message" id="msg-mc"></div><button class="retry-btn" onclick="retryQuiz('mc')">🔄 حاول تاني</button></div>
+    </div>
+  </div>
+
+  <div class="lesson-nav">
+    <a href="./lesson-09.html" class="nav-btn"><span>⬅️</span><span>الدرس السابق</span></a>
+    <button class="nav-btn complete-btn" id="completeBtn" onclick="markComplete(this)"><span>✅</span><span>علّم كمكتمل</span></button>
+    <a href="./lesson-11.html" class="nav-btn"><span>الدرس التالي</span><span>➡️</span></a>
+  </div>
+
+  <div class="notebook-footer">
+    <h3>🎉 أتقنت Flexbox!</h3>
+    <p>Flexbox هو السلاح السري لكل مطور فرونت إند ❤️<br><strong>الدرس التالي: CSS Grid — التخطيط ثنائي الأبعاد! 🗺️</strong></p>
+  </div>
+</div>
+
+<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">⬆️</button>
+<div class="toast" id="toast"></div>
+<script src="../../js/data/courses.js"></script>
+<script src="../../js/progress.js"></script>
+<script src="../../js/lesson-editor.js"></script>
+<script>
+const COURSE_ID='frontend',LESSON_ID=10,TOTAL=32;
+function toggleSolution(b){const s=b.nextElementSibling;s.classList.toggle('show');b.textContent=s.classList.contains('show')?'إخفاء الحل ▲':'عرض الحل ▼';}
+function copyCode(b){const p=b.closest('.code-box').querySelector('pre');navigator.clipboard.writeText(p.innerText).then(()=>{b.classList.add('copied');b.textContent='✓ تم النسخ';setTimeout(()=>{b.classList.remove('copied');b.textContent='📋 نسخ';},2000);});}
+function runCode(b){const t=b.closest('.try-it');t.querySelector('iframe').srcdoc=t.querySelector('.try-it-editor').value;}
+function resetCode(b){const t=b.closest('.try-it'),e=t.querySelector('.try-it-editor');e.value=e.dataset.default;t.querySelector('iframe').srcdoc=e.value;}
+window.addEventListener('load',()=>{document.querySelectorAll('.try-it').forEach(t=>{const e=t.querySelector('.try-it-editor');t.querySelector('iframe').srcdoc=e.value;});});
+function switchQuiz(b,t){document.querySelectorAll('.qt-tab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.quiz-section').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.getElementById('quiz-'+t).classList.add('active');}
+const answers={tf:{},mc:{}};
+function answerTF(b,v){const q=b.closest('.quiz-question'),i=Array.from(q.parentNode.querySelectorAll('.quiz-question')).indexOf(q);q.querySelectorAll('.q-opt').forEach(o=>o.classList.remove('selected'));b.classList.add('selected');answers.tf[i]=v;}
+function answerMC(b,i){const q=b.closest('.quiz-question'),qi=Array.from(q.parentNode.querySelectorAll('.quiz-question')).indexOf(q);q.querySelectorAll('.q-opt').forEach(o=>o.classList.remove('selected'));b.classList.add('selected');answers.mc[qi]=i;}
+function submitQuiz(type){const sec=document.getElementById('quiz-'+type),qs=sec.querySelectorAll('.quiz-question');let c=0;qs.forEach((q,i)=>{const ca=type==='tf'?(q.dataset.correct==='true'):parseInt(q.dataset.correct),ua=answers[type][i],fb=q.querySelector('.q-feedback'),opts=q.querySelectorAll('.q-opt');opts.forEach(o=>{o.classList.remove('selected');o.disabled=true;});if(ua===undefined){fb.className='q-feedback wrong show';fb.textContent='⚠️ ما اخترتش إجابة!';return;}if(ua===ca){c++;fb.className='q-feedback correct show';fb.textContent='✓ إجابة صحيحة!';if(type==='tf')opts[ca?0:1].classList.add('correct');else opts[ca].classList.add('correct');}else{fb.className='q-feedback wrong show';if(type==='tf'){opts[ca?0:1].classList.add('correct');opts[ua?0:1].classList.add('wrong');fb.textContent='✗ خطأ.';}else{opts[ca].classList.add('correct');opts[ua].classList.add('wrong');fb.textContent='✗ الإجابة بالأخضر.';}}});const r=document.getElementById('result-'+type);document.getElementById('score-'+type).textContent=c+'/'+qs.length;const m=document.getElementById('msg-'+type);if(c===qs.length){m.textContent='🏆 ممتاز 100%!';m.className='result-message excellent';}else if(c>=3){m.textContent='👍 جيد!';m.className='result-message good';}else{m.textContent='📚 راجع الدرس.';m.className='result-message try-again';}r.classList.add('show');r.scrollIntoView({behavior:'smooth',block:'center'});}
+function retryQuiz(type){const sec=document.getElementById('quiz-'+type);sec.querySelectorAll('.q-opt').forEach(o=>{o.classList.remove('selected','correct','wrong');o.disabled=false;});sec.querySelectorAll('.q-feedback').forEach(f=>{f.classList.remove('show','correct','wrong');f.textContent='';});document.getElementById('result-'+type).classList.remove('show');answers[type]={};}
+function markComplete(btn){const done=Progress.toggleLessonComplete(COURSE_ID,LESSON_ID);btn.classList.toggle('completed',done);btn.querySelector('span:last-child').textContent=done?'مكتمل! ⭐':'علّم كمكتمل';showToast(done?'🎉 أكملت درس Flexbox!':'تم إلغاء الإكمال');}
+if(Progress.isLessonComplete(COURSE_ID,LESSON_ID)){const b=document.getElementById('completeBtn');b.classList.add('completed');b.querySelector('span:last-child').textContent='مكتمل! ⭐';}
+(function(){const p=Progress.getCourseProgress(COURSE_ID,TOTAL);document.getElementById('progFill').style.width=p+'%';document.getElementById('progText').textContent=p+'%';})();
+function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
+window.addEventListener('scroll',()=>{document.getElementById('scrollTop').classList.toggle('show',window.scrollY>300);});
+document.querySelectorAll('.toc-card a').forEach(l=>{l.addEventListener('click',e=>{e.preventDefault();const t=document.querySelector(l.getAttribute('href'));if(t)t.scrollIntoView({behavior:'smooth',block:'start'});});});
+</script>
+</body>
+</html>

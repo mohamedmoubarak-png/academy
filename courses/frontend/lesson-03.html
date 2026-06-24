@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-V2NCKVL16D"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-V2NCKVL16D');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>النصوص والقوائم والروابط - دفتر البرمجة</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=Cairo:wght@300;400;500;600;700;900&family=Caveat:wght@400;700&family=Fira+Code:wght@400;500;600&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--paper:#fffef7;--paper-line:#c5d8e8;--paper-margin:#f4a8a8;--ink-blue:#1e3a8a;--ink-blue-light:#2563eb;--ink-red:#dc2626;--ink-pink:#db2777;--ink-green:#15803d;--ink-purple:#7c3aed;--ink-orange:#ea580c;--ink-teal:#0d9488;--text:#1e293b;--text-muted:#64748b;--border:#e2e8f0;--shadow:0 4px 24px rgba(30,58,138,0.08);--shadow-lg:0 20px 60px rgba(0,0,0,0.08);--radius:16px;--code-bg:#fff9e6;--code-bg-blue:#e6f7ff;--code-bg-green:#f0fdf4;--code-bg-pink:#fdf2f8;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Cairo',sans-serif;background:radial-gradient(ellipse at top,#e8d5b7 0%,#d4b896 100%);min-height:100vh;padding:20px 10px;color:var(--text);line-height:1.8;}
+.top-bar{max-width:1100px;margin:0 auto 16px;background:white;border-radius:var(--radius);padding:14px 22px;display:flex;align-items:center;justify-content:space-between;box-shadow:var(--shadow);flex-wrap:wrap;gap:10px;}
+.crumbs{display:flex;align-items:center;gap:8px;font-size:.9rem;color:var(--text-muted);flex-wrap:wrap;}
+.crumbs a{color:var(--ink-blue);text-decoration:none;font-weight:600;}
+.crumbs .sep{color:var(--border);}.crumbs .current{color:var(--text);font-weight:700;}
+.progress-mini{display:flex;align-items:center;gap:8px;font-size:.85rem;}
+.progress-bar-mini{width:100px;height:6px;background:var(--border);border-radius:3px;overflow:hidden;}
+.progress-fill-mini{height:100%;background:linear-gradient(90deg,var(--ink-blue),var(--ink-green));width:0%;transition:width .4s;}
+.notebook{max-width:1100px;margin:0 auto;background:var(--paper);background-image:linear-gradient(var(--paper-line) 1px,transparent 1px);background-size:100% 32px;background-position:0 80px;border-radius:8px;box-shadow:var(--shadow-lg),0 0 0 1px rgba(0,0,0,.05);position:relative;overflow:hidden;padding:30px 40px 40px 60px;}
+.notebook::before{content:'';position:absolute;top:0;bottom:0;right:50px;width:2px;background:var(--paper-margin);opacity:.6;}
+.notebook::after{content:'';position:absolute;left:18px;top:0;bottom:0;width:14px;background-image:radial-gradient(circle at center,#d4b896 0%,#d4b896 50%,transparent 51%);background-size:14px 14px;background-repeat:repeat-y;background-position:center 80px;}
+.notebook-header{text-align:center;padding:20px 0 30px;border-bottom:2px dashed var(--ink-blue);margin-bottom:30px;}
+.lesson-tag{display:inline-flex;align-items:center;gap:6px;background:white;border:2px solid var(--ink-orange);color:var(--ink-orange);padding:5px 14px;border-radius:20px;font-family:'Caveat',cursive;font-size:1.1rem;font-weight:700;margin-bottom:12px;transform:rotate(-2deg);}
+.notebook-header h1{font-family:'Aref Ruqaa',serif;font-size:clamp(1.7rem,4.5vw,2.6rem);color:var(--ink-blue);font-weight:700;display:inline-block;text-decoration:underline;text-decoration-color:var(--ink-red);text-decoration-thickness:2px;text-underline-offset:8px;margin-bottom:12px;}
+.sparkle{color:var(--ink-red);font-size:1.2rem;margin:0 8px;display:inline-block;animation:twinkle 2s ease-in-out infinite;}
+@keyframes twinkle{0%,100%{opacity:1;transform:scale(1) rotate(0deg);}50%{opacity:.6;transform:scale(1.2) rotate(20deg);}}
+.lesson-meta{display:flex;justify-content:center;gap:20px;flex-wrap:wrap;margin-top:12px;font-family:'Caveat',cursive;font-size:1.15rem;color:var(--ink-purple);}
+.toc-card{background:rgba(30,58,138,.05);border:2px solid var(--ink-blue);border-radius:var(--radius);padding:18px 22px;margin-bottom:30px;}
+.toc-card h2{font-family:'Aref Ruqaa',serif;color:var(--ink-blue);margin-bottom:12px;text-align:center;font-size:1.2rem;}
+.toc-card ol{padding-right:25px;columns:2;column-gap:25px;}
+.toc-card li{padding:4px 0;font-size:.95rem;break-inside:avoid;}
+.toc-card a{color:var(--ink-blue);text-decoration:none;border-bottom:1px dotted var(--ink-blue);transition:all .2s;}
+.toc-card a:hover{color:var(--ink-red);}
+@media(max-width:700px){.toc-card ol{columns:1;}}
+.section{margin-bottom:45px;position:relative;scroll-margin-top:20px;}
+.section-title{font-family:'Aref Ruqaa',serif;font-size:1.6rem;color:var(--ink-blue);font-weight:700;margin-bottom:18px;display:flex;align-items:center;gap:10px;}
+.section-title .num{color:var(--ink-red);font-family:'Caveat',cursive;font-size:1.9rem;font-weight:700;}
+.section-title .en{font-family:'Caveat',cursive;color:var(--ink-pink);font-size:1.3rem;font-weight:400;margin-right:auto;}
+.content{padding-right:15px;font-size:1.05rem;line-height:1.95;}
+.content p{margin-bottom:14px;}
+.content strong{color:var(--ink-red);font-weight:700;}
+.content em{color:var(--ink-green);font-style:normal;font-weight:600;font-family:'Fira Code',monospace;background:rgba(21,128,61,.08);padding:1px 7px;border-radius:4px;font-size:.92em;}
+.content ul{list-style:none;padding:0;margin:14px 0;}
+.content ul li{position:relative;padding-right:22px;margin-bottom:10px;line-height:1.9;}
+.content ul li::before{content:'◆';position:absolute;right:0;color:var(--ink-red);font-size:.7rem;top:10px;}
+.content ol{padding-right:25px;margin:14px 0;}
+.content ol li{padding:4px 0;line-height:1.9;padding-right:5px;}
+.sub-header{font-family:'Aref Ruqaa',serif;color:var(--ink-red);font-size:1.2rem;font-weight:700;margin:22px 0 12px;border-right:4px solid var(--ink-red);padding-right:14px;}
+.mini-header{font-family:'Caveat',cursive;color:var(--ink-purple);font-size:1.5rem;font-weight:700;margin:18px 0 10px;}
+.analogy{background:linear-gradient(135deg,#fef3c7 0%,#fde68a 100%);border:2px solid #f59e0b;border-radius:var(--radius);padding:16px 20px;margin:20px 0;position:relative;}
+.analogy-title{font-family:'Aref Ruqaa',serif;color:#92400e;font-weight:700;margin-bottom:8px;}
+.code-box{background:var(--code-bg);border:1.5px solid #d4a574;border-radius:10px;padding:16px 20px;margin:14px 0;font-family:'Fira Code','Courier New',monospace;font-size:.95rem;direction:ltr;text-align:left;overflow-x:auto;box-shadow:2px 2px 0 rgba(212,165,116,.3);line-height:1.7;position:relative;}
+.code-box.blue{background:var(--code-bg-blue);border-color:#7dd3fc;box-shadow:2px 2px 0 rgba(125,211,252,.3);}
+.code-box.green{background:var(--code-bg-green);border-color:#86efac;box-shadow:2px 2px 0 rgba(134,239,172,.3);}
+.code-box.pink{background:var(--code-bg-pink);border-color:#f9a8d4;box-shadow:2px 2px 0 rgba(249,168,212,.3);}
+.code-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;font-family:'Cairo',sans-serif;font-size:.78rem;color:var(--text-muted);direction:rtl;font-weight:600;}
+.copy-btn{background:white;border:1px solid var(--border);border-radius:6px;padding:4px 10px;font-family:'Cairo',sans-serif;font-size:.75rem;font-weight:600;cursor:pointer;transition:all .2s;color:var(--text-muted);}
+.copy-btn:hover{background:var(--ink-blue);color:white;border-color:var(--ink-blue);}
+.copy-btn.copied{background:var(--ink-green);color:white;border-color:var(--ink-green);}
+.tag-open,.tag-close{color:#2563eb;}.tag-name{color:#7c3aed;font-weight:600;}.attr{color:#ea580c;}.attr-val{color:#15803d;}.comment{color:#94a3b8;font-style:italic;}
+.try-it{background:white;border:2px solid var(--ink-purple);border-radius:var(--radius);margin:20px 0;overflow:hidden;box-shadow:var(--shadow);}
+.try-it-header{background:linear-gradient(135deg,var(--ink-purple),#a78bfa);color:white;padding:10px 16px;display:flex;justify-content:space-between;align-items:center;font-weight:700;font-size:.95rem;}
+.try-it-controls{display:flex;gap:8px;}
+.try-btn{background:white;color:var(--ink-purple);border:none;padding:5px 12px;border-radius:6px;font-family:'Cairo',sans-serif;font-size:.78rem;font-weight:700;cursor:pointer;}
+.try-it-body{display:grid;grid-template-columns:1fr 1fr;min-height:200px;}
+.try-it-editor{background:#1e293b;color:white;padding:14px;font-family:'Fira Code',monospace;font-size:.85rem;direction:ltr;text-align:left;border:none;resize:vertical;outline:none;line-height:1.6;min-height:200px;}
+.try-it-preview{background:white;padding:14px;overflow:auto;border-right:2px dashed var(--border);direction:ltr;}
+.try-it-preview iframe{width:100%;height:100%;border:none;min-height:180px;}
+@media(max-width:700px){.try-it-body{grid-template-columns:1fr;}.try-it-preview{border-right:none;border-bottom:2px dashed var(--border);}}
+.example{background:rgba(255,255,255,.7);border-right:4px solid var(--ink-green);padding:14px 18px;margin:14px 0;border-radius:0 8px 8px 0;}
+.example-label{font-family:'Aref Ruqaa',serif;color:var(--ink-green);font-weight:700;display:block;margin-bottom:8px;}
+.warning-box,.tip-box,.note-box,.info-box{border-radius:10px;padding:14px 18px;margin:14px 0;font-size:.98rem;position:relative;padding-right:50px;}
+.warning-box::before,.tip-box::before,.note-box::before,.info-box::before{position:absolute;right:14px;top:12px;font-size:1.3rem;}
+.warning-box{background:#fee2e2;border-right:4px solid var(--ink-red);}.warning-box::before{content:'⚠️';}
+.tip-box{background:#dbeafe;border-right:4px solid var(--ink-blue);}.tip-box::before{content:'💡';}
+.note-box{background:#fef9c3;border-right:4px solid #facc15;}.note-box::before{content:'📌';}
+.info-box{background:#e0f2fe;border-right:4px solid var(--ink-teal);}.info-box::before{content:'ℹ️';}
+.exercise{background:linear-gradient(135deg,#fef3c7 0%,#fde68a 100%);border:2px dashed var(--ink-orange);border-radius:var(--radius);padding:20px 22px;margin:20px 0;position:relative;}
+.exercise::before{content:'✏️';position:absolute;top:-15px;right:20px;background:var(--paper);padding:0 8px;font-size:1.5rem;}
+.exercise-title{font-family:'Aref Ruqaa',serif;color:var(--ink-orange);font-weight:700;font-size:1.15rem;margin-bottom:10px;}
+.solution-toggle{background:var(--ink-green);color:white;border:none;padding:8px 20px;border-radius:20px;font-family:'Cairo',sans-serif;font-size:.95rem;cursor:pointer;margin-top:10px;font-weight:600;transition:all .2s;min-height:44px;}
+.solution-toggle:hover{background:#166534;transform:translateY(-2px);}
+.solution{display:none;margin-top:12px;padding:14px 16px;background:rgba(21,128,61,.08);border-radius:8px;border-right:3px solid var(--ink-green);}
+.solution.show{display:block;animation:slideDown .3s ease-out;}
+@keyframes slideDown{from{opacity:0;transform:translateY(-10px);}to{opacity:1;transform:translateY(0);}}
+.solution-label{font-family:'Caveat',cursive;color:var(--ink-green);font-weight:700;font-size:1.3rem;margin-bottom:8px;display:block;}
+.quiz-container{background:linear-gradient(135deg,#ede9fe 0%,#ddd6fe 100%);border:3px solid var(--ink-purple);border-radius:var(--radius);padding:24px;margin:30px 0;position:relative;}
+.quiz-container::before{content:'🎯 اختبر فهمك';position:absolute;top:-18px;right:30px;background:var(--ink-purple);color:white;padding:6px 16px;border-radius:20px;font-family:'Aref Ruqaa',serif;font-size:1rem;font-weight:700;}
+.quiz-intro{text-align:center;margin-bottom:20px;margin-top:10px;font-size:.95rem;}
+.quiz-type-tabs{display:flex;gap:8px;margin-bottom:20px;justify-content:center;flex-wrap:wrap;}
+.qt-tab{background:white;border:2px solid var(--ink-purple);color:var(--ink-purple);padding:8px 18px;border-radius:20px;font-family:'Cairo',sans-serif;font-size:.9rem;font-weight:700;cursor:pointer;transition:all .2s;}
+.qt-tab.active{background:var(--ink-purple);color:white;}
+.quiz-section{display:none;}.quiz-section.active{display:block;}
+.quiz-question{background:white;padding:16px 18px;border-radius:12px;margin-bottom:14px;box-shadow:0 2px 8px rgba(0,0,0,.05);}
+.q-num{display:inline-block;background:var(--ink-purple);color:white;width:28px;height:28px;border-radius:50%;text-align:center;line-height:28px;font-weight:700;margin-left:10px;font-size:.9rem;}
+.q-text{font-weight:600;font-size:1rem;margin-bottom:14px;display:inline;}
+.q-options{display:flex;flex-direction:column;gap:8px;margin-top:12px;}
+.q-opt{padding:11px 16px;background:#f8fafc;border:2px solid var(--border);border-radius:10px;cursor:pointer;transition:all .2s;font-size:.95rem;text-align:right;font-family:'Cairo',sans-serif;width:100%;}
+.q-opt:hover{border-color:var(--ink-purple);background:white;}.q-opt.selected{border-color:var(--ink-purple);background:#ede9fe;}
+.q-opt.correct{border-color:var(--ink-green);background:#f0fdf4;color:var(--ink-green);font-weight:700;}
+.q-opt.wrong{border-color:var(--ink-red);background:#fee2e2;color:var(--ink-red);}
+.q-feedback{margin-top:10px;padding:10px 14px;border-radius:8px;font-size:.9rem;display:none;line-height:1.7;}
+.q-feedback.show{display:block;animation:slideDown .3s;}
+.q-feedback.correct{background:#f0fdf4;color:var(--ink-green);border-right:3px solid var(--ink-green);}
+.q-feedback.wrong{background:#fee2e2;color:var(--ink-red);border-right:3px solid var(--ink-red);}
+.quiz-submit{width:100%;padding:14px;background:linear-gradient(135deg,var(--ink-purple),#a78bfa);color:white;border:none;border-radius:10px;font-family:'Cairo',sans-serif;font-size:1rem;font-weight:700;cursor:pointer;margin-top:12px;transition:all .2s;}
+.quiz-submit:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(124,58,237,.4);}
+.quiz-result{display:none;background:white;padding:24px;border-radius:12px;margin-top:16px;text-align:center;}
+.quiz-result.show{display:block;animation:slideDown .4s;}
+.result-score{font-family:'Tajawal',sans-serif;font-size:3.5rem;font-weight:900;color:var(--ink-purple);line-height:1;}
+.result-label{font-size:1rem;color:var(--text-muted);margin:6px 0 16px;}
+.result-message{font-size:1.05rem;font-weight:700;margin-bottom:10px;}
+.result-message.excellent{color:var(--ink-green);}.result-message.good{color:var(--ink-blue);}.result-message.try-again{color:var(--ink-orange);}
+.retry-btn{background:var(--ink-purple);color:white;border:none;padding:10px 24px;border-radius:20px;font-family:'Cairo',sans-serif;font-weight:700;cursor:pointer;margin-top:10px;}
+.lesson-nav{display:flex;justify-content:space-between;align-items:center;margin-top:40px;padding-top:30px;border-top:2px dashed var(--ink-blue);gap:12px;flex-wrap:wrap;}
+.nav-btn{display:flex;align-items:center;gap:8px;padding:12px 20px;background:white;border:2px solid var(--ink-blue);border-radius:10px;color:var(--ink-blue);font-family:'Cairo',sans-serif;font-weight:700;font-size:.95rem;cursor:pointer;transition:all .2s;text-decoration:none;}
+.nav-btn:hover{background:var(--ink-blue);color:white;transform:translateY(-2px);}
+.complete-btn{background:var(--ink-green);color:white;border-color:var(--ink-green);flex:1;justify-content:center;max-width:300px;}
+.complete-btn:hover{background:#166534;border-color:#166534;}
+.complete-btn.completed{background:var(--ink-purple);border-color:var(--ink-purple);}
+.notebook-footer{text-align:center;margin-top:30px;padding:22px 25px;background:linear-gradient(135deg,#fce7f3 0%,#fbcfe8 100%);border:2px solid var(--ink-pink);border-radius:var(--radius);}
+.notebook-footer h3{font-family:'Aref Ruqaa',serif;color:var(--ink-pink);font-size:1.3rem;margin-bottom:8px;}
+.notebook-footer p{font-family:'Caveat',cursive;color:var(--ink-purple);font-size:1.2rem;line-height:1.7;}
+.cool-table{width:100%;border-collapse:collapse;margin:16px 0;background:white;border-radius:10px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.05);font-size:.95rem;}
+.cool-table thead{background:linear-gradient(135deg,var(--ink-blue),var(--ink-blue-light));color:white;}
+.cool-table th{padding:12px 14px;text-align:right;font-family:'Aref Ruqaa',serif;font-weight:600;}
+.cool-table td{padding:11px 14px;border-bottom:1px solid var(--border);border-left:1px solid var(--border);}
+.cool-table td:last-child{border-left:none;}
+.cool-table tbody tr:hover{background:#f9fafb;}
+.cool-table code{background:var(--code-bg);padding:2px 8px;border-radius:4px;font-family:'Fira Code',monospace;font-size:.9em;color:var(--ink-purple);}
+.toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(20px);background:#1e293b;color:white;padding:12px 24px;border-radius:30px;font-size:.9rem;font-weight:600;z-index:200;opacity:0;transition:all .3s;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+.scroll-top{position:fixed;bottom:30px;right:30px;width:50px;height:50px;border-radius:50%;background:var(--ink-blue);color:white;border:none;cursor:pointer;font-size:1.3rem;box-shadow:var(--shadow-lg);display:none;z-index:100;transition:all .2s;}
+.scroll-top.show{display:block;}
+@media(max-width:700px){.notebook{padding:20px 20px 25px 35px;}.notebook::before{right:28px;}.notebook::after{left:10px;width:10px;background-size:10px 10px;}.section-title{font-size:1.3rem;}.code-box{font-size:.82rem;padding:12px;}.cool-table{display:block;overflow-x:auto;-webkit-overflow-scrolling:touch;}.try-btn{min-height:44px;padding:8px 14px;}.try-it-editor{font-size:13px;resize:none;}}
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="crumbs">
+    <a href="../../index.html">🏠 الرئيسية</a>
+    <span class="sep">/</span>
+    <a href="./index.html">🌐 الفرونت إند</a>
+    <span class="sep">/</span>
+    <span class="current">📘 الدرس 3: النصوص والقوائم والروابط</span>
+  </div>
+  <div class="progress-mini">
+    <div class="progress-bar-mini"><div class="progress-fill-mini" id="progFill"></div></div>
+    <span id="progText">0%</span>
+  </div>
+</div>
+
+<div class="notebook">
+  <div class="notebook-header">
+    <div class="lesson-tag">📘 الدرس الثالث</div>
+    <h1><span class="sparkle">✦</span> النصوص والقوائم والروابط <span class="sparkle">✦</span></h1>
+    <div class="lesson-meta">
+      <span>⏱️ 35 دقيقة</span>
+      <span>📊 مبتدئ</span>
+      <span>🎯 5 تمارين + اختبار</span>
+    </div>
+  </div>
+
+  <div class="toc-card">
+    <h2>📑 فهرس الدرس</h2>
+    <ol>
+      <li><a href="#s1">وسوم النصوص</a></li>
+      <li><a href="#s2">القوائم غير المرتبة (ul)</a></li>
+      <li><a href="#s3">القوائم المرتبة (ol)</a></li>
+      <li><a href="#s4">القوائم الوصفية (dl)</a></li>
+      <li><a href="#s5">القوائم المتداخلة</a></li>
+      <li><a href="#s6">الروابط (a) بالتفصيل</a></li>
+      <li><a href="#s7">أنواع الروابط</a></li>
+      <li><a href="#s8">محرر الكود الحي</a></li>
+      <li><a href="#exercises">التمارين</a></li>
+      <li><a href="#quiz">اختبر فهمك</a></li>
+    </ol>
+  </div>
+
+  <!-- SECTION 1 -->
+  <div class="section" id="s1">
+    <h2 class="section-title"><span class="num">.1</span> وسوم النصوص <span class="en">Text Tags</span></h2>
+    <div class="content">
+      <p>قبل ما ندخل للقوائم والروابط، خلينا نعرف الوسوم اللي بتتعامل مع النصوص العادية:</p>
+      <table class="cool-table">
+        <thead><tr><th>الوسم</th><th>وظيفته</th><th>مثال</th></tr></thead>
+        <tbody>
+          <tr><td><code>&lt;p&gt;</code></td><td>فقرة نصية — بتضيف مسافة قبلها وبعدها</td><td>أكثر وسم بتستخدمه</td></tr>
+          <tr><td><code>&lt;br&gt;</code></td><td>سطر جديد داخل نفس الفقرة (مفرد)</td><td>للعناوين والأشعار</td></tr>
+          <tr><td><code>&lt;hr&gt;</code></td><td>خط أفقي فاصل (مفرد)</td><td>للفصل بين أقسام</td></tr>
+          <tr><td><code>&lt;pre&gt;</code></td><td>نص محافظ على المسافات والأسطر (Preformatted)</td><td>للكود والشعر</td></tr>
+          <tr><td><code>&lt;blockquote&gt;</code></td><td>اقتباس طويل من مصدر آخر</td><td>للأقوال والاقتباسات</td></tr>
+          <tr><td><code>&lt;q&gt;</code></td><td>اقتباس قصير مضمّن</td><td>داخل فقرة</td></tr>
+          <tr><td><code>&lt;abbr&gt;</code></td><td>اختصار — يعرض شرحه عند الـ hover</td><td>HTML, CSS, JS</td></tr>
+        </tbody>
+      </table>
+      <div class="code-box blue">
+<div class="code-header"><span>📝 أمثلة وسوم النصوص</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">&lt;!-- فقرة عادية --&gt;</span>
+<span class="tag-open">&lt;</span><span class="tag-name">p</span><span class="tag-close">&gt;</span>هذه فقرة نصية عادية.<span class="tag-open">&lt;/</span><span class="tag-name">p</span><span class="tag-close">&gt;</span>
+
+<span class="comment">&lt;!-- سطر جديد بدون فقرة جديدة --&gt;</span>
+<span class="tag-open">&lt;</span><span class="tag-name">p</span><span class="tag-close">&gt;</span>السطر الأول<span class="tag-open">&lt;</span><span class="tag-name">br</span><span class="tag-close">&gt;</span>السطر الثاني في نفس الفقرة<span class="tag-open">&lt;/</span><span class="tag-name">p</span><span class="tag-close">&gt;</span>
+
+<span class="comment">&lt;!-- خط فاصل --&gt;</span>
+<span class="tag-open">&lt;</span><span class="tag-name">hr</span><span class="tag-close">&gt;</span>
+
+<span class="comment">&lt;!-- اقتباس --&gt;</span>
+<span class="tag-open">&lt;</span><span class="tag-name">blockquote</span><span class="tag-close">&gt;</span>
+  العلم نور والجهل ظلام.
+<span class="tag-open">&lt;/</span><span class="tag-name">blockquote</span><span class="tag-close">&gt;</span>
+
+<span class="comment">&lt;!-- اختصار --&gt;</span>
+<span class="tag-open">&lt;</span><span class="tag-name">p</span><span class="tag-close">&gt;</span>
+  <span class="tag-open">&lt;</span><span class="tag-name">abbr</span> <span class="attr">title</span>=<span class="attr-val">"HyperText Markup Language"</span><span class="tag-close">&gt;</span>HTML<span class="tag-open">&lt;/</span><span class="tag-name">abbr</span><span class="tag-close">&gt;</span>
+  هي لغة الويب الأساسية.
+<span class="tag-open">&lt;/</span><span class="tag-name">p</span><span class="tag-close">&gt;</span></pre>
+      </div>
+      <div class="tip-box"><strong>استخدم &lt;br&gt; بحكمة:</strong> لا تستخدم &lt;br&gt; لإضافة مسافات بين الفقرات — ده شغل CSS مش HTML. &lt;br&gt; بس لما تحتاج سطر جديد داخل نفس العنصر.</div>
+    </div>
+  </div>
+
+  <!-- SECTION 2 -->
+  <div class="section" id="s2">
+    <h2 class="section-title"><span class="num">.2</span> القوائم غير المرتبة <span class="en">Unordered Lists (ul)</span></h2>
+    <div class="content">
+      <p>القائمة غير المرتبة بتعرض عناصر بنقاط (Bullets) من غير ترتيب معين.</p>
+      <div class="analogy">
+        <div class="analogy-title">🛒 تخيل قائمة تسوق:</div>
+        <p>لما بتكتب قائمة المشتريات، مش مهم ترتيبها — خبز، لبن، بيض. ده بالظبط <em>&lt;ul&gt;</em>: قائمة عناصر مش محتاجة ترتيب.</p>
+      </div>
+      <div class="code-box">
+<div class="code-header"><span>🔵 القائمة غير المرتبة</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-open">&lt;</span><span class="tag-name">ul</span><span class="tag-close">&gt;</span>
+  <span class="tag-open">&lt;</span><span class="tag-name">li</span><span class="tag-close">&gt;</span>خبز<span class="tag-open">&lt;/</span><span class="tag-name">li</span><span class="tag-close">&gt;</span>
+  <span class="tag-open">&lt;</span><span class="tag-name">li</span><span class="tag-close">&gt;</span>لبن<span class="tag-open">&lt;/</span><span class="tag-name">li</span><span class="tag-close">&gt;</span>
+  <span class="tag-open">&lt;</span><span class="tag-name">li</span><span class="tag-close">&gt;</span>بيض<span class="tag-open">&lt;/</span><span class="tag-name">li</span><span class="tag-close">&gt;</span>
+<span class="tag-open">&lt;/</span><span class="tag-name">ul</span><span class="tag-close">&gt;</span></pre>
+      </div>
+      <p><strong>النتيجة:</strong></p>
+      <div style="background:white;padding:12px 20px;border-radius:8px;margin:8px 0;border:1px solid var(--border);">
+        <ul style="padding-right:20px;list-style:disc;">
+          <li>خبز</li>
+          <li>لبن</li>
+          <li>بيض</li>
+        </ul>
+      </div>
+      <div class="note-box"><strong>قاعدة:</strong> <em>&lt;li&gt;</em> (List Item) لازم يكون دايماً داخل <em>&lt;ul&gt;</em> أو <em>&lt;ol&gt;</em>. ما تحطه لوحده أبداً.</div>
+    </div>
+  </div>
+
+  <!-- SECTION 3 -->
+  <div class="section" id="s3">
+    <h2 class="section-title"><span class="num">.3</span> القوائم المرتبة <span class="en">Ordered Lists (ol)</span></h2>
+    <div class="content">
+      <p>القائمة المرتبة بتعرض عناصر بأرقام أو حروف — الترتيب مهم هنا.</p>
+      <div class="analogy">
+        <div class="analogy-title">📋 تخيل وصفة طبخ:</div>
+        <p>وصفة الكيكة لازم تتبع بالترتيب: أولاً اخلط الدقيق، تانياً ضيف البيض، تالثاً... ده هو <em>&lt;ol&gt;</em>: ترتيب مهم!</p>
+      </div>
+      <div class="code-box green">
+<div class="code-header"><span>🔢 القائمة المرتبة</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">&lt;!-- أرقام عادية (افتراضي) --&gt;</span>
+<span class="tag-open">&lt;</span><span class="tag-name">ol</span><span class="tag-close">&gt;</span>
+  <span class="tag-open">&lt;</span><span class="tag-name">li</span><span class="tag-close">&gt;</span>اخلط الدقيق والسكر<span class="tag-open">&lt;/</span><span class="tag-name">li</span><span class="tag-close">&gt;</span>
+  <span class="tag-open">&lt;</span><span class="tag-name">li</span><span class="tag-close">&gt;</span>ضيف البيض والزبدة<span class="tag-open">&lt;/</span><span class="tag-name">li</span><span class="tag-close">&gt;</span>
+  <span class="tag-open">&lt;</span><span class="tag-name">li</span><span class="tag-close">&gt;</span>اخبز على 180 درجة<span class="tag-open">&lt;/</span><span class="tag-name">li</span><span class="tag-close">&gt;</span>
+<span class="tag-open">&lt;/</span><span class="tag-name">ol</span><span class="tag-close">&gt;</span>
+
+<span class="comment">&lt;!-- بحروف إنجليزية --&gt;</span>
+<span class="tag-open">&lt;</span><span class="tag-name">ol</span> <span class="attr">type</span>=<span class="attr-val">"A"</span><span class="tag-close">&gt;</span>
+  <span class="tag-open">&lt;</span><span class="tag-name">li</span><span class="tag-close">&gt;</span>الخيار الأول<span class="tag-open">&lt;/</span><span class="tag-name">li</span><span class="tag-close">&gt;</span>
+  <span class="tag-open">&lt;</span><span class="tag-name">li</span><span class="tag-close">&gt;</span>الخيار الثاني<span class="tag-open">&lt;/</span><span class="tag-name">li</span><span class="tag-close">&gt;</span>
+<span class="tag-open">&lt;/</span><span class="tag-name">ol</span><span class="tag-close">&gt;</span>
+
+<span class="comment">&lt;!-- ابدأ من رقم معين --&gt;</span>
+<span class="tag-open">&lt;</span><span class="tag-name">ol</span> <span class="attr">start</span>=<span class="attr-val">"5"</span><span class="tag-close">&gt;</span>
+  <span class="tag-open">&lt;</span><span class="tag-name">li</span><span class="tag-close">&gt;</span>يبدأ من 5<span class="tag-open">&lt;/</span><span class="tag-name">li</span><span class="tag-close">&gt;</span>
+  <span class="tag-open">&lt;</span><span class="tag-name">li</span><span class="tag-close">&gt;</span>ثم 6<span class="tag-open">&lt;/</span><span class="tag-name">li</span><span class="tag-close">&gt;</span>
+<span class="tag-open">&lt;/</span><span class="tag-name">ol</span><span class="tag-close">&gt;</span></pre>
+      </div>
+      <div class="info-box">خصائص <em>&lt;ol&gt;</em>:<br>• <em>type="1"</em> أرقام (افتراضي) | <em>type="A"</em> حروف كبيرة | <em>type="a"</em> حروف صغيرة | <em>type="I"</em> رومان<br>• <em>start="5"</em> لتبدأ من رقم معين<br>• <em>reversed</em> لترتيب تنازلي</div>
+    </div>
+  </div>
+
+  <!-- SECTION 4 -->
+  <div class="section" id="s4">
+    <h2 class="section-title"><span class="num">.4</span> القوائم الوصفية <span class="en">Description Lists (dl)</span></h2>
+    <div class="content">
+      <p>القائمة الوصفية بتربط <strong>مصطلح</strong> بـ <strong>تعريفه</strong>. مثالية للقواميس والمصطلحات والـ FAQs.</p>
+      <div class="code-box pink">
+<div class="code-header"><span>📖 القائمة الوصفية</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-open">&lt;</span><span class="tag-name">dl</span><span class="tag-close">&gt;</span>
+  <span class="tag-open">&lt;</span><span class="tag-name">dt</span><span class="tag-close">&gt;</span>HTML<span class="tag-open">&lt;/</span><span class="tag-name">dt</span><span class="tag-close">&gt;</span>
+  <span class="tag-open">&lt;</span><span class="tag-name">dd</span><span class="tag-close">&gt;</span>لغة ترميز النصوص الفائقة — لبناء هيكل الصفحات<span class="tag-open">&lt;/</span><span class="tag-name">dd</span><span class="tag-close">&gt;</span>
+
+  <span class="tag-open">&lt;</span><span class="tag-name">dt</span><span class="tag-close">&gt;</span>CSS<span class="tag-open">&lt;/</span><span class="tag-name">dt</span><span class="tag-close">&gt;</span>
+  <span class="tag-open">&lt;</span><span class="tag-name">dd</span><span class="tag-close">&gt;</span>أوراق الأنماط المتتالية — للتنسيق والتصميم<span class="tag-open">&lt;/</span><span class="tag-name">dd</span><span class="tag-close">&gt;</span>
+
+  <span class="tag-open">&lt;</span><span class="tag-name">dt</span><span class="tag-close">&gt;</span>JavaScript<span class="tag-open">&lt;/</span><span class="tag-name">dt</span><span class="tag-close">&gt;</span>
+  <span class="tag-open">&lt;</span><span class="tag-name">dd</span><span class="tag-close">&gt;</span>لغة البرمجة للتفاعلية والحركة<span class="tag-open">&lt;/</span><span class="tag-name">dd</span><span class="tag-close">&gt;</span>
+<span class="tag-open">&lt;/</span><span class="tag-name">dl</span><span class="tag-close">&gt;</span></pre>
+      </div>
+      <div class="note-box"><strong>الفرق بين الثلاث:</strong> <em>&lt;dl&gt;</em> = القائمة كلها | <em>&lt;dt&gt;</em> (Description Term) = المصطلح | <em>&lt;dd&gt;</em> (Description Details) = التعريف</div>
+    </div>
+  </div>
+
+  <!-- SECTION 5 -->
+  <div class="section" id="s5">
+    <h2 class="section-title"><span class="num">.5</span> القوائم المتداخلة <span class="en">Nested Lists</span></h2>
+    <div class="content">
+      <p>ممكن تحط قائمة جوا قائمة لعمل تصنيفات فرعية. مثال: قائمة مواد الدراسة والفصول الفرعية.</p>
+      <div class="code-box">
+<div class="code-header"><span>🗂️ قوائم متداخلة</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-open">&lt;</span><span class="tag-name">ul</span><span class="tag-close">&gt;</span>
+  <span class="tag-open">&lt;</span><span class="tag-name">li</span><span class="tag-close">&gt;</span>مسار الفرونت إند
+    <span class="tag-open">&lt;</span><span class="tag-name">ul</span><span class="tag-close">&gt;</span>
+      <span class="tag-open">&lt;</span><span class="tag-name">li</span><span class="tag-close">&gt;</span>HTML<span class="tag-open">&lt;/</span><span class="tag-name">li</span><span class="tag-close">&gt;</span>
+      <span class="tag-open">&lt;</span><span class="tag-name">li</span><span class="tag-close">&gt;</span>CSS<span class="tag-open">&lt;/</span><span class="tag-name">li</span><span class="tag-close">&gt;</span>
+      <span class="tag-open">&lt;</span><span class="tag-name">li</span><span class="tag-close">&gt;</span>JavaScript<span class="tag-open">&lt;/</span><span class="tag-name">li</span><span class="tag-close">&gt;</span>
+    <span class="tag-open">&lt;/</span><span class="tag-name">ul</span><span class="tag-close">&gt;</span>
+  <span class="tag-open">&lt;/</span><span class="tag-name">li</span><span class="tag-close">&gt;</span>
+  <span class="tag-open">&lt;</span><span class="tag-name">li</span><span class="tag-close">&gt;</span>مسار Python
+    <span class="tag-open">&lt;</span><span class="tag-name">ul</span><span class="tag-close">&gt;</span>
+      <span class="tag-open">&lt;</span><span class="tag-name">li</span><span class="tag-close">&gt;</span>الأساسيات<span class="tag-open">&lt;/</span><span class="tag-name">li</span><span class="tag-close">&gt;</span>
+      <span class="tag-open">&lt;</span><span class="tag-name">li</span><span class="tag-close">&gt;</span>Django<span class="tag-open">&lt;/</span><span class="tag-name">li</span><span class="tag-close">&gt;</span>
+    <span class="tag-open">&lt;/</span><span class="tag-name">ul</span><span class="tag-close">&gt;</span>
+  <span class="tag-open">&lt;/</span><span class="tag-name">li</span><span class="tag-close">&gt;</span>
+<span class="tag-open">&lt;/</span><span class="tag-name">ul</span><span class="tag-close">&gt;</span></pre>
+      </div>
+      <div class="warning-box"><strong>انتبه:</strong> القائمة الداخلية لازم تتحط <strong>داخل</strong> <em>&lt;li&gt;</em> مش بعده. الخطأ الشائع هو وضعها بعد <em>&lt;/li&gt;</em>.</div>
+    </div>
+  </div>
+
+  <!-- SECTION 6 -->
+  <div class="section" id="s6">
+    <h2 class="section-title"><span class="num">.6</span> الروابط بالتفصيل <span class="en">Links (a tag)</span></h2>
+    <div class="content">
+      <p>وسم <em>&lt;a&gt;</em> (Anchor) هو أكتر وسم مميّز في HTML — ده اللي بيربط صفحات الويب ببعض. بدونه مفيش "ويب"!</p>
+      <div class="analogy">
+        <div class="analogy-title">🌉 تخيل كباري بين جزر:</div>
+        <p>كل صفحة ويب هي جزيرة. الـ Anchor هو الكوبري اللي بيربطها بالجزيرة التانية. من غير كباري، كل جزيرة معزولة.</p>
+      </div>
+      <div class="sub-header">الخصائص المهمة للرابط:</div>
+      <table class="cool-table">
+        <thead><tr><th>الخاصية</th><th>وظيفتها</th><th>مثال</th></tr></thead>
+        <tbody>
+          <tr><td><code>href</code></td><td>العنوان الذي يوديك إليه الرابط</td><td><code>href="https://google.com"</code></td></tr>
+          <tr><td><code>target</code></td><td>أين يفتح الرابط؟</td><td><code>target="_blank"</code> (تبويب جديد)</td></tr>
+          <tr><td><code>rel</code></td><td>العلاقة بالصفحة المرتبطة (للـ SEO والأمان)</td><td><code>rel="noopener noreferrer"</code></td></tr>
+          <tr><td><code>title</code></td><td>نص تلميح يظهر عند الـ Hover</td><td><code>title="اذهب لجوجل"</code></td></tr>
+          <tr><td><code>download</code></td><td>لتحميل الملف بدل فتحه</td><td><code>download="resume.pdf"</code></td></tr>
+        </tbody>
+      </table>
+      <div class="tip-box"><strong>أمان مهم:</strong> لما تفتح رابط خارجي في تبويب جديد (<em>target="_blank"</em>)، دايماً ضيف <em>rel="noopener noreferrer"</em> عشان تمنع ثغرات أمنية.</div>
+    </div>
+  </div>
+
+  <!-- SECTION 7 -->
+  <div class="section" id="s7">
+    <h2 class="section-title"><span class="num">.7</span> أنواع الروابط <span class="en">Types of Links</span></h2>
+    <div class="content">
+      <p>في 5 أنواع روابط ممكن تعملها بـ <em>&lt;a&gt;</em>:</p>
+      <div class="code-box blue">
+<div class="code-header"><span>🔗 أنواع الروابط الخمسة</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">&lt;!-- 1. رابط خارجي: لموقع تاني --&gt;</span>
+<span class="tag-open">&lt;</span><span class="tag-name">a</span> <span class="attr">href</span>=<span class="attr-val">"https://google.com"</span> <span class="attr">target</span>=<span class="attr-val">"_blank"</span> <span class="attr">rel</span>=<span class="attr-val">"noopener noreferrer"</span><span class="tag-close">&gt;</span>
+  جوجل
+<span class="tag-open">&lt;/</span><span class="tag-name">a</span><span class="tag-close">&gt;</span>
+
+<span class="comment">&lt;!-- 2. رابط داخلي: لصفحة في نفس موقعك --&gt;</span>
+<span class="tag-open">&lt;</span><span class="tag-name">a</span> <span class="attr">href</span>=<span class="attr-val">"about.html"</span><span class="tag-close">&gt;</span>عن الموقع<span class="tag-open">&lt;/</span><span class="tag-name">a</span><span class="tag-close">&gt;</span>
+<span class="tag-open">&lt;</span><span class="tag-name">a</span> <span class="attr">href</span>=<span class="attr-val">"../index.html"</span><span class="tag-close">&gt;</span>الرئيسية (مجلد أعلى)<span class="tag-open">&lt;/</span><span class="tag-name">a</span><span class="tag-close">&gt;</span>
+
+<span class="comment">&lt;!-- 3. رابط مرساة: للانتقال لجزء من نفس الصفحة --&gt;</span>
+<span class="tag-open">&lt;</span><span class="tag-name">a</span> <span class="attr">href</span>=<span class="attr-val">"#contact"</span><span class="tag-close">&gt;</span>اذهب لقسم التواصل<span class="tag-open">&lt;/</span><span class="tag-name">a</span><span class="tag-close">&gt;</span>
+<span class="comment">&lt;!-- الوجهة: عنصر بنفس الـ id --&gt;</span>
+<span class="tag-open">&lt;</span><span class="tag-name">section</span> <span class="attr">id</span>=<span class="attr-val">"contact"</span><span class="tag-close">&gt;</span>...<span class="tag-open">&lt;/</span><span class="tag-name">section</span><span class="tag-close">&gt;</span>
+
+<span class="comment">&lt;!-- 4. رابط إيميل --&gt;</span>
+<span class="tag-open">&lt;</span><span class="tag-name">a</span> <span class="attr">href</span>=<span class="attr-val">"mailto:hello@example.com"</span><span class="tag-close">&gt;</span>راسلني<span class="tag-open">&lt;/</span><span class="tag-name">a</span><span class="tag-close">&gt;</span>
+
+<span class="comment">&lt;!-- 5. رابط هاتف --&gt;</span>
+<span class="tag-open">&lt;</span><span class="tag-name">a</span> <span class="attr">href</span>=<span class="attr-val">"tel:+201234567890"</span><span class="tag-close">&gt;</span>اتصل بي<span class="tag-open">&lt;/</span><span class="tag-name">a</span><span class="tag-close">&gt;</span></pre>
+      </div>
+      <div class="example">
+        <span class="example-label">📌 الروابط المتداخلة بالأيقونات:</span>
+        <p>ممكن تحط أي عنصر جوا الرابط مش بس نص — صورة، أيقونة، حتى div:</p>
+        <div class="code-box green">
+<pre><span class="comment">&lt;!-- رابط بصورة --&gt;</span>
+<span class="tag-open">&lt;</span><span class="tag-name">a</span> <span class="attr">href</span>=<span class="attr-val">"https://google.com"</span><span class="tag-close">&gt;</span>
+  <span class="tag-open">&lt;</span><span class="tag-name">img</span> <span class="attr">src</span>=<span class="attr-val">"logo.png"</span> <span class="attr">alt</span>=<span class="attr-val">"جوجل"</span><span class="tag-close">&gt;</span>
+<span class="tag-open">&lt;/</span><span class="tag-name">a</span><span class="tag-close">&gt;</span></pre>
+        </div>
+      </div>
+      <div class="warning-box"><strong>لا تستخدم روابط فاضية:</strong> <em>href="#"</em> كرابط مؤقت مقبول لكن في الإنتاج، كل رابط لازم له وجهة حقيقية.</div>
+    </div>
+  </div>
+
+  <!-- SECTION 8: TRY IT -->
+  <div class="section" id="s8">
+    <h2 class="section-title"><span class="num">.8</span> جرب بنفسك! <span class="en">Try It Live</span></h2>
+    <div class="content">
+      <div class="try-it">
+        <div class="try-it-header">
+          <span>💻 محرر الكود الحي</span>
+          <div class="try-it-controls">
+            <button class="try-btn" onclick="runCode(this)">▶️ تشغيل</button>
+            <button class="try-btn" onclick="resetCode(this)">🔄 إعادة</button>
+          </div>
+        </div>
+        <div class="try-it-body">
+          <textarea class="try-it-editor" spellcheck="false" data-default='<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    body { font-family: Arial; padding: 20px; }
+    nav a { margin-left: 12px; color: #1e3a8a; font-weight: bold; }
+    ul, ol { margin: 10px 0; padding-right: 25px; }
+    blockquote { border-right: 4px solid #7c3aed; padding-right: 15px; color: #555; margin: 15px 0; }
+  </style>
+</head>
+<body>
+  <h1>المشاريع المفضلة عندي</h1>
+
+  <nav>
+    <a href="#projects">المشاريع</a>
+    <a href="#skills">المهارات</a>
+    <a href="mailto:me@example.com">تواصل</a>
+  </nav>
+
+  <h2 id="projects">قائمة المشاريع 🚀</h2>
+  <ol>
+    <li>موقع شخصي</li>
+    <li>تطبيق قائمة مهام</li>
+    <li>متجر إلكتروني</li>
+  </ol>
+
+  <h2 id="skills">المهارات 💡</h2>
+  <ul>
+    <li>HTML
+      <ul>
+        <li>الهيكل الدلالي</li>
+        <li>النماذج (Forms)</li>
+      </ul>
+    </li>
+    <li>CSS</li>
+    <li>JavaScript</li>
+  </ul>
+
+  <blockquote>
+    "البرمجة هي أقرب شيء للسحر الموجود في العالم الحقيقي"
+  </blockquote>
+
+  <p><a href="https://github.com" target="_blank">جيت هاب</a> | <a href="tel:+201234567890">اتصل</a></p>
+</body>
+</html>'><!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    body { font-family: Arial; padding: 20px; }
+    nav a { margin-left: 12px; color: #1e3a8a; font-weight: bold; }
+    ul, ol { margin: 10px 0; padding-right: 25px; }
+    blockquote { border-right: 4px solid #7c3aed; padding-right: 15px; color: #555; margin: 15px 0; }
+  </style>
+</head>
+<body>
+  <h1>المشاريع المفضلة عندي</h1>
+
+  <nav>
+    <a href="#projects">المشاريع</a>
+    <a href="#skills">المهارات</a>
+    <a href="mailto:me@example.com">تواصل</a>
+  </nav>
+
+  <h2 id="projects">قائمة المشاريع 🚀</h2>
+  <ol>
+    <li>موقع شخصي</li>
+    <li>تطبيق قائمة مهام</li>
+    <li>متجر إلكتروني</li>
+  </ol>
+
+  <h2 id="skills">المهارات 💡</h2>
+  <ul>
+    <li>HTML
+      <ul>
+        <li>الهيكل الدلالي</li>
+        <li>النماذج (Forms)</li>
+      </ul>
+    </li>
+    <li>CSS</li>
+    <li>JavaScript</li>
+  </ul>
+
+  <blockquote>
+    "البرمجة هي أقرب شيء للسحر الموجود في العالم الحقيقي"
+  </blockquote>
+
+  <p><a href="https://github.com" target="_blank">جيت هاب</a> | <a href="tel:+201234567890">اتصل</a></p>
+</body>
+</html></textarea>
+          <div class="try-it-preview"><iframe srcdoc="" sandbox="allow-scripts allow-same-origin allow-modals allow-popups allow-forms" title="معاينة الكود"></iframe></div>
+        </div>
+      </div>
+      <div class="tip-box"><strong>جرب:</strong> ضيف قائمة وصفية <em>&lt;dl&gt;</em> للمصطلحات، أو غير نوع الـ ol لـ type="A"!</div>
+    </div>
+  </div>
+
+  <!-- EXERCISES -->
+  <div class="section" id="exercises">
+    <h2 class="section-title"><span class="num">📝</span> التمارين <span class="en">Exercises</span></h2>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 1: قائمة خطوات</div>
+      <p>اكتب قائمة مرتبة بخطوات تنزيل تطبيق على الموبايل (5 خطوات على الأقل).</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre><span class="tag-open">&lt;</span><span class="tag-name">h2</span><span class="tag-close">&gt;</span>خطوات تنزيل التطبيق<span class="tag-open">&lt;/</span><span class="tag-name">h2</span><span class="tag-close">&gt;</span>
+<span class="tag-open">&lt;</span><span class="tag-name">ol</span><span class="tag-close">&gt;</span>
+  <span class="tag-open">&lt;</span><span class="tag-name">li</span><span class="tag-close">&gt;</span>افتح متجر التطبيقات<span class="tag-open">&lt;/</span><span class="tag-name">li</span><span class="tag-close">&gt;</span>
+  <span class="tag-open">&lt;</span><span class="tag-name">li</span><span class="tag-close">&gt;</span>ابحث عن اسم التطبيق<span class="tag-open">&lt;/</span><span class="tag-name">li</span><span class="tag-close">&gt;</span>
+  <span class="tag-open">&lt;</span><span class="tag-name">li</span><span class="tag-close">&gt;</span>اضغط على "تنزيل"<span class="tag-open">&lt;/</span><span class="tag-name">li</span><span class="tag-close">&gt;</span>
+  <span class="tag-open">&lt;</span><span class="tag-name">li</span><span class="tag-close">&gt;</span>انتظر حتى يكتمل التنزيل<span class="tag-open">&lt;/</span><span class="tag-name">li</span><span class="tag-close">&gt;</span>
+  <span class="tag-open">&lt;</span><span class="tag-name">li</span><span class="tag-close">&gt;</span>افتح التطبيق وسجّل دخولك<span class="tag-open">&lt;/</span><span class="tag-name">li</span><span class="tag-close">&gt;</span>
+<span class="tag-open">&lt;/</span><span class="tag-name">ol</span><span class="tag-close">&gt;</span></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 2: قائمة وصفية للمصطلحات</div>
+      <p>اعمل قائمة وصفية تشرح 3 مصطلحات: Browser (المتصفح)، Server (الخادم)، URL.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre><span class="tag-open">&lt;</span><span class="tag-name">dl</span><span class="tag-close">&gt;</span>
+  <span class="tag-open">&lt;</span><span class="tag-name">dt</span><span class="tag-close">&gt;</span>Browser (المتصفح)<span class="tag-open">&lt;/</span><span class="tag-name">dt</span><span class="tag-close">&gt;</span>
+  <span class="tag-open">&lt;</span><span class="tag-name">dd</span><span class="tag-close">&gt;</span>برنامج يستخدمه المستخدم لتصفح الويب مثل Chrome وFirefox<span class="tag-open">&lt;/</span><span class="tag-name">dd</span><span class="tag-close">&gt;</span>
+
+  <span class="tag-open">&lt;</span><span class="tag-name">dt</span><span class="tag-close">&gt;</span>Server (الخادم)<span class="tag-open">&lt;/</span><span class="tag-name">dt</span><span class="tag-close">&gt;</span>
+  <span class="tag-open">&lt;</span><span class="tag-name">dd</span><span class="tag-close">&gt;</span>جهاز كمبيوتر يخزن الملفات ويرسلها عند الطلب<span class="tag-open">&lt;/</span><span class="tag-name">dd</span><span class="tag-close">&gt;</span>
+
+  <span class="tag-open">&lt;</span><span class="tag-name">dt</span><span class="tag-close">&gt;</span>URL<span class="tag-open">&lt;/</span><span class="tag-name">dt</span><span class="tag-close">&gt;</span>
+  <span class="tag-open">&lt;</span><span class="tag-name">dd</span><span class="tag-close">&gt;</span>عنوان فريد لكل صفحة ويب مثل https://google.com<span class="tag-open">&lt;/</span><span class="tag-name">dd</span><span class="tag-close">&gt;</span>
+<span class="tag-open">&lt;/</span><span class="tag-name">dl</span><span class="tag-close">&gt;</span></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 3: قائمة تنقل (Navigation)</div>
+      <p>اعمل قائمة تنقل بـ nav وul وli وa — لموقع فيه 5 صفحات: الرئيسية، عن الموقع، المدونة، المشاريع، تواصل.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre><span class="tag-open">&lt;</span><span class="tag-name">nav</span><span class="tag-close">&gt;</span>
+  <span class="tag-open">&lt;</span><span class="tag-name">ul</span><span class="tag-close">&gt;</span>
+    <span class="tag-open">&lt;</span><span class="tag-name">li</span><span class="tag-close">&gt;</span><span class="tag-open">&lt;</span><span class="tag-name">a</span> <span class="attr">href</span>=<span class="attr-val">"index.html"</span><span class="tag-close">&gt;</span>الرئيسية<span class="tag-open">&lt;/</span><span class="tag-name">a</span><span class="tag-close">&gt;</span><span class="tag-open">&lt;/</span><span class="tag-name">li</span><span class="tag-close">&gt;</span>
+    <span class="tag-open">&lt;</span><span class="tag-name">li</span><span class="tag-close">&gt;</span><span class="tag-open">&lt;</span><span class="tag-name">a</span> <span class="attr">href</span>=<span class="attr-val">"about.html"</span><span class="tag-close">&gt;</span>عن الموقع<span class="tag-open">&lt;/</span><span class="tag-name">a</span><span class="tag-close">&gt;</span><span class="tag-open">&lt;/</span><span class="tag-name">li</span><span class="tag-close">&gt;</span>
+    <span class="tag-open">&lt;</span><span class="tag-name">li</span><span class="tag-close">&gt;</span><span class="tag-open">&lt;</span><span class="tag-name">a</span> <span class="attr">href</span>=<span class="attr-val">"blog.html"</span><span class="tag-close">&gt;</span>المدونة<span class="tag-open">&lt;/</span><span class="tag-name">a</span><span class="tag-close">&gt;</span><span class="tag-open">&lt;/</span><span class="tag-name">li</span><span class="tag-close">&gt;</span>
+    <span class="tag-open">&lt;</span><span class="tag-name">li</span><span class="tag-close">&gt;</span><span class="tag-open">&lt;</span><span class="tag-name">a</span> <span class="attr">href</span>=<span class="attr-val">"projects.html"</span><span class="tag-close">&gt;</span>المشاريع<span class="tag-open">&lt;/</span><span class="tag-name">a</span><span class="tag-close">&gt;</span><span class="tag-open">&lt;/</span><span class="tag-name">li</span><span class="tag-close">&gt;</span>
+    <span class="tag-open">&lt;</span><span class="tag-name">li</span><span class="tag-close">&gt;</span><span class="tag-open">&lt;</span><span class="tag-name">a</span> <span class="attr">href</span>=<span class="attr-val">"contact.html"</span><span class="tag-close">&gt;</span>تواصل<span class="tag-open">&lt;/</span><span class="tag-name">a</span><span class="tag-close">&gt;</span><span class="tag-open">&lt;/</span><span class="tag-name">li</span><span class="tag-close">&gt;</span>
+  <span class="tag-open">&lt;/</span><span class="tag-name">ul</span><span class="tag-close">&gt;</span>
+<span class="tag-open">&lt;/</span><span class="tag-name">nav</span><span class="tag-close">&gt;</span></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 4: روابط متنوعة</div>
+      <p>اعمل قسم "تواصل معي" فيه: رابط خارجي لـ LinkedIn، رابط إيميل، رابط هاتف، ورابط لتحميل ملف CV.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre><span class="tag-open">&lt;</span><span class="tag-name">section</span> <span class="attr">id</span>=<span class="attr-val">"contact"</span><span class="tag-close">&gt;</span>
+  <span class="tag-open">&lt;</span><span class="tag-name">h2</span><span class="tag-close">&gt;</span>تواصل معي<span class="tag-open">&lt;/</span><span class="tag-name">h2</span><span class="tag-close">&gt;</span>
+  <span class="tag-open">&lt;</span><span class="tag-name">ul</span><span class="tag-close">&gt;</span>
+    <span class="tag-open">&lt;</span><span class="tag-name">li</span><span class="tag-close">&gt;</span>
+      <span class="tag-open">&lt;</span><span class="tag-name">a</span> <span class="attr">href</span>=<span class="attr-val">"https://linkedin.com"</span> <span class="attr">target</span>=<span class="attr-val">"_blank"</span> <span class="attr">rel</span>=<span class="attr-val">"noopener"</span><span class="tag-close">&gt;</span>
+        LinkedIn
+      <span class="tag-open">&lt;/</span><span class="tag-name">a</span><span class="tag-close">&gt;</span>
+    <span class="tag-open">&lt;/</span><span class="tag-name">li</span><span class="tag-close">&gt;</span>
+    <span class="tag-open">&lt;</span><span class="tag-name">li</span><span class="tag-close">&gt;</span><span class="tag-open">&lt;</span><span class="tag-name">a</span> <span class="attr">href</span>=<span class="attr-val">"mailto:me@example.com"</span><span class="tag-close">&gt;</span>راسلني بالإيميل<span class="tag-open">&lt;/</span><span class="tag-name">a</span><span class="tag-close">&gt;</span><span class="tag-open">&lt;/</span><span class="tag-name">li</span><span class="tag-close">&gt;</span>
+    <span class="tag-open">&lt;</span><span class="tag-name">li</span><span class="tag-close">&gt;</span><span class="tag-open">&lt;</span><span class="tag-name">a</span> <span class="attr">href</span>=<span class="attr-val">"tel:+201234567890"</span><span class="tag-close">&gt;</span>اتصل بي<span class="tag-open">&lt;/</span><span class="tag-name">a</span><span class="tag-close">&gt;</span><span class="tag-open">&lt;/</span><span class="tag-name">li</span><span class="tag-close">&gt;</span>
+    <span class="tag-open">&lt;</span><span class="tag-name">li</span><span class="tag-close">&gt;</span><span class="tag-open">&lt;</span><span class="tag-name">a</span> <span class="attr">href</span>=<span class="attr-val">"cv.pdf"</span> <span class="attr">download</span>=<span class="attr-val">"Mohamed-CV"</span><span class="tag-close">&gt;</span>حمّل السيرة الذاتية<span class="tag-open">&lt;/</span><span class="tag-name">a</span><span class="tag-close">&gt;</span><span class="tag-open">&lt;/</span><span class="tag-name">li</span><span class="tag-close">&gt;</span>
+  <span class="tag-open">&lt;/</span><span class="tag-name">ul</span><span class="tag-close">&gt;</span>
+<span class="tag-open">&lt;/</span><span class="tag-name">section</span><span class="tag-close">&gt;</span></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 5: صفحة موقع شخصي متكاملة</div>
+      <p>اعمل صفحة شخصية فيها: nav بروابط مرساة، h2 "عني" بفقرة، h2 "مهاراتي" بقائمة ul متداخلة، h2 "تواصل" بروابط إيميل وهاتف.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre><span class="tag-open">&lt;</span><span class="tag-name">header</span><span class="tag-close">&gt;</span><span class="tag-open">&lt;</span><span class="tag-name">h1</span><span class="tag-close">&gt;</span>محمد أحمد<span class="tag-open">&lt;/</span><span class="tag-name">h1</span><span class="tag-close">&gt;</span><span class="tag-open">&lt;/</span><span class="tag-name">header</span><span class="tag-close">&gt;</span>
+<span class="tag-open">&lt;</span><span class="tag-name">nav</span><span class="tag-close">&gt;</span>
+  <span class="tag-open">&lt;</span><span class="tag-name">a</span> <span class="attr">href</span>=<span class="attr-val">"#about"</span><span class="tag-close">&gt;</span>عني<span class="tag-open">&lt;/</span><span class="tag-name">a</span><span class="tag-close">&gt;</span>
+  <span class="tag-open">&lt;</span><span class="tag-name">a</span> <span class="attr">href</span>=<span class="attr-val">"#skills"</span><span class="tag-close">&gt;</span>مهاراتي<span class="tag-open">&lt;/</span><span class="tag-name">a</span><span class="tag-close">&gt;</span>
+  <span class="tag-open">&lt;</span><span class="tag-name">a</span> <span class="attr">href</span>=<span class="attr-val">"#contact"</span><span class="tag-close">&gt;</span>تواصل<span class="tag-open">&lt;/</span><span class="tag-name">a</span><span class="tag-close">&gt;</span>
+<span class="tag-open">&lt;/</span><span class="tag-name">nav</span><span class="tag-close">&gt;</span>
+<span class="tag-open">&lt;</span><span class="tag-name">main</span><span class="tag-close">&gt;</span>
+  <span class="tag-open">&lt;</span><span class="tag-name">section</span> <span class="attr">id</span>=<span class="attr-val">"about"</span><span class="tag-close">&gt;</span>
+    <span class="tag-open">&lt;</span><span class="tag-name">h2</span><span class="tag-close">&gt;</span>عني<span class="tag-open">&lt;/</span><span class="tag-name">h2</span><span class="tag-close">&gt;</span>
+    <span class="tag-open">&lt;</span><span class="tag-name">p</span><span class="tag-close">&gt;</span>مطور ويب شغوف بالتعلم والبناء.<span class="tag-open">&lt;/</span><span class="tag-name">p</span><span class="tag-close">&gt;</span>
+  <span class="tag-open">&lt;/</span><span class="tag-name">section</span><span class="tag-close">&gt;</span>
+  <span class="tag-open">&lt;</span><span class="tag-name">section</span> <span class="attr">id</span>=<span class="attr-val">"skills"</span><span class="tag-close">&gt;</span>
+    <span class="tag-open">&lt;</span><span class="tag-name">h2</span><span class="tag-close">&gt;</span>مهاراتي<span class="tag-open">&lt;/</span><span class="tag-name">h2</span><span class="tag-close">&gt;</span>
+    <span class="tag-open">&lt;</span><span class="tag-name">ul</span><span class="tag-close">&gt;</span>
+      <span class="tag-open">&lt;</span><span class="tag-name">li</span><span class="tag-close">&gt;</span>الفرونت إند
+        <span class="tag-open">&lt;</span><span class="tag-name">ul</span><span class="tag-close">&gt;</span>
+          <span class="tag-open">&lt;</span><span class="tag-name">li</span><span class="tag-close">&gt;</span>HTML<span class="tag-open">&lt;/</span><span class="tag-name">li</span><span class="tag-close">&gt;</span>
+          <span class="tag-open">&lt;</span><span class="tag-name">li</span><span class="tag-close">&gt;</span>CSS<span class="tag-open">&lt;/</span><span class="tag-name">li</span><span class="tag-close">&gt;</span>
+        <span class="tag-open">&lt;/</span><span class="tag-name">ul</span><span class="tag-close">&gt;</span>
+      <span class="tag-open">&lt;/</span><span class="tag-name">li</span><span class="tag-close">&gt;</span>
+    <span class="tag-open">&lt;/</span><span class="tag-name">ul</span><span class="tag-close">&gt;</span>
+  <span class="tag-open">&lt;/</span><span class="tag-name">section</span><span class="tag-close">&gt;</span>
+  <span class="tag-open">&lt;</span><span class="tag-name">section</span> <span class="attr">id</span>=<span class="attr-val">"contact"</span><span class="tag-close">&gt;</span>
+    <span class="tag-open">&lt;</span><span class="tag-name">h2</span><span class="tag-close">&gt;</span>تواصل<span class="tag-open">&lt;/</span><span class="tag-name">h2</span><span class="tag-close">&gt;</span>
+    <span class="tag-open">&lt;</span><span class="tag-name">p</span><span class="tag-close">&gt;</span><span class="tag-open">&lt;</span><span class="tag-name">a</span> <span class="attr">href</span>=<span class="attr-val">"mailto:me@example.com"</span><span class="tag-close">&gt;</span>إيميل<span class="tag-open">&lt;/</span><span class="tag-name">a</span><span class="tag-close">&gt;</span> | <span class="tag-open">&lt;</span><span class="tag-name">a</span> <span class="attr">href</span>=<span class="attr-val">"tel:+20100"</span><span class="tag-close">&gt;</span>هاتف<span class="tag-open">&lt;/</span><span class="tag-name">a</span><span class="tag-close">&gt;</span><span class="tag-open">&lt;/</span><span class="tag-name">p</span><span class="tag-close">&gt;</span>
+  <span class="tag-open">&lt;/</span><span class="tag-name">section</span><span class="tag-close">&gt;</span>
+<span class="tag-open">&lt;/</span><span class="tag-name">main</span><span class="tag-close">&gt;</span></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="quiz-container" id="quiz">
+    <div class="quiz-intro"><p>اختبر فهمك للدرس!</p></div>
+    <div class="quiz-type-tabs">
+      <button class="qt-tab active" onclick="switchQuiz(this,'tf')">✓✗ صح وخطأ</button>
+      <button class="qt-tab" onclick="switchQuiz(this,'mc')">🔘 اختيار من متعدد</button>
+    </div>
+
+    <div class="quiz-section active" id="quiz-tf">
+      <div class="quiz-question" data-correct="false">
+        <span class="q-num">1</span><span class="q-text">وسم &lt;br&gt; بيستخدم لإضافة مسافات بين الفقرات.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">2</span><span class="q-text">القائمة غير المرتبة &lt;ul&gt; بتستخدم لما الترتيب مش مهم.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">3</span><span class="q-text">ممكن نحط &lt;ul&gt; داخل &lt;li&gt; لعمل قوائم متداخلة.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="false">
+        <span class="q-num">4</span><span class="q-text">رابط الإيميل بيبدأ بـ tel: وليس mailto:</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">5</span><span class="q-text">target="_blank" بيفتح الرابط في تبويب جديد.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <button class="quiz-submit" onclick="submitQuiz('tf')">عرض النتيجة 🎯</button>
+      <div class="quiz-result" id="result-tf"><div class="result-score" id="score-tf">0/5</div><div class="result-label">إجابات صحيحة</div><div class="result-message" id="msg-tf"></div><button class="retry-btn" onclick="retryQuiz('tf')">🔄 حاول تاني</button></div>
+    </div>
+
+    <div class="quiz-section" id="quiz-mc">
+      <div class="quiz-question" data-correct="1">
+        <span class="q-num">1</span><span class="q-text">إيه الوسم المناسب لقائمة خطوات وصفة طبخ؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">&lt;ul&gt;</button>
+          <button class="q-opt" onclick="answerMC(this,1)">&lt;ol&gt;</button>
+          <button class="q-opt" onclick="answerMC(this,2)">&lt;dl&gt;</button>
+          <button class="q-opt" onclick="answerMC(this,3)">&lt;list&gt;</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="2">
+        <span class="q-num">2</span><span class="q-text">إيه الـ attribute اللي بتستخدمه لتحميل ملف بدل فتحه؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">target="_blank"</button>
+          <button class="q-opt" onclick="answerMC(this,1)">save</button>
+          <button class="q-opt" onclick="answerMC(this,2)">download</button>
+          <button class="q-opt" onclick="answerMC(this,3)">type="file"</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="0">
+        <span class="q-num">3</span><span class="q-text">في القائمة الوصفية &lt;dl&gt;، إيه اللي بيمثل المصطلح؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">&lt;dt&gt;</button>
+          <button class="q-opt" onclick="answerMC(this,1)">&lt;dd&gt;</button>
+          <button class="q-opt" onclick="answerMC(this,2)">&lt;li&gt;</button>
+          <button class="q-opt" onclick="answerMC(this,3)">&lt;term&gt;</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="3">
+        <span class="q-num">4</span><span class="q-text">إيه الـ href الصح لعمل رابط للانتقال لقسم id="about" في نفس الصفحة؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">href="about"</button>
+          <button class="q-opt" onclick="answerMC(this,1)">href="id:about"</button>
+          <button class="q-opt" onclick="answerMC(this,2)">href="section-about"</button>
+          <button class="q-opt" onclick="answerMC(this,3)">href="#about"</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="1">
+        <span class="q-num">5</span><span class="q-text">ليه لازم نضيف rel="noopener noreferrer" مع target="_blank"؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">عشان الرابط يتفتح أسرع</button>
+          <button class="q-opt" onclick="answerMC(this,1)">عشان الأمان ومنع ثغرات</button>
+          <button class="q-opt" onclick="answerMC(this,2)">عشان الـ SEO</button>
+          <button class="q-opt" onclick="answerMC(this,3)">مش ضروري خالص</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <button class="quiz-submit" onclick="submitQuiz('mc')">عرض النتيجة 🎯</button>
+      <div class="quiz-result" id="result-mc"><div class="result-score" id="score-mc">0/5</div><div class="result-label">إجابات صحيحة</div><div class="result-message" id="msg-mc"></div><button class="retry-btn" onclick="retryQuiz('mc')">🔄 حاول تاني</button></div>
+    </div>
+  </div>
+
+  <!-- NAVIGATION -->
+  <div class="lesson-nav">
+    <a href="./lesson-02.html" class="nav-btn"><span>⬅️</span><span>الدرس السابق</span></a>
+    <button class="nav-btn complete-btn" id="completeBtn" onclick="markComplete(this)"><span>✅</span><span>علّم كمكتمل</span></button>
+    <a href="./lesson-04.html" class="nav-btn"><span>الدرس التالي</span><span>➡️</span></a>
+  </div>
+
+  <div class="notebook-footer">
+    <h3>🎉 دلوقتي عارف القوائم والروابط!</h3>
+    <p>الربط ده اللي بيخلي الإنترنت حاجة سحرية ❤️<br><strong>كمل، إنت بتتقدم بسرعة 🚀</strong></p>
+  </div>
+</div>
+
+<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">⬆️</button>
+<div class="toast" id="toast"></div>
+
+<script src="../../js/data/courses.js"></script>
+<script src="../../js/progress.js"></script>
+<script src="../../js/lesson-editor.js"></script>
+<script>
+const COURSE_ID='frontend',LESSON_ID=3,TOTAL=32;
+function toggleSolution(b){const s=b.nextElementSibling;s.classList.toggle('show');b.textContent=s.classList.contains('show')?'إخفاء الحل ▲':'عرض الحل ▼';}
+function copyCode(b){const p=b.closest('.code-box').querySelector('pre');navigator.clipboard.writeText(p.innerText).then(()=>{b.classList.add('copied');b.textContent='✓ تم النسخ';setTimeout(()=>{b.classList.remove('copied');b.textContent='📋 نسخ';},2000);});}
+function runCode(b){const t=b.closest('.try-it');t.querySelector('iframe').srcdoc=t.querySelector('.try-it-editor').value;}
+function resetCode(b){const t=b.closest('.try-it'),e=t.querySelector('.try-it-editor');e.value=e.dataset.default;t.querySelector('iframe').srcdoc=e.value;}
+window.addEventListener('load',()=>{document.querySelectorAll('.try-it').forEach(t=>{const e=t.querySelector('.try-it-editor');t.querySelector('iframe').srcdoc=e.value;});});
+function switchQuiz(b,t){document.querySelectorAll('.qt-tab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.quiz-section').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.getElementById('quiz-'+t).classList.add('active');}
+const answers={tf:{},mc:{}};
+function answerTF(b,v){const q=b.closest('.quiz-question'),i=Array.from(q.parentNode.querySelectorAll('.quiz-question')).indexOf(q);q.querySelectorAll('.q-opt').forEach(o=>o.classList.remove('selected'));b.classList.add('selected');answers.tf[i]=v;}
+function answerMC(b,i){const q=b.closest('.quiz-question'),qi=Array.from(q.parentNode.querySelectorAll('.quiz-question')).indexOf(q);q.querySelectorAll('.q-opt').forEach(o=>o.classList.remove('selected'));b.classList.add('selected');answers.mc[qi]=i;}
+function submitQuiz(type){const sec=document.getElementById('quiz-'+type),qs=sec.querySelectorAll('.quiz-question');let c=0;qs.forEach((q,i)=>{const ca=type==='tf'?(q.dataset.correct==='true'):parseInt(q.dataset.correct),ua=answers[type][i],fb=q.querySelector('.q-feedback'),opts=q.querySelectorAll('.q-opt');opts.forEach(o=>{o.classList.remove('selected');o.disabled=true;});if(ua===undefined){fb.className='q-feedback wrong show';fb.textContent='⚠️ ما اخترتش إجابة!';return;}if(ua===ca){c++;fb.className='q-feedback correct show';fb.textContent='✓ إجابة صحيحة!';if(type==='tf')opts[ca?0:1].classList.add('correct');else opts[ca].classList.add('correct');}else{fb.className='q-feedback wrong show';if(type==='tf'){opts[ca?0:1].classList.add('correct');opts[ua?0:1].classList.add('wrong');fb.textContent='✗ خطأ.';}else{opts[ca].classList.add('correct');opts[ua].classList.add('wrong');fb.textContent='✗ الإجابة بالأخضر.';}}});const r=document.getElementById('result-'+type);document.getElementById('score-'+type).textContent=c+'/'+qs.length;const m=document.getElementById('msg-'+type);if(c===qs.length){m.textContent='🏆 ممتاز 100%!';m.className='result-message excellent';}else if(c>=3){m.textContent='👍 جيد!';m.className='result-message good';}else{m.textContent='📚 راجع الدرس.';m.className='result-message try-again';}r.classList.add('show');r.scrollIntoView({behavior:'smooth',block:'center'});}
+function retryQuiz(type){const sec=document.getElementById('quiz-'+type);sec.querySelectorAll('.q-opt').forEach(o=>{o.classList.remove('selected','correct','wrong');o.disabled=false;});sec.querySelectorAll('.q-feedback').forEach(f=>{f.classList.remove('show','correct','wrong');f.textContent='';});document.getElementById('result-'+type).classList.remove('show');answers[type]={};}
+function markComplete(btn){const done=Progress.toggleLessonComplete(COURSE_ID,LESSON_ID);btn.classList.toggle('completed',done);btn.querySelector('span:last-child').textContent=done?'مكتمل! ⭐':'علّم كمكتمل';showToast(done?'🎉 أكملت الدرس الثالث!':'تم إلغاء الإكمال');}
+if(Progress.isLessonComplete(COURSE_ID,LESSON_ID)){const b=document.getElementById('completeBtn');b.classList.add('completed');b.querySelector('span:last-child').textContent='مكتمل! ⭐';}
+function updateBar(){const p=Progress.getCourseProgress(COURSE_ID,TOTAL);document.getElementById('progFill').style.width=p+'%';document.getElementById('progText').textContent=p+'%';}
+updateBar();
+function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
+window.addEventListener('scroll',()=>{document.getElementById('scrollTop').classList.toggle('show',window.scrollY>300);});
+document.querySelectorAll('.toc-card a').forEach(l=>{l.addEventListener('click',e=>{e.preventDefault();const t=document.querySelector(l.getAttribute('href'));if(t)t.scrollIntoView({behavior:'smooth',block:'start'});});});
+</script>
+</body>
+</html>

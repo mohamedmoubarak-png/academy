@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-V2NCKVL16D"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-V2NCKVL16D');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Box Model — دفتر البرمجة</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=Cairo:wght@300;400;500;600;700;900&family=Caveat:wght@400;700&family=Fira+Code:wght@400;500;600&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../css/shared.css">
+<link rel="stylesheet" href="../../css/notebook.css">
+<style>
+body { padding: 20px 10px; }
+
+/* Box Model Visual */
+.box-visual {
+  max-width: 420px;
+  margin: 20px auto;
+  font-family: 'Fira Code', monospace;
+  font-size: .82rem;
+  text-align: center;
+}
+.bv-margin  { background: #fde68a; padding: 18px; border-radius: 8px; position: relative; }
+.bv-border  { background: #fca5a5; padding: 18px; border-radius: 6px; }
+.bv-padding { background: #86efac; padding: 18px; border-radius: 4px; }
+.bv-content { background: #93c5fd; padding: 16px; border-radius: 2px; font-weight: 700; font-size: .9rem; }
+.bv-label   { position: absolute; top: 3px; right: 6px; font-size: .72rem; font-weight: 700; opacity: .7; }
+
+/* Overflow demo */
+.overflow-demo { width: 180px; height: 80px; background: #f0f4ff; border: 2px solid var(--ink-blue); border-radius: 8px; padding: 8px; font-size: .82rem; margin: 8px; display: inline-block; vertical-align: top; }
+.overflow-demo .label { font-family: 'Fira Code', monospace; color: var(--ink-purple); font-size: .72rem; margin-bottom: 4px; }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="crumbs">
+    <a href="../../index.html">🏠 الرئيسية</a>
+    <span class="sep">/</span>
+    <a href="./index.html">🌐 الفرونت إند</a>
+    <span class="sep">/</span>
+    <span class="current">🎨 الدرس 8: Box Model</span>
+  </div>
+  <div class="progress-mini">
+    <div class="progress-bar-mini"><div class="progress-fill-mini" id="progFill"></div></div>
+    <span id="progText">0%</span>
+  </div>
+</div>
+
+<div class="notebook">
+
+  <div class="notebook-header">
+    <div class="lesson-tag">🎨 الدرس الثامن</div>
+    <h1><span class="sparkle">✦</span> Box Model — الصندوق والمساحات <span class="sparkle">✦</span></h1>
+    <div class="lesson-meta">
+      <span>⏱️ 40 دقيقة</span>
+      <span>📊 مبتدئ-متوسط</span>
+      <span>🎯 5 تمارين + اختبار</span>
+    </div>
+  </div>
+
+  <div class="toc-card">
+    <h2>📑 فهرس الدرس</h2>
+    <ol>
+      <li><a href="#s1">ما هو Box Model؟</a></li>
+      <li><a href="#s2">Content — المحتوى</a></li>
+      <li><a href="#s3">Padding — الحشوة الداخلية</a></li>
+      <li><a href="#s4">Border — الحدود</a></li>
+      <li><a href="#s5">Margin — الهامش الخارجي</a></li>
+      <li><a href="#s6">box-sizing: border-box</a></li>
+      <li><a href="#s7">Overflow والمحتوى الفائض</a></li>
+      <li><a href="#s8">محرر الكود الحي</a></li>
+      <li><a href="#exercises">التمارين</a></li>
+      <li><a href="#quiz">اختبر فهمك</a></li>
+    </ol>
+  </div>
+
+  <!-- S1 -->
+  <div class="section" id="s1">
+    <h2 class="section-title"><span class="num">.1</span> ما هو Box Model؟ <span class="en">The Box Model</span></h2>
+    <div class="content">
+      <p>كل عنصر HTML هو في الحقيقة <strong>صندوق مستطيل</strong>. الـ Box Model يصف هذا الصندوق وطبقاته الأربع من الداخل للخارج:</p>
+
+      <div class="box-visual">
+        <div class="bv-margin">
+          <span class="bv-label">Margin (هامش خارجي)</span>
+          <div class="bv-border">
+            <span class="bv-label">Border (حدود)</span>
+            <div class="bv-padding">
+              <span class="bv-label">Padding (حشوة)</span>
+              <div class="bv-content">Content (المحتوى)</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="analogy">
+        <div class="analogy-title">📱 تخيل موبايل في علبة:</div>
+        <ul style="margin-top:8px;">
+          <li><strong>Content</strong> = الموبايل نفسه</li>
+          <li><strong>Padding</strong> = الإسفنج الداخلي في العلبة</li>
+          <li><strong>Border</strong> = جدران العلبة</li>
+          <li><strong>Margin</strong> = المسافة بين العلبة وعلب المنتجات الأخرى</li>
+        </ul>
+      </div>
+
+      <div class="tip-box"><strong>DevTools:</strong> افتح F12 في المتصفح، اختر أي عنصر، وشوف الـ Box Model بصرياً في تبويب "Computed"!</div>
+    </div>
+  </div>
+
+  <!-- S2 -->
+  <div class="section" id="s2">
+    <h2 class="section-title"><span class="num">.2</span> Content — المحتوى <span class="en">Content Area</span></h2>
+    <div class="content">
+      <p>منطقة المحتوى هي القلب — فيها النص أو الصورة. نتحكم فيها بـ:</p>
+
+      <div class="code-box">
+<div class="code-header"><span>📐 أبعاد المحتوى</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre>.box {
+  width:  300px;        <span class="comment">/* عرض ثابت */</span>
+  height: 200px;        <span class="comment">/* ارتفاع ثابت */</span>
+
+  width:  50%;          <span class="comment">/* نصف عرض الأب */</span>
+  width:  100vw;        <span class="comment">/* عرض الشاشة كامل */</span>
+  height: 100vh;        <span class="comment">/* ارتفاع الشاشة كامل */</span>
+
+  <span class="comment">/* حدود دنيا وعليا */</span>
+  min-width:  200px;    <span class="comment">/* لا يصغر عن 200px */</span>
+  max-width:  800px;    <span class="comment">/* لا يكبر عن 800px */</span>
+  min-height: 100px;
+  max-height: 400px;
+}</pre>
+      </div>
+
+      <div class="tip-box"><strong>max-width للمحتوى:</strong> استخدم دايماً <em>max-width</em> على الـ Container الرئيسي بدل <em>width</em> — هيظهر جيداً على الشاشات الكبيرة والصغيرة: <em>max-width: 1100px; margin: 0 auto;</em></div>
+    </div>
+  </div>
+
+  <!-- S3 -->
+  <div class="section" id="s3">
+    <h2 class="section-title"><span class="num">.3</span> Padding — الحشوة <span class="en">Padding</span></h2>
+    <div class="content">
+      <p>الـ Padding هو المسافة الداخلية بين المحتوى وحدود العنصر. هو <strong>داخل العنصر</strong> ولونه لون الخلفية.</p>
+
+      <div class="code-box blue">
+<div class="code-header"><span>📦 طرق كتابة Padding</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">/* الأربعة اتجاهات: أعلى - يمين - أسفل - يسار */</span>
+padding: 10px 20px 10px 20px;
+
+<span class="comment">/* اختصار: أعلى/أسفل - يمين/يسار */</span>
+padding: 10px 20px;
+
+<span class="comment">/* اختصار: نفس القيمة للكل */</span>
+padding: 16px;
+
+<span class="comment">/* كل اتجاه منفرد */</span>
+padding-top:    10px;
+padding-right:  20px;
+padding-bottom: 10px;
+padding-left:   20px;   <span class="comment">/* في RTL: يمين */</span>
+
+<span class="comment">/* المنطقية (الأحدث - تراعي RTL تلقائياً) */</span>
+padding-inline: 20px;   <span class="comment">/* يمين ويسار */</span>
+padding-block:  10px;   <span class="comment">/* أعلى وأسفل */</span></pre>
+      </div>
+
+      <div class="note-box"><strong>تذكّر:</strong> الـ Padding بيضيف للحجم في الوضع الافتراضي. لو عندك box عرضها 200px وضفت padding: 20px — العرض الكلي يصبح 240px. الحل في الدرس القادم!</div>
+    </div>
+  </div>
+
+  <!-- S4 -->
+  <div class="section" id="s4">
+    <h2 class="section-title"><span class="num">.4</span> Border — الحدود <span class="en">Border</span></h2>
+    <div class="content">
+      <div class="code-box green">
+<div class="code-header"><span>🖼️ الحدود</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">/* الاختصار: سُمك - نوع - لون */</span>
+border: 2px solid #1e3a8a;
+border: 1px dashed #ccc;
+border: 3px dotted red;
+
+<span class="comment">/* كل جانب منفرد */</span>
+border-top:    2px solid blue;
+border-bottom: 1px dashed gray;
+border-right:  4px solid green;  <span class="comment">/* في RTL: اليمين */</span>
+border-left:   none;
+
+<span class="comment">/* أنواع الحدود */</span>
+border-style: solid;   <span class="comment">/* خط صلب */</span>
+border-style: dashed;  <span class="comment">/* خط متقطع */</span>
+border-style: dotted;  <span class="comment">/* نقاط */</span>
+border-style: double;  <span class="comment">/* خطان */</span>
+border-style: none;    <span class="comment">/* بلا حدود */</span>
+
+<span class="comment">/* تدوير الزوايا */</span>
+border-radius: 8px;     <span class="comment">/* كل الزوايا */</span>
+border-radius: 50%;     <span class="comment">/* دائرة! */</span>
+border-radius: 20px 0;  <span class="comment">/* أعلى يمين/يسار ثم أسفل */</span>
+
+<span class="comment">/* Outline: خارج الـ border، لا يأخذ مساحة */</span>
+outline: 2px solid blue;
+outline-offset: 4px;</pre>
+      </div>
+
+      <div class="example">
+        <span class="example-label">📌 أشكال جميلة بـ border-radius:</span>
+        <div style="display:flex;gap:14px;flex-wrap:wrap;margin-top:8px;">
+          <div style="width:60px;height:60px;background:var(--ink-blue);border-radius:8px;"></div>
+          <div style="width:60px;height:60px;background:var(--ink-red);border-radius:50%;"></div>
+          <div style="width:80px;height:60px;background:var(--ink-green);border-radius:30px 0 30px 0;"></div>
+          <div style="width:60px;height:60px;background:var(--ink-purple);border-radius:50% 0;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- S5 -->
+  <div class="section" id="s5">
+    <h2 class="section-title"><span class="num">.5</span> Margin — الهامش <span class="en">Margin</span></h2>
+    <div class="content">
+      <p>الـ Margin هو المسافة <strong>خارج</strong> العنصر — يفصله عن باقي العناصر. هو شفاف دايماً (لا يأخذ لون الخلفية).</p>
+
+      <div class="code-box pink">
+<div class="code-header"><span>↔️ الـ Margin</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">/* نفس نمط الـ padding */</span>
+margin: 20px;             <span class="comment">/* الكل */</span>
+margin: 10px 20px;        <span class="comment">/* أعلى/أسفل - يمين/يسار */</span>
+margin-top:   30px;
+margin-bottom: 16px;
+
+<span class="comment">/* توسيط عنصر block أفقياً! */</span>
+.container {
+  width: 800px;
+  margin: 0 auto;   <span class="comment">/* أعلى/أسفل: 0 — يمين/يسار: auto */</span>
+}
+
+<span class="comment">/* margin: auto في Flexbox: يدفع للنهاية */</span>
+.nav-logo { margin-left: auto; }  <span class="comment">/* يدفع اللوجو لليسار */</span>
+
+<span class="comment">/* Margin Collapse: مشكلة شائعة! */</span>
+<span class="comment">/* لو p1 عنده margin-bottom: 20px وp2 عنده margin-top: 30px */</span>
+<span class="comment">/* المسافة بينهم = 30px (الأكبر) وليس 50px */</span></pre>
+      </div>
+
+      <div class="warning-box"><strong>Margin Collapse:</strong> عندما يكون لعنصرين متتاليين margin عمودي، لا تُجمع القيمتان — يُطبَّق الأكبر فقط. هذا لا يحدث في Flexbox وGrid!</div>
+    </div>
+  </div>
+
+  <!-- S6 -->
+  <div class="section" id="s6">
+    <h2 class="section-title"><span class="num">.6</span> box-sizing: border-box <span class="en">The Box Sizing Fix</span></h2>
+    <div class="content">
+      <p>هذه واحدة من أهم خصائص CSS — تحل مشكلة شائعة جداً:</p>
+
+      <div class="analogy">
+        <div class="analogy-title">📦 المشكلة: الصندوق "يطفح"!</div>
+        <p>عندك div عرضه 200px، وضفت padding: 20px. بالوضع الافتراضي <em>content-box</em>، العرض الكلي يصبح 200 + 20 + 20 = 240px. يطفح من الحاوية!</p>
+        <p style="margin-top:8px;"><strong>الحل:</strong> <em>border-box</em> يجعل العرض المحدد يشمل الـ padding والـ border تلقائياً.</p>
+      </div>
+
+      <div class="code-box">
+<div class="code-header"><span>✅ الإعداد الأساسي لكل مشروع</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">/* ضع هذا في أول ملف CSS في كل مشروع */</span>
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+<span class="comment">/* الآن: width: 200px + padding: 20px = مازال 200px إجمالاً */</span>
+.box {
+  width: 200px;
+  padding: 20px;    <span class="comment">/* المحتوى = 160px، الإجمالي = 200px */</span>
+  border: 2px solid black; <span class="comment">/* يُحسب ضمن الـ 200px */</span>
+}
+
+<span class="comment">/* مقارنة: */</span>
+<span class="comment">/* content-box (افتراضي): total = width + padding + border */</span>
+<span class="comment">/* border-box:             total = width (يشمل كل شيء) */</span></pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- S7 -->
+  <div class="section" id="s7">
+    <h2 class="section-title"><span class="num">.7</span> Overflow — المحتوى الفائض <span class="en">Overflow</span></h2>
+    <div class="content">
+      <p>لما المحتوى أكبر من حجم العنصر، ماذا نفعل؟ خاصية <em>overflow</em> تتحكم في ذلك:</p>
+
+      <div style="display:flex;flex-wrap:wrap;gap:10px;margin:14px 0;">
+        <div class="overflow-demo">
+          <div class="label">overflow: visible (افتراضي)</div>
+          <div style="overflow:visible;">هذا نص طويل جداً يفيض خارج الصندوق ويظهر بجانب العناصر الأخرى</div>
+        </div>
+        <div class="overflow-demo">
+          <div class="label">overflow: hidden</div>
+          <div style="overflow:hidden;height:55px;">هذا نص طويل جداً يُقطع عند حدود الصندوق ولا يظهر الباقي</div>
+        </div>
+        <div class="overflow-demo">
+          <div class="label">overflow: scroll</div>
+          <div style="overflow:scroll;height:55px;">هذا نص طويل جداً يظهر شريط تمرير دائماً حتى لو المحتوى قصير</div>
+        </div>
+        <div class="overflow-demo">
+          <div class="label">overflow: auto</div>
+          <div style="overflow:auto;height:55px;">هذا نص طويل جداً يظهر شريط تمرير فقط عند الحاجة — الأفضل!</div>
+        </div>
+      </div>
+
+      <div class="code-box blue">
+<div class="code-header"><span>📜 overflow الكاملة</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre>.box {
+  overflow: visible; <span class="comment">/* يظهر خارج الحدود (افتراضي) */</span>
+  overflow: hidden;  <span class="comment">/* يُقطع، لا شريط تمرير */</span>
+  overflow: scroll;  <span class="comment">/* شريط تمرير دائماً */</span>
+  overflow: auto;    <span class="comment">/* شريط فقط عند الحاجة (الأفضل) */</span>
+
+  <span class="comment">/* محاور منفصلة */</span>
+  overflow-x: auto;  <span class="comment">/* أفقي فقط */</span>
+  overflow-y: hidden; <span class="comment">/* عمودي فقط */</span>
+}
+
+<span class="comment">/* اقطع النص الطويل بـ ... */</span>
+.truncate {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 200px;
+}</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- S8: TRY IT -->
+  <div class="section" id="s8">
+    <h2 class="section-title"><span class="num">.8</span> جرب بنفسك! <span class="en">Try It Live</span></h2>
+    <div class="content">
+      <div class="try-it">
+        <div class="try-it-header">
+          <span>💻 محرر الكود الحي</span>
+          <div class="try-it-controls">
+            <button class="try-btn" onclick="runCode(this)">▶️ تشغيل</button>
+            <button class="try-btn" onclick="resetCode(this)">🔄 إعادة</button>
+          </div>
+        </div>
+        <div class="try-it-body">
+          <textarea class="try-it-editor" spellcheck="false" data-default='<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+
+  body {
+    font-family: Arial;
+    background: #f0f4ff;
+    padding: 20px;
+    margin: 0;
+  }
+
+  .container {
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  /* بطاقة منتج */
+  .product-card {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+    margin-bottom: 16px;
+    border: 1px solid #e2e8f0;
+    /* جرب غيّر الـ border وشوف الفرق */
+  }
+
+  .product-img {
+    width: 100%;
+    height: 120px;
+    background: linear-gradient(135deg, #1e3a8a, #7c3aed);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+  }
+
+  .product-body {
+    padding: 16px 20px;
+    /* الـ padding داخل البطاقة */
+  }
+
+  .product-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 8px;
+    /* اقطع النص الطويل */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .product-desc {
+    color: #64748b;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    margin-bottom: 14px;
+    /* ارتفاع ثابت مع scroll */
+    max-height: 60px;
+    overflow: auto;
+  }
+
+  .product-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 12px;
+    border-top: 1px dashed #e2e8f0;
+    margin-top: 8px;
+  }
+
+  .price {
+    font-size: 1.3rem;
+    font-weight: 900;
+    color: #15803d;
+  }
+
+  .btn {
+    background: #1e3a8a;
+    color: white;
+    border: none;
+    padding: 8px 18px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: 700;
+    /* الـ padding يزيد حجم الزر */
+  }
+
+  .btn:hover { background: #2563eb; }
+</style>
+</head>
+<body>
+  <div class="container">
+    <h2 style="text-align:center; color:#1e3a8a; margin-bottom:20px;">🛍️ بطاقات المنتجات</h2>
+
+    <div class="product-card">
+      <div class="product-img">📚</div>
+      <div class="product-body">
+        <div class="product-title">كورس تطوير الفرونت إند الكامل من الصفر للاحتراف</div>
+        <p class="product-desc">تعلّم HTML وCSS وJavaScript وReact من الصفر حتى الاحتراف مع مشاريع عملية حقيقية ومجتمع نشط يساعدك في كل خطوة.</p>
+        <div class="product-footer">
+          <span class="price">299 ر.س</span>
+          <button class="btn">اشترِ الآن</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>'><!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<style>
+  *,*::before,*::after{box-sizing:border-box;}
+  body{font-family:Arial;background:#f0f4ff;padding:20px;margin:0;}
+  .container{max-width:600px;margin:0 auto;}
+  .product-card{background:white;border-radius:12px;overflow:hidden;box-shadow:0 4px 16px rgba(0,0,0,0.08);margin-bottom:16px;border:1px solid #e2e8f0;}
+  .product-img{width:100%;height:120px;background:linear-gradient(135deg,#1e3a8a,#7c3aed);display:flex;align-items:center;justify-content:center;font-size:3rem;}
+  .product-body{padding:16px 20px;}
+  .product-title{font-size:1.1rem;font-weight:700;color:#1e293b;margin-bottom:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .product-desc{color:#64748b;font-size:0.9rem;line-height:1.6;margin-bottom:14px;max-height:60px;overflow:auto;}
+  .product-footer{display:flex;justify-content:space-between;align-items:center;padding-top:12px;border-top:1px dashed #e2e8f0;}
+  .price{font-size:1.3rem;font-weight:900;color:#15803d;}
+  .btn{background:#1e3a8a;color:white;border:none;padding:8px 18px;border-radius:20px;cursor:pointer;font-weight:700;}
+  .btn:hover{background:#2563eb;}
+</style>
+</head>
+<body>
+  <div class="container">
+    <h2 style="text-align:center;color:#1e3a8a;margin-bottom:20px;">🛍️ بطاقات المنتجات</h2>
+    <div class="product-card">
+      <div class="product-img">📚</div>
+      <div class="product-body">
+        <div class="product-title">كورس تطوير الفرونت إند الكامل من الصفر للاحتراف</div>
+        <p class="product-desc">تعلّم HTML وCSS وJavaScript وReact من الصفر حتى الاحتراف مع مشاريع عملية.</p>
+        <div class="product-footer">
+          <span class="price">299 ر.س</span>
+          <button class="btn">اشترِ الآن</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html></textarea>
+          <div class="try-it-preview"><iframe srcdoc="" sandbox="allow-scripts allow-same-origin allow-modals allow-popups allow-forms" title="معاينة الكود"></iframe></div>
+        </div>
+      </div>
+      <div class="tip-box"><strong>جرب:</strong> غيّر الـ padding في .product-body، أو أزل overflow:hidden من .product-title وشوف الفرق!</div>
+    </div>
+  </div>
+
+  <!-- EXERCISES -->
+  <div class="section" id="exercises">
+    <h2 class="section-title"><span class="num">📝</span> التمارين <span class="en">Exercises</span></h2>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 1: الإعداد الأساسي</div>
+      <p>اكتب CSS الإعداد الأساسي لكل مشروع: box-sizing: border-box للكل، reset للـ margin والـ padding، وتعريف body.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution"><span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre>*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Cairo', Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  color: #1e293b;
+  background: #f8fafc;
+}</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 2: بطاقة بـ Box Model</div>
+      <p>اعمل .card: padding: 24px على الكل، border: 1px solid #e2e8f0، border-radius: 12px، margin-bottom: 16px، box-shadow خفيف.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution"><span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre>.card {
+  padding: 24px;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  margin-bottom: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  background: white;
+}</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 3: توسيط Container</div>
+      <p>اعمل .container بعرض أقصى 1100px، موسّط أفقياً، وبـ padding: 0 16px للجوانب.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution"><span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre>.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 16px;
+}</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 4: زرار بـ Padding وBorder</div>
+      <p>اعمل .btn: padding: 12px 28px، border: none، border-radius: 30px، خلفية زرقاء، نص أبيض، وعند hover border-radius يصبح 8px.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution"><span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre>.btn {
+  padding: 12px 28px;
+  border: none;
+  border-radius: 30px;
+  background: #1e3a8a;
+  color: white;
+  font-weight: 700;
+  cursor: pointer;
+  transition: border-radius 0.3s;
+}
+
+.btn:hover { border-radius: 8px; }</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 5: نص مقطوع بـ ...</div>
+      <p>اعمل .truncate-text: العرض الأقصى 250px، اقطع النص بـ ... عند الفيضان.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution"><span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre>.truncate-text {
+  max-width: 250px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}</pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="quiz-container" id="quiz">
+    <div class="quiz-intro"><p>اختبر فهمك!</p></div>
+    <div class="quiz-type-tabs">
+      <button class="qt-tab active" onclick="switchQuiz(this,'tf')">✓✗ صح وخطأ</button>
+      <button class="qt-tab" onclick="switchQuiz(this,'mc')">🔘 اختيار من متعدد</button>
+    </div>
+
+    <div class="quiz-section active" id="quiz-tf">
+      <div class="quiz-question" data-correct="false">
+        <span class="q-num">1</span><span class="q-text">الـ Margin يأخذ لون خلفية العنصر.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">2</span><span class="q-text">box-sizing: border-box يجعل الـ width يشمل الـ padding والـ border.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="false">
+        <span class="q-num">3</span><span class="q-text">margin: 0 auto يُوسّط العنصر عمودياً.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">4</span><span class="q-text">border-radius: 50% يحوّل العنصر المربع إلى دائرة.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">5</span><span class="q-text">overflow: auto يضيف شريط تمرير فقط عند الحاجة.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <button class="quiz-submit" onclick="submitQuiz('tf')">عرض النتيجة 🎯</button>
+      <div class="quiz-result" id="result-tf"><div class="result-score" id="score-tf">0/5</div><div class="result-label">إجابات صحيحة</div><div class="result-message" id="msg-tf"></div><button class="retry-btn" onclick="retryQuiz('tf')">🔄 حاول تاني</button></div>
+    </div>
+
+    <div class="quiz-section" id="quiz-mc">
+      <div class="quiz-question" data-correct="1">
+        <span class="q-num">1</span><span class="q-text">ما ترتيب طبقات الـ Box Model من الداخل للخارج؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">Margin → Border → Padding → Content</button>
+          <button class="q-opt" onclick="answerMC(this,1)">Content → Padding → Border → Margin</button>
+          <button class="q-opt" onclick="answerMC(this,2)">Padding → Content → Border → Margin</button>
+          <button class="q-opt" onclick="answerMC(this,3)">Content → Border → Padding → Margin</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="2">
+        <span class="q-num">2</span><span class="q-text">إيه الخاصية اللي بتتحكم في المحتوى الفائض؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">clip</button>
+          <button class="q-opt" onclick="answerMC(this,1)">visibility</button>
+          <button class="q-opt" onclick="answerMC(this,2)">overflow</button>
+          <button class="q-opt" onclick="answerMC(this,3)">display</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="0">
+        <span class="q-num">3</span><span class="q-text">padding: 10px 20px 15px 5px — ما قيمة padding-top؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">10px</button>
+          <button class="q-opt" onclick="answerMC(this,1)">20px</button>
+          <button class="q-opt" onclick="answerMC(this,2)">15px</button>
+          <button class="q-opt" onclick="answerMC(this,3)">5px</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="3">
+        <span class="q-num">4</span><span class="q-text">إيه الفرق بين border وoutline؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">مفيش فرق</button>
+          <button class="q-opt" onclick="answerMC(this,1)">outline داخل العنصر، border خارجه</button>
+          <button class="q-opt" onclick="answerMC(this,2)">border لا يأخذ مساحة</button>
+          <button class="q-opt" onclick="answerMC(this,3)">outline لا يأخذ مساحة في الـ layout</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="2">
+        <span class="q-num">5</span><span class="q-text">إيه الكود الصح لاقطع النص بـ ... ؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">text-overflow: cut; overflow: hidden;</button>
+          <button class="q-opt" onclick="answerMC(this,1)">text-wrap: nowrap;</button>
+          <button class="q-opt" onclick="answerMC(this,2)">white-space: nowrap; overflow: hidden; text-overflow: ellipsis;</button>
+          <button class="q-opt" onclick="answerMC(this,3)">overflow: ellipsis;</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <button class="quiz-submit" onclick="submitQuiz('mc')">عرض النتيجة 🎯</button>
+      <div class="quiz-result" id="result-mc"><div class="result-score" id="score-mc">0/5</div><div class="result-label">إجابات صحيحة</div><div class="result-message" id="msg-mc"></div><button class="retry-btn" onclick="retryQuiz('mc')">🔄 حاول تاني</button></div>
+    </div>
+  </div>
+
+  <div class="lesson-nav">
+    <a href="./lesson-07.html" class="nav-btn"><span>⬅️</span><span>الدرس السابق</span></a>
+    <button class="nav-btn complete-btn" id="completeBtn" onclick="markComplete(this)"><span>✅</span><span>علّم كمكتمل</span></button>
+    <a href="./lesson-09.html" class="nav-btn"><span>الدرس التالي</span><span>➡️</span></a>
+  </div>
+
+  <div class="notebook-footer">
+    <h3>🎉 فهمت سر المسافات!</h3>
+    <p>Box Model هو أساس كل تصميم — دلوقتي تقدر تتحكم في كل بكسل ❤️<br><strong>الدرس التالي: Display وPosition 🧩</strong></p>
+  </div>
+</div>
+
+<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">⬆️</button>
+<div class="toast" id="toast"></div>
+<script src="../../js/data/courses.js"></script>
+<script src="../../js/progress.js"></script>
+<script src="../../js/lesson-editor.js"></script>
+<script>
+const COURSE_ID='frontend',LESSON_ID=8,TOTAL=32;
+function toggleSolution(b){const s=b.nextElementSibling;s.classList.toggle('show');b.textContent=s.classList.contains('show')?'إخفاء الحل ▲':'عرض الحل ▼';}
+function copyCode(b){const p=b.closest('.code-box').querySelector('pre');navigator.clipboard.writeText(p.innerText).then(()=>{b.classList.add('copied');b.textContent='✓ تم النسخ';setTimeout(()=>{b.classList.remove('copied');b.textContent='📋 نسخ';},2000);});}
+function runCode(b){const t=b.closest('.try-it');t.querySelector('iframe').srcdoc=t.querySelector('.try-it-editor').value;}
+function resetCode(b){const t=b.closest('.try-it'),e=t.querySelector('.try-it-editor');e.value=e.dataset.default;t.querySelector('iframe').srcdoc=e.value;}
+window.addEventListener('load',()=>{document.querySelectorAll('.try-it').forEach(t=>{const e=t.querySelector('.try-it-editor');t.querySelector('iframe').srcdoc=e.value;});});
+function switchQuiz(b,t){document.querySelectorAll('.qt-tab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.quiz-section').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.getElementById('quiz-'+t).classList.add('active');}
+const answers={tf:{},mc:{}};
+function answerTF(b,v){const q=b.closest('.quiz-question'),i=Array.from(q.parentNode.querySelectorAll('.quiz-question')).indexOf(q);q.querySelectorAll('.q-opt').forEach(o=>o.classList.remove('selected'));b.classList.add('selected');answers.tf[i]=v;}
+function answerMC(b,i){const q=b.closest('.quiz-question'),qi=Array.from(q.parentNode.querySelectorAll('.quiz-question')).indexOf(q);q.querySelectorAll('.q-opt').forEach(o=>o.classList.remove('selected'));b.classList.add('selected');answers.mc[qi]=i;}
+function submitQuiz(type){const sec=document.getElementById('quiz-'+type),qs=sec.querySelectorAll('.quiz-question');let c=0;qs.forEach((q,i)=>{const ca=type==='tf'?(q.dataset.correct==='true'):parseInt(q.dataset.correct),ua=answers[type][i],fb=q.querySelector('.q-feedback'),opts=q.querySelectorAll('.q-opt');opts.forEach(o=>{o.classList.remove('selected');o.disabled=true;});if(ua===undefined){fb.className='q-feedback wrong show';fb.textContent='⚠️ ما اخترتش إجابة!';return;}if(ua===ca){c++;fb.className='q-feedback correct show';fb.textContent='✓ إجابة صحيحة!';if(type==='tf')opts[ca?0:1].classList.add('correct');else opts[ca].classList.add('correct');}else{fb.className='q-feedback wrong show';if(type==='tf'){opts[ca?0:1].classList.add('correct');opts[ua?0:1].classList.add('wrong');fb.textContent='✗ خطأ.';}else{opts[ca].classList.add('correct');opts[ua].classList.add('wrong');fb.textContent='✗ الإجابة بالأخضر.';}}});const r=document.getElementById('result-'+type);document.getElementById('score-'+type).textContent=c+'/'+qs.length;const m=document.getElementById('msg-'+type);if(c===qs.length){m.textContent='🏆 ممتاز 100%!';m.className='result-message excellent';}else if(c>=3){m.textContent='👍 جيد!';m.className='result-message good';}else{m.textContent='📚 راجع الدرس.';m.className='result-message try-again';}r.classList.add('show');r.scrollIntoView({behavior:'smooth',block:'center'});}
+function retryQuiz(type){const sec=document.getElementById('quiz-'+type);sec.querySelectorAll('.q-opt').forEach(o=>{o.classList.remove('selected','correct','wrong');o.disabled=false;});sec.querySelectorAll('.q-feedback').forEach(f=>{f.classList.remove('show','correct','wrong');f.textContent='';});document.getElementById('result-'+type).classList.remove('show');answers[type]={};}
+function markComplete(btn){const done=Progress.toggleLessonComplete(COURSE_ID,LESSON_ID);btn.classList.toggle('completed',done);btn.querySelector('span:last-child').textContent=done?'مكتمل! ⭐':'علّم كمكتمل';showToast(done?'🎉 أكملت الدرس الثامن!':'تم إلغاء الإكمال');}
+if(Progress.isLessonComplete(COURSE_ID,LESSON_ID)){const b=document.getElementById('completeBtn');b.classList.add('completed');b.querySelector('span:last-child').textContent='مكتمل! ⭐';}
+(function(){const p=Progress.getCourseProgress(COURSE_ID,TOTAL);document.getElementById('progFill').style.width=p+'%';document.getElementById('progText').textContent=p+'%';})();
+function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
+window.addEventListener('scroll',()=>{document.getElementById('scrollTop').classList.toggle('show',window.scrollY>300);});
+document.querySelectorAll('.toc-card a').forEach(l=>{l.addEventListener('click',e=>{e.preventDefault();const t=document.querySelector(l.getAttribute('href'));if(t)t.scrollIntoView({behavior:'smooth',block:'start'});});});
+</script>
+</body>
+</html>

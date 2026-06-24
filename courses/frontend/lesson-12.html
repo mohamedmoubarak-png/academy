@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-V2NCKVL16D"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-V2NCKVL16D');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>التصميم المتجاوب — دفتر البرمجة</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=Cairo:wght@300;400;500;600;700;900&family=Caveat:wght@400;700&family=Fira+Code:wght@400;500;600&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../css/shared.css">
+<link rel="stylesheet" href="../../css/notebook.css">
+<style>
+body { padding: 20px 10px; }
+
+/* Breakpoint visual */
+.bp-visual {
+  display: flex;
+  gap: 8px;
+  align-items: flex-end;
+  margin: 14px 0;
+  flex-wrap: wrap;
+  direction: ltr;
+}
+.bp-box {
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: .75rem;
+  font-weight: 700;
+  color: white;
+  text-align: center;
+  padding: 6px 4px;
+}
+
+/* Mobile-first demo */
+.mf-demo {
+  border: 2px dashed var(--ink-purple);
+  border-radius: 10px;
+  padding: 12px;
+  margin: 12px 0;
+  background: rgba(124,58,237,0.04);
+  direction: ltr;
+}
+.mf-label {
+  font-family: 'Fira Code', monospace;
+  font-size: .78rem;
+  color: var(--ink-purple);
+  margin-bottom: 8px;
+  direction: rtl;
+}
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="crumbs">
+    <a href="../../index.html">🏠 الرئيسية</a>
+    <span class="sep">/</span>
+    <a href="./index.html">🌐 الفرونت إند</a>
+    <span class="sep">/</span>
+    <span class="current">🎨 الدرس 12: التصميم المتجاوب</span>
+  </div>
+  <div class="progress-mini">
+    <div class="progress-bar-mini"><div class="progress-fill-mini" id="progFill"></div></div>
+    <span id="progText">0%</span>
+  </div>
+</div>
+
+<div class="notebook">
+
+  <div class="notebook-header">
+    <div class="lesson-tag">🎨 الدرس الثاني عشر</div>
+    <h1><span class="sparkle">✦</span> التصميم المتجاوب <span class="sparkle">✦</span></h1>
+    <div class="lesson-meta">
+      <span>⏱️ 40 دقيقة</span>
+      <span>📊 متوسط</span>
+      <span>🎯 5 تمارين + اختبار</span>
+    </div>
+  </div>
+
+  <div class="toc-card">
+    <h2>📑 فهرس الدرس</h2>
+    <ol>
+      <li><a href="#s1">ما هو التصميم المتجاوب؟</a></li>
+      <li><a href="#s2">Viewport وعلامة meta</a></li>
+      <li><a href="#s3">Media Queries</a></li>
+      <li><a href="#s4">نقاط التوقف (Breakpoints)</a></li>
+      <li><a href="#s5">Mobile-First</a></li>
+      <li><a href="#s6">وحدات مرنة: %, vw, vh, em, rem</a></li>
+      <li><a href="#s7">صور متجاوبة</a></li>
+      <li><a href="#s8">محرر الكود الحي</a></li>
+      <li><a href="#exercises">التمارين</a></li>
+      <li><a href="#quiz">اختبر فهمك</a></li>
+    </ol>
+  </div>
+
+  <!-- S1 -->
+  <div class="section" id="s1">
+    <h2 class="section-title"><span class="num">.1</span> ما هو التصميم المتجاوب؟ <span class="en">Responsive Design</span></h2>
+    <div class="content">
+      <p>
+        <strong>التصميم المتجاوب (Responsive Design)</strong> يعني إن موقعك يبدو جيداً ويعمل بشكل صحيح على كل الأجهزة —
+        موبايل، تابلت، لاب توب، شاشة كبيرة — بدون ما تعمل نسخة منفصلة لكل جهاز.
+      </p>
+
+      <div class="analogy">
+        <div class="analogy-title">💧 تخيل الماء في إناء:</div>
+        <p>
+          الماء يأخذ شكل أي إناء تضعه فيه. موقعك المتجاوب هكذا بالضبط —
+          يأخذ شكل الشاشة التي يُعرض عليها سواء كانت صغيرة أو كبيرة.
+        </p>
+      </div>
+
+      <div class="info-box">
+        <strong>لماذا مهم جداً؟</strong>
+        أكثر من 60% من تصفح الإنترنت الآن يأتي من الموبايل. موقع غير متجاوب = تجربة سيئة = زوار يغادرون.
+      </div>
+
+      <div class="sub-header">ثلاثة أعمدة التصميم المتجاوب:</div>
+      <table class="cool-table">
+        <thead><tr><th>العمود</th><th>الأداة</th><th>الدور</th></tr></thead>
+        <tbody>
+          <tr><td>شبكة مرنة</td><td>Flexbox / Grid</td><td>التخطيط يتكيف مع العرض</td></tr>
+          <tr><td>صور مرنة</td><td><code>max-width: 100%</code></td><td>الصور لا تفيض عن حاويتها</td></tr>
+          <tr><td>Media Queries</td><td><code>@media</code></td><td>تغيير التنسيق حسب حجم الشاشة</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- S2 -->
+  <div class="section" id="s2">
+    <h2 class="section-title"><span class="num">.2</span> Viewport وعلامة meta <span class="en">Viewport Meta Tag</span></h2>
+    <div class="content">
+      <p>
+        أول خطوة في أي موقع متجاوب هي إضافة هذا السطر في <em>&lt;head&gt;</em>:
+      </p>
+
+      <div class="code-box">
+<div class="code-header"><span>📱 meta viewport — ضروري دائماً</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-open">&lt;</span><span class="tag-name">meta</span> <span class="attr">name</span>=<span class="attr-val">"viewport"</span> <span class="attr">content</span>=<span class="attr-val">"width=device-width, initial-scale=1.0"</span><span class="tag-close">&gt;</span></pre>
+      </div>
+
+      <div class="sub-header">ماذا تعني هذه الخصائص؟</div>
+      <ul>
+        <li><em>width=device-width</em>: اجعل عرض الصفحة يساوي عرض شاشة الجهاز</li>
+        <li><em>initial-scale=1.0</em>: لا تكبّر أو تصغّر الصفحة عند فتحها — مقياس 1:1</li>
+      </ul>
+
+      <div class="warning-box">
+        <strong>بدون هذا السطر:</strong> المتصفح على الموبايل يفترض إن الصفحة بعرض 980px ويصغّرها — والنتيجة نصوص صغيرة جداً وتصميم مكسور.
+      </div>
+    </div>
+  </div>
+
+  <!-- S3 -->
+  <div class="section" id="s3">
+    <h2 class="section-title"><span class="num">.3</span> Media Queries <span class="en">@media Rules</span></h2>
+    <div class="content">
+      <p>
+        <strong>Media Queries</strong> هي قواعد CSS تُطبَّق فقط لما تتحقق شرط معين — زي عرض الشاشة.
+      </p>
+
+      <div class="code-box">
+<div class="code-header"><span>📐 الشكل العام</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">/* تُطبَّق لما العرض أقل من أو يساوي 768px */</span>
+<span class="tag-open">@media</span> (<span class="attr">max-width</span>: <span class="attr-val">768px</span>) {
+  <span class="attr">.container</span> {
+    <span class="tag-name">flex-direction</span>: <span class="attr-val">column</span>;
+  }
+}
+
+<span class="comment">/* تُطبَّق لما العرض أكبر من 1024px */</span>
+<span class="tag-open">@media</span> (<span class="attr">min-width</span>: <span class="attr-val">1024px</span>) {
+  <span class="attr">.sidebar</span> {
+    <span class="tag-name">display</span>: <span class="attr-val">block</span>;
+  }
+}</pre>
+      </div>
+
+      <div class="sub-header">أنواع الشروط في Media Queries:</div>
+      <div class="code-box blue">
+<div class="code-header"><span>🔍 أشهر الشروط</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">/* عرض الشاشة */</span>
+<span class="tag-open">@media</span> (<span class="attr">max-width</span>: <span class="attr-val">600px</span>)  { <span class="comment">/* موبايل */</span> }
+<span class="tag-open">@media</span> (<span class="attr">min-width</span>: <span class="attr-val">768px</span>)  { <span class="comment">/* تابلت وأكبر */</span> }
+<span class="tag-open">@media</span> (<span class="attr">min-width</span>: <span class="attr-val">1024px</span>) { <span class="comment">/* لاب توب وأكبر */</span> }
+
+<span class="comment">/* نطاق بين قيمتين */</span>
+<span class="tag-open">@media</span> (<span class="attr">min-width</span>: <span class="attr-val">768px</span>) <span class="attr-val">and</span> (<span class="attr">max-width</span>: <span class="attr-val">1023px</span>) {
+  <span class="comment">/* تابلت فقط */</span>
+}
+
+<span class="comment">/* اتجاه الجهاز */</span>
+<span class="tag-open">@media</span> (<span class="attr">orientation</span>: <span class="attr-val">landscape</span>) { <span class="comment">/* أفقي */</span> }
+<span class="tag-open">@media</span> (<span class="attr">orientation</span>: <span class="attr-val">portrait</span>)  { <span class="comment">/* عمودي */</span> }</pre>
+      </div>
+
+      <div class="example">
+        <span class="example-label">📌 مثال عملي: قائمة تنقل</span>
+        <div class="code-box green">
+<pre><span class="comment">/* الافتراضي: قائمة أفقية */</span>
+<span class="attr">nav</span> {
+  <span class="tag-name">display</span>: <span class="attr-val">flex</span>;
+  <span class="tag-name">gap</span>: <span class="attr-val">20px</span>;
+}
+
+<span class="comment">/* على الموبايل: قائمة عمودية */</span>
+<span class="tag-open">@media</span> (<span class="attr">max-width</span>: <span class="attr-val">600px</span>) {
+  <span class="attr">nav</span> {
+    <span class="tag-name">flex-direction</span>: <span class="attr-val">column</span>;
+    <span class="tag-name">gap</span>: <span class="attr-val">8px</span>;
+  }
+}</pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- S4 -->
+  <div class="section" id="s4">
+    <h2 class="section-title"><span class="num">.4</span> نقاط التوقف <span class="en">Breakpoints</span></h2>
+    <div class="content">
+      <p>
+        <strong>Breakpoint</strong> هي النقطة التي يتغير عندها التصميم.
+        أشهر نظام للـ breakpoints مستوحى من Tailwind / Bootstrap:
+      </p>
+
+      <div class="bp-visual">
+        <div class="bp-box" style="width:60px; height:50px; background:#dc2626;">📱<br><small>sm<br>&lt;640</small></div>
+        <div class="bp-box" style="width:80px; height:60px; background:#ea580c;">📱<br><small>md<br>≥768</small></div>
+        <div class="bp-box" style="width:110px; height:70px; background:#ca8a04;">💻<br><small>lg<br>≥1024</small></div>
+        <div class="bp-box" style="width:140px; height:80px; background:#15803d;">🖥️<br><small>xl<br>≥1280</small></div>
+        <div class="bp-box" style="width:170px; height:90px; background:#1e3a8a;">🖥️<br><small>2xl<br>≥1536</small></div>
+      </div>
+
+      <table class="cool-table">
+        <thead><tr><th>الاسم</th><th>العرض</th><th>الجهاز المستهدف</th></tr></thead>
+        <tbody>
+          <tr><td>xs / default</td><td>أقل من 640px</td><td>موبايل صغير</td></tr>
+          <tr><td>sm</td><td>≥ 640px</td><td>موبايل كبير</td></tr>
+          <tr><td>md</td><td>≥ 768px</td><td>تابلت</td></tr>
+          <tr><td>lg</td><td>≥ 1024px</td><td>لاب توب</td></tr>
+          <tr><td>xl</td><td>≥ 1280px</td><td>شاشة كبيرة</td></tr>
+        </tbody>
+      </table>
+
+      <div class="tip-box">
+        <strong>مش لازم تستخدم كل الـ breakpoints.</strong> استخدم اللي يحتاجه تصميمك فعلاً. في أغلب المشاريع كافيان breakpoints.
+      </div>
+    </div>
+  </div>
+
+  <!-- S5 -->
+  <div class="section" id="s5">
+    <h2 class="section-title"><span class="num">.5</span> Mobile-First <span class="en">Mobile-First Approach</span></h2>
+    <div class="content">
+      <p>
+        <strong>Mobile-First</strong> معناها تكتب CSS الموبايل أولاً كـ default، ثم تضيف <em>min-width</em> media queries للشاشات الأكبر.
+        هذا هو الأسلوب المعتمد في كل frameworks حديثة.
+      </p>
+
+      <div class="sub-header">Desktop-First (القديم — تجنبه):</div>
+      <div class="code-box pink">
+<div class="code-header"><span>❌ Desktop-First</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">/* الافتراضي للديسكتوب */</span>
+<span class="attr">.cards</span> { <span class="tag-name">grid-template-columns</span>: <span class="attr-val">repeat(3, 1fr)</span>; }
+
+<span class="comment">/* تصغّر للموبايل */</span>
+<span class="tag-open">@media</span> (<span class="attr">max-width</span>: <span class="attr-val">768px</span>) {
+  <span class="attr">.cards</span> { <span class="tag-name">grid-template-columns</span>: <span class="attr-val">1fr</span>; }
+}</pre>
+      </div>
+
+      <div class="sub-header">Mobile-First (الصواب):</div>
+      <div class="code-box green">
+<div class="code-header"><span>✅ Mobile-First</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">/* الافتراضي للموبايل */</span>
+<span class="attr">.cards</span> { <span class="tag-name">grid-template-columns</span>: <span class="attr-val">1fr</span>; }
+
+<span class="comment">/* تكبّر للتابلت */</span>
+<span class="tag-open">@media</span> (<span class="attr">min-width</span>: <span class="attr-val">768px</span>) {
+  <span class="attr">.cards</span> { <span class="tag-name">grid-template-columns</span>: <span class="attr-val">repeat(2, 1fr)</span>; }
+}
+
+<span class="comment">/* تكبّر أكثر للديسكتوب */</span>
+<span class="tag-open">@media</span> (<span class="attr">min-width</span>: <span class="attr-val">1024px</span>) {
+  <span class="attr">.cards</span> { <span class="tag-name">grid-template-columns</span>: <span class="attr-val">repeat(3, 1fr)</span>; }
+}</pre>
+      </div>
+
+      <table class="cool-table">
+        <thead><tr><th></th><th>Mobile-First</th><th>Desktop-First</th></tr></thead>
+        <tbody>
+          <tr><td>الأداء</td><td>أفضل — الموبايل يحمّل أقل CSS</td><td>أثقل على الموبايل</td></tr>
+          <tr><td>SEO</td><td>أفضل — Google يفضّله</td><td>أضعف</td></tr>
+          <tr><td>الـ query المستخدمة</td><td><code>min-width</code></td><td><code>max-width</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- S6 -->
+  <div class="section" id="s6">
+    <h2 class="section-title"><span class="num">.6</span> وحدات مرنة <span class="en">Flexible Units</span></h2>
+    <div class="content">
+      <p>بدل استخدام <em>px</em> الثابتة في كل مكان، هناك وحدات مرنة تجعل التصميم أكثر تكيّفاً.</p>
+
+      <table class="cool-table">
+        <thead><tr><th>الوحدة</th><th>تعني</th><th>متى تستخدمها؟</th></tr></thead>
+        <tbody>
+          <tr><td><code>%</code></td><td>نسبة من الحاوي الأب</td><td>العرض: <code>width: 80%</code></td></tr>
+          <tr><td><code>vw</code></td><td>نسبة من عرض الشاشة</td><td>عناصر تملأ الشاشة: <code>width: 100vw</code></td></tr>
+          <tr><td><code>vh</code></td><td>نسبة من ارتفاع الشاشة</td><td>Hero sections: <code>height: 100vh</code></td></tr>
+          <tr><td><code>rem</code></td><td>مضاعف حجم خط الجذر (root font)</td><td>الخطوط والمسافات: <code>font-size: 1.2rem</code></td></tr>
+          <tr><td><code>em</code></td><td>مضاعف حجم خط الأب</td><td>padding/margin نسبي للخط</td></tr>
+          <tr><td><code>clamp()</code></td><td>قيمة بين حد أدنى وأعلى</td><td>خطوط مرنة بدون media queries</td></tr>
+        </tbody>
+      </table>
+
+      <div class="code-box">
+<div class="code-header"><span>🔢 أمثلة عملية</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">/* خط يتكيف تلقائياً بين 16px و 32px */</span>
+<span class="attr">h1</span> { <span class="tag-name">font-size</span>: <span class="attr-val">clamp(16px, 4vw, 32px)</span>; }
+
+<span class="comment">/* حاوية بعرض 90% بحد أقصى 1200px */</span>
+<span class="attr">.container</span> {
+  <span class="tag-name">width</span>: <span class="attr-val">90%</span>;
+  <span class="tag-name">max-width</span>: <span class="attr-val">1200px</span>;
+  <span class="tag-name">margin</span>: <span class="attr-val">0 auto</span>;
+}
+
+<span class="comment">/* Hero يملأ الشاشة كاملاً */</span>
+<span class="attr">.hero</span> {
+  <span class="tag-name">width</span>: <span class="attr-val">100vw</span>;
+  <span class="tag-name">height</span>: <span class="attr-val">100vh</span>;
+}</pre>
+      </div>
+
+      <div class="tip-box">
+        <strong>القاعدة الذهبية للخطوط:</strong> استخدم <em>rem</em> دائماً. الافتراضي في المتصفح هو 16px، فـ <em>1rem = 16px</em>، و <em>1.5rem = 24px</em>.
+      </div>
+    </div>
+  </div>
+
+  <!-- S7 -->
+  <div class="section" id="s7">
+    <h2 class="section-title"><span class="num">.7</span> صور متجاوبة <span class="en">Responsive Images</span></h2>
+    <div class="content">
+      <p>الصور هي أكثر عنصر يسبب مشاكل على الموبايل. ثلاث قواعد تحل 95% من المشاكل:</p>
+
+      <div class="code-box">
+<div class="code-header"><span>🖼️ القاعدة الأساسية</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">/* كل الصور متجاوبة */</span>
+<span class="attr">img</span> {
+  <span class="tag-name">max-width</span>: <span class="attr-val">100%</span>;   <span class="comment">/* لا تفيض عن الحاوي */</span>
+  <span class="tag-name">height</span>: <span class="attr-val">auto</span>;      <span class="comment">/* حافظ على النسبة */</span>
+  <span class="tag-name">display</span>: <span class="attr-val">block</span>;     <span class="comment">/* أزل المساحة السفلية */</span>
+}</pre>
+      </div>
+
+      <div class="code-box blue">
+<div class="code-header"><span>🎨 صورة خلفية متجاوبة</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="attr">.hero</span> {
+  <span class="tag-name">background-image</span>: <span class="attr-val">url('hero.jpg')</span>;
+  <span class="tag-name">background-size</span>: <span class="attr-val">cover</span>;      <span class="comment">/* تغطي المساحة كاملاً */</span>
+  <span class="tag-name">background-position</span>: <span class="attr-val">center</span>; <span class="comment">/* توسيط</span>
+  <span class="tag-name">height</span>: <span class="attr-val">400px</span>;
+}</pre>
+      </div>
+
+      <div class="sub-header">نصيحة: استخدم object-fit للصور في بطاقات</div>
+      <div class="code-box green">
+<div class="code-header"><span>📌 object-fit</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="attr">.card-img</span> {
+  <span class="tag-name">width</span>: <span class="attr-val">100%</span>;
+  <span class="tag-name">height</span>: <span class="attr-val">200px</span>;
+  <span class="tag-name">object-fit</span>: <span class="attr-val">cover</span>;     <span class="comment">/* اقطع بدون تشويه */</span>
+  <span class="tag-name">object-position</span>: <span class="attr-val">center</span>;
+}</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- S8 — Live Editor -->
+  <div class="section" id="s8">
+    <h2 class="section-title"><span class="num">.8</span> محرر الكود الحي <span class="en">Live Editor</span></h2>
+    <div class="content">
+      <p>جرب تصميماً متجاوباً كاملاً — غيّر حجم النافذة لترى التأثير:</p>
+    </div>
+    <div class="try-it">
+      <div class="try-it-header">
+        <span>💻 جرب Responsive Design</span>
+        <div class="try-it-controls">
+          <button class="try-btn" onclick="runCode(this)">▶️ تشغيل</button>
+          <button class="try-btn" onclick="resetCode(this)">🔄 إعادة</button>
+        </div>
+      </div>
+      <div class="try-it-body">
+        <textarea class="try-it-editor" spellcheck="false" data-default='<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: Arial; background: #f8fafc; padding: 16px; }
+
+  .container {
+    width: 90%;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  nav {
+    background: #1e3a8a;
+    color: white;
+    padding: 14px 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .nav-links { display: flex; gap: 16px; }
+  .nav-links a { color: white; text-decoration: none; font-size: .9rem; }
+
+  /* بطاقات — موبايل: عمود واحد */
+  .cards {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  /* تابلت: عمودان */
+  @media (min-width: 640px) {
+    .cards { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  /* ديسكتوب: 3 أعمدة */
+  @media (min-width: 1024px) {
+    .cards { grid-template-columns: repeat(3, 1fr); }
+    .nav-links { gap: 24px; }
+  }
+
+  .card {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+  }
+
+  .card h3 { color: #1e3a8a; margin-bottom: 8px; }
+  .card p  { color: #64748b; font-size: .9rem; line-height: 1.6; }
+</style>
+</head>
+<body>
+  <div class="container">
+    <nav>
+      <strong>🌐 موقعي</strong>
+      <div class="nav-links">
+        <a href="#">الرئيسية</a>
+        <a href="#">المقالات</a>
+        <a href="#">تواصل</a>
+      </div>
+    </nav>
+    <div class="cards">
+      <div class="card"><h3>📘 HTML</h3><p>لغة هيكلة صفحات الويب</p></div>
+      <div class="card"><h3>🎨 CSS</h3><p>تنسيق وتصميم صفحات الويب</p></div>
+      <div class="card"><h3>⚡ JS</h3><p>إضافة التفاعل والحركة</p></div>
+    </div>
+  </div>
+</body>
+</html>'><!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: Arial; background: #f8fafc; padding: 16px; }
+
+  .container {
+    width: 90%;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  nav {
+    background: #1e3a8a;
+    color: white;
+    padding: 14px 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .nav-links { display: flex; gap: 16px; }
+  .nav-links a { color: white; text-decoration: none; font-size: .9rem; }
+
+  .cards {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  @media (min-width: 640px) {
+    .cards { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  @media (min-width: 1024px) {
+    .cards { grid-template-columns: repeat(3, 1fr); }
+    .nav-links { gap: 24px; }
+  }
+
+  .card {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+  }
+
+  .card h3 { color: #1e3a8a; margin-bottom: 8px; }
+  .card p  { color: #64748b; font-size: .9rem; line-height: 1.6; }
+</style>
+</head>
+<body>
+  <div class="container">
+    <nav>
+      <strong>🌐 موقعي</strong>
+      <div class="nav-links">
+        <a href="#">الرئيسية</a>
+        <a href="#">المقالات</a>
+        <a href="#">تواصل</a>
+      </div>
+    </nav>
+    <div class="cards">
+      <div class="card"><h3>📘 HTML</h3><p>لغة هيكلة صفحات الويب</p></div>
+      <div class="card"><h3>🎨 CSS</h3><p>تنسيق وتصميم صفحات الويب</p></div>
+      <div class="card"><h3>⚡ JS</h3><p>إضافة التفاعل والحركة</p></div>
+    </div>
+  </div>
+</body>
+</html></textarea>
+        <div class="try-it-preview"><iframe srcdoc="" sandbox="allow-scripts allow-same-origin allow-modals allow-popups allow-forms" title="معاينة الكود"></iframe></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EXERCISES -->
+  <div class="section" id="exercises">
+    <h2 class="section-title"><span class="num">📝</span> التمارين العملية <span class="en">Exercises</span></h2>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 1: أضف meta viewport</div>
+      <p>اكتب السطر الصحيح الذي يجب إضافته في <em>&lt;head&gt;</em> لجعل أي موقع متجاوباً.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre><span class="tag-open">&lt;</span><span class="tag-name">meta</span> <span class="attr">name</span>=<span class="attr-val">"viewport"</span> <span class="attr">content</span>=<span class="attr-val">"width=device-width, initial-scale=1.0"</span><span class="tag-close">&gt;</span></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 2: إخفاء عنصر على الموبايل</div>
+      <p>اكتب media query تخفي عنصر <em>.sidebar</em> على الشاشات الأصغر من 768px.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre><span class="tag-open">@media</span> (<span class="attr">max-width</span>: <span class="attr-val">767px</span>) {
+  <span class="attr">.sidebar</span> {
+    <span class="tag-name">display</span>: <span class="attr-val">none</span>;
+  }
+}</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 3: خط متجاوب بـ clamp</div>
+      <p>اكتب CSS لعنوان <em>h1</em> يكون حجم خطه: لا يقل عن 20px، ولا يزيد عن 48px، ويتكيف مع عرض الشاشة.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre><span class="attr">h1</span> {
+  <span class="tag-name">font-size</span>: <span class="attr-val">clamp(20px, 5vw, 48px)</span>;
+}</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 4: تخطيط Mobile-First</div>
+      <p>اكتب CSS بأسلوب Mobile-First لـ <em>.grid</em>: عمود واحد على الموبايل، عمودان عند 640px فأكثر، ثلاثة عند 1024px فأكثر.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre><span class="attr">.grid</span> {
+  <span class="tag-name">display</span>: <span class="attr-val">grid</span>;
+  <span class="tag-name">grid-template-columns</span>: <span class="attr-val">1fr</span>;
+  <span class="tag-name">gap</span>: <span class="attr-val">16px</span>;
+}
+
+<span class="tag-open">@media</span> (<span class="attr">min-width</span>: <span class="attr-val">640px</span>) {
+  <span class="attr">.grid</span> { <span class="tag-name">grid-template-columns</span>: <span class="attr-val">repeat(2, 1fr)</span>; }
+}
+
+<span class="tag-open">@media</span> (<span class="attr">min-width</span>: <span class="attr-val">1024px</span>) {
+  <span class="attr">.grid</span> { <span class="tag-name">grid-template-columns</span>: <span class="attr-val">repeat(3, 1fr)</span>; }
+}</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 5: حاوية متمركزة</div>
+      <p>اكتب CSS لحاوية <em>.container</em> بعرض 90%، بحد أقصى 1200px، ومتمركزة أفقياً.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre><span class="attr">.container</span> {
+  <span class="tag-name">width</span>: <span class="attr-val">90%</span>;
+  <span class="tag-name">max-width</span>: <span class="attr-val">1200px</span>;
+  <span class="tag-name">margin</span>: <span class="attr-val">0 auto</span>;
+}</pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="quiz-container" id="quiz">
+    <div class="quiz-intro"><p>اختبر فهمك للتصميم المتجاوب!</p></div>
+    <div class="quiz-type-tabs">
+      <button class="qt-tab active" onclick="switchQuiz(this,'tf')">✓✗ صح وخطأ</button>
+      <button class="qt-tab" onclick="switchQuiz(this,'mc')">🔘 اختيار من متعدد</button>
+    </div>
+
+    <div class="quiz-section active" id="quiz-tf">
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">1</span><span class="q-text">meta viewport ضروري لكل موقع متجاوب.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="false">
+        <span class="q-num">2</span><span class="q-text">Mobile-First يعني تكتب CSS الديسكتوب أولاً.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">3</span><span class="q-text">max-width: 100% على الصور يمنعها من تجاوز حاويتها.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">4</span><span class="q-text">وحدة vw تعني نسبة من عرض الشاشة (Viewport Width).</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="false">
+        <span class="q-num">5</span><span class="q-text">تحتاج دائماً لكل breakpoints الخمسة في كل مشروع.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <button class="quiz-submit" onclick="submitQuiz('tf')">عرض النتيجة 🎯</button>
+      <div class="quiz-result" id="result-tf"><div class="result-score" id="score-tf">0/5</div><div class="result-label">إجابات صحيحة</div><div class="result-message" id="msg-tf"></div><button class="retry-btn" onclick="retryQuiz('tf')">🔄 حاول تاني</button></div>
+    </div>
+
+    <div class="quiz-section" id="quiz-mc">
+      <div class="quiz-question" data-correct="2">
+        <span class="q-num">1</span><span class="q-text">في Mobile-First، أي نوع من media queries نستخدم؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">max-width</button>
+          <button class="q-opt" onclick="answerMC(this,1)">max-height</button>
+          <button class="q-opt" onclick="answerMC(this,2)">min-width</button>
+          <button class="q-opt" onclick="answerMC(this,3)">min-height</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="0">
+        <span class="q-num">2</span><span class="q-text">ما الوحدة التي تعني "نسبة من ارتفاع الشاشة"؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">vh</button>
+          <button class="q-opt" onclick="answerMC(this,1)">vw</button>
+          <button class="q-opt" onclick="answerMC(this,2)">em</button>
+          <button class="q-opt" onclick="answerMC(this,3)">rem</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="3">
+        <span class="q-num">3</span><span class="q-text">ما وظيفة clamp(16px, 4vw, 32px)؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">يثبت حجم الخط على 16px</button>
+          <button class="q-opt" onclick="answerMC(this,1)">يجعل الخط 4% من العرض دائماً</button>
+          <button class="q-opt" onclick="answerMC(this,2)">يخفي العنصر عند 32px</button>
+          <button class="q-opt" onclick="answerMC(this,3)">يضع حجم مرن بين 16px و32px</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="1">
+        <span class="q-num">4</span><span class="q-text">ما CSS يجعل صورة لا تفيض عن حاويتها؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">width: 100%</button>
+          <button class="q-opt" onclick="answerMC(this,1)">max-width: 100%</button>
+          <button class="q-opt" onclick="answerMC(this,2)">overflow: hidden</button>
+          <button class="q-opt" onclick="answerMC(this,3)">display: block</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="2">
+        <span class="q-num">5</span><span class="q-text">أي pattern يجعل الحاوية متمركزة بعرض أقصى 1200px؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">width: 1200px</button>
+          <button class="q-opt" onclick="answerMC(this,1)">max-width: 1200px</button>
+          <button class="q-opt" onclick="answerMC(this,2)">width: 90%; max-width: 1200px; margin: 0 auto</button>
+          <button class="q-opt" onclick="answerMC(this,3)">align: center; width: 1200px</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <button class="quiz-submit" onclick="submitQuiz('mc')">عرض النتيجة 🎯</button>
+      <div class="quiz-result" id="result-mc"><div class="result-score" id="score-mc">0/5</div><div class="result-label">إجابات صحيحة</div><div class="result-message" id="msg-mc"></div><button class="retry-btn" onclick="retryQuiz('mc')">🔄 حاول تاني</button></div>
+    </div>
+  </div>
+
+  <div class="lesson-nav">
+    <a href="./lesson-11.html" class="nav-btn"><span>⬅️</span><span>الدرس السابق</span></a>
+    <button class="nav-btn complete-btn" id="completeBtn" onclick="markComplete(this)"><span>✅</span><span>علّم كمكتمل</span></button>
+    <a href="./lesson-13.html" class="nav-btn"><span>الدرس التالي</span><span>➡️</span></a>
+  </div>
+
+  <div class="notebook-footer">
+    <h3>🎉 أتقنت التصميم المتجاوب!</h3>
+    <p>موقعك الآن جاهز على كل الأجهزة ❤️<br><strong>الدرس التالي: مقدمة في JavaScript! ⚡</strong></p>
+  </div>
+</div>
+
+<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">⬆️</button>
+<div class="toast" id="toast"></div>
+<script src="../../js/data/courses.js"></script>
+<script src="../../js/progress.js"></script>
+<script src="../../js/lesson-editor.js"></script>
+<script>
+const COURSE_ID='frontend',LESSON_ID=12,TOTAL=32;
+function toggleSolution(b){const s=b.nextElementSibling;s.classList.toggle('show');b.textContent=s.classList.contains('show')?'إخفاء الحل ▲':'عرض الحل ▼';}
+function copyCode(b){const p=b.closest('.code-box').querySelector('pre');navigator.clipboard.writeText(p.innerText).then(()=>{b.classList.add('copied');b.textContent='✓ تم النسخ';setTimeout(()=>{b.classList.remove('copied');b.textContent='📋 نسخ';},2000);});}
+function runCode(b){const t=b.closest('.try-it');t.querySelector('iframe').srcdoc=t.querySelector('.try-it-editor').value;}
+function resetCode(b){const t=b.closest('.try-it'),e=t.querySelector('.try-it-editor');e.value=e.dataset.default;t.querySelector('iframe').srcdoc=e.value;}
+window.addEventListener('load',()=>{document.querySelectorAll('.try-it').forEach(t=>{const e=t.querySelector('.try-it-editor');t.querySelector('iframe').srcdoc=e.value;});});
+function switchQuiz(b,t){document.querySelectorAll('.qt-tab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.quiz-section').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.getElementById('quiz-'+t).classList.add('active');}
+const answers={tf:{},mc:{}};
+function answerTF(b,v){const q=b.closest('.quiz-question'),i=Array.from(q.parentNode.querySelectorAll('.quiz-question')).indexOf(q);q.querySelectorAll('.q-opt').forEach(o=>o.classList.remove('selected'));b.classList.add('selected');answers.tf[i]=v;}
+function answerMC(b,i){const q=b.closest('.quiz-question'),qi=Array.from(q.parentNode.querySelectorAll('.quiz-question')).indexOf(q);q.querySelectorAll('.q-opt').forEach(o=>o.classList.remove('selected'));b.classList.add('selected');answers.mc[qi]=i;}
+function submitQuiz(type){const sec=document.getElementById('quiz-'+type),qs=sec.querySelectorAll('.quiz-question');let c=0;qs.forEach((q,i)=>{const ca=type==='tf'?(q.dataset.correct==='true'):parseInt(q.dataset.correct),ua=answers[type][i],fb=q.querySelector('.q-feedback'),opts=q.querySelectorAll('.q-opt');opts.forEach(o=>{o.classList.remove('selected');o.disabled=true;});if(ua===undefined){fb.className='q-feedback wrong show';fb.textContent='⚠️ ما اخترتش إجابة!';return;}if(ua===ca){c++;fb.className='q-feedback correct show';fb.textContent='✓ إجابة صحيحة!';if(type==='tf')opts[ca?0:1].classList.add('correct');else opts[ca].classList.add('correct');}else{fb.className='q-feedback wrong show';if(type==='tf'){opts[ca?0:1].classList.add('correct');opts[ua?0:1].classList.add('wrong');fb.textContent='✗ خطأ.';}else{opts[ca].classList.add('correct');opts[ua].classList.add('wrong');fb.textContent='✗ الإجابة بالأخضر.';}}});const r=document.getElementById('result-'+type);document.getElementById('score-'+type).textContent=c+'/'+qs.length;const m=document.getElementById('msg-'+type);if(c===qs.length){m.textContent='🏆 ممتاز 100%!';m.className='result-message excellent';}else if(c>=3){m.textContent='👍 جيد!';m.className='result-message good';}else{m.textContent='📚 راجع الدرس.';m.className='result-message try-again';}r.classList.add('show');r.scrollIntoView({behavior:'smooth',block:'center'});}
+function retryQuiz(type){const sec=document.getElementById('quiz-'+type);sec.querySelectorAll('.q-opt').forEach(o=>{o.classList.remove('selected','correct','wrong');o.disabled=false;});sec.querySelectorAll('.q-feedback').forEach(f=>{f.classList.remove('show','correct','wrong');f.textContent='';});document.getElementById('result-'+type).classList.remove('show');answers[type]={};}
+function markComplete(btn){const done=Progress.toggleLessonComplete(COURSE_ID,LESSON_ID);btn.classList.toggle('completed',done);btn.querySelector('span:last-child').textContent=done?'مكتمل! ⭐':'علّم كمكتمل';showToast(done?'🎉 أكملت درس التصميم المتجاوب!':'تم إلغاء الإكمال');}
+if(Progress.isLessonComplete(COURSE_ID,LESSON_ID)){const b=document.getElementById('completeBtn');b.classList.add('completed');b.querySelector('span:last-child').textContent='مكتمل! ⭐';}
+(function(){const p=Progress.getCourseProgress(COURSE_ID,TOTAL);document.getElementById('progFill').style.width=p+'%';document.getElementById('progText').textContent=p+'%';})();
+function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
+window.addEventListener('scroll',()=>{document.getElementById('scrollTop').classList.toggle('show',window.scrollY>300);});
+document.querySelectorAll('.toc-card a').forEach(l=>{l.addEventListener('click',e=>{e.preventDefault();const t=document.querySelector(l.getAttribute('href'));if(t)t.scrollIntoView({behavior:'smooth',block:'start'});});});
+</script>
+</body>
+</html>

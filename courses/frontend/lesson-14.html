@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-V2NCKVL16D"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-V2NCKVL16D');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>العمليات والمعاملات — دفتر البرمجة</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=Cairo:wght@300;400;500;600;700;900&family=Caveat:wght@400;700&family=Fira+Code:wght@400;500;600&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../css/shared.css">
+<link rel="stylesheet" href="../../css/notebook.css">
+<style>
+body { padding: 20px 10px; }
+
+.mini-console {
+  background: #1e293b;
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin: 10px 0;
+  font-family: 'Fira Code', monospace;
+  font-size: .88rem;
+  direction: ltr;
+}
+.mc-line { margin: 3px 0; }
+.mc-in  { color: #94a3b8; }
+.mc-in::before  { content: '> '; color: #7c3aed; }
+.mc-out { color: #4ade80; }
+.mc-out::before { content: '← '; color: #4ade80; }
+.mc-cmt { color: #475569; font-style: italic; }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="crumbs">
+    <a href="../../index.html">🏠 الرئيسية</a>
+    <span class="sep">/</span>
+    <a href="./index.html">🌐 الفرونت إند</a>
+    <span class="sep">/</span>
+    <span class="current">⚡ الدرس 14: العمليات والمعاملات</span>
+  </div>
+  <div class="progress-mini">
+    <div class="progress-bar-mini"><div class="progress-fill-mini" id="progFill"></div></div>
+    <span id="progText">0%</span>
+  </div>
+</div>
+
+<div class="notebook">
+
+  <div class="notebook-header">
+    <div class="lesson-tag">⚡ الدرس الرابع عشر</div>
+    <h1><span class="sparkle">✦</span> العمليات والمعاملات <span class="sparkle">✦</span></h1>
+    <div class="lesson-meta">
+      <span>⏱️ 40 دقيقة</span>
+      <span>📊 مبتدئ</span>
+      <span>🎯 5 تمارين + اختبار</span>
+    </div>
+  </div>
+
+  <div class="toc-card">
+    <h2>📑 فهرس الدرس</h2>
+    <ol>
+      <li><a href="#s1">العمليات الحسابية</a></li>
+      <li><a href="#s2">عمليات التعيين</a></li>
+      <li><a href="#s3">عمليات المقارنة</a></li>
+      <li><a href="#s4">العمليات المنطقية</a></li>
+      <li><a href="#s5">== مقابل ===</a></li>
+      <li><a href="#s6">عمليات النصوص</a></li>
+      <li><a href="#s7">الأولوية وترتيب التنفيذ</a></li>
+      <li><a href="#s8">محرر الكود الحي</a></li>
+      <li><a href="#exercises">التمارين</a></li>
+      <li><a href="#quiz">اختبر فهمك</a></li>
+    </ol>
+  </div>
+
+  <!-- S1 -->
+  <div class="section" id="s1">
+    <h2 class="section-title"><span class="num">.1</span> العمليات الحسابية <span class="en">Arithmetic Operators</span></h2>
+    <div class="content">
+      <p>JavaScript بتدعم كل العمليات الحسابية الأساسية، وفيها عمليتان إضافيتان مهمتان:</p>
+
+      <div class="code-box">
+<div class="code-header"><span>➕ العمليات الحسابية</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-name">const</span> <span class="attr">a</span> = <span class="attr-val">10</span>, <span class="attr">b</span> = <span class="attr-val">3</span>;
+
+<span class="attr">a</span> + <span class="attr">b</span>   <span class="comment">// 13  — جمع</span>
+<span class="attr">a</span> - <span class="attr">b</span>   <span class="comment">// 7   — طرح</span>
+<span class="attr">a</span> * <span class="attr">b</span>   <span class="comment">// 30  — ضرب</span>
+<span class="attr">a</span> / <span class="attr">b</span>   <span class="comment">// 3.333... — قسمة</span>
+<span class="attr">a</span> % <span class="attr">b</span>   <span class="comment">// 1   — باقي القسمة (Modulus)</span>
+<span class="attr">a</span> ** <span class="attr">b</span>  <span class="comment">// 1000 — أس (10³)</span></pre>
+      </div>
+
+      <div class="sub-header">باقي القسمة % — أهم عملية في البرمجة!</div>
+      <div class="analogy">
+        <div class="analogy-title">🍕 تخيل توزيع بيتزا:</div>
+        <p>
+          عندك 10 قطع وتريد توزيعهم على 3 أشخاص. كل شخص ياخد 3 قطع (10 ÷ 3 = 3)، يفضل قطعة واحدة زيادة. ده هو <strong>10 % 3 = 1</strong>.
+        </p>
+      </div>
+
+      <div class="code-box blue">
+<div class="code-header"><span>💡 استخدامات % في البرمجة</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">// هل العدد زوجي؟</span>
+<span class="attr-val">10</span> % <span class="attr-val">2</span> === <span class="attr-val">0</span>   <span class="comment">// true  ← زوجي</span>
+<span class="attr-val">7</span>  % <span class="attr-val">2</span> === <span class="attr-val">0</span>   <span class="comment">// false ← فردي</span>
+
+<span class="comment">// الدوران على قائمة (مثلاً 0,1,2,0,1,2,...)</span>
+<span class="attr">index</span> % <span class="attr">list</span>.<span class="attr">length</span></pre>
+      </div>
+
+      <div class="sub-header">زيادة ونقصان سريع:</div>
+      <div class="code-box green">
+<div class="code-header"><span>++ و --</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-name">let</span> <span class="attr">x</span> = <span class="attr-val">5</span>;
+<span class="attr">x</span>++;      <span class="comment">// x = 6  (زيادة 1)</span>
+<span class="attr">x</span>--;      <span class="comment">// x = 5  (نقصان 1)</span>
+++<span class="attr">x</span>;      <span class="comment">// x = 6  (زيادة قبل الاستخدام)</span></pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- S2 -->
+  <div class="section" id="s2">
+    <h2 class="section-title"><span class="num">.2</span> عمليات التعيين <span class="en">Assignment Operators</span></h2>
+    <div class="content">
+      <p>بدل ما تكتب <em>x = x + 5</em>، فيه اختصارات أسهل:</p>
+
+      <div class="code-box">
+<div class="code-header"><span>📝 اختصارات التعيين</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-name">let</span> <span class="attr">x</span> = <span class="attr-val">10</span>;
+
+<span class="attr">x</span> += <span class="attr-val">5</span>;    <span class="comment">// x = x + 5  → 15</span>
+<span class="attr">x</span> -= <span class="attr-val">3</span>;    <span class="comment">// x = x - 3  → 12</span>
+<span class="attr">x</span> *= <span class="attr-val">2</span>;    <span class="comment">// x = x * 2  → 24</span>
+<span class="attr">x</span> /= <span class="attr-val">4</span>;    <span class="comment">// x = x / 4  → 6</span>
+<span class="attr">x</span> %= <span class="attr-val">4</span>;    <span class="comment">// x = x % 4  → 2</span>
+<span class="attr">x</span> **= <span class="attr-val">3</span>;   <span class="comment">// x = x ** 3 → 8</span></pre>
+      </div>
+
+      <div class="mini-console">
+        <div class="mc-line mc-in">let score = 100; score -= 20; score</div>
+        <div class="mc-line mc-out">80</div>
+        <div class="mc-line mc-in">score *= 2; score</div>
+        <div class="mc-line mc-out">160</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- S3 -->
+  <div class="section" id="s3">
+    <h2 class="section-title"><span class="num">.3</span> عمليات المقارنة <span class="en">Comparison Operators</span></h2>
+    <div class="content">
+      <p>بترجع دايماً <em>true</em> أو <em>false</em>. هي أساس كل الشروط في البرمجة.</p>
+
+      <div class="code-box">
+<div class="code-header"><span>⚖️ المقارنة</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="attr-val">5</span> >  <span class="attr-val">3</span>    <span class="comment">// true  — أكبر من</span>
+<span class="attr-val">5</span> <  <span class="attr-val">3</span>    <span class="comment">// false — أصغر من</span>
+<span class="attr-val">5</span> >= <span class="attr-val">5</span>   <span class="comment">// true  — أكبر أو يساوي</span>
+<span class="attr-val">5</span> <= <span class="attr-val">4</span>   <span class="comment">// false — أصغر أو يساوي</span>
+<span class="attr-val">5</span> == <span class="attr-val">5</span>   <span class="comment">// true  — يساوي (مع تحويل النوع)</span>
+<span class="attr-val">5</span> === <span class="attr-val">5</span>  <span class="comment">// true  — يساوي (نوع وقيمة)</span>
+<span class="attr-val">5</span> != <span class="attr-val">3</span>   <span class="comment">// true  — لا يساوي</span>
+<span class="attr-val">5</span> !== <span class="attr-val">'5'</span> <span class="comment">// true  — لا يساوي (نوع أو قيمة)</span></pre>
+      </div>
+
+      <div class="mini-console">
+        <div class="mc-line mc-in">10 > 5</div>
+        <div class="mc-line mc-out">true</div>
+        <div class="mc-line mc-in">3 >= 3</div>
+        <div class="mc-line mc-out">true</div>
+        <div class="mc-line mc-in">'a' > 'b'</div>
+        <div class="mc-line mc-out">false</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- S4 -->
+  <div class="section" id="s4">
+    <h2 class="section-title"><span class="num">.4</span> العمليات المنطقية <span class="en">Logical Operators</span></h2>
+    <div class="content">
+      <p>بتربط شرطين أو أكثر معاً:</p>
+
+      <table class="cool-table">
+        <thead><tr><th>المعامل</th><th>الاسم</th><th>المعنى</th><th>مثال</th></tr></thead>
+        <tbody>
+          <tr><td><code>&&</code></td><td>AND (و)</td><td>الاثنان true</td><td><code>age > 18 && hasID</code></td></tr>
+          <tr><td><code>||</code></td><td>OR (أو)</td><td>واحد على الأقل true</td><td><code>isAdmin || isOwner</code></td></tr>
+          <tr><td><code>!</code></td><td>NOT (ليس)</td><td>عكس القيمة</td><td><code>!isLoggedIn</code></td></tr>
+        </tbody>
+      </table>
+
+      <div class="code-box">
+<div class="code-header"><span>🔗 أمثلة</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-name">const</span> <span class="attr">age</span>     = <span class="attr-val">20</span>;
+<span class="tag-name">const</span> <span class="attr">hasCard</span> = <span class="attr-val">true</span>;
+
+<span class="comment">// AND: الاثنان لازم true</span>
+age >= <span class="attr-val">18</span> && <span class="attr">hasCard</span>   <span class="comment">// true</span>
+
+<span class="comment">// OR: واحد كافي</span>
+age >= <span class="attr-val">21</span> || <span class="attr">hasCard</span>   <span class="comment">// true (hasCard وحدها كافية)</span>
+
+<span class="comment">// NOT: عكس</span>
+!<span class="attr">hasCard</span>                <span class="comment">// false</span>
+!(<span class="attr-val">5</span> > <span class="attr-val">10</span>)               <span class="comment">// true</span></pre>
+      </div>
+
+      <div class="sub-header">Short-circuit evaluation — اختصار ذكي:</div>
+      <div class="code-box blue">
+<div class="code-header"><span>⚡ Short Circuit</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">// && يوقف عند أول false</span>
+<span class="attr-val">false</span> && <span class="attr">doSomething</span>()   <span class="comment">// doSomething لن تُنفَّذ أبداً</span>
+
+<span class="comment">// || يوقف عند أول true</span>
+<span class="tag-name">const</span> <span class="attr">name</span> = <span class="attr">userName</span> || <span class="attr-val">'زائر'</span>;
+<span class="comment">// لو userName فارغ، تأخذ 'زائر' كقيمة افتراضية</span>
+
+<span class="comment">// ?? — Nullish Coalescing (أحدث)</span>
+<span class="tag-name">const</span> <span class="attr">val</span> = <span class="attr">data</span> ?? <span class="attr-val">'افتراضي'</span>;
+<span class="comment">// يستخدم الافتراضي فقط لو data = null أو undefined</span></pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- S5 -->
+  <div class="section" id="s5">
+    <h2 class="section-title"><span class="num">.5</span> == مقابل === <span class="en">Equality vs Strict Equality</span></h2>
+    <div class="content">
+      <p>هذا الفرق من أهم الأشياء في JavaScript — كثير من الأخطاء سببها الخلط بينهما:</p>
+
+      <div class="code-box pink">
+<div class="code-header"><span>⚠️ الفرق المهم</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">// == يقارن القيمة فقط (يحول الأنواع تلقائياً)</span>
+<span class="attr-val">5</span>   ==  <span class="attr-val">'5'</span>   <span class="comment">// true  ← خطير!</span>
+<span class="attr-val">0</span>   ==  <span class="attr-val">false</span> <span class="comment">// true  ← خطير!</span>
+<span class="attr-val">''</span>  ==  <span class="attr-val">false</span> <span class="comment">// true  ← خطير!</span>
+<span class="attr-val">null</span> == <span class="attr-val">undefined</span> <span class="comment">// true</span>
+
+<span class="comment">// === يقارن القيمة والنوع معاً (آمن)</span>
+<span class="attr-val">5</span>   === <span class="attr-val">'5'</span>   <span class="comment">// false ← صحيح</span>
+<span class="attr-val">0</span>   === <span class="attr-val">false</span> <span class="comment">// false ← صحيح</span>
+<span class="attr-val">5</span>   === <span class="attr-val">5</span>     <span class="comment">// true  ← صحيح</span></pre>
+      </div>
+
+      <div class="warning-box">
+        <strong>القاعدة:</strong> استخدم <em>===</em> و <em>!==</em> دائماً. تجنب <em>==</em> و <em>!=</em> تماماً إلا في حالات محددة جداً.
+      </div>
+
+      <div class="mini-console">
+        <div class="mc-line mc-in">5 == '5'</div>
+        <div class="mc-line mc-out">true</div>
+        <div class="mc-line mc-in">5 === '5'</div>
+        <div class="mc-line mc-out">false</div>
+        <div class="mc-line mc-in">0 == false</div>
+        <div class="mc-line mc-out">true</div>
+        <div class="mc-line mc-in">0 === false</div>
+        <div class="mc-line mc-out">false</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- S6 -->
+  <div class="section" id="s6">
+    <h2 class="section-title"><span class="num">.6</span> عمليات النصوص <span class="en">String Operations</span></h2>
+    <div class="content">
+      <p>
+        في JS، عامل <em>+</em> مع النصوص يعني <strong>دمج (Concatenation)</strong>، مش جمع.
+        وهذا يسبب مفاجآت لو ما انتبهتش:
+      </p>
+
+      <div class="code-box">
+<div class="code-header"><span>📝 + مع النصوص</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">// دمج نصوص</span>
+<span class="attr-val">'مرحبا'</span> + <span class="attr-val">' '</span> + <span class="attr-val">'أحمد'</span>   <span class="comment">// "مرحبا أحمد"</span>
+
+<span class="comment">// رقم + نص = نص!</span>
+<span class="attr-val">5</span> + <span class="attr-val">'3'</span>                      <span class="comment">// "53" ← مش 8!</span>
+<span class="attr-val">'5'</span> + <span class="attr-val">3</span>                      <span class="comment">// "53"</span>
+
+<span class="comment">// باقي العمليات تحول النص لرقم</span>
+<span class="attr-val">'10'</span> - <span class="attr-val">4</span>                     <span class="comment">// 6</span>
+<span class="attr-val">'10'</span> * <span class="attr-val">2</span>                     <span class="comment">// 20</span>
+<span class="attr-val">'10'</span> / <span class="attr-val">2</span>                     <span class="comment">// 5</span></pre>
+      </div>
+
+      <div class="warning-box">
+        <strong>مشكلة شائعة:</strong> لما تاخد قيمة من input المستخدم، بتكون نص دائماً. لو تعمل عليها <em>+</em> هتلاقيها بتعمل دمج مش جمع. الحل: حوّلها لرقم أولاً بـ <em>Number()</em> أو <em>+</em> قبلها.
+      </div>
+
+      <div class="code-box green">
+<div class="code-header"><span>✅ الحل الصحيح</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-name">const</span> <span class="attr">input</span> = <span class="attr-val">'5'</span>;  <span class="comment">// نص من المستخدم</span>
+
+<span class="comment">// ❌ خطأ</span>
+<span class="attr">input</span> + <span class="attr-val">3</span>           <span class="comment">// "53"</span>
+
+<span class="comment">// ✅ صح</span>
+<span class="tag-name">Number</span>(<span class="attr">input</span>) + <span class="attr-val">3</span>  <span class="comment">// 8</span>
++<span class="attr">input</span> + <span class="attr-val">3</span>          <span class="comment">// 8 (+ أمام المتغير يحوله لرقم)</span></pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- S7 -->
+  <div class="section" id="s7">
+    <h2 class="section-title"><span class="num">.7</span> أولوية التنفيذ <span class="en">Operator Precedence</span></h2>
+    <div class="content">
+      <p>زي الرياضيات، JS بتنفّذ العمليات بترتيب معين. الأقواس دائماً لها الأولوية العليا.</p>
+
+      <div class="code-box">
+<div class="code-header"><span>🔢 ترتيب التنفيذ</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">// بدون أقواس — ضرب قبل جمع</span>
+<span class="attr-val">2</span> + <span class="attr-val">3</span> * <span class="attr-val">4</span>       <span class="comment">// 14 (3*4=12, ثم 2+12)</span>
+
+<span class="comment">// مع أقواس — غيّرنا الترتيب</span>
+(<span class="attr-val">2</span> + <span class="attr-val">3</span>) * <span class="attr-val">4</span>    <span class="comment">// 20 (2+3=5, ثم 5*4)</span>
+
+<span class="comment">// ترتيب الأولوية (من الأعلى للأسفل):</span>
+<span class="comment">// 1. ()  — أقواس</span>
+<span class="comment">// 2. **  — أس</span>
+<span class="comment">// 3. * / % — ضرب وقسمة وباقي</span>
+<span class="comment">// 4. + -  — جمع وطرح</span>
+<span class="comment">// 5. > < >= <= == === — مقارنة</span>
+<span class="comment">// 6. && — AND</span>
+<span class="comment">// 7. || — OR</span></pre>
+      </div>
+
+      <div class="example">
+        <span class="example-label">📌 مثال مركّب:</span>
+        <div class="code-box">
+<pre><span class="tag-name">const</span> <span class="attr">result</span> = <span class="attr-val">2</span> + <span class="attr-val">3</span> * <span class="attr-val">4</span> > <span class="attr-val">10</span> && <span class="attr-val">5</span> !== <span class="attr-val">'5'</span>;
+<span class="comment">// الخطوات:
+// 1. 3 * 4 = 12
+// 2. 2 + 12 = 14
+// 3. 14 > 10 = true
+// 4. 5 !== '5' = true
+// 5. true && true = true</span></pre>
+        </div>
+      </div>
+
+      <div class="tip-box"><strong>نصيحة:</strong> لو مش متأكد من الأولوية — استخدم أقواس دايماً. الكود يصبح أوضح وتتجنب الأخطاء.</div>
+    </div>
+  </div>
+
+  <!-- S8 — Live Editor -->
+  <div class="section" id="s8">
+    <h2 class="section-title"><span class="num">.8</span> محرر الكود الحي <span class="en">Live Editor</span></h2>
+    <div class="content">
+      <p>جرب العمليات بنفسك وشاهد النتائج فوراً:</p>
+    </div>
+    <div class="try-it">
+      <div class="try-it-header">
+        <span>⚡ جرب الـ Operators</span>
+        <div class="try-it-controls">
+          <button class="try-btn" onclick="runCode(this)">▶️ تشغيل</button>
+          <button class="try-btn" onclick="resetCode(this)">🔄 إعادة</button>
+        </div>
+      </div>
+      <div class="try-it-body">
+        <textarea class="try-it-editor" spellcheck="false" data-default='<!DOCTYPE html>
+<html>
+<head><meta charset="UTF-8"></head>
+<body style="font-family:Arial; padding:20px; direction:rtl;">
+  <h2>🧮 حاسبة بسيطة</h2>
+  <div id="out" style="background:#1e293b;color:#4ade80;padding:16px;border-radius:10px;font-family:monospace;white-space:pre-line;"></div>
+
+<script>
+  const p = s => document.getElementById("out").textContent += s + "\n";
+
+  const a = 15, b = 4;
+
+  p("=== عمليات حسابية ===");
+  p(`${a} + ${b} = ${a + b}`);
+  p(`${a} - ${b} = ${a - b}`);
+  p(`${a} * ${b} = ${a * b}`);
+  p(`${a} / ${b} = ${a / b}`);
+  p(`${a} % ${b} = ${a % b}`);
+  p(`${a} ** 2 = ${a ** 2}`);
+
+  p("\n=== مقارنة ===");
+  p(`${a} > ${b} : ${a > b}`);
+  p(`${a} === 15 : ${a === 15}`);
+  p(`${a} !== ${b} : ${a !== b}`);
+
+  p("\n=== منطقية ===");
+  p(`true && false : ${true && false}`);
+  p(`true || false : ${true || false}`);
+  p(`!true : ${!true}`);
+
+  p("\n=== النصوص + الأرقام ===");
+  p(`'5' + 3 = ${'5' + 3}`);
+  p(`'10' - 4 = ${'10' - 4}`);
+</script>
+</body>
+</html>'><!DOCTYPE html>
+<html>
+<head><meta charset="UTF-8"></head>
+<body style="font-family:Arial; padding:20px; direction:rtl;">
+  <h2>🧮 حاسبة بسيطة</h2>
+  <div id="out" style="background:#1e293b;color:#4ade80;padding:16px;border-radius:10px;font-family:monospace;white-space:pre-line;"></div>
+
+<script>
+  const p = s => document.getElementById("out").textContent += s + "\n";
+
+  const a = 15, b = 4;
+
+  p("=== عمليات حسابية ===");
+  p(`${a} + ${b} = ${a + b}`);
+  p(`${a} - ${b} = ${a - b}`);
+  p(`${a} * ${b} = ${a * b}`);
+  p(`${a} / ${b} = ${a / b}`);
+  p(`${a} % ${b} = ${a % b}`);
+  p(`${a} ** 2 = ${a ** 2}`);
+
+  p("\n=== مقارنة ===");
+  p(`${a} > ${b} : ${a > b}`);
+  p(`${a} === 15 : ${a === 15}`);
+  p(`${a} !== ${b} : ${a !== b}`);
+
+  p("\n=== منطقية ===");
+  p(`true && false : ${true && false}`);
+  p(`true || false : ${true || false}`);
+  p(`!true : ${!true}`);
+
+  p("\n=== النصوص + الأرقام ===");
+  p(`'5' + 3 = ${'5' + 3}`);
+  p(`'10' - 4 = ${'10' - 4}`);
+</script>
+</body>
+</html></textarea>
+        <div class="try-it-preview"><iframe srcdoc="" sandbox="allow-scripts allow-same-origin allow-modals allow-popups allow-forms" title="معاينة الكود"></iframe></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EXERCISES -->
+  <div class="section" id="exercises">
+    <h2 class="section-title"><span class="num">📝</span> التمارين العملية <span class="en">Exercises</span></h2>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 1: العمليات الحسابية</div>
+      <p>احسب: مجموع 17 و 8، ناتج ضرب 6 في 7، وباقي قسمة 25 على 4. اطبع النتائج.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre><span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr-val">17</span> + <span class="attr-val">8</span>);   <span class="comment">// 25</span>
+<span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr-val">6</span> * <span class="attr-val">7</span>);    <span class="comment">// 42</span>
+<span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr-val">25</span> % <span class="attr-val">4</span>);   <span class="comment">// 1</span></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 2: هل العدد زوجي؟</div>
+      <p>استخدم عامل <em>%</em> لمعرفة إذا كان العدد 42 زوجياً أم فردياً. النتيجة true أو false.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre><span class="tag-name">const</span> <span class="attr">num</span> = <span class="attr-val">42</span>;
+<span class="tag-name">const</span> <span class="attr">isEven</span> = <span class="attr">num</span> % <span class="attr-val">2</span> === <span class="attr-val">0</span>;
+<span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr">isEven</span>);  <span class="comment">// true</span></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 3: اختصارات التعيين</div>
+      <p>عندك متغير <em>let points = 100</em>. أضف 50، ثم اطرح 30، ثم اضرب في 2. اطبع النتيجة في كل خطوة.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre><span class="tag-name">let</span> <span class="attr">points</span> = <span class="attr-val">100</span>;
+<span class="attr">points</span> += <span class="attr-val">50</span>;  <span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr">points</span>);  <span class="comment">// 150</span>
+<span class="attr">points</span> -= <span class="attr-val">30</span>;  <span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr">points</span>);  <span class="comment">// 120</span>
+<span class="attr">points</span> *= <span class="attr-val">2</span>;   <span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr">points</span>);  <span class="comment">// 240</span></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 4: مقارنة صارمة</div>
+      <p>قارن بين <em>10</em> و <em>'10'</em> بـ == و ===. ثم قارن <em>5</em> و <em>5</em> بنفس الطريقتين. اشرح الفرق.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre><span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr-val">10</span> ==  <span class="attr-val">'10'</span>);  <span class="comment">// true  (تحوّل النص لرقم)</span>
+<span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr-val">10</span> === <span class="attr-val">'10'</span>);  <span class="comment">// false (نوع مختلف)</span>
+<span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr-val">5</span>  ==  <span class="attr-val">5</span>);     <span class="comment">// true</span>
+<span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr-val">5</span>  === <span class="attr-val">5</span>);     <span class="comment">// true</span></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 5: منطقي مركّب</div>
+      <p>عندك: <em>age = 17</em> و <em>hasPermission = true</em>. اكتب شرطاً يتحقق إذا كان العمر 18+ أو لديه إذن. ثم اكتب شرطاً يتحقق إذا كان العمر بين 13 و 17.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre><span class="tag-name">const</span> <span class="attr">age</span>           = <span class="attr-val">17</span>;
+<span class="tag-name">const</span> <span class="attr">hasPermission</span> = <span class="attr-val">true</span>;
+
+<span class="tag-name">const</span> <span class="attr">canEnter</span> = <span class="attr">age</span> >= <span class="attr-val">18</span> || <span class="attr">hasPermission</span>;
+<span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr">canEnter</span>);  <span class="comment">// true</span>
+
+<span class="tag-name">const</span> <span class="attr">isTeen</span> = <span class="attr">age</span> >= <span class="attr-val">13</span> && <span class="attr">age</span> <= <span class="attr-val">17</span>;
+<span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr">isTeen</span>);    <span class="comment">// true</span></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="quiz-container" id="quiz">
+    <div class="quiz-intro"><p>اختبر فهمك للعمليات والمعاملات!</p></div>
+    <div class="quiz-type-tabs">
+      <button class="qt-tab active" onclick="switchQuiz(this,'tf')">✓✗ صح وخطأ</button>
+      <button class="qt-tab" onclick="switchQuiz(this,'mc')">🔘 اختيار من متعدد</button>
+    </div>
+
+    <div class="quiz-section active" id="quiz-tf">
+      <div class="quiz-question" data-correct="false">
+        <span class="q-num">1</span><span class="q-text">'5' + 3 في JavaScript ينتج 8.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">2</span><span class="q-text">5 === '5' يعيد false لأن النوع مختلف.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">3</span><span class="q-text">10 % 3 يساوي 1.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="false">
+        <span class="q-num">4</span><span class="q-text">false && true يعيد true.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">5</span><span class="q-text">x += 5 تعني x = x + 5.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <button class="quiz-submit" onclick="submitQuiz('tf')">عرض النتيجة 🎯</button>
+      <div class="quiz-result" id="result-tf"><div class="result-score" id="score-tf">0/5</div><div class="result-label">إجابات صحيحة</div><div class="result-message" id="msg-tf"></div><button class="retry-btn" onclick="retryQuiz('tf')">🔄 حاول تاني</button></div>
+    </div>
+
+    <div class="quiz-section" id="quiz-mc">
+      <div class="quiz-question" data-correct="2">
+        <span class="q-num">1</span><span class="q-text">ما ناتج: 2 + 3 * 4؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">20</button>
+          <button class="q-opt" onclick="answerMC(this,1)">24</button>
+          <button class="q-opt" onclick="answerMC(this,2)">14</button>
+          <button class="q-opt" onclick="answerMC(this,3)">10</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="1">
+        <span class="q-num">2</span><span class="q-text">أي عامل يعيد باقي القسمة؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">/</button>
+          <button class="q-opt" onclick="answerMC(this,1)">%</button>
+          <button class="q-opt" onclick="answerMC(this,2)">**</button>
+          <button class="q-opt" onclick="answerMC(this,3)">//</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="0">
+        <span class="q-num">3</span><span class="q-text">ما ناتج: true || false؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">true</button>
+          <button class="q-opt" onclick="answerMC(this,1)">false</button>
+          <button class="q-opt" onclick="answerMC(this,2)">null</button>
+          <button class="q-opt" onclick="answerMC(this,3)">undefined</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="3">
+        <span class="q-num">4</span><span class="q-text">أيهما يجب استخدامه دائماً بدلاً من ==؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">=</button>
+          <button class="q-opt" onclick="answerMC(this,1)">==</button>
+          <button class="q-opt" onclick="answerMC(this,2)">!=</button>
+          <button class="q-opt" onclick="answerMC(this,3)">===</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="1">
+        <span class="q-num">5</span><span class="q-text">ما ناتج: !'hello'؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">true</button>
+          <button class="q-opt" onclick="answerMC(this,1)">false</button>
+          <button class="q-opt" onclick="answerMC(this,2)">'hello'</button>
+          <button class="q-opt" onclick="answerMC(this,3)">undefined</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <button class="quiz-submit" onclick="submitQuiz('mc')">عرض النتيجة 🎯</button>
+      <div class="quiz-result" id="result-mc"><div class="result-score" id="score-mc">0/5</div><div class="result-label">إجابات صحيحة</div><div class="result-message" id="msg-mc"></div><button class="retry-btn" onclick="retryQuiz('mc')">🔄 حاول تاني</button></div>
+    </div>
+  </div>
+
+  <div class="lesson-nav">
+    <a href="./lesson-13.html" class="nav-btn"><span>⬅️</span><span>الدرس السابق</span></a>
+    <button class="nav-btn complete-btn" id="completeBtn" onclick="markComplete(this)"><span>✅</span><span>علّم كمكتمل</span></button>
+    <a href="./lesson-15.html" class="nav-btn"><span>الدرس التالي</span><span>➡️</span></a>
+  </div>
+
+  <div class="notebook-footer">
+    <h3>🎉 أتقنت العمليات والمعاملات!</h3>
+    <p>دلوقتي تقدر تحسب وتقارن وتحكم في أي بيانات ❤️<br><strong>الدرس التالي: الشروط if / else / switch ❓</strong></p>
+  </div>
+</div>
+
+<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">⬆️</button>
+<div class="toast" id="toast"></div>
+<script src="../../js/data/courses.js"></script>
+<script src="../../js/progress.js"></script>
+<script src="../../js/lesson-editor.js"></script>
+<script>
+const COURSE_ID='frontend',LESSON_ID=14,TOTAL=32;
+function toggleSolution(b){const s=b.nextElementSibling;s.classList.toggle('show');b.textContent=s.classList.contains('show')?'إخفاء الحل ▲':'عرض الحل ▼';}
+function copyCode(b){const p=b.closest('.code-box').querySelector('pre');navigator.clipboard.writeText(p.innerText).then(()=>{b.classList.add('copied');b.textContent='✓ تم النسخ';setTimeout(()=>{b.classList.remove('copied');b.textContent='📋 نسخ';},2000);});}
+function runCode(b){const t=b.closest('.try-it');t.querySelector('iframe').srcdoc=t.querySelector('.try-it-editor').value;}
+function resetCode(b){const t=b.closest('.try-it'),e=t.querySelector('.try-it-editor');e.value=e.dataset.default;t.querySelector('iframe').srcdoc=e.value;}
+window.addEventListener('load',()=>{document.querySelectorAll('.try-it').forEach(t=>{const e=t.querySelector('.try-it-editor');t.querySelector('iframe').srcdoc=e.value;});});
+function switchQuiz(b,t){document.querySelectorAll('.qt-tab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.quiz-section').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.getElementById('quiz-'+t).classList.add('active');}
+const answers={tf:{},mc:{}};
+function answerTF(b,v){const q=b.closest('.quiz-question'),i=Array.from(q.parentNode.querySelectorAll('.quiz-question')).indexOf(q);q.querySelectorAll('.q-opt').forEach(o=>o.classList.remove('selected'));b.classList.add('selected');answers.tf[i]=v;}
+function answerMC(b,i){const q=b.closest('.quiz-question'),qi=Array.from(q.parentNode.querySelectorAll('.quiz-question')).indexOf(q);q.querySelectorAll('.q-opt').forEach(o=>o.classList.remove('selected'));b.classList.add('selected');answers.mc[qi]=i;}
+function submitQuiz(type){const sec=document.getElementById('quiz-'+type),qs=sec.querySelectorAll('.quiz-question');let c=0;qs.forEach((q,i)=>{const ca=type==='tf'?(q.dataset.correct==='true'):parseInt(q.dataset.correct),ua=answers[type][i],fb=q.querySelector('.q-feedback'),opts=q.querySelectorAll('.q-opt');opts.forEach(o=>{o.classList.remove('selected');o.disabled=true;});if(ua===undefined){fb.className='q-feedback wrong show';fb.textContent='⚠️ ما اخترتش إجابة!';return;}if(ua===ca){c++;fb.className='q-feedback correct show';fb.textContent='✓ إجابة صحيحة!';if(type==='tf')opts[ca?0:1].classList.add('correct');else opts[ca].classList.add('correct');}else{fb.className='q-feedback wrong show';if(type==='tf'){opts[ca?0:1].classList.add('correct');opts[ua?0:1].classList.add('wrong');fb.textContent='✗ خطأ.';}else{opts[ca].classList.add('correct');opts[ua].classList.add('wrong');fb.textContent='✗ الإجابة بالأخضر.';}}});const r=document.getElementById('result-'+type);document.getElementById('score-'+type).textContent=c+'/'+qs.length;const m=document.getElementById('msg-'+type);if(c===qs.length){m.textContent='🏆 ممتاز 100%!';m.className='result-message excellent';}else if(c>=3){m.textContent='👍 جيد!';m.className='result-message good';}else{m.textContent='📚 راجع الدرس.';m.className='result-message try-again';}r.classList.add('show');r.scrollIntoView({behavior:'smooth',block:'center'});}
+function retryQuiz(type){const sec=document.getElementById('quiz-'+type);sec.querySelectorAll('.q-opt').forEach(o=>{o.classList.remove('selected','correct','wrong');o.disabled=false;});sec.querySelectorAll('.q-feedback').forEach(f=>{f.classList.remove('show','correct','wrong');f.textContent='';});document.getElementById('result-'+type).classList.remove('show');answers[type]={};}
+function markComplete(btn){const done=Progress.toggleLessonComplete(COURSE_ID,LESSON_ID);btn.classList.toggle('completed',done);btn.querySelector('span:last-child').textContent=done?'مكتمل! ⭐':'علّم كمكتمل';showToast(done?'🎉 أكملت درس العمليات والمعاملات!':'تم إلغاء الإكمال');}
+if(Progress.isLessonComplete(COURSE_ID,LESSON_ID)){const b=document.getElementById('completeBtn');b.classList.add('completed');b.querySelector('span:last-child').textContent='مكتمل! ⭐';}
+(function(){const p=Progress.getCourseProgress(COURSE_ID,TOTAL);document.getElementById('progFill').style.width=p+'%';document.getElementById('progText').textContent=p+'%';})();
+function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
+window.addEventListener('scroll',()=>{document.getElementById('scrollTop').classList.toggle('show',window.scrollY>300);});
+document.querySelectorAll('.toc-card a').forEach(l=>{l.addEventListener('click',e=>{e.preventDefault();const t=document.querySelector(l.getAttribute('href'));if(t)t.scrollIntoView({behavior:'smooth',block:'start'});});});
+</script>
+</body>
+</html>

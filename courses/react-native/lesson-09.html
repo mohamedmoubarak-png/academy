@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-V2NCKVL16D"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-V2NCKVL16D');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>الأنماط المتقدمة — دفتر البرمجة</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=Cairo:wght@300;400;500;600;700;900&family=Caveat:wght@400;700&family=Fira+Code:wght@400;500;600&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../css/shared.css">
+<link rel="stylesheet" href="../../css/notebook.css">
+<style>
+body { padding: 20px 10px; }
+
+/* shadow showcase */
+.shadow-row {
+  display: flex; gap: 16px; flex-wrap: wrap;
+  margin: 16px 0; justify-content: center;
+}
+.shadow-card {
+  width: 100px; height: 80px;
+  background: white; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: .7rem; font-family: 'Fira Code', monospace;
+  color: #64748b; text-align: center; padding: 8px;
+}
+.sh-soft  { box-shadow: 0 4px 12px rgba(0,0,0,.08); }
+.sh-med   { box-shadow: 0 8px 24px rgba(0,0,0,.15); }
+.sh-hard  { box-shadow: 0 2px 4px rgba(0,0,0,.35); }
+.sh-blue  { box-shadow: 0 8px 20px rgba(14,165,233,.35); }
+.sh-inner { box-shadow: inset 0 2px 8px rgba(0,0,0,.12); }
+
+/* border showcase */
+.border-row {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(120px,1fr));
+  gap: 12px; margin: 14px 0;
+}
+.border-demo {
+  height: 60px; border-radius: 10px; background: white;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Fira Code', monospace; font-size: .68rem; color: #64748b;
+}
+
+/* gradient cards */
+.gradient-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(130px,1fr));
+  gap: 12px; margin: 14px 0;
+}
+.grad-card {
+  height: 70px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  color: white; font-size: .72rem; font-weight: 700;
+  font-family: 'Fira Code', monospace;
+}
+
+/* opacity showcase */
+.opacity-row {
+  display: flex; gap: 10px; align-items: center;
+  flex-wrap: wrap; margin: 14px 0;
+}
+.op-box {
+  width: 70px; height: 70px; border-radius: 10px;
+  background: #0ea5e9;
+  display: flex; align-items: center; justify-content: center;
+  color: white; font-size: .72rem; font-weight: 700;
+  font-family: 'Fira Code', monospace;
+}
+
+/* transform showcase */
+.transform-row {
+  display: flex; gap: 20px; flex-wrap: wrap;
+  align-items: center; justify-content: center; margin: 16px 0;
+}
+.tf-box {
+  width: 70px; height: 70px; border-radius: 10px;
+  background: linear-gradient(135deg, #0ea5e9, #7c3aed);
+  display: flex; align-items: center; justify-content: center;
+  color: white; font-size: .65rem; font-weight: 700;
+  font-family: 'Fira Code', monospace; text-align: center;
+}
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="crumbs">
+    <a href="../../index.html">🏠 الرئيسية</a>
+    <span class="sep">/</span>
+    <a href="./index.html">📱 React Native</a>
+    <span class="sep">/</span>
+    <span class="current">✨ الدرس 9: الأنماط المتقدمة</span>
+  </div>
+  <div class="progress-mini">
+    <div class="progress-bar-mini"><div class="progress-fill-mini" id="progFill"></div></div>
+    <span id="progText">0%</span>
+  </div>
+</div>
+
+<div class="notebook">
+
+  <div class="notebook-header">
+    <div class="lesson-tag">✨ الدرس التاسع</div>
+    <h1><span class="sparkle">✦</span> الأنماط المتقدمة <span class="sparkle">✦</span></h1>
+    <div class="lesson-meta">
+      <span>⏱️ 40 دقيقة</span>
+      <span>📊 متوسط</span>
+      <span>🎯 5 تمارين + اختبار</span>
+    </div>
+  </div>
+
+  <div class="toc-card">
+    <h2>📑 فهرس الدرس</h2>
+    <ol>
+      <li><a href="#s1">الظلال — Shadow و Elevation</a></li>
+      <li><a href="#s2">الحدود — Border Styles</a></li>
+      <li><a href="#s3">الـ Gradient بـ Expo LinearGradient</a></li>
+      <li><a href="#s4">الشفافية — Opacity</a></li>
+      <li><a href="#s5">التحويلات — Transform</a></li>
+      <li><a href="#s6">overflow و zIndex</a></li>
+      <li><a href="#s7">تطبيق عملي — بطاقة احترافية</a></li>
+      <li><a href="#s8">معاينة حية</a></li>
+      <li><a href="#exercises">التمارين</a></li>
+      <li><a href="#quiz">اختبر فهمك</a></li>
+    </ol>
+  </div>
+
+  <!-- S1 -->
+  <div class="section" id="s1">
+    <h2 class="section-title"><span class="num">.1</span> الظلال — Shadow و Elevation <span class="en">Shadows</span></h2>
+    <div class="content">
+      <p>الظل يُعطي عمقاً وارتفاعاً للعناصر — كأنها تطفو فوق الصفحة. في RN الظلال تختلف بين iOS وAndroid.</p>
+
+      <div class="shadow-row">
+        <div class="shadow-card sh-soft">ناعم<br>soft</div>
+        <div class="shadow-card sh-med">متوسط<br>medium</div>
+        <div class="shadow-card sh-hard">قوي<br>hard</div>
+        <div class="shadow-card sh-blue">ملون<br>colored</div>
+        <div class="shadow-card sh-inner">داخلي<br>inset</div>
+      </div>
+
+      <div class="code-box">
+<div class="code-header"><span>🍎 iOS — shadow* properties</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-name">const</span> <span class="attr">styles</span> = StyleSheet.create({
+  <span class="comment">// ظل ناعم (iOS)</span>
+  cardSoft: {
+    shadowColor: <span class="attr-val">'#000'</span>,
+    shadowOffset: { width: <span class="attr-val">0</span>, height: <span class="attr-val">4</span> },
+    shadowOpacity: <span class="attr-val">0.08</span>,
+    shadowRadius: <span class="attr-val">12</span>,
+    backgroundColor: <span class="attr-val">'white'</span>,
+  },
+
+  <span class="comment">// ظل ملون (مميز)</span>
+  cardBlue: {
+    shadowColor: <span class="attr-val">'#0ea5e9'</span>,   <span class="comment">// لون الظل نفسه</span>
+    shadowOffset: { width: <span class="attr-val">0</span>, height: <span class="attr-val">8</span> },
+    shadowOpacity: <span class="attr-val">0.35</span>,
+    shadowRadius: <span class="attr-val">16</span>,
+    backgroundColor: <span class="attr-val">'white'</span>,
+  },
+});
+
+<span class="comment">// 🤖 Android — elevation فقط</span>
+cardAndroid: {
+  elevation: <span class="attr-val">8</span>,           <span class="comment">// 0-24، كلما زاد = ظل أقوى</span>
+  backgroundColor: <span class="attr-val">'white'</span>,
+},
+
+<span class="comment">// ✅ الحل الشامل (iOS + Android)</span>
+card: {
+  backgroundColor: <span class="attr-val">'white'</span>,
+  ...Platform.select({
+    ios: {
+      shadowColor: <span class="attr-val">'#000'</span>,
+      shadowOffset: { width: <span class="attr-val">0</span>, height: <span class="attr-val">4</span> },
+      shadowOpacity: <span class="attr-val">0.1</span>,
+      shadowRadius: <span class="attr-val">8</span>,
+    },
+    android: { elevation: <span class="attr-val">5</span> },
+  }),
+},</pre>
+      </div>
+
+      <div class="tip-box"><strong>ملاحظة مهمة:</strong> على Android، <code>elevation</code> يُلوّن الظل دائماً بالأسود ولا يمكن تغيير لونه إلا من React Native 0.72+ بـ <code>shadowColor</code> على Android.</div>
+    </div>
+  </div>
+
+  <!-- S2 -->
+  <div class="section" id="s2">
+    <h2 class="section-title"><span class="num">.2</span> الحدود — Border Styles <span class="en">Borders</span></h2>
+    <div class="content">
+      <div class="border-row">
+        <div class="border-demo" style="border: 2px solid #0ea5e9;">solid</div>
+        <div class="border-demo" style="border: 2px dashed #7c3aed;">dashed</div>
+        <div class="border-demo" style="border: 2px dotted #f43f5e;">dotted</div>
+        <div class="border-demo" style="border-radius: 999px; border: 2px solid #16a34a;">pill</div>
+        <div class="border-demo" style="border-top: 3px solid #0ea5e9;">top only</div>
+        <div class="border-demo" style="border-bottom: 1px solid #e2e8f0;">bottom</div>
+      </div>
+
+      <div class="code-box">
+<div class="code-header"><span>🔲 Border Properties</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">// 1. حد كامل</span>
+{ borderWidth: <span class="attr-val">2</span>, borderColor: <span class="attr-val">'#0ea5e9'</span>, borderStyle: <span class="attr-val">'solid'</span> }
+
+<span class="comment">// 2. حد متقطع</span>
+{ borderWidth: <span class="attr-val">2</span>, borderColor: <span class="attr-val">'#7c3aed'</span>, borderStyle: <span class="attr-val">'dashed'</span> }
+
+<span class="comment">// 3. حد جانب واحد فقط</span>
+{ borderBottomWidth: <span class="attr-val">1</span>, borderBottomColor: <span class="attr-val">'#e2e8f0'</span> }
+{ borderTopWidth: <span class="attr-val">3</span>,    borderTopColor: <span class="attr-val">'#0ea5e9'</span> }
+{ borderRightWidth: <span class="attr-val">4</span>,  borderRightColor: <span class="attr-val">'#7c3aed'</span> }
+
+<span class="comment">// 4. زوايا دائرية</span>
+{ borderRadius: <span class="attr-val">12</span> }            <span class="comment">// كل الزوايا</span>
+{ borderRadius: <span class="attr-val">999</span> }           <span class="comment">// pill shape كامل</span>
+{ borderTopLeftRadius: <span class="attr-val">20</span>,
+  borderTopRightRadius: <span class="attr-val">20</span> }   <span class="comment">// أعلى فقط</span>
+
+<span class="comment">// 5. خلفية مع حد</span>
+{
+  backgroundColor: <span class="attr-val">'#e0f2fe'</span>,
+  borderWidth: <span class="attr-val">1.5</span>,
+  borderColor: <span class="attr-val">'#7dd3fc'</span>,
+  borderRadius: <span class="attr-val">10</span>,
+  padding: <span class="attr-val">12</span>,
+}</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- S3 -->
+  <div class="section" id="s3">
+    <h2 class="section-title"><span class="num">.3</span> الـ Gradient بـ LinearGradient <span class="en">Gradients</span></h2>
+    <div class="content">
+      <p>React Native لا تدعم الـ gradient مباشرة — نستخدم <code>expo-linear-gradient</code>:</p>
+
+      <div class="gradient-grid">
+        <div class="grad-card" style="background:linear-gradient(135deg,#0ea5e9,#7c3aed);">أزرق/بنفسجي</div>
+        <div class="grad-card" style="background:linear-gradient(135deg,#f43f5e,#f97316);">أحمر/برتقالي</div>
+        <div class="grad-card" style="background:linear-gradient(180deg,#1e293b,#0f172a);">داكن</div>
+        <div class="grad-card" style="background:linear-gradient(90deg,#16a34a,#0ea5e9);">أخضر/أزرق</div>
+      </div>
+
+      <div class="code-box">
+<div class="code-header"><span>🎨 expo-linear-gradient</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">// التثبيت</span>
+npx expo install expo-linear-gradient
+
+<span class="tag-name">import</span> { LinearGradient } <span class="tag-name">from</span> <span class="attr-val">'expo-linear-gradient'</span>;
+
+<span class="comment">// gradient أفقي</span>
+&lt;<span class="attr">LinearGradient</span>
+  colors={[<span class="attr-val">'#0ea5e9'</span>, <span class="attr-val">'#7c3aed'</span>]}
+  start={{ x: <span class="attr-val">0</span>, y: <span class="attr-val">0</span> }}
+  end={{ x: <span class="attr-val">1</span>, y: <span class="attr-val">0</span> }}
+  style={styles.gradient}
+&gt;
+  &lt;<span class="attr">Text</span> style={{ color: <span class="attr-val">'white'</span>, fontWeight: <span class="attr-val">'bold'</span> }}&gt;
+    خلفية Gradient 🎨
+  &lt;/<span class="attr">Text</span>&gt;
+&lt;/<span class="attr">LinearGradient</span>&gt;
+
+<span class="comment">// gradient قطري</span>
+&lt;<span class="attr">LinearGradient</span>
+  colors={[<span class="attr-val">'#f43f5e'</span>, <span class="attr-val">'#f97316'</span>, <span class="attr-val">'#fbbf24'</span>]}
+  start={{ x: <span class="attr-val">0</span>, y: <span class="attr-val">0</span> }}
+  end={{ x: <span class="attr-val">1</span>, y: <span class="attr-val">1</span> }}
+  style={[styles.card, { borderRadius: <span class="attr-val">16</span>, padding: <span class="attr-val">20</span> }]}
+&gt;
+  &lt;<span class="attr">Text</span> style={{ color: <span class="attr-val">'white'</span> }}&gt;غروب الشمس 🌅&lt;/<span class="attr">Text</span>&gt;
+&lt;/<span class="attr">LinearGradient</span>&gt;
+
+<span class="comment">// زر gradient</span>
+&lt;<span class="attr">TouchableOpacity</span> onPress={handlePress}&gt;
+  &lt;<span class="attr">LinearGradient</span>
+    colors={[<span class="attr-val">'#0ea5e9'</span>, <span class="attr-val">'#0284c7'</span>]}
+    style={styles.btn}
+  &gt;
+    &lt;<span class="attr">Text</span> style={styles.btnText}&gt;إرسال&lt;/<span class="attr">Text</span>&gt;
+  &lt;/<span class="attr">LinearGradient</span>&gt;
+&lt;/<span class="attr">TouchableOpacity</span>&gt;</pre>
+      </div>
+
+      <div class="info-box"><strong>start و end:</strong> يحددان اتجاه الـ gradient. <code>{x:0, y:0}</code> = الزاوية العليا اليسرى. <code>{x:1, y:0}</code> = أفقي. <code>{x:0, y:1}</code> = عمودي. <code>{x:1, y:1}</code> = قطري.</div>
+    </div>
+  </div>
+
+  <!-- S4 -->
+  <div class="section" id="s4">
+    <h2 class="section-title"><span class="num">.4</span> الشفافية — Opacity <span class="en">Opacity</span></h2>
+    <div class="content">
+      <div class="opacity-row">
+        <div class="op-box" style="opacity:1;">1.0</div>
+        <div class="op-box" style="opacity:.75;">0.75</div>
+        <div class="op-box" style="opacity:.5;">0.5</div>
+        <div class="op-box" style="opacity:.25;">0.25</div>
+        <div class="op-box" style="opacity:.1;">0.1</div>
+      </div>
+
+      <div class="code-box">
+<div class="code-header"><span>👁️ طرق التحكم في الشفافية</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">// 1. opacity على العنصر كله (يؤثر على الأبناء أيضاً)</span>
+&lt;<span class="attr">View</span> style={{ opacity: <span class="attr-val">0.5</span> }}&gt;
+  &lt;<span class="attr">Text</span>&gt;هذا النص سيكون شفافاً&lt;/<span class="attr">Text</span>&gt;
+&lt;/<span class="attr">View</span>&gt;
+
+<span class="comment">// 2. rgba في اللون (لا يؤثر على الأبناء)</span>
+&lt;<span class="attr">View</span> style={{ backgroundColor: <span class="attr-val">'rgba(14, 165, 233, 0.15)'</span> }}&gt;
+  &lt;<span class="attr">Text</span>&gt;هذا النص واضح&lt;/<span class="attr">Text</span>&gt;
+&lt;/<span class="attr">View</span>&gt;
+
+<span class="comment">// 3. شفافية ديناميكية — لتأثير Disabled</span>
+&lt;<span class="attr">TouchableOpacity</span>
+  style={{ opacity: isDisabled ? <span class="attr-val">0.4</span> : <span class="attr-val">1</span> }}
+  disabled={isDisabled}
+&gt;
+  &lt;<span class="attr">Text</span>&gt;زر&lt;/<span class="attr">Text</span>&gt;
+&lt;/<span class="attr">TouchableOpacity</span>&gt;
+
+<span class="comment">// 4. ألوان بصيغة hex + alpha</span>
+backgroundColor: <span class="attr-val">'#0ea5e926'</span>   <span class="comment">// آخر رقمين = الشفافية (26 = 15%)</span>
+backgroundColor: <span class="attr-val">'#0ea5e980'</span>   <span class="comment">// 80 = 50%</span></pre>
+      </div>
+
+      <div class="tip-box"><strong>opacity vs rgba:</strong> استخدم <code>opacity</code> لتأثيرات الـ disabled أو Fade. استخدم <code>rgba</code> لخلفيات شبه شفافة دون التأثير على النص بداخلها.</div>
+    </div>
+  </div>
+
+  <!-- S5 -->
+  <div class="section" id="s5">
+    <h2 class="section-title"><span class="num">.5</span> التحويلات — Transform <span class="en">Transform</span></h2>
+    <div class="content">
+      <div class="transform-row">
+        <div>
+          <div style="font-size:.65rem; color:#64748b; text-align:center; margin-bottom:6px; font-family:monospace;">rotate(45deg)</div>
+          <div class="tf-box" style="transform:rotate(45deg);">A</div>
+        </div>
+        <div>
+          <div style="font-size:.65rem; color:#64748b; text-align:center; margin-bottom:6px; font-family:monospace;">scale(1.3)</div>
+          <div class="tf-box" style="transform:scale(1.3);">B</div>
+        </div>
+        <div>
+          <div style="font-size:.65rem; color:#64748b; text-align:center; margin-bottom:6px; font-family:monospace;">translateX(20)</div>
+          <div class="tf-box" style="transform:translateX(20px);">C</div>
+        </div>
+        <div>
+          <div style="font-size:.65rem; color:#64748b; text-align:center; margin-bottom:6px; font-family:monospace;">skewX(10deg)</div>
+          <div class="tf-box" style="transform:skewX(10deg);">D</div>
+        </div>
+      </div>
+
+      <div class="code-box">
+<div class="code-header"><span>🔄 Transform في RN</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">// في RN، transform = array من objects</span>
+transform: [{ rotate: <span class="attr-val">'45deg'</span> }]
+transform: [{ scale: <span class="attr-val">1.2</span> }]
+transform: [{ translateX: <span class="attr-val">20</span> }]
+transform: [{ translateY: <span class="attr-val">-10</span> }]
+
+<span class="comment">// دمج تحويلات متعددة</span>
+transform: [
+  { rotate: <span class="attr-val">'10deg'</span> },
+  { scale: <span class="attr-val">0.95</span> },
+]
+
+<span class="comment">// مثال عملي — بادج مائل</span>
+badge: {
+  position: <span class="attr-val">'absolute'</span>,
+  top: <span class="attr-val">-8</span>,
+  right: <span class="attr-val">-8</span>,
+  transform: [{ rotate: <span class="attr-val">'12deg'</span> }],
+}
+
+<span class="comment">// مثال — زر يكبر عند الضغط (مع Animated)</span>
+style={{
+  transform: [{ scale: pressed ? <span class="attr-val">0.95</span> : <span class="attr-val">1</span> }],
+}}</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- S6 -->
+  <div class="section" id="s6">
+    <h2 class="section-title"><span class="num">.6</span> overflow و zIndex <span class="en">overflow & zIndex</span></h2>
+    <div class="content">
+      <div class="code-box">
+<div class="code-header"><span>📦 overflow و zIndex</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">// overflow — قص المحتوى الزائد</span>
+{ overflow: <span class="attr-val">'hidden'</span> }   <span class="comment">// يقص كل ما يخرج عن الحاوية (الشائع)</span>
+{ overflow: <span class="attr-val">'visible'</span> }  <span class="comment">// يظهر المحتوى خارج الحاوية (افتراضي)</span>
+{ overflow: <span class="attr-val">'scroll'</span> }   <span class="comment">// نادراً — استخدم ScrollView بدلاً منه</span>
+
+<span class="comment">// مثال عملي — صورة دائرية مقصوصة</span>
+avatarContainer: {
+  width: <span class="attr-val">80</span>, height: <span class="attr-val">80</span>,
+  borderRadius: <span class="attr-val">40</span>,
+  overflow: <span class="attr-val">'hidden'</span>,   <span class="comment">// يضمن أن الصورة مقصوصة داخل الدائرة</span>
+}
+
+<span class="comment">// zIndex — ترتيب الطبقات (مثل z-index في CSS)</span>
+modalOverlay: { zIndex: <span class="attr-val">100</span> }
+header: { zIndex: <span class="attr-val">50</span> }
+content: { zIndex: <span class="attr-val">1</span> }
+
+<span class="comment">// مثال — Tooltip يظهر فوق كل شيء</span>
+tooltip: {
+  position: <span class="attr-val">'absolute'</span>,
+  zIndex: <span class="attr-val">999</span>,
+  backgroundColor: <span class="attr-val">'#1e293b'</span>,
+  padding: <span class="attr-val">8</span>,
+  borderRadius: <span class="attr-val">6</span>,
+}</pre>
+      </div>
+
+      <div class="warning-box"><strong>overflow: 'hidden' مهم جداً</strong> عند:<br>
+      • الصور الدائرية (borderRadius + overflow: 'hidden')<br>
+      • بطاقات بصور في الأعلى (overflow: 'hidden' على البطاقة كلها)<br>
+      • أي عنصر ترسم فيه خارج حدوده</div>
+    </div>
+  </div>
+
+  <!-- S7 -->
+  <div class="section" id="s7">
+    <h2 class="section-title"><span class="num">.7</span> تطبيق عملي — بطاقة احترافية <span class="en">Pro Card</span></h2>
+    <div class="content">
+      <div class="code-box">
+<div class="code-header"><span>🏆 بطاقة تجمع كل الأنماط</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-name">import</span> { LinearGradient } <span class="tag-name">from</span> <span class="attr-val">'expo-linear-gradient'</span>;
+
+<span class="tag-name">function</span> <span class="attr">ProCard</span>({ title, subtitle, tag }) {
+  <span class="tag-name">return</span> (
+    &lt;<span class="attr">View</span> style={s.card}&gt;
+
+      <span class="comment">{/* صورة الغلاف — gradient */}</span>
+      &lt;<span class="attr">LinearGradient</span>
+        colors={[<span class="attr-val">'#0ea5e9'</span>, <span class="attr-val">'#7c3aed'</span>]}
+        style={s.cover}
+      &gt;
+        &lt;<span class="attr">View</span> style={s.badge}&gt;
+          &lt;<span class="attr">Text</span> style={s.badgeText}&gt;{tag}&lt;/<span class="attr">Text</span>&gt;
+        &lt;/<span class="attr">View</span>&gt;
+      &lt;/<span class="attr">LinearGradient</span>&gt;
+
+      <span class="comment">{/* الصورة الشخصية */}</span>
+      &lt;<span class="attr">View</span> style={s.avatarWrap}&gt;
+        &lt;<span class="attr">Image</span>
+          source={{ uri: <span class="attr-val">'...'</span> }}
+          style={s.avatar}
+        /&gt;
+      &lt;/<span class="attr">View</span>&gt;
+
+      &lt;<span class="attr">View</span> style={s.body}&gt;
+        &lt;<span class="attr">Text</span> style={s.title}&gt;{title}&lt;/<span class="attr">Text</span>&gt;
+        &lt;<span class="attr">Text</span> style={s.sub}&gt;{subtitle}&lt;/<span class="attr">Text</span>&gt;
+      &lt;/<span class="attr">View</span>&gt;
+    &lt;/<span class="attr">View</span>&gt;
+  );
+}
+
+<span class="tag-name">const</span> s = StyleSheet.create({
+  card: {
+    backgroundColor: <span class="attr-val">'white'</span>,
+    borderRadius: <span class="attr-val">20</span>,
+    overflow: <span class="attr-val">'hidden'</span>,
+    ...Platform.select({
+      ios:     { shadowColor: <span class="attr-val">'#000'</span>, shadowOffset: { width:<span class="attr-val">0</span>, height:<span class="attr-val">8</span> },
+                 shadowOpacity: <span class="attr-val">0.12</span>, shadowRadius: <span class="attr-val">16</span> },
+      android: { elevation: <span class="attr-val">6</span> },
+    }),
+  },
+  cover:   { height: <span class="attr-val">100</span>, justifyContent: <span class="attr-val">'flex-end'</span>, padding: <span class="attr-val">10</span> },
+  badge:   { backgroundColor: <span class="attr-val">'rgba(255,255,255,.25)'</span>,
+             borderRadius: <span class="attr-val">999</span>, paddingHorizontal: <span class="attr-val">10</span>, paddingVertical: <span class="attr-val">3</span>,
+             alignSelf: <span class="attr-val">'flex-start'</span>, transform: [{ rotate: <span class="attr-val">'-2deg'</span> }] },
+  badgeText: { color: <span class="attr-val">'white'</span>, fontSize: <span class="attr-val">11</span>, fontWeight: <span class="attr-val">'700'</span> },
+  avatarWrap: { width: <span class="attr-val">64</span>, height: <span class="attr-val">64</span>, borderRadius: <span class="attr-val">32</span>,
+                overflow: <span class="attr-val">'hidden'</span>, borderWidth: <span class="attr-val">3</span>, borderColor: <span class="attr-val">'white'</span>,
+                marginTop: <span class="attr-val">-32</span>, marginRight: <span class="attr-val">16</span> },
+  avatar: { width: <span class="attr-val">'100%'</span>, height: <span class="attr-val">'100%'</span> },
+  body:  { padding: <span class="attr-val">12</span> },
+  title: { fontSize: <span class="attr-val">18</span>, fontWeight: <span class="attr-val">'800'</span>, color: <span class="attr-val">'#0f172a'</span> },
+  sub:   { fontSize: <span class="attr-val">13</span>, color: <span class="attr-val">'#64748b'</span>, marginTop: <span class="attr-val">2</span> },
+});</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- S8 — Live Preview -->
+  <div class="section" id="s8">
+    <h2 class="section-title"><span class="num">.8</span> معاينة حية <span class="en">Live Preview</span></h2>
+    <div class="content"><p>بطاقة تجمع الظل + Gradient + overflow + transform:</p></div>
+
+    <div class="live-preview">
+      <div class="lp-header">
+        <span>📱 معاينة — بطاقة الأنماط المتقدمة</span>
+        <span class="lp-tag">Shadow + Gradient + Transform</span>
+      </div>
+      <div class="lp-body">
+        <div class="lp-code">
+<pre><span class="k">const</span> s = StyleSheet.create({
+  card: {
+    backgroundColor: <span class="s">'white'</span>,
+    borderRadius: <span class="n">20</span>,
+    overflow: <span class="s">'hidden'</span>,
+    <span class="c">// ظل احترافي</span>
+    shadowColor: <span class="s">'#7c3aed'</span>,
+    shadowOffset: { width: <span class="n">0</span>, height: <span class="n">8</span> },
+    shadowOpacity: <span class="n">0.2</span>,
+    shadowRadius: <span class="n">16</span>,
+    elevation: <span class="n">8</span>,
+  },
+  cover: {
+    height: <span class="n">90</span>,
+    <span class="c">// LinearGradient هنا</span>
+  },
+  badge: {
+    backgroundColor: <span class="s">'rgba(255,255,255,.25)'</span>,
+    borderRadius: <span class="n">999</span>,
+    paddingHorizontal: <span class="n">10</span>,
+    paddingVertical: <span class="n">3</span>,
+    alignSelf: <span class="s">'flex-start'</span>,
+    <span class="c">// transform مائل</span>
+    transform: [{ rotate: <span class="s">'-3deg'</span> }],
+  },
+  avatarWrap: {
+    borderRadius: <span class="n">32</span>,
+    overflow: <span class="s">'hidden'</span>, <span class="c">// يقص الصورة</span>
+    borderWidth: <span class="n">3</span>,
+    borderColor: <span class="s">'white'</span>,
+    marginTop: <span class="n">-32</span>, <span class="c">// يطفو على الغلاف</span>
+  },
+});</pre>
+        </div>
+        <div class="lp-phone-wrap">
+          <div class="lp-phone">
+            <div class="lp-phone-bar"></div>
+            <div class="lp-phone-screen" style="padding:14px; justify-content:center;">
+              <!-- Pro Card simulation -->
+              <div style="background:white; border-radius:16px; overflow:hidden; box-shadow:0 8px 24px rgba(124,58,237,.2);">
+                <!-- Cover gradient -->
+                <div style="background:linear-gradient(135deg,#0ea5e9,#7c3aed); height:80px; padding:10px; display:flex; align-items:flex-end;">
+                  <div style="background:rgba(255,255,255,.25); border-radius:999px; padding:2px 10px; transform:rotate(-3deg); display:inline-block;">
+                    <span style="color:white; font-size:.6rem; font-weight:700; font-family:'Cairo',sans-serif;">⭐ مميز</span>
+                  </div>
+                </div>
+                <!-- Avatar -->
+                <div style="padding:0 12px; margin-top:-24px; display:flex; align-items:flex-end; gap:10px;">
+                  <div style="width:48px; height:48px; border-radius:24px; overflow:hidden; border:3px solid white; background:linear-gradient(135deg,#f97316,#fbbf24); display:flex; align-items:center; justify-content:center; font-size:1.4rem; flex-shrink:0;">👨‍💻</div>
+                  <div style="padding-bottom:4px;">
+                    <div style="font-size:.8rem; font-weight:800; color:#0f172a; font-family:'Cairo',sans-serif;">أحمد خالد</div>
+                    <div style="font-size:.65rem; color:#64748b; font-family:'Cairo',sans-serif;">مطور React Native</div>
+                  </div>
+                </div>
+                <!-- Body -->
+                <div style="padding:10px 12px 12px;">
+                  <div style="display:flex; gap:6px; margin-bottom:10px; flex-wrap:wrap;">
+                    <span style="background:#e0f2fe; color:#0369a1; padding:2px 8px; border-radius:999px; font-size:.6rem; font-weight:700; font-family:'Cairo',sans-serif;">JavaScript</span>
+                    <span style="background:#ede9fe; color:#6d28d9; padding:2px 8px; border-radius:999px; font-size:.6rem; font-weight:700; font-family:'Cairo',sans-serif;">React Native</span>
+                    <span style="background:#dcfce7; color:#15803d; padding:2px 8px; border-radius:999px; font-size:.6rem; font-weight:700; font-family:'Cairo',sans-serif;">Expo</span>
+                  </div>
+                  <div style="background:linear-gradient(135deg,#0ea5e9,#7c3aed); border-radius:8px; padding:8px; text-align:center;">
+                    <span style="color:white; font-size:.72rem; font-weight:700; font-family:'Cairo',sans-serif;">تواصل معي 👋</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EXERCISES -->
+  <div class="section" id="exercises">
+    <h2 class="section-title"><span class="num">📝</span> التمارين العملية <span class="en">Exercises</span></h2>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 1: ظل ملون</div>
+      <p>اكتب نمط لبطاقة بظل لوني سماوي (#0ea5e9) يظهر على iOS وelevation على Android.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box"><pre><span class="tag-name">const</span> <span class="attr">styles</span> = StyleSheet.create({
+  card: {
+    backgroundColor: <span class="attr-val">'white'</span>,
+    borderRadius: <span class="attr-val">14</span>,
+    ...Platform.select({
+      ios: {
+        shadowColor: <span class="attr-val">'#0ea5e9'</span>,
+        shadowOffset: { width: <span class="attr-val">0</span>, height: <span class="attr-val">8</span> },
+        shadowOpacity: <span class="attr-val">0.3</span>,
+        shadowRadius: <span class="attr-val">12</span>,
+      },
+      android: { elevation: <span class="attr-val">6</span> },
+    }),
+  },
+});</pre></div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 2: صورة دائرية مقصوصة</div>
+      <p>اكتب نمط لحاوية صورة شخصية دائرية بحجم 80×80، مع حد أبيض بعرض 3.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box"><pre>avatarWrap: {
+  width: <span class="attr-val">80</span>,
+  height: <span class="attr-val">80</span>,
+  borderRadius: <span class="attr-val">40</span>,
+  overflow: <span class="attr-val">'hidden'</span>,         <span class="comment">// مهم لقص الصورة بشكل دائري</span>
+  borderWidth: <span class="attr-val">3</span>,
+  borderColor: <span class="attr-val">'white'</span>,
+},
+avatar: { width: <span class="attr-val">'100%'</span>, height: <span class="attr-val">'100%'</span> },</pre></div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 3: زر Gradient</div>
+      <p>اكتب زر gradient من #f43f5e إلى #f97316 بشكل أفقي، داخله نص "اشتري الآن".</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box"><pre>&lt;<span class="attr">TouchableOpacity</span> onPress={handleBuy}&gt;
+  &lt;<span class="attr">LinearGradient</span>
+    colors={[<span class="attr-val">'#f43f5e'</span>, <span class="attr-val">'#f97316'</span>]}
+    start={{ x: <span class="attr-val">0</span>, y: <span class="attr-val">0</span> }}
+    end={{ x: <span class="attr-val">1</span>, y: <span class="attr-val">0</span> }}
+    style={{
+      paddingVertical: <span class="attr-val">14</span>,
+      paddingHorizontal: <span class="attr-val">28</span>,
+      borderRadius: <span class="attr-val">12</span>,
+      alignItems: <span class="attr-val">'center'</span>,
+    }}
+  &gt;
+    &lt;<span class="attr">Text</span> style={{ color: <span class="attr-val">'white'</span>, fontWeight: <span class="attr-val">'bold'</span>, fontSize: <span class="attr-val">16</span> }}&gt;
+      اشتري الآن 🛒
+    &lt;/<span class="attr">Text</span>&gt;
+  &lt;/<span class="attr">LinearGradient</span>&gt;
+&lt;/<span class="attr">TouchableOpacity</span>&gt;</pre></div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 4: بادج مائل</div>
+      <p>اكتب نمط لبادج "جديد" يظهر في الزاوية العلوية اليمينية لبطاقة، مائل بـ 10 درجات.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box"><pre><span class="comment">// الحاوية الأم يجب أن تكون position: 'relative'</span>
+card: { position: <span class="attr-val">'relative'</span> }
+
+badge: {
+  position: <span class="attr-val">'absolute'</span>,
+  top: <span class="attr-val">10</span>,
+  right: <span class="attr-val">10</span>,
+  backgroundColor: <span class="attr-val">'#f43f5e'</span>,
+  paddingHorizontal: <span class="attr-val">8</span>,
+  paddingVertical: <span class="attr-val">3</span>,
+  borderRadius: <span class="attr-val">999</span>,
+  transform: [{ rotate: <span class="attr-val">'10deg'</span> }],
+},
+badgeText: { color: <span class="attr-val">'white'</span>, fontSize: <span class="attr-val">11</span>, fontWeight: <span class="attr-val">'bold'</span> },</pre></div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 5: تمييز بين opacity وrgba</div>
+      <p>عندما تريد خلفية زرقاء شبه شفافة للبطاقة لكن النص بداخلها واضح تماماً — أيهما تستخدم: <code>opacity</code> أم <code>rgba</code>؟ ولماذا؟</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <p>تستخدم <code>rgba</code> لأن <code>opacity</code> تؤثر على كل الأبناء (النص سيصبح شفافاً هو الآخر)، أما <code>rgba</code> تُطبق الشفافية على اللون فقط دون التأثير على المحتوى.</p>
+        <div class="code-box"><pre><span class="comment">// ✅ rgba — النص سيبقى واضحاً</span>
+{ backgroundColor: <span class="attr-val">'rgba(14, 165, 233, 0.15)'</span> }
+
+<span class="comment">// ❌ opacity — النص سيصبح شفافاً أيضاً</span>
+{ opacity: <span class="attr-val">0.15</span> }</pre></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="quiz-container" id="quiz">
+    <div class="quiz-intro"><p>اختبر فهمك للأنماط المتقدمة!</p></div>
+    <div class="quiz-type-tabs">
+      <button class="qt-tab active" onclick="switchQuiz(this,'tf')">✓✗ صح وخطأ</button>
+      <button class="qt-tab" onclick="switchQuiz(this,'mc')">🔘 اختيار من متعدد</button>
+    </div>
+
+    <div class="quiz-section active" id="quiz-tf">
+      <div class="quiz-question" data-correct="false">
+        <span class="q-num">1</span><span class="q-text">React Native تدعم CSS Gradient مباشرة بدون مكتبة خارجية.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">2</span><span class="q-text">overflow: 'hidden' ضروري لتقطيع الصور داخل View ذات border-radius.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="false">
+        <span class="q-num">3</span><span class="q-text">opacity: 0.3 على حاوية يُطبّق الشفافية على الحاوية فقط دون الأبناء.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">4</span><span class="q-text">transform في RN يُكتب كـ array من objects مثل [{rotate: '45deg'}].</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="false">
+        <span class="q-num">5</span><span class="q-text">elevation يعطي ظلاً ملوناً قابلاً للتخصيص على Android في جميع إصدارات RN.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <button class="quiz-submit" onclick="submitQuiz('tf')">عرض النتيجة 🎯</button>
+      <div class="quiz-result" id="result-tf"><div class="result-score" id="score-tf">0/5</div><div class="result-label">إجابات صحيحة</div><div class="result-message" id="msg-tf"></div><button class="retry-btn" onclick="retryQuiz('tf')">🔄 حاول تاني</button></div>
+    </div>
+
+    <div class="quiz-section" id="quiz-mc">
+      <div class="quiz-question" data-correct="1">
+        <span class="q-num">1</span><span class="q-text">ما المكتبة المستخدمة للـ Gradient في Expo؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">react-native-gradient</button>
+          <button class="q-opt" onclick="answerMC(this,1)">expo-linear-gradient</button>
+          <button class="q-opt" onclick="answerMC(this,2)">@react-native/gradient</button>
+          <button class="q-opt" onclick="answerMC(this,3)">styled-gradient</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="3">
+        <span class="q-num">2</span><span class="q-text">ما خاصية الـ Shadow المستخدمة على Android؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">shadowDepth</button>
+          <button class="q-opt" onclick="answerMC(this,1)">shadowColor</button>
+          <button class="q-opt" onclick="answerMC(this,2)">boxShadow</button>
+          <button class="q-opt" onclick="answerMC(this,3)">elevation</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="2">
+        <span class="q-num">3</span><span class="q-text">ما الكود الصحيح للـ rotate في transform؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">transform: 'rotate(45deg)'</button>
+          <button class="q-opt" onclick="answerMC(this,1)">transform: {rotate: 45}</button>
+          <button class="q-opt" onclick="answerMC(this,2)">transform: [{rotate: '45deg'}]</button>
+          <button class="q-opt" onclick="answerMC(this,3)">rotate: '45deg'</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="0">
+        <span class="q-num">4</span><span class="q-text">ما خاصية الـ gradient التي تتحكم في الاتجاه؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">start و end</button>
+          <button class="q-opt" onclick="answerMC(this,1)">direction</button>
+          <button class="q-opt" onclick="answerMC(this,2)">angle</button>
+          <button class="q-opt" onclick="answerMC(this,3)">from و to</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="1">
+        <span class="q-num">5</span><span class="q-text">ما الفرق بين borderStyle: 'dashed' وـ borderStyle: 'dotted'؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">لا فرق بينهما</button>
+          <button class="q-opt" onclick="answerMC(this,1)">dashed = شرطات، dotted = نقاط</button>
+          <button class="q-opt" onclick="answerMC(this,2)">dashed = نقاط، dotted = شرطات</button>
+          <button class="q-opt" onclick="answerMC(this,3)">dotted لا تعمل في RN</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <button class="quiz-submit" onclick="submitQuiz('mc')">عرض النتيجة 🎯</button>
+      <div class="quiz-result" id="result-mc"><div class="result-score" id="score-mc">0/5</div><div class="result-label">إجابات صحيحة</div><div class="result-message" id="msg-mc"></div><button class="retry-btn" onclick="retryQuiz('mc')">🔄 حاول تاني</button></div>
+    </div>
+  </div>
+
+  <div class="lesson-nav">
+    <a href="./lesson-08.html" class="nav-btn"><span>⬅️</span><span>الدرس السابق</span></a>
+    <button class="nav-btn complete-btn" id="completeBtn" onclick="markComplete(this)"><span>✅</span><span>علّم كمكتمل</span></button>
+    <a href="./lesson-10.html" class="nav-btn"><span>الدرس التالي</span><span>➡️</span></a>
+  </div>
+
+  <div class="notebook-footer">
+    <h3>🎉 تصاميمك باتت احترافية!</h3>
+    <p>الآن تستطيع صنع بطاقات وأزرار وواجهات رائعة بالظلال والـ Gradient والتحويلات. ✨<br><strong>الدرس التالي: Buttons, TouchableOpacity, Pressable 👆</strong></p>
+  </div>
+</div>
+
+<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">⬆️</button>
+<div class="toast" id="toast"></div>
+<script src="../../js/data/courses.js"></script>
+<script src="../../js/progress.js"></script>
+<script>
+const COURSE_ID='react-native', LESSON_ID=9, TOTAL=28;
+function toggleSolution(b){const s=b.nextElementSibling;s.classList.toggle('show');b.textContent=s.classList.contains('show')?'إخفاء الحل ▲':'عرض الحل ▼';}
+function copyCode(b){const p=b.closest('.code-box').querySelector('pre');navigator.clipboard.writeText(p.innerText).then(()=>{b.classList.add('copied');b.textContent='✓ تم النسخ';setTimeout(()=>{b.classList.remove('copied');b.textContent='📋 نسخ';},2000);});}
+function switchQuiz(b,t){document.querySelectorAll('.qt-tab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.quiz-section').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.getElementById('quiz-'+t).classList.add('active');}
+const answers={tf:{},mc:{}};
+function answerTF(b,v){const q=b.closest('.quiz-question'),i=Array.from(q.parentNode.querySelectorAll('.quiz-question')).indexOf(q);q.querySelectorAll('.q-opt').forEach(o=>o.classList.remove('selected'));b.classList.add('selected');answers.tf[i]=v;}
+function answerMC(b,i){const q=b.closest('.quiz-question'),qi=Array.from(q.parentNode.querySelectorAll('.quiz-question')).indexOf(q);q.querySelectorAll('.q-opt').forEach(o=>o.classList.remove('selected'));b.classList.add('selected');answers.mc[qi]=i;}
+function submitQuiz(type){const sec=document.getElementById('quiz-'+type),qs=sec.querySelectorAll('.quiz-question');let c=0;qs.forEach((q,i)=>{const ca=type==='tf'?(q.dataset.correct==='true'):parseInt(q.dataset.correct),ua=answers[type][i],fb=q.querySelector('.q-feedback'),opts=q.querySelectorAll('.q-opt');opts.forEach(o=>{o.classList.remove('selected');o.disabled=true;});if(ua===undefined){fb.className='q-feedback wrong show';fb.textContent='⚠️ ما اخترتش إجابة!';return;}if(ua===ca){c++;fb.className='q-feedback correct show';fb.textContent='✓ إجابة صحيحة!';if(type==='tf')opts[ca?0:1].classList.add('correct');else opts[ca].classList.add('correct');}else{fb.className='q-feedback wrong show';if(type==='tf'){opts[ca?0:1].classList.add('correct');opts[ua?0:1].classList.add('wrong');fb.textContent='✗ خطأ.';}else{opts[ca].classList.add('correct');opts[ua].classList.add('wrong');fb.textContent='✗ الإجابة بالأخضر.';}}});const r=document.getElementById('result-'+type);document.getElementById('score-'+type).textContent=c+'/'+qs.length;const m=document.getElementById('msg-'+type);if(c===qs.length){m.textContent='🏆 ممتاز 100%!';m.className='result-message excellent';}else if(c>=3){m.textContent='👍 جيد!';m.className='result-message good';}else{m.textContent='📚 راجع الدرس.';m.className='result-message try-again';}r.classList.add('show');r.scrollIntoView({behavior:'smooth',block:'center'});}
+function retryQuiz(type){const sec=document.getElementById('quiz-'+type);sec.querySelectorAll('.q-opt').forEach(o=>{o.classList.remove('selected','correct','wrong');o.disabled=false;});sec.querySelectorAll('.q-feedback').forEach(f=>{f.classList.remove('show','correct','wrong');f.textContent='';});document.getElementById('result-'+type).classList.remove('show');answers[type]={};}
+function markComplete(btn){const done=Progress.toggleLessonComplete(COURSE_ID,LESSON_ID);btn.classList.toggle('completed',done);btn.querySelector('span:last-child').textContent=done?'مكتمل! ⭐':'علّم كمكتمل';showToast(done?'🎉 أكملت درس الأنماط المتقدمة!':'تم إلغاء الإكمال');}
+if(Progress.isLessonComplete(COURSE_ID,LESSON_ID)){const b=document.getElementById('completeBtn');b.classList.add('completed');b.querySelector('span:last-child').textContent='مكتمل! ⭐';}
+(function(){const p=Progress.getCourseProgress(COURSE_ID,TOTAL);document.getElementById('progFill').style.width=p+'%';document.getElementById('progText').textContent=p+'%';})();
+function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
+window.addEventListener('scroll',()=>{document.getElementById('scrollTop').classList.toggle('show',window.scrollY>300);});
+document.querySelectorAll('.toc-card a').forEach(l=>{l.addEventListener('click',e=>{e.preventDefault();const t=document.querySelector(l.getAttribute('href'));if(t)t.scrollIntoView({behavior:'smooth',block:'start'});});});
+</script>
+</body>
+</html>

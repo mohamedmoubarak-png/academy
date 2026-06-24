@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-V2NCKVL16D"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-V2NCKVL16D');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Async / Promises / Fetch — دفتر البرمجة</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=Cairo:wght@300;400;500;600;700;900&family=Caveat:wght@400;700&family=Fira+Code:wght@400;500;600&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../css/shared.css">
+<link rel="stylesheet" href="../../css/notebook.css">
+<style>
+body { padding: 20px 10px; }
+.mini-console {
+  background: #1e293b; border-radius: 10px; padding: 14px 16px;
+  margin: 10px 0; font-family: 'Fira Code', monospace; font-size: .88rem; direction: ltr;
+}
+.mc-line { margin: 3px 0; }
+.mc-in { color: #94a3b8; }
+.mc-in::before { content: '> '; color: #7c3aed; }
+.mc-out { color: #4ade80; }
+.mc-out::before { content: '← '; color: #4ade80; }
+.mc-err { color: #f87171; }
+.mc-err::before { content: '✗ '; color: #f87171; }
+
+/* timeline */
+.timeline {
+  display: flex; align-items: center; gap: 0;
+  margin: 16px 0; direction: ltr; flex-wrap: wrap;
+}
+.tl-item {
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+}
+.tl-box {
+  padding: 8px 14px; border-radius: 8px; font-family: 'Fira Code', monospace;
+  font-size: .78rem; font-weight: 700; text-align: center; white-space: nowrap;
+}
+.tl-arrow { font-size: 1.3rem; color: var(--ink-blue); padding: 0 4px; align-self: center; }
+.tl-label { font-family: 'Caveat', cursive; font-size: .85rem; color: var(--text-muted); }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="crumbs">
+    <a href="../../index.html">🏠 الرئيسية</a>
+    <span class="sep">/</span>
+    <a href="./index.html">🌐 الفرونت إند</a>
+    <span class="sep">/</span>
+    <span class="current">⚡ الدرس 22: Async / Promises / Fetch</span>
+  </div>
+  <div class="progress-mini">
+    <div class="progress-bar-mini"><div class="progress-fill-mini" id="progFill"></div></div>
+    <span id="progText">0%</span>
+  </div>
+</div>
+
+<div class="notebook">
+
+  <div class="notebook-header">
+    <div class="lesson-tag">⚡ الدرس الثاني والعشرون</div>
+    <h1><span class="sparkle">✦</span> Async / Promises / Fetch <span class="sparkle">✦</span></h1>
+    <div class="lesson-meta">
+      <span>⏱️ 50 دقيقة</span>
+      <span>📊 متوسط-متقدم</span>
+      <span>🎯 5 تمارين + اختبار</span>
+    </div>
+  </div>
+
+  <div class="toc-card">
+    <h2>📑 فهرس الدرس</h2>
+    <ol>
+      <li><a href="#s1">البرمجة المتزامنة وغير المتزامنة</a></li>
+      <li><a href="#s2">Callbacks — البداية</a></li>
+      <li><a href="#s3">Promises</a></li>
+      <li><a href="#s4">async / await</a></li>
+      <li><a href="#s5">معالجة الأخطاء try/catch</a></li>
+      <li><a href="#s6">Fetch API</a></li>
+      <li><a href="#s7">Promise.all و Promise.race</a></li>
+      <li><a href="#s8">محرر الكود الحي</a></li>
+      <li><a href="#exercises">التمارين</a></li>
+      <li><a href="#quiz">اختبر فهمك</a></li>
+    </ol>
+  </div>
+
+  <!-- S1 -->
+  <div class="section" id="s1">
+    <h2 class="section-title"><span class="num">.1</span> Sync vs Async <span class="en">Synchronous vs Asynchronous</span></h2>
+    <div class="content">
+      <p>JavaScript أحادية الخيط (single-threaded) — تنفّذ كوداً واحداً في وقت واحد. لكن بعض العمليات تأخذ وقتاً (طلبات شبكة، قراءة ملفات). هنا تأتي البرمجة غير المتزامنة.</p>
+      <div class="analogy">
+        <div class="analogy-title">☕ تخيل مطعم:</div>
+        <p>
+          <strong>Synchronous:</strong> تطلب القهوة، تنتظر حتى تُحضَّر، ثم تطلب الطعام — كل شيء بالترتيب.<br>
+          <strong>Asynchronous:</strong> تطلب القهوة والطعام في نفس الوقت، وتعمل على شيء آخر بينما يُحضَّران.
+        </p>
+      </div>
+
+      <div class="timeline">
+        <div class="tl-item">
+          <div class="tl-box" style="background:#dbeafe;color:var(--ink-blue);">طلب API</div>
+          <div class="tl-label">يبدأ</div>
+        </div>
+        <div class="tl-arrow">→</div>
+        <div class="tl-item">
+          <div class="tl-box" style="background:#dcfce7;color:var(--ink-green);">كود آخر</div>
+          <div class="tl-label">يكمل</div>
+        </div>
+        <div class="tl-arrow">→</div>
+        <div class="tl-item">
+          <div class="tl-box" style="background:#ede9fe;color:var(--ink-purple);">رد الـ API</div>
+          <div class="tl-label">يصل</div>
+        </div>
+        <div class="tl-arrow">→</div>
+        <div class="tl-item">
+          <div class="tl-box" style="background:#fef3c7;color:#92400e;">معالجة البيانات</div>
+          <div class="tl-label">يُنفَّذ</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- S2 -->
+  <div class="section" id="s2">
+    <h2 class="section-title"><span class="num">.2</span> Callbacks <span class="en">The Old Way</span></h2>
+    <div class="content">
+      <p>أقدم طريقة للتعامل مع الـ Async — تمرر دالة تُستدعى عند انتهاء العملية:</p>
+      <div class="code-box">
+<div class="code-header"><span>📞 Callback</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">// setTimeout — مثال بسيط على Async</span>
+<span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr-val">'1: قبل'</span>);
+
+<span class="tag-name">setTimeout</span>(() => {
+  <span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr-val">'2: بعد ثانيتين'</span>);
+}, <span class="attr-val">2000</span>);
+
+<span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr-val">'3: بعد'</span>);
+
+<span class="comment">// النتيجة: 1 → 3 → 2 (مش بالترتيب!)</span></pre>
+      </div>
+
+      <div class="warning-box">
+        <strong>Callback Hell — مشكلة الـ Callbacks:</strong>
+        <div class="code-box" style="margin-top:8px;">
+<pre><span class="comment">// كل عملية تحتاج نتيجة السابقة → جحيم!</span>
+<span class="attr">getUser</span>(<span class="attr">id</span>, (<span class="attr">user</span>) => {
+  <span class="attr">getPosts</span>(<span class="attr">user</span>.<span class="attr">id</span>, (<span class="attr">posts</span>) => {
+    <span class="attr">getComments</span>(<span class="attr">posts</span>[<span class="attr-val">0</span>].<span class="attr">id</span>, (<span class="attr">comments</span>) => {
+      <span class="comment">// ومش خلصنا بعد... 😱</span>
+    });
+  });
+});</pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- S3 -->
+  <div class="section" id="s3">
+    <h2 class="section-title"><span class="num">.3</span> Promises <span class="en">Promises</span></h2>
+    <div class="content">
+      <p>Promise هو كائن يمثّل نتيجة عملية مستقبلية — إما ستنجح (resolve) أو ستفشل (reject):</p>
+      <div class="code-box">
+<div class="code-header"><span>🤝 إنشاء Promise</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-name">const</span> <span class="attr">promise</span> = <span class="tag-name">new</span> <span class="attr">Promise</span>((<span class="attr">resolve</span>, <span class="attr">reject</span>) => {
+  <span class="tag-name">const</span> <span class="attr">success</span> = <span class="attr-val">true</span>;
+
+  <span class="tag-name">if</span> (<span class="attr">success</span>) {
+    <span class="attr">resolve</span>(<span class="attr-val">'تمت العملية!'</span>);   <span class="comment">// نجاح</span>
+  } <span class="tag-name">else</span> {
+    <span class="attr">reject</span>(<span class="attr-val">'حدث خطأ!'</span>);      <span class="comment">// فشل</span>
+  }
+});
+
+<span class="comment">// الاستخدام بـ .then و .catch</span>
+<span class="attr">promise</span>
+  .<span class="tag-name">then</span>(<span class="attr">result</span> => <span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr">result</span>))   <span class="comment">// 'تمت العملية!'</span>
+  .<span class="tag-name">catch</span>(<span class="attr">error</span>  => <span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr">error</span>))   <span class="comment">// لو فشل</span>
+  .<span class="tag-name">finally</span>(() => <span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr-val">'انتهى'</span>));  <span class="comment">// دائماً ينفّذ</span></pre>
+      </div>
+
+      <table class="cool-table">
+        <thead><tr><th>الحالة</th><th>المعنى</th><th>الدالة</th></tr></thead>
+        <tbody>
+          <tr><td>Pending</td><td>في الانتظار</td><td>—</td></tr>
+          <tr><td>Fulfilled</td><td>نجحت</td><td><code>.then()</code></td></tr>
+          <tr><td>Rejected</td><td>فشلت</td><td><code>.catch()</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- S4 -->
+  <div class="section" id="s4">
+    <h2 class="section-title"><span class="num">.4</span> async / await <span class="en">Modern Async Syntax</span></h2>
+    <div class="content">
+      <p>الطريقة الحديثة — تجعل الكود الـ async يبدو sync وأسهل قراءة:</p>
+      <div class="code-box">
+<div class="code-header"><span>✨ async/await</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">// دالة async دائماً تعيد Promise</span>
+<span class="tag-name">async function</span> <span class="attr">fetchData</span>() {
+  <span class="comment">// await ينتظر Promise ينتهي قبل يكمل</span>
+  <span class="tag-name">const</span> <span class="attr">user</span>  = <span class="tag-name">await</span> <span class="attr">getUser</span>(<span class="attr-val">1</span>);
+  <span class="tag-name">const</span> <span class="attr">posts</span> = <span class="tag-name">await</span> <span class="attr">getPosts</span>(<span class="attr">user</span>.<span class="attr">id</span>);
+  <span class="tag-name">return</span> <span class="attr">posts</span>;
+}
+
+<span class="comment">// Arrow async</span>
+<span class="tag-name">const</span> <span class="attr">getData</span> = <span class="tag-name">async</span> () => {
+  <span class="tag-name">const</span> <span class="attr">data</span> = <span class="tag-name">await</span> <span class="attr">somePromise</span>();
+  <span class="tag-name">return</span> <span class="attr">data</span>;
+};</pre>
+      </div>
+
+      <div class="sub-header">مقارنة: .then() vs async/await</div>
+      <div class="code-box blue">
+<div class="code-header"><span>🔄 نفس الوظيفة — طريقتان</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">// بـ .then()</span>
+<span class="attr">fetch</span>(<span class="attr-val">'https://api.example.com/users'</span>)
+  .<span class="tag-name">then</span>(<span class="attr">res</span>  => <span class="attr">res</span>.<span class="tag-name">json</span>())
+  .<span class="tag-name">then</span>(<span class="attr">data</span> => <span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr">data</span>));
+
+<span class="comment">// بـ async/await ✅ أوضح</span>
+<span class="tag-name">async function</span> <span class="attr">getUsers</span>() {
+  <span class="tag-name">const</span> <span class="attr">res</span>  = <span class="tag-name">await</span> <span class="attr">fetch</span>(<span class="attr-val">'https://api.example.com/users'</span>);
+  <span class="tag-name">const</span> <span class="attr">data</span> = <span class="tag-name">await</span> <span class="attr">res</span>.<span class="tag-name">json</span>();
+  <span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr">data</span>);
+}</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- S5 -->
+  <div class="section" id="s5">
+    <h2 class="section-title"><span class="num">.5</span> معالجة الأخطاء <span class="en">Error Handling</span></h2>
+    <div class="content">
+      <div class="code-box">
+<div class="code-header"><span>🛡️ try/catch مع async/await</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-name">async function</span> <span class="attr">fetchUser</span>(<span class="attr">id</span>) {
+  <span class="tag-name">try</span> {
+    <span class="tag-name">const</span> <span class="attr">res</span>  = <span class="tag-name">await</span> <span class="attr">fetch</span>(<span class="attr-val">`/api/users/${id}`</span>);
+
+    <span class="comment">// تحقق من نجاح الاستجابة</span>
+    <span class="tag-name">if</span> (!<span class="attr">res</span>.<span class="attr">ok</span>) <span class="tag-name">throw new</span> <span class="attr">Error</span>(<span class="attr-val">`HTTP Error: ${res.status}`</span>);
+
+    <span class="tag-name">const</span> <span class="attr">data</span> = <span class="tag-name">await</span> <span class="attr">res</span>.<span class="tag-name">json</span>();
+    <span class="tag-name">return</span> <span class="attr">data</span>;
+
+  } <span class="tag-name">catch</span> (<span class="attr">error</span>) {
+    <span class="attr">console</span>.<span class="tag-name">error</span>(<span class="attr-val">'فشل الطلب:'</span>, <span class="attr">error</span>.<span class="attr">message</span>);
+    <span class="tag-name">return</span> <span class="attr-val">null</span>;   <span class="comment">// قيمة افتراضية عند الفشل</span>
+
+  } <span class="tag-name">finally</span> {
+    <span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr-val">'انتهى الطلب — سواء نجح أم لا'</span>);
+  }
+}</pre>
+      </div>
+      <div class="tip-box"><strong>res.ok</strong> هو true لو الـ status code بين 200-299. دائماً تحقق منه — fetch لا يرمي error تلقائياً عند 404 أو 500.</div>
+    </div>
+  </div>
+
+  <!-- S6 -->
+  <div class="section" id="s6">
+    <h2 class="section-title"><span class="num">.6</span> Fetch API <span class="en">Making HTTP Requests</span></h2>
+    <div class="content">
+      <p>الأداة الأساسية لطلب البيانات من الإنترنت (APIs):</p>
+      <div class="code-box">
+<div class="code-header"><span>🌐 GET Request</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-name">async function</span> <span class="attr">getPosts</span>() {
+  <span class="tag-name">try</span> {
+    <span class="tag-name">const</span> <span class="attr">res</span>   = <span class="tag-name">await</span> <span class="attr">fetch</span>(<span class="attr-val">'https://jsonplaceholder.typicode.com/posts'</span>);
+    <span class="tag-name">const</span> <span class="attr">posts</span> = <span class="tag-name">await</span> <span class="attr">res</span>.<span class="tag-name">json</span>();
+    <span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr">posts</span>.<span class="attr">length</span>, <span class="attr-val">'مقال'</span>);
+  } <span class="tag-name">catch</span> (<span class="attr">e</span>) {
+    <span class="attr">console</span>.<span class="tag-name">error</span>(<span class="attr">e</span>);
+  }
+}</pre>
+      </div>
+
+      <div class="code-box blue">
+<div class="code-header"><span>📤 POST Request — إرسال بيانات</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-name">async function</span> <span class="attr">createPost</span>(<span class="attr">data</span>) {
+  <span class="tag-name">const</span> <span class="attr">res</span> = <span class="tag-name">await</span> <span class="attr">fetch</span>(<span class="attr-val">'https://jsonplaceholder.typicode.com/posts'</span>, {
+    <span class="attr">method</span>:  <span class="attr-val">'POST'</span>,
+    <span class="attr">headers</span>: { <span class="attr-val">'Content-Type'</span>: <span class="attr-val">'application/json'</span> },
+    <span class="attr">body</span>:    <span class="tag-name">JSON</span>.<span class="tag-name">stringify</span>(<span class="attr">data</span>)
+  });
+  <span class="tag-name">const</span> <span class="attr">result</span> = <span class="tag-name">await</span> <span class="attr">res</span>.<span class="tag-name">json</span>();
+  <span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr-val">'أُنشئ:'</span>, <span class="attr">result</span>);
+}
+
+<span class="attr">createPost</span>({ <span class="attr">title</span>: <span class="attr-val">'مقال جديد'</span>, <span class="attr">body</span>: <span class="attr-val">'المحتوى...'</span> });</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- S7 -->
+  <div class="section" id="s7">
+    <h2 class="section-title"><span class="num">.7</span> Promise.all و Promise.race <span class="en">Multiple Promises</span></h2>
+    <div class="content">
+      <div class="code-box">
+<div class="code-header"><span>🏁 Promise.all — انتظر الكل</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">// تشغيل طلبات متعددة بالتوازي</span>
+<span class="tag-name">async function</span> <span class="attr">loadAll</span>() {
+  <span class="tag-name">const</span> [<span class="attr">users</span>, <span class="attr">posts</span>, <span class="attr">todos</span>] = <span class="tag-name">await</span> <span class="attr">Promise</span>.<span class="tag-name">all</span>([
+    <span class="attr">fetch</span>(<span class="attr-val">'/api/users'</span>).<span class="tag-name">then</span>(<span class="attr">r</span> => <span class="attr">r</span>.<span class="tag-name">json</span>()),
+    <span class="attr">fetch</span>(<span class="attr-val">'/api/posts'</span>).<span class="tag-name">then</span>(<span class="attr">r</span> => <span class="attr">r</span>.<span class="tag-name">json</span>()),
+    <span class="attr">fetch</span>(<span class="attr-val">'/api/todos'</span>).<span class="tag-name">then</span>(<span class="attr">r</span> => <span class="attr">r</span>.<span class="tag-name">json</span>()),
+  ]);
+  <span class="comment">// ينتظر الثلاثة معاً — أسرع من الواحد تلو الآخر</span>
+}</pre>
+      </div>
+
+      <table class="cool-table">
+        <thead><tr><th>الدالة</th><th>السلوك</th><th>متى تستخدم؟</th></tr></thead>
+        <tbody>
+          <tr><td><code>Promise.all()</code></td><td>ينتظر الكل — يفشل لو أي واحد فشل</td><td>طلبات مستقلة لازمة كلها</td></tr>
+          <tr><td><code>Promise.allSettled()</code></td><td>ينتظر الكل — لا يهتم بالفشل</td><td>تريد نتيجة كل طلب حتى لو فشل</td></tr>
+          <tr><td><code>Promise.race()</code></td><td>يُكمل بأول واحد ينتهي</td><td>timeout أو أسرع مصدر</td></tr>
+          <tr><td><code>Promise.any()</code></td><td>يُكمل بأول نجاح</td><td>جرب عدة مصادر</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- S8 -->
+  <div class="section" id="s8">
+    <h2 class="section-title"><span class="num">.8</span> محرر الكود الحي <span class="en">Live Editor</span></h2>
+    <div class="content"><p>جرب Fetch API مع بيانات حقيقية:</p></div>
+    <div class="try-it">
+      <div class="try-it-header">
+        <span>⚡ جرب Fetch</span>
+        <div class="try-it-controls">
+          <button class="try-btn" onclick="runCode(this)">▶️ تشغيل</button>
+          <button class="try-btn" onclick="resetCode(this)">🔄 إعادة</button>
+        </div>
+      </div>
+      <div class="try-it-body">
+        <textarea class="try-it-editor" spellcheck="false" data-default='<!DOCTYPE html>
+<html><head><meta charset="UTF-8">
+<style>
+  body{font-family:Arial;padding:20px;direction:rtl;background:#f8fafc;}
+  .card{background:white;border-radius:12px;padding:16px;margin:8px 0;box-shadow:0 2px 8px rgba(0,0,0,.06);}
+  .card h3{color:#1e3a8a;margin-bottom:6px;font-size:1rem;}
+  .card p{color:#64748b;font-size:.88rem;line-height:1.6;}
+  .loader{text-align:center;color:#94a3b8;padding:20px;}
+  button{padding:10px 20px;background:#1e3a8a;color:white;border:none;border-radius:8px;cursor:pointer;font-size:1rem;font-family:Arial;}
+  button:disabled{opacity:.5;cursor:not-allowed;}
+  .error{background:#fee2e2;color:#dc2626;padding:12px;border-radius:8px;}
+</style>
+</head>
+<body>
+  <h2>📡 مقالات من الإنترنت</h2>
+  <button id="loadBtn" onclick="loadPosts()">تحميل المقالات</button>
+  <div id="container" style="margin-top:16px;"></div>
+
+<script>
+async function loadPosts() {
+  const btn = document.getElementById("loadBtn");
+  const container = document.getElementById("container");
+
+  btn.disabled = true;
+  container.innerHTML = `<div class="loader">⏳ جاري التحميل...</div>`;
+
+  try {
+    const res   = await fetch("https://jsonplaceholder.typicode.com/posts?_limit=5");
+    if (!res.ok) throw new Error("فشل الطلب: " + res.status);
+    const posts = await res.json();
+
+    container.innerHTML = posts.map(post => `
+      <div class="card">
+        <h3>${post.id}. ${post.title}</h3>
+        <p>${post.body}</p>
+      </div>
+    `).join("");
+
+  } catch (err) {
+    container.innerHTML = `<div class="error">❌ ${err.message}</div>`;
+  } finally {
+    btn.disabled = false;
+  }
+}
+</script>
+</body></html>'><!DOCTYPE html>
+<html><head><meta charset="UTF-8">
+<style>
+  body{font-family:Arial;padding:20px;direction:rtl;background:#f8fafc;}
+  .card{background:white;border-radius:12px;padding:16px;margin:8px 0;box-shadow:0 2px 8px rgba(0,0,0,.06);}
+  .card h3{color:#1e3a8a;margin-bottom:6px;font-size:1rem;}
+  .card p{color:#64748b;font-size:.88rem;line-height:1.6;}
+  .loader{text-align:center;color:#94a3b8;padding:20px;}
+  button{padding:10px 20px;background:#1e3a8a;color:white;border:none;border-radius:8px;cursor:pointer;font-size:1rem;font-family:Arial;}
+  button:disabled{opacity:.5;cursor:not-allowed;}
+  .error{background:#fee2e2;color:#dc2626;padding:12px;border-radius:8px;}
+</style>
+</head>
+<body>
+  <h2>📡 مقالات من الإنترنت</h2>
+  <button id="loadBtn" onclick="loadPosts()">تحميل المقالات</button>
+  <div id="container" style="margin-top:16px;"></div>
+<script>
+async function loadPosts() {
+  const btn = document.getElementById("loadBtn");
+  const container = document.getElementById("container");
+  btn.disabled = true;
+  container.innerHTML = `<div class="loader">⏳ جاري التحميل...</div>`;
+  try {
+    const res = await fetch("https://jsonplaceholder.typicode.com/posts?_limit=5");
+    if (!res.ok) throw new Error("فشل الطلب: " + res.status);
+    const posts = await res.json();
+    container.innerHTML = posts.map(post => `
+      <div class="card"><h3>${post.id}. ${post.title}</h3><p>${post.body}</p></div>
+    `).join("");
+  } catch (err) {
+    container.innerHTML = `<div class="error">❌ ${err.message}</div>`;
+  } finally {
+    btn.disabled = false;
+  }
+}
+</script>
+</body></html></textarea>
+        <div class="try-it-preview"><iframe srcdoc="" sandbox="allow-scripts allow-same-origin allow-modals allow-popups allow-forms" title="معاينة الكود"></iframe></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EXERCISES -->
+  <div class="section" id="exercises">
+    <h2 class="section-title"><span class="num">📝</span> التمارين العملية <span class="en">Exercises</span></h2>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 1: setTimeout كـ Promise</div>
+      <p>اكتب دالة <em>delay(ms)</em> تعيد Promise تنتهي بعد عدد معين من الميلي ثانية.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre><span class="tag-name">function</span> <span class="attr">delay</span>(<span class="attr">ms</span>) {
+  <span class="tag-name">return new</span> <span class="attr">Promise</span>(<span class="attr">resolve</span> => <span class="tag-name">setTimeout</span>(<span class="attr">resolve</span>, <span class="attr">ms</span>));
+}
+
+<span class="comment">// استخدام</span>
+<span class="tag-name">async function</span> <span class="attr">main</span>() {
+  <span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr-val">'بدأ'</span>);
+  <span class="tag-name">await</span> <span class="attr">delay</span>(<span class="attr-val">1000</span>);
+  <span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr-val">'بعد ثانية'</span>);
+}</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 2: جلب مستخدم</div>
+      <p>اكتب دالة <em>async getUser(id)</em> تجلب من <em>https://jsonplaceholder.typicode.com/users/{id}</em> وتعيد اسم المستخدم.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre><span class="tag-name">async function</span> <span class="attr">getUser</span>(<span class="attr">id</span>) {
+  <span class="tag-name">const</span> <span class="attr">res</span>  = <span class="tag-name">await</span> <span class="attr">fetch</span>(<span class="attr-val">`https://jsonplaceholder.typicode.com/users/${id}`</span>);
+  <span class="tag-name">const</span> <span class="attr">user</span> = <span class="tag-name">await</span> <span class="attr">res</span>.<span class="tag-name">json</span>();
+  <span class="tag-name">return</span> <span class="attr">user</span>.<span class="attr">name</span>;
+}
+
+<span class="attr">getUser</span>(<span class="attr-val">1</span>).<span class="tag-name">then</span>(<span class="attr">name</span> => <span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr">name</span>));</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 3: معالجة الأخطاء</div>
+      <p>اكتب دالة async تجلب من URL وهمي وتعالج الخطأ بـ try/catch وتطبع رسالة مناسبة.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre><span class="tag-name">async function</span> <span class="attr">safeFetch</span>(<span class="attr">url</span>) {
+  <span class="tag-name">try</span> {
+    <span class="tag-name">const</span> <span class="attr">res</span> = <span class="tag-name">await</span> <span class="attr">fetch</span>(<span class="attr">url</span>);
+    <span class="tag-name">if</span> (!<span class="attr">res</span>.<span class="attr">ok</span>) <span class="tag-name">throw new</span> <span class="attr">Error</span>(<span class="attr-val">`خطأ ${res.status}`</span>);
+    <span class="tag-name">return</span> <span class="tag-name">await</span> <span class="attr">res</span>.<span class="tag-name">json</span>();
+  } <span class="tag-name">catch</span> (<span class="attr">e</span>) {
+    <span class="attr">console</span>.<span class="tag-name">error</span>(<span class="attr-val">'فشل الطلب:'</span>, <span class="attr">e</span>.<span class="attr">message</span>);
+    <span class="tag-name">return</span> <span class="attr-val">null</span>;
+  }
+}</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 4: Promise.all</div>
+      <p>اجلب مستخدمين بـ id 1 و2 و3 في نفس الوقت باستخدام Promise.all وأعد مصفوفة أسمائهم.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre><span class="tag-name">async function</span> <span class="attr">getThreeUsers</span>() {
+  <span class="tag-name">const</span> <span class="attr">base</span> = <span class="attr-val">'https://jsonplaceholder.typicode.com/users'</span>;
+  <span class="tag-name">const</span> <span class="attr">users</span> = <span class="tag-name">await</span> <span class="attr">Promise</span>.<span class="tag-name">all</span>([
+    <span class="attr">fetch</span>(<span class="attr-val">`${base}/1`</span>).<span class="tag-name">then</span>(<span class="attr">r</span> => <span class="attr">r</span>.<span class="tag-name">json</span>()),
+    <span class="attr">fetch</span>(<span class="attr-val">`${base}/2`</span>).<span class="tag-name">then</span>(<span class="attr">r</span> => <span class="attr">r</span>.<span class="tag-name">json</span>()),
+    <span class="attr">fetch</span>(<span class="attr-val">`${base}/3`</span>).<span class="tag-name">then</span>(<span class="attr">r</span> => <span class="attr">r</span>.<span class="tag-name">json</span>()),
+  ]);
+  <span class="tag-name">return</span> <span class="attr">users</span>.<span class="tag-name">map</span>(<span class="attr">u</span> => <span class="attr">u</span>.<span class="attr">name</span>);
+}</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 5: عرض loading</div>
+      <p>اكتب دالة تُظهر "جاري التحميل..." قبل الطلب وتُخفيها بعده (سواء نجح أم فشل).</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre><span class="tag-name">async function</span> <span class="attr">fetchWithLoader</span>(<span class="attr">url</span>) {
+  <span class="tag-name">const</span> <span class="attr">loader</span> = <span class="attr">document</span>.<span class="tag-name">getElementById</span>(<span class="attr-val">'loader'</span>);
+  <span class="attr">loader</span>.<span class="attr">style</span>.<span class="attr">display</span> = <span class="attr-val">'block'</span>;
+  <span class="tag-name">try</span> {
+    <span class="tag-name">const</span> <span class="attr">res</span>  = <span class="tag-name">await</span> <span class="attr">fetch</span>(<span class="attr">url</span>);
+    <span class="tag-name">const</span> <span class="attr">data</span> = <span class="tag-name">await</span> <span class="attr">res</span>.<span class="tag-name">json</span>();
+    <span class="tag-name">return</span> <span class="attr">data</span>;
+  } <span class="tag-name">finally</span> {
+    <span class="attr">loader</span>.<span class="attr">style</span>.<span class="attr">display</span> = <span class="attr-val">'none'</span>;
+  }
+}</pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="quiz-container" id="quiz">
+    <div class="quiz-intro"><p>اختبر فهمك لـ Async!</p></div>
+    <div class="quiz-type-tabs">
+      <button class="qt-tab active" onclick="switchQuiz(this,'tf')">✓✗ صح وخطأ</button>
+      <button class="qt-tab" onclick="switchQuiz(this,'mc')">🔘 اختيار من متعدد</button>
+    </div>
+    <div class="quiz-section active" id="quiz-tf">
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">1</span><span class="q-text">دالة async دائماً تعيد Promise.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="false">
+        <span class="q-num">2</span><span class="q-text">fetch ترمي error تلقائياً عند استجابة 404.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">3</span><span class="q-text">await يمكن استخدامه فقط داخل دالة async.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">4</span><span class="q-text">Promise.all ينتظر جميع الـ Promises تنتهي قبل يكمل.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="false">
+        <span class="q-num">5</span><span class="q-text">finally ينفّذ فقط عند النجاح.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <button class="quiz-submit" onclick="submitQuiz('tf')">عرض النتيجة 🎯</button>
+      <div class="quiz-result" id="result-tf"><div class="result-score" id="score-tf">0/5</div><div class="result-label">إجابات صحيحة</div><div class="result-message" id="msg-tf"></div><button class="retry-btn" onclick="retryQuiz('tf')">🔄 حاول تاني</button></div>
+    </div>
+    <div class="quiz-section" id="quiz-mc">
+      <div class="quiz-question" data-correct="1">
+        <span class="q-num">1</span><span class="q-text">كيف تتحقق من نجاح response في fetch؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">res.status === 'ok'</button>
+          <button class="q-opt" onclick="answerMC(this,1)">res.ok === true</button>
+          <button class="q-opt" onclick="answerMC(this,2)">res.success</button>
+          <button class="q-opt" onclick="answerMC(this,3)">res.status === 200</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="2">
+        <span class="q-num">2</span><span class="q-text">ما الخطوة الضرورية بعد fetch لتحويل الاستجابة لـ JSON؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">res.parse()</button>
+          <button class="q-opt" onclick="answerMC(this,1)">JSON.parse(res)</button>
+          <button class="q-opt" onclick="answerMC(this,2)">await res.json()</button>
+          <button class="q-opt" onclick="answerMC(this,3)">res.text()</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="0">
+        <span class="q-num">3</span><span class="q-text">ما ميزة async/await على .then()؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">كود أوضح يشبه الـ synchronous</button>
+          <button class="q-opt" onclick="answerMC(this,1)">أسرع في التنفيذ</button>
+          <button class="q-opt" onclick="answerMC(this,2)">لا يحتاج معالجة أخطاء</button>
+          <button class="q-opt" onclick="answerMC(this,3)">يعمل بدون Promises</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="3">
+        <span class="q-num">4</span><span class="q-text">ما الفرق بين Promise.all و Promise.allSettled؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">لا فرق</button>
+          <button class="q-opt" onclick="answerMC(this,1)">allSettled أسرع</button>
+          <button class="q-opt" onclick="answerMC(this,2)">all ينتظر أول نجاح</button>
+          <button class="q-opt" onclick="answerMC(this,3)">all يفشل إذا فشل أي promise، allSettled يكمل دائماً</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="1">
+        <span class="q-num">5</span><span class="q-text">لإرسال بيانات بـ POST في fetch، ما الخاصية التي تحتوي البيانات؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">data</button>
+          <button class="q-opt" onclick="answerMC(this,1)">body</button>
+          <button class="q-opt" onclick="answerMC(this,2)">payload</button>
+          <button class="q-opt" onclick="answerMC(this,3)">content</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <button class="quiz-submit" onclick="submitQuiz('mc')">عرض النتيجة 🎯</button>
+      <div class="quiz-result" id="result-mc"><div class="result-score" id="score-mc">0/5</div><div class="result-label">إجابات صحيحة</div><div class="result-message" id="msg-mc"></div><button class="retry-btn" onclick="retryQuiz('mc')">🔄 حاول تاني</button></div>
+    </div>
+  </div>
+
+  <div class="lesson-nav">
+    <a href="./lesson-21.html" class="nav-btn"><span>⬅️</span><span>الدرس السابق</span></a>
+    <button class="nav-btn complete-btn" id="completeBtn" onclick="markComplete(this)"><span>✅</span><span>علّم كمكتمل</span></button>
+    <a href="./lesson-23.html" class="nav-btn"><span>الدرس التالي</span><span>➡️</span></a>
+  </div>
+
+  <div class="notebook-footer">
+    <h3>🎉 أتقنت البرمجة غير المتزامنة!</h3>
+    <p>تطبيقك الآن يتحدث مع العالم الخارجي ❤️<br><strong>الدرس التالي: مميزات ES6+ الحديثة ✨</strong></p>
+  </div>
+</div>
+
+<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">⬆️</button>
+<div class="toast" id="toast"></div>
+<script src="../../js/data/courses.js"></script>
+<script src="../../js/progress.js"></script>
+<script src="../../js/lesson-editor.js"></script>
+<script>
+const COURSE_ID='frontend',LESSON_ID=22,TOTAL=32;
+function toggleSolution(b){const s=b.nextElementSibling;s.classList.toggle('show');b.textContent=s.classList.contains('show')?'إخفاء الحل ▲':'عرض الحل ▼';}
+function copyCode(b){const p=b.closest('.code-box').querySelector('pre');navigator.clipboard.writeText(p.innerText).then(()=>{b.classList.add('copied');b.textContent='✓ تم النسخ';setTimeout(()=>{b.classList.remove('copied');b.textContent='📋 نسخ';},2000);});}
+function runCode(b){const t=b.closest('.try-it');t.querySelector('iframe').srcdoc=t.querySelector('.try-it-editor').value;}
+function resetCode(b){const t=b.closest('.try-it'),e=t.querySelector('.try-it-editor');e.value=e.dataset.default;t.querySelector('iframe').srcdoc=e.value;}
+window.addEventListener('load',()=>{document.querySelectorAll('.try-it').forEach(t=>{const e=t.querySelector('.try-it-editor');t.querySelector('iframe').srcdoc=e.value;});});
+function switchQuiz(b,t){document.querySelectorAll('.qt-tab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.quiz-section').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.getElementById('quiz-'+t).classList.add('active');}
+const answers={tf:{},mc:{}};
+function answerTF(b,v){const q=b.closest('.quiz-question'),i=Array.from(q.parentNode.querySelectorAll('.quiz-question')).indexOf(q);q.querySelectorAll('.q-opt').forEach(o=>o.classList.remove('selected'));b.classList.add('selected');answers.tf[i]=v;}
+function answerMC(b,i){const q=b.closest('.quiz-question'),qi=Array.from(q.parentNode.querySelectorAll('.quiz-question')).indexOf(q);q.querySelectorAll('.q-opt').forEach(o=>o.classList.remove('selected'));b.classList.add('selected');answers.mc[qi]=i;}
+function submitQuiz(type){const sec=document.getElementById('quiz-'+type),qs=sec.querySelectorAll('.quiz-question');let c=0;qs.forEach((q,i)=>{const ca=type==='tf'?(q.dataset.correct==='true'):parseInt(q.dataset.correct),ua=answers[type][i],fb=q.querySelector('.q-feedback'),opts=q.querySelectorAll('.q-opt');opts.forEach(o=>{o.classList.remove('selected');o.disabled=true;});if(ua===undefined){fb.className='q-feedback wrong show';fb.textContent='⚠️ ما اخترتش إجابة!';return;}if(ua===ca){c++;fb.className='q-feedback correct show';fb.textContent='✓ إجابة صحيحة!';if(type==='tf')opts[ca?0:1].classList.add('correct');else opts[ca].classList.add('correct');}else{fb.className='q-feedback wrong show';if(type==='tf'){opts[ca?0:1].classList.add('correct');opts[ua?0:1].classList.add('wrong');fb.textContent='✗ خطأ.';}else{opts[ca].classList.add('correct');opts[ua].classList.add('wrong');fb.textContent='✗ الإجابة بالأخضر.';}}});const r=document.getElementById('result-'+type);document.getElementById('score-'+type).textContent=c+'/'+qs.length;const m=document.getElementById('msg-'+type);if(c===qs.length){m.textContent='🏆 ممتاز 100%!';m.className='result-message excellent';}else if(c>=3){m.textContent='👍 جيد!';m.className='result-message good';}else{m.textContent='📚 راجع الدرس.';m.className='result-message try-again';}r.classList.add('show');r.scrollIntoView({behavior:'smooth',block:'center'});}
+function retryQuiz(type){const sec=document.getElementById('quiz-'+type);sec.querySelectorAll('.q-opt').forEach(o=>{o.classList.remove('selected','correct','wrong');o.disabled=false;});sec.querySelectorAll('.q-feedback').forEach(f=>{f.classList.remove('show','correct','wrong');f.textContent='';});document.getElementById('result-'+type).classList.remove('show');answers[type]={};}
+function markComplete(btn){const done=Progress.toggleLessonComplete(COURSE_ID,LESSON_ID);btn.classList.toggle('completed',done);btn.querySelector('span:last-child').textContent=done?'مكتمل! ⭐':'علّم كمكتمل';showToast(done?'🎉 أكملت درس Async!':'تم إلغاء الإكمال');}
+if(Progress.isLessonComplete(COURSE_ID,LESSON_ID)){const b=document.getElementById('completeBtn');b.classList.add('completed');b.querySelector('span:last-child').textContent='مكتمل! ⭐';}
+(function(){const p=Progress.getCourseProgress(COURSE_ID,TOTAL);document.getElementById('progFill').style.width=p+'%';document.getElementById('progText').textContent=p+'%';})();
+function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
+window.addEventListener('scroll',()=>{document.getElementById('scrollTop').classList.toggle('show',window.scrollY>300);});
+document.querySelectorAll('.toc-card a').forEach(l=>{l.addEventListener('click',e=>{e.preventDefault();const t=document.querySelector(l.getAttribute('href'));if(t)t.scrollIntoView({behavior:'smooth',block:'start'});});});
+</script>
+</body>
+</html>

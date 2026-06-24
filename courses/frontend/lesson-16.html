@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-V2NCKVL16D"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-V2NCKVL16D');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>الحلقات التكرارية — دفتر البرمجة</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=Cairo:wght@300;400;500;600;700;900&family=Caveat:wght@400;700&family=Fira+Code:wght@400;500;600&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../css/shared.css">
+<link rel="stylesheet" href="../../css/notebook.css">
+<style>
+body { padding: 20px 10px; }
+.mini-console {
+  background: #1e293b; border-radius: 10px; padding: 14px 16px;
+  margin: 10px 0; font-family: 'Fira Code', monospace; font-size: .88rem; direction: ltr;
+}
+.mc-line { margin: 3px 0; }
+.mc-in::before  { content: '> '; color: #7c3aed; }
+.mc-in  { color: #94a3b8; }
+.mc-out { color: #4ade80; }
+.mc-out::before { content: '← '; color: #4ade80; }
+
+/* loop animation */
+.loop-visual {
+  display: flex; gap: 8px; flex-wrap: wrap; margin: 12px 0; direction: ltr;
+}
+.loop-step {
+  width: 40px; height: 40px; border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Fira Code', monospace; font-weight: 700; font-size: .9rem;
+  color: white;
+}
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="crumbs">
+    <a href="../../index.html">🏠 الرئيسية</a>
+    <span class="sep">/</span>
+    <a href="./index.html">🌐 الفرونت إند</a>
+    <span class="sep">/</span>
+    <span class="current">⚡ الدرس 16: الحلقات التكرارية</span>
+  </div>
+  <div class="progress-mini">
+    <div class="progress-bar-mini"><div class="progress-fill-mini" id="progFill"></div></div>
+    <span id="progText">0%</span>
+  </div>
+</div>
+
+<div class="notebook">
+
+  <div class="notebook-header">
+    <div class="lesson-tag">⚡ الدرس السادس عشر</div>
+    <h1><span class="sparkle">✦</span> الحلقات التكرارية — Loops <span class="sparkle">✦</span></h1>
+    <div class="lesson-meta">
+      <span>⏱️ 40 دقيقة</span>
+      <span>📊 مبتدئ</span>
+      <span>🎯 5 تمارين + اختبار</span>
+    </div>
+  </div>
+
+  <div class="toc-card">
+    <h2>📑 فهرس الدرس</h2>
+    <ol>
+      <li><a href="#s1">ما هي الحلقات؟</a></li>
+      <li><a href="#s2">حلقة for</a></li>
+      <li><a href="#s3">حلقة while</a></li>
+      <li><a href="#s4">حلقة do...while</a></li>
+      <li><a href="#s5">for...of — للمصفوفات</a></li>
+      <li><a href="#s6">for...in — للكائنات</a></li>
+      <li><a href="#s7">break و continue</a></li>
+      <li><a href="#s8">محرر الكود الحي</a></li>
+      <li><a href="#exercises">التمارين</a></li>
+      <li><a href="#quiz">اختبر فهمك</a></li>
+    </ol>
+  </div>
+
+  <!-- S1 -->
+  <div class="section" id="s1">
+    <h2 class="section-title"><span class="num">.1</span> ما هي الحلقات؟ <span class="en">What are Loops?</span></h2>
+    <div class="content">
+      <p>الحلقة التكرارية تنفّذ كتلة كود <strong>مرات متعددة</strong> طالما شرط معين محقق. بدونها ستحتاج لكتابة نفس الكود مئات المرات.</p>
+      <div class="analogy">
+        <div class="analogy-title">🏋️ تخيل تمرين رياضي:</div>
+        <p>بدل ما تكتب "اعمل عقلة" 20 مرة، تقول: <strong>"كرر 20 مرة: اعمل عقلة"</strong>. هذا بالضبط ما تفعله الحلقة.</p>
+      </div>
+      <div class="loop-visual">
+        <div class="loop-step" style="background:var(--ink-blue);">1</div>
+        <div class="loop-step" style="background:var(--ink-purple);">2</div>
+        <div class="loop-step" style="background:var(--ink-green);">3</div>
+        <div class="loop-step" style="background:var(--ink-orange);">4</div>
+        <div class="loop-step" style="background:var(--ink-red);">5</div>
+        <div class="loop-step" style="background:var(--ink-teal);">...</div>
+      </div>
+      <p>كل مربع = تنفيذ واحد للكود داخل الحلقة.</p>
+    </div>
+  </div>
+
+  <!-- S2 -->
+  <div class="section" id="s2">
+    <h2 class="section-title"><span class="num">.2</span> حلقة for <span class="en">for Loop</span></h2>
+    <div class="content">
+      <p>الأكثر استخداماً — مناسبة لما تعرف عدد التكرارات مسبقاً:</p>
+      <div class="code-box">
+<div class="code-header"><span>🔄 شكل for</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-name">for</span> (<span class="attr">let</span> i = <span class="attr-val">0</span>; i < <span class="attr-val">5</span>; i++) {
+  <span class="attr">console</span>.<span class="tag-name">log</span>(i);
+}
+<span class="comment">// 0, 1, 2, 3, 4</span>
+
+<span class="comment">// الأجزاء الثلاثة:
+// let i = 0    → نقطة البداية
+// i < 5        → شرط الاستمرار
+// i++          → التحديث بعد كل دورة</span></pre>
+      </div>
+
+      <div class="sub-header">أمثلة شائعة:</div>
+      <div class="code-box blue">
+<div class="code-header"><span>📋 أمثلة for</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">// العد من 1 إلى 10</span>
+<span class="tag-name">for</span> (<span class="tag-name">let</span> i = <span class="attr-val">1</span>; i <= <span class="attr-val">10</span>; i++) {
+  <span class="attr">console</span>.<span class="tag-name">log</span>(i);
+}
+
+<span class="comment">// العد التنازلي</span>
+<span class="tag-name">for</span> (<span class="tag-name">let</span> i = <span class="attr-val">10</span>; i >= <span class="attr-val">1</span>; i--) {
+  <span class="attr">console</span>.<span class="tag-name">log</span>(i);
+}
+
+<span class="comment">// تجاوز كل عنصر في مصفوفة بالـ index</span>
+<span class="tag-name">const</span> <span class="attr">fruits</span> = [<span class="attr-val">'تفاح'</span>, <span class="attr-val">'موز'</span>, <span class="attr-val">'برتقال'</span>];
+<span class="tag-name">for</span> (<span class="tag-name">let</span> i = <span class="attr-val">0</span>; i < <span class="attr">fruits</span>.<span class="attr">length</span>; i++) {
+  <span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr-val">`${i}: ${<span class="attr">fruits</span>[i]}`</span>);
+}</pre>
+      </div>
+
+      <div class="mini-console">
+        <div class="mc-line mc-in">for (let i=1; i&lt;=3; i++) console.log(i)</div>
+        <div class="mc-line mc-out">1</div>
+        <div class="mc-line mc-out">2</div>
+        <div class="mc-line mc-out">3</div>
+      </div>
+
+      <div class="tip-box"><strong>لماذا i = 0؟</strong> عرف شائع في البرمجة — المصفوفات تبدأ من index 0، لذا نبدأ الحلقة من 0 أيضاً.</div>
+    </div>
+  </div>
+
+  <!-- S3 -->
+  <div class="section" id="s3">
+    <h2 class="section-title"><span class="num">.3</span> حلقة while <span class="en">while Loop</span></h2>
+    <div class="content">
+      <p>مناسبة لما لا تعرف عدد التكرارات مسبقاً — تستمر طالما الشرط true:</p>
+      <div class="code-box">
+<div class="code-header"><span>🔁 while</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-name">let</span> <span class="attr">count</span> = <span class="attr-val">1</span>;
+
+<span class="tag-name">while</span> (<span class="attr">count</span> <= <span class="attr-val">5</span>) {
+  <span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr">count</span>);
+  <span class="attr">count</span>++;   <span class="comment">// مهم جداً! بدونه حلقة لا نهائية</span>
+}
+<span class="comment">// 1, 2, 3, 4, 5</span></pre>
+      </div>
+      <div class="example">
+        <span class="example-label">📌 مثال عملي: البحث عن عدد</span>
+        <div class="code-box green">
+<pre><span class="tag-name">let</span> <span class="attr">num</span> = <span class="attr-val">1</span>;
+
+<span class="comment">// ابحث عن أول عدد قابل للقسمة على 7 و 3 معاً</span>
+<span class="tag-name">while</span> (<span class="attr">num</span> % <span class="attr-val">7</span> !== <span class="attr-val">0</span> || <span class="attr">num</span> % <span class="attr-val">3</span> !== <span class="attr-val">0</span>) {
+  <span class="attr">num</span>++;
+}
+<span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr">num</span>);  <span class="comment">// 21</span></pre>
+        </div>
+      </div>
+      <div class="warning-box"><strong>خطر الحلقة اللانهائية!</strong> لو نسيت تحديث المتغير أو كتبت شرطاً لا يصبح false أبداً، المتصفح سيتجمد. دائماً تأكد من وجود خروج من الحلقة.</div>
+    </div>
+  </div>
+
+  <!-- S4 -->
+  <div class="section" id="s4">
+    <h2 class="section-title"><span class="num">.4</span> حلقة do...while <span class="en">do...while Loop</span></h2>
+    <div class="content">
+      <p>مثل while لكن <strong>تنفّذ مرة واحدة على الأقل</strong> قبل فحص الشرط:</p>
+      <div class="code-box">
+<div class="code-header"><span>🔂 do...while</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-name">let</span> <span class="attr">x</span> = <span class="attr-val">10</span>;
+
+<span class="tag-name">do</span> {
+  <span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr-val">'نُفِّذ!'</span>);   <span class="comment">// ينفّذ مرة واحدة</span>
+  <span class="attr">x</span>++;
+} <span class="tag-name">while</span> (<span class="attr">x</span> < <span class="attr-val">5</span>);  <span class="comment">// الشرط false من البداية لكن...</span>
+
+<span class="comment">// الفرق: while يفحص أولاً، do...while ينفّذ أولاً</span></pre>
+      </div>
+      <table class="cool-table">
+        <thead><tr><th>الحلقة</th><th>متى تستخدم؟</th></tr></thead>
+        <tbody>
+          <tr><td><code>for</code></td><td>عدد التكرارات معروف مسبقاً</td></tr>
+          <tr><td><code>while</code></td><td>تستمر حتى يتحقق شرط معين</td></tr>
+          <tr><td><code>do...while</code></td><td>تنفيذ مرة أولى مضمون (مثل: اطلب إدخال)</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- S5 -->
+  <div class="section" id="s5">
+    <h2 class="section-title"><span class="num">.5</span> for...of — للمصفوفات <span class="en">for...of</span></h2>
+    <div class="content">
+      <p>أنظف طريقة للتجوال على عناصر مصفوفة — بدون index:</p>
+      <div class="code-box">
+<div class="code-header"><span>🎯 for...of</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-name">const</span> <span class="attr">colors</span> = [<span class="attr-val">'أحمر'</span>, <span class="attr-val">'أخضر'</span>, <span class="attr-val">'أزرق'</span>];
+
+<span class="tag-name">for</span> (<span class="tag-name">const</span> <span class="attr">color</span> <span class="tag-name">of</span> <span class="attr">colors</span>) {
+  <span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr">color</span>);
+}
+<span class="comment">// أحمر
+// أخضر
+// أزرق</span></pre>
+      </div>
+
+      <div class="code-box blue">
+<div class="code-header"><span>📝 مقارنة: for vs for...of</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-name">const</span> <span class="attr">nums</span> = [<span class="attr-val">10</span>, <span class="attr-val">20</span>, <span class="attr-val">30</span>];
+
+<span class="comment">// for عادي (عندك الـ index)</span>
+<span class="tag-name">for</span> (<span class="tag-name">let</span> i = <span class="attr-val">0</span>; i < <span class="attr">nums</span>.<span class="attr">length</span>; i++) {
+  <span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr">nums</span>[i]);
+}
+
+<span class="comment">// for...of (أنظف، بدون index)</span>
+<span class="tag-name">for</span> (<span class="tag-name">const</span> <span class="attr">n</span> <span class="tag-name">of</span> <span class="attr">nums</span>) {
+  <span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr">n</span>);
+}</pre>
+      </div>
+      <div class="tip-box"><strong>forEach أيضاً:</strong> طريقة ثالثة شهيرة — <em>nums.forEach(n => console.log(n))</em> — سنتعلمها في درس المصفوفات.</div>
+    </div>
+  </div>
+
+  <!-- S6 -->
+  <div class="section" id="s6">
+    <h2 class="section-title"><span class="num">.6</span> for...in — للكائنات <span class="en">for...in</span></h2>
+    <div class="content">
+      <p>للتجوال على خصائص (keys) كائن (Object):</p>
+      <div class="code-box">
+<div class="code-header"><span>🔑 for...in</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-name">const</span> <span class="attr">person</span> = {
+  <span class="attr">name</span>: <span class="attr-val">'أحمد'</span>,
+  <span class="attr">age</span>:  <span class="attr-val">25</span>,
+  <span class="attr">city</span>: <span class="attr-val">'القاهرة'</span>
+};
+
+<span class="tag-name">for</span> (<span class="tag-name">const</span> <span class="attr">key</span> <span class="tag-name">in</span> <span class="attr">person</span>) {
+  <span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr-val">`${<span class="attr">key</span>}: ${<span class="attr">person</span>[<span class="attr">key</span>]}`</span>);
+}
+<span class="comment">// name: أحمد
+// age: 25
+// city: القاهرة</span></pre>
+      </div>
+      <div class="note-box"><strong>for...of مع الكائنات:</strong> لا يعمل مباشرة. استخدم <em>Object.keys()</em> أو <em>Object.values()</em> أو <em>Object.entries()</em> أولاً.</div>
+    </div>
+  </div>
+
+  <!-- S7 -->
+  <div class="section" id="s7">
+    <h2 class="section-title"><span class="num">.7</span> break و continue <span class="en">Loop Control</span></h2>
+    <div class="content">
+      <p>أداتان للتحكم في سير الحلقة:</p>
+      <div class="code-box">
+<div class="code-header"><span>⏹️ break — إيقاف الحلقة</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">// أوقف الحلقة لما تجد 5</span>
+<span class="tag-name">for</span> (<span class="tag-name">let</span> i = <span class="attr-val">0</span>; i < <span class="attr-val">10</span>; i++) {
+  <span class="tag-name">if</span> (i === <span class="attr-val">5</span>) <span class="tag-name">break</span>;
+  <span class="attr">console</span>.<span class="tag-name">log</span>(i);
+}
+<span class="comment">// 0, 1, 2, 3, 4</span></pre>
+      </div>
+
+      <div class="code-box blue">
+<div class="code-header"><span>⏭️ continue — تخطي دورة</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">// تخطي الأعداد الفردية</span>
+<span class="tag-name">for</span> (<span class="tag-name">let</span> i = <span class="attr-val">0</span>; i < <span class="attr-val">10</span>; i++) {
+  <span class="tag-name">if</span> (i % <span class="attr-val">2</span> !== <span class="attr-val">0</span>) <span class="tag-name">continue</span>;
+  <span class="attr">console</span>.<span class="tag-name">log</span>(i);
+}
+<span class="comment">// 0, 2, 4, 6, 8</span></pre>
+      </div>
+
+      <table class="cool-table">
+        <thead><tr><th>الكلمة</th><th>الوظيفة</th><th>مثال على الاستخدام</th></tr></thead>
+        <tbody>
+          <tr><td><code>break</code></td><td>يوقف الحلقة نهائياً</td><td>وجدت ما تبحث عنه</td></tr>
+          <tr><td><code>continue</code></td><td>يتخطى الدورة الحالية ويكمل</td><td>تجاهل قيم معينة</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- S8 -->
+  <div class="section" id="s8">
+    <h2 class="section-title"><span class="num">.8</span> محرر الكود الحي <span class="en">Live Editor</span></h2>
+    <div class="content"><p>جرب الحلقات بنفسك:</p></div>
+    <div class="try-it">
+      <div class="try-it-header">
+        <span>⚡ جرب الحلقات</span>
+        <div class="try-it-controls">
+          <button class="try-btn" onclick="runCode(this)">▶️ تشغيل</button>
+          <button class="try-btn" onclick="resetCode(this)">🔄 إعادة</button>
+        </div>
+      </div>
+      <div class="try-it-body">
+        <textarea class="try-it-editor" spellcheck="false" data-default='<!DOCTYPE html>
+<html><head><meta charset="UTF-8"></head>
+<body style="font-family:Arial;padding:20px;direction:rtl;">
+  <h2>🔄 تجارب الحلقات</h2>
+  <div id="out" style="background:#1e293b;color:#4ade80;padding:16px;border-radius:10px;font-family:monospace;white-space:pre-line;line-height:1.8;"></div>
+<script>
+  const p = s => document.getElementById("out").textContent += s + "\n";
+
+  // for: مجموع 1 إلى 10
+  let sum = 0;
+  for (let i = 1; i <= 10; i++) sum += i;
+  p("مجموع 1..10 = " + sum);
+
+  // for...of: أطول كلمة
+  const words = ["مرحبا", "اكاديمية", "JS", "برمجة"];
+  let longest = "";
+  for (const w of words) {
+    if (w.length > longest.length) longest = w;
+  }
+  p("أطول كلمة: " + longest);
+
+  // جدول الضرب لـ 7
+  p("\nجدول ضرب 7:");
+  for (let i = 1; i <= 5; i++) {
+    p(`7 × ${i} = ${7 * i}`);
+  }
+</script>
+</body></html>'><!DOCTYPE html>
+<html><head><meta charset="UTF-8"></head>
+<body style="font-family:Arial;padding:20px;direction:rtl;">
+  <h2>🔄 تجارب الحلقات</h2>
+  <div id="out" style="background:#1e293b;color:#4ade80;padding:16px;border-radius:10px;font-family:monospace;white-space:pre-line;line-height:1.8;"></div>
+<script>
+  const p = s => document.getElementById("out").textContent += s + "\n";
+
+  let sum = 0;
+  for (let i = 1; i <= 10; i++) sum += i;
+  p("مجموع 1..10 = " + sum);
+
+  const words = ["مرحبا", "اكاديمية", "JS", "برمجة"];
+  let longest = "";
+  for (const w of words) {
+    if (w.length > longest.length) longest = w;
+  }
+  p("أطول كلمة: " + longest);
+
+  p("\nجدول ضرب 7:");
+  for (let i = 1; i <= 5; i++) {
+    p(`7 × ${i} = ${7 * i}`);
+  }
+</script>
+</body></html></textarea>
+        <div class="try-it-preview"><iframe srcdoc="" sandbox="allow-scripts allow-same-origin allow-modals allow-popups allow-forms" title="معاينة الكود"></iframe></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EXERCISES -->
+  <div class="section" id="exercises">
+    <h2 class="section-title"><span class="num">📝</span> التمارين العملية <span class="en">Exercises</span></h2>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 1: جدول الضرب</div>
+      <p>اطبع جدول ضرب الرقم 5 من 1 إلى 10 بهذا الشكل: "5 × 1 = 5".</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre><span class="tag-name">for</span> (<span class="tag-name">let</span> i = <span class="attr-val">1</span>; i <= <span class="attr-val">10</span>; i++) {
+  <span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr-val">`5 × ${i} = ${5 * i}`</span>);
+}</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 2: مجموع الأعداد الزوجية</div>
+      <p>احسب مجموع كل الأعداد الزوجية من 1 إلى 100.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre><span class="tag-name">let</span> <span class="attr">sum</span> = <span class="attr-val">0</span>;
+<span class="tag-name">for</span> (<span class="tag-name">let</span> i = <span class="attr-val">1</span>; i <= <span class="attr-val">100</span>; i++) {
+  <span class="tag-name">if</span> (i % <span class="attr-val">2</span> === <span class="attr-val">0</span>) <span class="attr">sum</span> += i;
+}
+<span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr">sum</span>);  <span class="comment">// 2550</span></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 3: عكس مصفوفة</div>
+      <p>عندك مصفوفة <em>[1, 2, 3, 4, 5]</em>. استخدم for لطباعة عناصرها بالعكس.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre><span class="tag-name">const</span> <span class="attr">arr</span> = [<span class="attr-val">1</span>, <span class="attr-val">2</span>, <span class="attr-val">3</span>, <span class="attr-val">4</span>, <span class="attr-val">5</span>];
+<span class="tag-name">for</span> (<span class="tag-name">let</span> i = <span class="attr">arr</span>.<span class="attr">length</span> - <span class="attr-val">1</span>; i >= <span class="attr-val">0</span>; i--) {
+  <span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr">arr</span>[i]);
+}
+<span class="comment">// 5, 4, 3, 2, 1</span></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 4: البحث في مصفوفة</div>
+      <p>ابحث عن الرقم 7 في المصفوفة <em>[3, 1, 8, 7, 2, 5]</em>. لو وجدته اطبع index موقعه وأوقف البحث.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre><span class="tag-name">const</span> <span class="attr">nums</span> = [<span class="attr-val">3</span>, <span class="attr-val">1</span>, <span class="attr-val">8</span>, <span class="attr-val">7</span>, <span class="attr-val">2</span>, <span class="attr-val">5</span>];
+<span class="tag-name">for</span> (<span class="tag-name">let</span> i = <span class="attr-val">0</span>; i < <span class="attr">nums</span>.<span class="attr">length</span>; i++) {
+  <span class="tag-name">if</span> (<span class="attr">nums</span>[i] === <span class="attr-val">7</span>) {
+    <span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr-val">`وجدت 7 في index ${i}`</span>);
+    <span class="tag-name">break</span>;
+  }
+}</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 5: طباعة خصائص كائن</div>
+      <p>عندك كائن <em>{ brand: 'Toyota', year: 2020, color: 'أبيض' }</em>. استخدم for...in لطباعة كل خاصية وقيمتها.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre><span class="tag-name">const</span> <span class="attr">car</span> = { <span class="attr">brand</span>: <span class="attr-val">'Toyota'</span>, <span class="attr">year</span>: <span class="attr-val">2020</span>, <span class="attr">color</span>: <span class="attr-val">'أبيض'</span> };
+
+<span class="tag-name">for</span> (<span class="tag-name">const</span> <span class="attr">key</span> <span class="tag-name">in</span> <span class="attr">car</span>) {
+  <span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr-val">`${<span class="attr">key</span>}: ${<span class="attr">car</span>[<span class="attr">key</span>]}`</span>);
+}</pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="quiz-container" id="quiz">
+    <div class="quiz-intro"><p>اختبر فهمك للحلقات!</p></div>
+    <div class="quiz-type-tabs">
+      <button class="qt-tab active" onclick="switchQuiz(this,'tf')">✓✗ صح وخطأ</button>
+      <button class="qt-tab" onclick="switchQuiz(this,'mc')">🔘 اختيار من متعدد</button>
+    </div>
+
+    <div class="quiz-section active" id="quiz-tf">
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">1</span><span class="q-text">for...of تُستخدم للتجوال على عناصر مصفوفة بدون الحاجة للـ index.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="false">
+        <span class="q-num">2</span><span class="q-text">break تتخطى الدورة الحالية فقط وتكمل الحلقة.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">3</span><span class="q-text">do...while تنفّذ جسم الحلقة مرة واحدة على الأقل حتى لو الشرط false.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="false">
+        <span class="q-num">4</span><span class="q-text">for...in تُستخدم للتجوال على عناصر المصفوفات.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">5</span><span class="q-text">نسيان تحديث المتغير في while قد يؤدي إلى حلقة لانهائية.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <button class="quiz-submit" onclick="submitQuiz('tf')">عرض النتيجة 🎯</button>
+      <div class="quiz-result" id="result-tf"><div class="result-score" id="score-tf">0/5</div><div class="result-label">إجابات صحيحة</div><div class="result-message" id="msg-tf"></div><button class="retry-btn" onclick="retryQuiz('tf')">🔄 حاول تاني</button></div>
+    </div>
+
+    <div class="quiz-section" id="quiz-mc">
+      <div class="quiz-question" data-correct="1">
+        <span class="q-num">1</span><span class="q-text">ما عدد مرات التنفيذ: for(let i=0; i&lt;5; i++)؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">4</button>
+          <button class="q-opt" onclick="answerMC(this,1)">5</button>
+          <button class="q-opt" onclick="answerMC(this,2)">6</button>
+          <button class="q-opt" onclick="answerMC(this,3)">لانهائي</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="2">
+        <span class="q-num">2</span><span class="q-text">أي حلقة مناسبة لما لا تعرف عدد التكرارات مسبقاً؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">for</button>
+          <button class="q-opt" onclick="answerMC(this,1)">for...of</button>
+          <button class="q-opt" onclick="answerMC(this,2)">while</button>
+          <button class="q-opt" onclick="answerMC(this,3)">for...in</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="0">
+        <span class="q-num">3</span><span class="q-text">ما وظيفة continue؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">يتخطى الدورة الحالية ويكمل الحلقة</button>
+          <button class="q-opt" onclick="answerMC(this,1)">يوقف الحلقة نهائياً</button>
+          <button class="q-opt" onclick="answerMC(this,2)">يعيد تشغيل الحلقة من البداية</button>
+          <button class="q-opt" onclick="answerMC(this,3)">يخرج من الدالة</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="3">
+        <span class="q-num">4</span><span class="q-text">لماذا تبدأ حلقات المصفوفات عادةً من i=0؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">عرف قديم بلا سبب</button>
+          <button class="q-opt" onclick="answerMC(this,1)">لأن 0 أسرع</button>
+          <button class="q-opt" onclick="answerMC(this,2)">لأن JS تشترط ذلك</button>
+          <button class="q-opt" onclick="answerMC(this,3)">لأن المصفوفات تبدأ من index 0</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="1">
+        <span class="q-num">5</span><span class="q-text">ما الحلقة المناسبة للتجوال على خصائص كائن؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">for...of</button>
+          <button class="q-opt" onclick="answerMC(this,1)">for...in</button>
+          <button class="q-opt" onclick="answerMC(this,2)">while</button>
+          <button class="q-opt" onclick="answerMC(this,3)">forEach</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <button class="quiz-submit" onclick="submitQuiz('mc')">عرض النتيجة 🎯</button>
+      <div class="quiz-result" id="result-mc"><div class="result-score" id="score-mc">0/5</div><div class="result-label">إجابات صحيحة</div><div class="result-message" id="msg-mc"></div><button class="retry-btn" onclick="retryQuiz('mc')">🔄 حاول تاني</button></div>
+    </div>
+  </div>
+
+  <div class="lesson-nav">
+    <a href="./lesson-15.html" class="nav-btn"><span>⬅️</span><span>الدرس السابق</span></a>
+    <button class="nav-btn complete-btn" id="completeBtn" onclick="markComplete(this)"><span>✅</span><span>علّم كمكتمل</span></button>
+    <a href="./lesson-17.html" class="nav-btn"><span>الدرس التالي</span><span>➡️</span></a>
+  </div>
+
+  <div class="notebook-footer">
+    <h3>🎉 أتقنت الحلقات!</h3>
+    <p>برنامجك أصبح يكرر ويتجول بذكاء ❤️<br><strong>الدرس التالي: الدوال (Functions) ⚙️</strong></p>
+  </div>
+</div>
+
+<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">⬆️</button>
+<div class="toast" id="toast"></div>
+<script src="../../js/data/courses.js"></script>
+<script src="../../js/progress.js"></script>
+<script src="../../js/lesson-editor.js"></script>
+<script>
+const COURSE_ID='frontend',LESSON_ID=16,TOTAL=32;
+function toggleSolution(b){const s=b.nextElementSibling;s.classList.toggle('show');b.textContent=s.classList.contains('show')?'إخفاء الحل ▲':'عرض الحل ▼';}
+function copyCode(b){const p=b.closest('.code-box').querySelector('pre');navigator.clipboard.writeText(p.innerText).then(()=>{b.classList.add('copied');b.textContent='✓ تم النسخ';setTimeout(()=>{b.classList.remove('copied');b.textContent='📋 نسخ';},2000);});}
+function runCode(b){const t=b.closest('.try-it');t.querySelector('iframe').srcdoc=t.querySelector('.try-it-editor').value;}
+function resetCode(b){const t=b.closest('.try-it'),e=t.querySelector('.try-it-editor');e.value=e.dataset.default;t.querySelector('iframe').srcdoc=e.value;}
+window.addEventListener('load',()=>{document.querySelectorAll('.try-it').forEach(t=>{const e=t.querySelector('.try-it-editor');t.querySelector('iframe').srcdoc=e.value;});});
+function switchQuiz(b,t){document.querySelectorAll('.qt-tab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.quiz-section').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.getElementById('quiz-'+t).classList.add('active');}
+const answers={tf:{},mc:{}};
+function answerTF(b,v){const q=b.closest('.quiz-question'),i=Array.from(q.parentNode.querySelectorAll('.quiz-question')).indexOf(q);q.querySelectorAll('.q-opt').forEach(o=>o.classList.remove('selected'));b.classList.add('selected');answers.tf[i]=v;}
+function answerMC(b,i){const q=b.closest('.quiz-question'),qi=Array.from(q.parentNode.querySelectorAll('.quiz-question')).indexOf(q);q.querySelectorAll('.q-opt').forEach(o=>o.classList.remove('selected'));b.classList.add('selected');answers.mc[qi]=i;}
+function submitQuiz(type){const sec=document.getElementById('quiz-'+type),qs=sec.querySelectorAll('.quiz-question');let c=0;qs.forEach((q,i)=>{const ca=type==='tf'?(q.dataset.correct==='true'):parseInt(q.dataset.correct),ua=answers[type][i],fb=q.querySelector('.q-feedback'),opts=q.querySelectorAll('.q-opt');opts.forEach(o=>{o.classList.remove('selected');o.disabled=true;});if(ua===undefined){fb.className='q-feedback wrong show';fb.textContent='⚠️ ما اخترتش إجابة!';return;}if(ua===ca){c++;fb.className='q-feedback correct show';fb.textContent='✓ إجابة صحيحة!';if(type==='tf')opts[ca?0:1].classList.add('correct');else opts[ca].classList.add('correct');}else{fb.className='q-feedback wrong show';if(type==='tf'){opts[ca?0:1].classList.add('correct');opts[ua?0:1].classList.add('wrong');fb.textContent='✗ خطأ.';}else{opts[ca].classList.add('correct');opts[ua].classList.add('wrong');fb.textContent='✗ الإجابة بالأخضر.';}}});const r=document.getElementById('result-'+type);document.getElementById('score-'+type).textContent=c+'/'+qs.length;const m=document.getElementById('msg-'+type);if(c===qs.length){m.textContent='🏆 ممتاز 100%!';m.className='result-message excellent';}else if(c>=3){m.textContent='👍 جيد!';m.className='result-message good';}else{m.textContent='📚 راجع الدرس.';m.className='result-message try-again';}r.classList.add('show');r.scrollIntoView({behavior:'smooth',block:'center'});}
+function retryQuiz(type){const sec=document.getElementById('quiz-'+type);sec.querySelectorAll('.q-opt').forEach(o=>{o.classList.remove('selected','correct','wrong');o.disabled=false;});sec.querySelectorAll('.q-feedback').forEach(f=>{f.classList.remove('show','correct','wrong');f.textContent='';});document.getElementById('result-'+type).classList.remove('show');answers[type]={};}
+function markComplete(btn){const done=Progress.toggleLessonComplete(COURSE_ID,LESSON_ID);btn.classList.toggle('completed',done);btn.querySelector('span:last-child').textContent=done?'مكتمل! ⭐':'علّم كمكتمل';showToast(done?'🎉 أكملت درس الحلقات!':'تم إلغاء الإكمال');}
+if(Progress.isLessonComplete(COURSE_ID,LESSON_ID)){const b=document.getElementById('completeBtn');b.classList.add('completed');b.querySelector('span:last-child').textContent='مكتمل! ⭐';}
+(function(){const p=Progress.getCourseProgress(COURSE_ID,TOTAL);document.getElementById('progFill').style.width=p+'%';document.getElementById('progText').textContent=p+'%';})();
+function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
+window.addEventListener('scroll',()=>{document.getElementById('scrollTop').classList.toggle('show',window.scrollY>300);});
+document.querySelectorAll('.toc-card a').forEach(l=>{l.addEventListener('click',e=>{e.preventDefault();const t=document.querySelector(l.getAttribute('href'));if(t)t.scrollIntoView({behavior:'smooth',block:'start'});});});
+</script>
+</body>
+</html>

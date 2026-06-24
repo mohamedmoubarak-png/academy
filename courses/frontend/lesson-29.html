@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-V2NCKVL16D"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-V2NCKVL16D');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>النشر على الإنترنت Deployment — دفتر البرمجة</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=Cairo:wght@300;400;500;600;700;900&family=Caveat:wght@400;700&family=Fira+Code:wght@400;500;600&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../css/shared.css">
+<link rel="stylesheet" href="../../css/notebook.css">
+<style>
+body { padding: 20px 10px; }
+
+/* platform cards */
+.platform-card {
+  border-radius: 12px; padding: 18px 20px; margin: 10px 0;
+  border: 2px solid; display: flex; gap: 16px; align-items: flex-start;
+}
+.platform-card.netlify { border-color: #00ad9f; background: #f0fdfa; }
+.platform-card.vercel  { border-color: #171717; background: #f8f9fa; }
+.platform-card.pages   { border-color: #f26722; background: #fff8f3; }
+.platform-card.railway { border-color: #7c3aed; background: #faf5ff; }
+.pc-icon { font-size: 2rem; flex-shrink: 0; }
+.pc-name { font-weight: 700; font-size: 1.05rem; margin-bottom: 4px; }
+.pc-desc { font-size: .88rem; color: #475569; }
+.pc-tag  { display: inline-block; font-size: .75rem; padding: 2px 8px;
+           border-radius: 999px; margin-top: 6px; font-weight: 600; }
+.tag-free   { background: #dcfce7; color: #166534; }
+.tag-static { background: #dbeafe; color: #1e40af; }
+.tag-server { background: #ede9fe; color: #6d28d9; }
+
+/* deploy steps */
+.deploy-steps { counter-reset: step; }
+.deploy-step {
+  display: flex; gap: 14px; margin: 14px 0; align-items: flex-start;
+}
+.deploy-step::before {
+  counter-increment: step;
+  content: counter(step);
+  background: var(--ink-blue); color: white;
+  width: 28px; height: 28px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: .9rem; flex-shrink: 0; margin-top: 2px;
+}
+.deploy-step-content { flex: 1; }
+.deploy-step-title { font-weight: 600; margin-bottom: 4px; }
+.deploy-step-desc  { font-size: .88rem; color: #475569; }
+
+/* terminal */
+.terminal {
+  background: #0f172a; border-radius: 10px; padding: 16px 20px;
+  font-family: 'Fira Code', monospace; font-size: .85rem;
+  direction: ltr; color: #e2e8f0; line-height: 2;
+  border: 1px solid #334155;
+}
+.t-prompt::before { content: '$ '; color: #7c3aed; }
+.t-prompt { color: #4ade80; }
+.t-out    { color: #94a3b8; }
+.t-url    { color: #60a5fa; text-decoration: underline; }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="crumbs">
+    <a href="../../index.html">🏠 الرئيسية</a>
+    <span class="sep">/</span>
+    <a href="./index.html">🌐 الفرونت إند</a>
+    <span class="sep">/</span>
+    <span class="current">🚀 الدرس 29: النشر (Deployment)</span>
+  </div>
+  <div class="progress-mini">
+    <div class="progress-bar-mini"><div class="progress-fill-mini" id="progFill"></div></div>
+    <span id="progText">0%</span>
+  </div>
+</div>
+
+<div class="notebook">
+
+  <div class="notebook-header">
+    <div class="lesson-tag">🚀 الدرس التاسع والعشرون</div>
+    <h1><span class="sparkle">✦</span> النشر على الإنترنت — Deployment <span class="sparkle">✦</span></h1>
+    <div class="lesson-meta">
+      <span>⏱️ 45 دقيقة</span>
+      <span>📊 مبتدئ-متوسط</span>
+      <span>🎯 5 تمارين + اختبار</span>
+    </div>
+  </div>
+
+  <div class="toc-card">
+    <h2>📑 فهرس الدرس</h2>
+    <ol>
+      <li><a href="#s1">ما هو الـ Deployment؟</a></li>
+      <li><a href="#s2">Netlify: أسهل طريقة</a></li>
+      <li><a href="#s3">Vercel: للمشاريع الحديثة</a></li>
+      <li><a href="#s4">GitHub Pages: مجاناً مع GitHub</a></li>
+      <li><a href="#s5">Domain مخصص (اسم نطاق)</a></li>
+      <li><a href="#s6">Environment Variables</a></li>
+      <li><a href="#s7">CI/CD: النشر التلقائي</a></li>
+      <li><a href="#s8">محرر الكود الحي</a></li>
+      <li><a href="#exercises">التمارين</a></li>
+      <li><a href="#quiz">اختبر فهمك</a></li>
+    </ol>
+  </div>
+
+  <!-- S1 -->
+  <div class="section" id="s1">
+    <h2 class="section-title"><span class="num">.1</span> ما هو Deployment؟ <span class="en">What is Deployment?</span></h2>
+    <div class="content">
+      <p><strong>Deployment</strong> = نشر موقعك على الإنترنت ليصبح متاحاً للجميع بـ URL حقيقي.</p>
+
+      <div class="analogy">
+        <div class="analogy-title">🏪 تخيل محل تجاري:</div>
+        <p>كودك على جهازك = بضاعة في المخزن. الـ Deployment = فتح المحل للعملاء. السيرفر = المحل نفسه الذي يعمل 24/7. الـ URL = عنوان المحل.</p>
+      </div>
+
+      <div class="sub-header">أنواع المواقع والاستضافة:</div>
+      <table class="cool-table">
+        <thead><tr><th>النوع</th><th>المثال</th><th>الاستضافة المناسبة</th></tr></thead>
+        <tbody>
+          <tr><td>Static Site</td><td>موقع شخصي، Portfolio</td><td>Netlify, GitHub Pages, Vercel</td></tr>
+          <tr><td>SPA (React/Vue)</td><td>تطبيق ويب تفاعلي</td><td>Vercel, Netlify</td></tr>
+          <tr><td>Full-Stack</td><td>موقع مع Backend/DB</td><td>Railway, Render, DigitalOcean</td></tr>
+          <tr><td>WordPress</td><td>موقع بـ CMS</td><td>Hostinger, SiteGround</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- S2 -->
+  <div class="section" id="s2">
+    <h2 class="section-title"><span class="num">.2</span> Netlify <span class="en">Easiest Deploy</span></h2>
+    <div class="content">
+      <div class="platform-card netlify">
+        <span class="pc-icon">🟢</span>
+        <div>
+          <div class="pc-name">Netlify</div>
+          <div class="pc-desc">أسهل وأسرع طريقة لنشر المواقع الثابتة. اسحب وأفلت مجلدك وموقعك يعمل خلال ثوانٍ!</div>
+          <span class="pc-tag tag-free">مجاني للمشاريع الشخصية</span>
+          <span class="pc-tag tag-static">Static Sites</span>
+        </div>
+      </div>
+
+      <div class="sub-header">طريقة النشر الأولى: Drag & Drop</div>
+      <div class="deploy-steps">
+        <div class="deploy-step">
+          <div class="deploy-step-content">
+            <div class="deploy-step-title">سجّل على netlify.com</div>
+            <div class="deploy-step-desc">اضغط "Sign up" واستخدم حساب GitHub</div>
+          </div>
+        </div>
+        <div class="deploy-step">
+          <div class="deploy-step-content">
+            <div class="deploy-step-title">اسحب مجلدك للصفحة الرئيسية</div>
+            <div class="deploy-step-desc">اسحب مجلد المشروع كاملاً إلى منطقة "Drag and drop"</div>
+          </div>
+        </div>
+        <div class="deploy-step">
+          <div class="deploy-step-content">
+            <div class="deploy-step-title">موقعك جاهز! 🎉</div>
+            <div class="deploy-step-desc">ستحصل على رابط مثل: <code>random-name.netlify.app</code></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sub-header" style="margin-top:16px;">طريقة النشر الثانية: ربط GitHub (الأفضل)</div>
+      <div class="code-box">
+<div class="code-header"><span>⚡ Netlify CLI</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment"># تثبيت Netlify CLI</span>
+npm install -g netlify-cli
+
+<span class="comment"># تسجيل الدخول</span>
+netlify login
+
+<span class="comment"># نشر من المجلد الحالي</span>
+netlify deploy --prod
+
+<span class="comment"># أو ربط المشروع بـ GitHub للنشر التلقائي</span>
+netlify init</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- S3 -->
+  <div class="section" id="s3">
+    <h2 class="section-title"><span class="num">.3</span> Vercel <span class="en">Modern Deploy</span></h2>
+    <div class="content">
+      <div class="platform-card vercel">
+        <span class="pc-icon">▲</span>
+        <div>
+          <div class="pc-name">Vercel</div>
+          <div class="pc-desc">الخيار الأول لمشاريع Next.js وReact. أداء استثنائي مع Edge Network عالمي.</div>
+          <span class="pc-tag tag-free">مجاني للأفراد</span>
+          <span class="pc-tag tag-static">React / Next.js / Vue</span>
+        </div>
+      </div>
+
+      <div class="deploy-steps">
+        <div class="deploy-step">
+          <div class="deploy-step-content">
+            <div class="deploy-step-title">ارفع مشروعك على GitHub</div>
+            <div class="deploy-step-desc">تأكد من وجود كودك في repo على GitHub</div>
+          </div>
+        </div>
+        <div class="deploy-step">
+          <div class="deploy-step-content">
+            <div class="deploy-step-title">سجّل على vercel.com بحساب GitHub</div>
+            <div class="deploy-step-desc">اضغط "Continue with GitHub"</div>
+          </div>
+        </div>
+        <div class="deploy-step">
+          <div class="deploy-step-content">
+            <div class="deploy-step-title">Import المشروع</div>
+            <div class="deploy-step-desc">اختر الـ repo من قائمة مشاريعك — Vercel يكتشف الإطار تلقائياً</div>
+          </div>
+        </div>
+        <div class="deploy-step">
+          <div class="deploy-step-content">
+            <div class="deploy-step-title">Deploy! 🚀</div>
+            <div class="deploy-step-desc">موقعك على <code>project.vercel.app</code> خلال دقيقة واحدة</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="code-box blue" style="margin-top:16px;">
+<div class="code-header"><span>⚡ Vercel CLI</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment"># تثبيت</span>
+npm install -g vercel
+
+<span class="comment"># نشر (يسألك أسئلة بسيطة)</span>
+vercel
+
+<span class="comment"># نشر مباشر للـ production</span>
+vercel --prod</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- S4 -->
+  <div class="section" id="s4">
+    <h2 class="section-title"><span class="num">.4</span> GitHub Pages <span class="en">Free with GitHub</span></h2>
+    <div class="content">
+      <div class="platform-card pages">
+        <span class="pc-icon">🐙</span>
+        <div>
+          <div class="pc-name">GitHub Pages</div>
+          <div class="pc-desc">استضافة مجانية مدمجة مع GitHub. مثالية للـ Portfolio والمشاريع الثابتة.</div>
+          <span class="pc-tag tag-free">مجاني تماماً</span>
+          <span class="pc-tag tag-static">Static HTML/CSS/JS</span>
+        </div>
+      </div>
+
+      <div class="deploy-steps">
+        <div class="deploy-step">
+          <div class="deploy-step-content">
+            <div class="deploy-step-title">ارفع مشروعك على GitHub</div>
+          </div>
+        </div>
+        <div class="deploy-step">
+          <div class="deploy-step-content">
+            <div class="deploy-step-title">Settings → Pages في الـ Repo</div>
+          </div>
+        </div>
+        <div class="deploy-step">
+          <div class="deploy-step-content">
+            <div class="deploy-step-title">اختر Source: Deploy from branch → main</div>
+          </div>
+        </div>
+        <div class="deploy-step">
+          <div class="deploy-step-content">
+            <div class="deploy-step-title">موقعك على: username.github.io/repo-name</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="code-box green" style="margin-top:16px;">
+<div class="code-header"><span>📦 نشر مشروع Vite على GitHub Pages</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment"># 1. أضف للـ vite.config.js</span>
+export default {
+  base: <span class="attr-val">'/repo-name/'</span>
+}
+
+<span class="comment"># 2. بناء المشروع</span>
+npm run build
+
+<span class="comment"># 3. نشر مجلد dist</span>
+npm install -D gh-pages
+
+<span class="comment"># 4. أضف script في package.json</span>
+<span class="attr-val">"deploy"</span>: <span class="attr-val">"gh-pages -d dist"</span>
+
+<span class="comment"># 5. نشر</span>
+npm run deploy</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- S5 -->
+  <div class="section" id="s5">
+    <h2 class="section-title"><span class="num">.5</span> Domain مخصص <span class="en">Custom Domain</span></h2>
+    <div class="content">
+      <p>بدل <code>mysite.netlify.app</code>، تقدر تستخدم <code>www.mysite.com</code> بخطوات بسيطة:</p>
+
+      <div class="deploy-steps">
+        <div class="deploy-step">
+          <div class="deploy-step-content">
+            <div class="deploy-step-title">اشتر اسم النطاق</div>
+            <div class="deploy-step-desc">من: Namecheap, GoDaddy, Cloudflare — اختر اسم مناسب (.com, .io, .dev)</div>
+          </div>
+        </div>
+        <div class="deploy-step">
+          <div class="deploy-step-content">
+            <div class="deploy-step-title">أضف Domain في لوحة Netlify/Vercel</div>
+            <div class="deploy-step-desc">Domain Management → Add Domain → أدخل اسمك</div>
+          </div>
+        </div>
+        <div class="deploy-step">
+          <div class="deploy-step-content">
+            <div class="deploy-step-title">عدّل DNS Records عند مزود النطاق</div>
+            <div class="deploy-step-desc">أضف CNAME أو A Record حسب تعليمات المنصة</div>
+          </div>
+        </div>
+        <div class="deploy-step">
+          <div class="deploy-step-content">
+            <div class="deploy-step-title">انتظر انتشار الـ DNS (24-48 ساعة)</div>
+            <div class="deploy-step-desc">تحقق بـ: whatsmydns.net</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tip-box"><strong>HTTPS مجاناً!</strong> Netlify وVercel يوفّران شهادة SSL مجانية تلقائياً (Let's Encrypt). موقعك سيكون https:// بدون أي إعداد إضافي.</div>
+    </div>
+  </div>
+
+  <!-- S6 -->
+  <div class="section" id="s6">
+    <h2 class="section-title"><span class="num">.6</span> Environment Variables <span class="en">Env Vars</span></h2>
+    <div class="content">
+      <p>المتغيرات الحساسة (مفاتيح API، كلمات مرور) لا تُكتب في الكود — تُخزَّن كـ Environment Variables.</p>
+
+      <div class="code-box">
+<div class="code-header"><span>🔒 ملف .env</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment"># ملف .env (لا ترفعه لـ GitHub!)</span>
+VITE_API_KEY=abc123secret
+VITE_API_URL=https://api.myservice.com
+DATABASE_URL=postgresql://user:pass@host/db</pre>
+      </div>
+
+      <div class="code-box blue" style="margin-top:12px;">
+<div class="code-header"><span>📖 قراءة المتغيرات في Vite</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">// في كودك (Vite يتعامل مع VITE_ prefix)</span>
+<span class="tag-name">const</span> <span class="attr">apiKey</span> = <span class="attr">import</span>.<span class="attr">meta</span>.<span class="attr">env</span>.<span class="attr">VITE_API_KEY</span>;
+<span class="tag-name">const</span> <span class="attr">apiUrl</span> = <span class="attr">import</span>.<span class="attr">meta</span>.<span class="attr">env</span>.<span class="attr">VITE_API_URL</span>;</pre>
+      </div>
+
+      <div class="sub-header" style="margin-top:16px;">إضافة Env Vars في Netlify/Vercel:</div>
+      <ul>
+        <li><strong>Netlify:</strong> Site settings → Build & deploy → Environment variables</li>
+        <li><strong>Vercel:</strong> Project Settings → Environment Variables</li>
+        <li>أضف نفس المتغيرات الموجودة في .env المحلي</li>
+      </ul>
+
+      <div class="warning-box"><strong>أهم قاعدة:</strong> أضف <code>.env</code> و<code>.env.local</code> لملف <code>.gitignore</code> دائماً. لا ترفع أي مفاتيح API لـ GitHub!</div>
+    </div>
+  </div>
+
+  <!-- S7 -->
+  <div class="section" id="s7">
+    <h2 class="section-title"><span class="num">.7</span> CI/CD: النشر التلقائي <span class="en">Continuous Deployment</span></h2>
+    <div class="content">
+      <p><strong>CI/CD</strong> = نشر تلقائي عند كل push لـ GitHub. أقوى ميزة في الـ Deployment الحديث!</p>
+
+      <div class="analogy">
+        <div class="analogy-title">🤖 كيف يعمل:</div>
+        <p>أنت تكتب كوداً → git push → Netlify/Vercel يكتشف التغيير تلقائياً → يبني الموقع → ينشره خلال دقيقتين. <strong>بدون أي تدخل منك!</strong></p>
+      </div>
+
+      <div class="code-box">
+<div class="code-header"><span>🔄 GitHub Actions (CI/CD يدوي)</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment"># .github/workflows/deploy.yml</span>
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 20
+      - run: npm install
+      - run: npm run build
+      - uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist</pre>
+      </div>
+
+      <div class="sub-header" style="margin-top:16px;">مقارنة بين المنصات:</div>
+      <table class="cool-table">
+        <thead><tr><th>المنصة</th><th>الأسهل</th><th>الأسرع</th><th>الأفضل لـ</th></tr></thead>
+        <tbody>
+          <tr><td>Netlify</td><td>⭐⭐⭐</td><td>⭐⭐⭐</td><td>Static + Forms</td></tr>
+          <tr><td>Vercel</td><td>⭐⭐⭐</td><td>⭐⭐⭐</td><td>React / Next.js</td></tr>
+          <tr><td>GitHub Pages</td><td>⭐⭐</td><td>⭐⭐</td><td>Portfolio / Docs</td></tr>
+          <tr><td>Railway</td><td>⭐⭐</td><td>⭐⭐</td><td>Full-Stack / DB</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- S8 -->
+  <div class="section" id="s8">
+    <h2 class="section-title"><span class="num">.8</span> محرر الكود الحي <span class="en">Live Editor</span></h2>
+    <div class="content"><p>موقع Portfolio جاهز للنشر — جرّبه وعدّله:</p></div>
+    <div class="try-it">
+      <div class="try-it-header">
+        <span>🚀 موقع Portfolio بسيط جاهز للنشر</span>
+        <div class="try-it-controls">
+          <button class="try-btn" onclick="runCode(this)">▶️ تشغيل</button>
+          <button class="try-btn" onclick="resetCode(this)">🔄 إعادة</button>
+        </div>
+      </div>
+      <div class="try-it-body">
+        <textarea class="try-it-editor" spellcheck="false" data-default='<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>أحمد خالد — مطور ويب</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: "Segoe UI", Arial, sans-serif; color: #1e293b; }
+
+  /* Hero */
+  .hero {
+    background: linear-gradient(135deg, #1e3a8a, #7c3aed);
+    color: white; text-align: center; padding: 60px 20px;
+  }
+  .avatar {
+    width: 100px; height: 100px; border-radius: 50%;
+    background: rgba(255,255,255,.2); border: 3px solid white;
+    margin: 0 auto 16px; display: flex; align-items: center;
+    justify-content: center; font-size: 2.5rem;
+  }
+  .hero h1  { font-size: 2rem; margin-bottom: 8px; }
+  .hero p   { font-size: 1.1rem; opacity: .85; }
+  .hero .tags { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-top: 12px; }
+  .tag { background: rgba(255,255,255,.15); padding: 4px 14px; border-radius: 999px; font-size: .85rem; }
+
+  /* Projects */
+  .section { padding: 40px 20px; max-width: 800px; margin: 0 auto; }
+  .section h2 { font-size: 1.5rem; margin-bottom: 20px; color: #1e3a8a; }
+  .projects { display: grid; grid-template-columns: repeat(auto-fit,minmax(220px,1fr)); gap: 16px; }
+  .card {
+    border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px;
+    transition: transform .2s, box-shadow .2s;
+  }
+  .card:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(0,0,0,.1); }
+  .card-icon { font-size: 2rem; margin-bottom: 10px; }
+  .card h3 { font-size: 1rem; margin-bottom: 6px; }
+  .card p  { font-size: .85rem; color: #64748b; }
+
+  /* Contact */
+  .contact { background: #f8fafc; text-align: center; padding: 40px 20px; }
+  .contact a {
+    display: inline-block; background: #1e3a8a; color: white;
+    padding: 12px 28px; border-radius: 8px; text-decoration: none;
+    margin: 6px; font-weight: 600; transition: background .2s;
+  }
+  .contact a:hover { background: #7c3aed; }
+</style>
+</head>
+<body>
+  <div class="hero">
+    <div class="avatar">👨‍💻</div>
+    <h1>أحمد خالد</h1>
+    <p>مطور ويب فرونت إند</p>
+    <div class="tags">
+      <span class="tag">HTML</span>
+      <span class="tag">CSS</span>
+      <span class="tag">JavaScript</span>
+      <span class="tag">React</span>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>🏗️ مشاريعي</h2>
+    <div class="projects">
+      <div class="card">
+        <div class="card-icon">📋</div>
+        <h3>تطبيق المهام</h3>
+        <p>To-Do List بـ JavaScript النقي مع Local Storage</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🌤️</div>
+        <h3>تطبيق الطقس</h3>
+        <p>يعرض الطقس الحالي باستخدام OpenWeather API</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🎓</div>
+        <h3>منصة تعليمية</h3>
+        <p>أكاديمية تفاعلية لتعليم البرمجة بالعربي</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="contact">
+    <h2 style="margin-bottom:16px;">📬 تواصل معي</h2>
+    <a href="#">GitHub</a>
+    <a href="#">LinkedIn</a>
+    <a href="#">البريد</a>
+  </div>
+</body>
+</html>'><!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>أحمد خالد — مطور ويب</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: "Segoe UI", Arial, sans-serif; color: #1e293b; }
+  .hero { background: linear-gradient(135deg, #1e3a8a, #7c3aed); color: white; text-align: center; padding: 60px 20px; }
+  .avatar { width: 100px; height: 100px; border-radius: 50%; background: rgba(255,255,255,.2); border: 3px solid white; margin: 0 auto 16px; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; }
+  .hero h1 { font-size: 2rem; margin-bottom: 8px; }
+  .hero p  { font-size: 1.1rem; opacity: .85; }
+  .hero .tags { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-top: 12px; }
+  .tag { background: rgba(255,255,255,.15); padding: 4px 14px; border-radius: 999px; font-size: .85rem; }
+  .section { padding: 40px 20px; max-width: 800px; margin: 0 auto; }
+  .section h2 { font-size: 1.5rem; margin-bottom: 20px; color: #1e3a8a; }
+  .projects { display: grid; grid-template-columns: repeat(auto-fit,minmax(220px,1fr)); gap: 16px; }
+  .card { border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px; }
+  .card-icon { font-size: 2rem; margin-bottom: 10px; }
+  .card h3 { font-size: 1rem; margin-bottom: 6px; }
+  .card p  { font-size: .85rem; color: #64748b; }
+  .contact { background: #f8fafc; text-align: center; padding: 40px 20px; }
+  .contact a { display: inline-block; background: #1e3a8a; color: white; padding: 12px 28px; border-radius: 8px; text-decoration: none; margin: 6px; font-weight: 600; }
+</style>
+</head>
+<body>
+  <div class="hero">
+    <div class="avatar">👨‍💻</div>
+    <h1>أحمد خالد</h1>
+    <p>مطور ويب فرونت إند</p>
+    <div class="tags">
+      <span class="tag">HTML</span><span class="tag">CSS</span>
+      <span class="tag">JavaScript</span><span class="tag">React</span>
+    </div>
+  </div>
+  <div class="section">
+    <h2>🏗️ مشاريعي</h2>
+    <div class="projects">
+      <div class="card"><div class="card-icon">📋</div><h3>تطبيق المهام</h3><p>To-Do List بـ JS مع Local Storage</p></div>
+      <div class="card"><div class="card-icon">🌤️</div><h3>تطبيق الطقس</h3><p>طقس حقيقي باستخدام API</p></div>
+      <div class="card"><div class="card-icon">🎓</div><h3>منصة تعليمية</h3><p>أكاديمية تفاعلية عربية</p></div>
+    </div>
+  </div>
+  <div class="contact">
+    <h2 style="margin-bottom:16px;">📬 تواصل معي</h2>
+    <a href="#">GitHub</a><a href="#">LinkedIn</a><a href="#">البريد</a>
+  </div>
+</body>
+</html></textarea>
+        <div class="try-it-preview"><iframe srcdoc="" sandbox="allow-scripts allow-same-origin allow-modals allow-popups allow-forms" title="معاينة الكود"></iframe></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EXERCISES -->
+  <div class="section" id="exercises">
+    <h2 class="section-title"><span class="num">📝</span> التمارين العملية <span class="en">Exercises</span></h2>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 1: اختيار المنصة</div>
+      <p>لديك ثلاثة مشاريع: (أ) موقع Portfolio بـ HTML/CSS، (ب) تطبيق React، (ج) تطبيق Node.js مع قاعدة بيانات. أي منصة تختار لكل منها؟</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <p>(أ) Portfolio HTML/CSS → <strong>GitHub Pages</strong> (مجاني وبسيط)<br>
+        (ب) React App → <strong>Vercel</strong> أو <strong>Netlify</strong> (ممتازان للـ SPA)<br>
+        (ج) Node.js + DB → <strong>Railway</strong> أو <strong>Render</strong> (يدعمان الـ Backend)</p>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 2: ملف .gitignore للنشر</div>
+      <p>اكتب محتوى .gitignore لمشروع Vite يتجاهل: node_modules، ملف .env، ومجلد dist.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre>node_modules/
+.env
+.env.local
+dist/</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 3: Environment Variables</div>
+      <p>لديك مفتاح API اسمه <em>WEATHER_KEY</em>. اكتب كيف تحفظه في .env وكيف تقرأه في مشروع Vite.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre><span class="comment"># في ملف .env</span>
+VITE_WEATHER_KEY=your_api_key_here
+
+<span class="comment">// في الكود JavaScript</span>
+<span class="tag-name">const</span> <span class="attr">apiKey</span> = <span class="attr">import</span>.<span class="attr">meta</span>.<span class="attr">env</span>.<span class="attr">VITE_WEATHER_KEY</span>;</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 4: بناء مشروع Vite للنشر</div>
+      <p>اكتب الأوامر لبناء مشروع Vite وتحضيره للنشر على Netlify عبر Drag & Drop.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre><span class="comment"># بناء المشروع (ينشئ مجلد dist/)</span>
+npm run build
+
+<span class="comment"># بعد كذا، اسحب مجلد dist/ لصفحة Netlify</span>
+<span class="comment"># أو استخدم CLI:</span>
+netlify deploy --prod --dir=dist</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 5: CI/CD مع GitHub</div>
+      <p>ما هي الخطوات لربط مشروع React بـ Vercel للنشر التلقائي عند كل push؟</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <p>1. ارفع المشروع على <strong>GitHub repo</strong><br>
+        2. سجّل في <strong>vercel.com</strong> بحساب GitHub<br>
+        3. اضغط <strong>"Add New Project"</strong> واختر الـ repo<br>
+        4. Vercel يكتشف React ويعدّ Build Settings تلقائياً<br>
+        5. اضغط <strong>Deploy</strong> — كل push لـ main ينشر تلقائياً!</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="quiz-container" id="quiz">
+    <div class="quiz-intro"><p>اختبر فهمك للـ Deployment!</p></div>
+    <div class="quiz-type-tabs">
+      <button class="qt-tab active" onclick="switchQuiz(this,'tf')">✓✗ صح وخطأ</button>
+      <button class="qt-tab" onclick="switchQuiz(this,'mc')">🔘 اختيار من متعدد</button>
+    </div>
+
+    <div class="quiz-section active" id="quiz-tf">
+      <div class="quiz-question" data-correct="false">
+        <span class="q-num">1</span><span class="q-text">يجب رفع ملف .env لـ GitHub ليعمل الموقع على السيرفر.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">2</span><span class="q-text">Netlify وVercel يوفّران شهادة HTTPS مجانية تلقائياً.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">3</span><span class="q-text">CI/CD يعني أن الموقع ينشر تلقائياً عند كل push لـ GitHub.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="false">
+        <span class="q-num">4</span><span class="q-text">GitHub Pages مناسب لنشر تطبيقات Backend مع قواعد بيانات.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">5</span><span class="q-text">متغيرات البيئة في Vite يجب أن تبدأ بـ VITE_ لتكون متاحة في الكود.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <button class="quiz-submit" onclick="submitQuiz('tf')">عرض النتيجة 🎯</button>
+      <div class="quiz-result" id="result-tf"><div class="result-score" id="score-tf">0/5</div><div class="result-label">إجابات صحيحة</div><div class="result-message" id="msg-tf"></div><button class="retry-btn" onclick="retryQuiz('tf')">🔄 حاول تاني</button></div>
+    </div>
+
+    <div class="quiz-section" id="quiz-mc">
+      <div class="quiz-question" data-correct="2">
+        <span class="q-num">1</span><span class="q-text">أي منصة الأفضل لنشر مشاريع Next.js؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">GitHub Pages</button>
+          <button class="q-opt" onclick="answerMC(this,1)">Railway</button>
+          <button class="q-opt" onclick="answerMC(this,2)">Vercel</button>
+          <button class="q-opt" onclick="answerMC(this,3)">Hostinger</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="0">
+        <span class="q-num">2</span><span class="q-text">ما الأمر لبناء مشروع Vite جاهز للنشر؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">npm run build</button>
+          <button class="q-opt" onclick="answerMC(this,1)">npm run dev</button>
+          <button class="q-opt" onclick="answerMC(this,2)">npm start</button>
+          <button class="q-opt" onclick="answerMC(this,3)">npm run deploy</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="3">
+        <span class="q-num">3</span><span class="q-text">ما أسهل طريقة لنشر موقع HTML بسيط على Netlify؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">CLI فقط</button>
+          <button class="q-opt" onclick="answerMC(this,1)">GitHub Actions</button>
+          <button class="q-opt" onclick="answerMC(this,2)">FTP</button>
+          <button class="q-opt" onclick="answerMC(this,3)">Drag & Drop المجلد</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="1">
+        <span class="q-num">4</span><span class="q-text">لماذا نستخدم Environment Variables بدل كتابة المفاتيح مباشرة في الكود؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">لأنها أسرع</button>
+          <button class="q-opt" onclick="answerMC(this,1)">لحماية المعلومات الحساسة من الظهور في GitHub</button>
+          <button class="q-opt" onclick="answerMC(this,2)">لأن المتصفح لا يدعم الكتابة المباشرة</button>
+          <button class="q-opt" onclick="answerMC(this,3)">لتسريع البناء</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="2">
+        <span class="q-num">5</span><span class="q-text">ما هو مجلد البناء الذي تنشره بعد npm run build في Vite؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">src/</button>
+          <button class="q-opt" onclick="answerMC(this,1)">public/</button>
+          <button class="q-opt" onclick="answerMC(this,2)">dist/</button>
+          <button class="q-opt" onclick="answerMC(this,3)">build/</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <button class="quiz-submit" onclick="submitQuiz('mc')">عرض النتيجة 🎯</button>
+      <div class="quiz-result" id="result-mc"><div class="result-score" id="score-mc">0/5</div><div class="result-label">إجابات صحيحة</div><div class="result-message" id="msg-mc"></div><button class="retry-btn" onclick="retryQuiz('mc')">🔄 حاول تاني</button></div>
+    </div>
+  </div>
+
+  <div class="lesson-nav">
+    <a href="./lesson-28.html" class="nav-btn"><span>⬅️</span><span>الدرس السابق</span></a>
+    <button class="nav-btn complete-btn" id="completeBtn" onclick="markComplete(this)"><span>✅</span><span>علّم كمكتمل</span></button>
+    <a href="./lesson-30.html" class="nav-btn"><span>الدرس التالي</span><span>➡️</span></a>
+  </div>
+
+  <div class="notebook-footer">
+    <h3>🎉 أتقنت النشر!</h3>
+    <p>موقعك الآن على الإنترنت يراه العالم كله ❤️<br><strong>الدرس التالي: مشروع To-Do List الكامل 📋</strong></p>
+  </div>
+</div>
+
+<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">⬆️</button>
+<div class="toast" id="toast"></div>
+<script src="../../js/data/courses.js"></script>
+<script src="../../js/progress.js"></script>
+<script src="../../js/lesson-editor.js"></script>
+<script>
+const COURSE_ID='frontend',LESSON_ID=29,TOTAL=32;
+function toggleSolution(b){const s=b.nextElementSibling;s.classList.toggle('show');b.textContent=s.classList.contains('show')?'إخفاء الحل ▲':'عرض الحل ▼';}
+function copyCode(b){const p=b.closest('.code-box').querySelector('pre');navigator.clipboard.writeText(p.innerText).then(()=>{b.classList.add('copied');b.textContent='✓ تم النسخ';setTimeout(()=>{b.classList.remove('copied');b.textContent='📋 نسخ';},2000);});}
+function runCode(b){const t=b.closest('.try-it');t.querySelector('iframe').srcdoc=t.querySelector('.try-it-editor').value;}
+function resetCode(b){const t=b.closest('.try-it'),e=t.querySelector('.try-it-editor');e.value=e.dataset.default;t.querySelector('iframe').srcdoc=e.value;}
+window.addEventListener('load',()=>{document.querySelectorAll('.try-it').forEach(t=>{const e=t.querySelector('.try-it-editor');t.querySelector('iframe').srcdoc=e.value;});});
+function switchQuiz(b,t){document.querySelectorAll('.qt-tab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.quiz-section').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.getElementById('quiz-'+t).classList.add('active');}
+const answers={tf:{},mc:{}};
+function answerTF(b,v){const q=b.closest('.quiz-question'),i=Array.from(q.parentNode.querySelectorAll('.quiz-question')).indexOf(q);q.querySelectorAll('.q-opt').forEach(o=>o.classList.remove('selected'));b.classList.add('selected');answers.tf[i]=v;}
+function answerMC(b,i){const q=b.closest('.quiz-question'),qi=Array.from(q.parentNode.querySelectorAll('.quiz-question')).indexOf(q);q.querySelectorAll('.q-opt').forEach(o=>o.classList.remove('selected'));b.classList.add('selected');answers.mc[qi]=i;}
+function submitQuiz(type){const sec=document.getElementById('quiz-'+type),qs=sec.querySelectorAll('.quiz-question');let c=0;qs.forEach((q,i)=>{const ca=type==='tf'?(q.dataset.correct==='true'):parseInt(q.dataset.correct),ua=answers[type][i],fb=q.querySelector('.q-feedback'),opts=q.querySelectorAll('.q-opt');opts.forEach(o=>{o.classList.remove('selected');o.disabled=true;});if(ua===undefined){fb.className='q-feedback wrong show';fb.textContent='⚠️ ما اخترتش إجابة!';return;}if(ua===ca){c++;fb.className='q-feedback correct show';fb.textContent='✓ إجابة صحيحة!';if(type==='tf')opts[ca?0:1].classList.add('correct');else opts[ca].classList.add('correct');}else{fb.className='q-feedback wrong show';if(type==='tf'){opts[ca?0:1].classList.add('correct');opts[ua?0:1].classList.add('wrong');fb.textContent='✗ خطأ.';}else{opts[ca].classList.add('correct');opts[ua].classList.add('wrong');fb.textContent='✗ الإجابة بالأخضر.';}}});const r=document.getElementById('result-'+type);document.getElementById('score-'+type).textContent=c+'/'+qs.length;const m=document.getElementById('msg-'+type);if(c===qs.length){m.textContent='🏆 ممتاز 100%!';m.className='result-message excellent';}else if(c>=3){m.textContent='👍 جيد!';m.className='result-message good';}else{m.textContent='📚 راجع الدرس.';m.className='result-message try-again';}r.classList.add('show');r.scrollIntoView({behavior:'smooth',block:'center'});}
+function retryQuiz(type){const sec=document.getElementById('quiz-'+type);sec.querySelectorAll('.q-opt').forEach(o=>{o.classList.remove('selected','correct','wrong');o.disabled=false;});sec.querySelectorAll('.q-feedback').forEach(f=>{f.classList.remove('show','correct','wrong');f.textContent='';});document.getElementById('result-'+type).classList.remove('show');answers[type]={};}
+function markComplete(btn){const done=Progress.toggleLessonComplete(COURSE_ID,LESSON_ID);btn.classList.toggle('completed',done);btn.querySelector('span:last-child').textContent=done?'مكتمل! ⭐':'علّم كمكتمل';showToast(done?'🎉 أكملت درس Deployment!':'تم إلغاء الإكمال');}
+if(Progress.isLessonComplete(COURSE_ID,LESSON_ID)){const b=document.getElementById('completeBtn');b.classList.add('completed');b.querySelector('span:last-child').textContent='مكتمل! ⭐';}
+(function(){const p=Progress.getCourseProgress(COURSE_ID,TOTAL);document.getElementById('progFill').style.width=p+'%';document.getElementById('progText').textContent=p+'%';})();
+function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
+window.addEventListener('scroll',()=>{document.getElementById('scrollTop').classList.toggle('show',window.scrollY>300);});
+document.querySelectorAll('.toc-card a').forEach(l=>{l.addEventListener('click',e=>{e.preventDefault();const t=document.querySelector(l.getAttribute('href'));if(t)t.scrollIntoView({behavior:'smooth',block:'start'});});});
+</script>
+</body>
+</html>

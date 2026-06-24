@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-V2NCKVL16D"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-V2NCKVL16D');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>StyleSheet و Flexbox — دفتر البرمجة</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=Cairo:wght@300;400;500;600;700;900&family=Caveat:wght@400;700&family=Fira+Code:wght@400;500;600&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../css/shared.css">
+<link rel="stylesheet" href="../../css/notebook.css">
+<style>
+body { padding: 20px 10px; }
+
+.phone-frame {
+  width: 260px; margin: 20px auto;
+  border: 12px solid #1e293b; border-radius: 34px;
+  background: white; box-shadow: 0 16px 40px rgba(0,0,0,.3);
+  overflow: hidden;
+}
+.phone-notch {
+  background: #1e293b; height: 20px;
+  display: flex; align-items: center; justify-content: center;
+}
+.phone-notch::before {
+  content: ''; width: 56px; height: 12px;
+  background: #0f172a; border-radius: 0 0 8px 8px;
+}
+.phone-screen { min-height: 300px; }
+
+/* flex demo boxes */
+.flex-demo {
+  background: #1e293b; border-radius: 12px;
+  padding: 14px; margin: 12px 0;
+}
+.flex-demo-label {
+  font-family: 'Fira Code', monospace; font-size: .75rem;
+  color: #94a3b8; margin-bottom: 10px;
+}
+.flex-row { display: flex; gap: 6px; }
+.flex-col { display: flex; flex-direction: column; gap: 6px; }
+.fb { border-radius: 6px; display: flex; align-items: center;
+  justify-content: center; font-size: .72rem; font-weight: 700;
+  color: white; font-family: 'Fira Code', monospace; }
+.fb1 { background: #0ea5e9; }
+.fb2 { background: #7c3aed; }
+.fb3 { background: #f43f5e; }
+.fb4 { background: #16a34a; }
+.fb5 { background: #f97316; }
+
+/* comparison */
+.compare-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 12px; margin: 14px 0;
+}
+.cg-box { background: #f8fafc; border: 1.5px solid var(--border); border-radius: 10px; padding: 14px; }
+.cg-box.bad  { border-color: #f87171; background: #fff5f5; }
+.cg-box.good { border-color: #4ade80; background: #f0fdf4; }
+.cg-label { font-size: .75rem; font-weight: 700; margin-bottom: 8px; display: flex; align-items: center; gap: 4px; }
+.cg-box.bad  .cg-label { color: #dc2626; }
+.cg-box.good .cg-label { color: #16a34a; }
+
+/* prop grid */
+.prop-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(160px,1fr));
+  gap: 10px; margin: 12px 0;
+}
+.prop-card {
+  background: #f8fafc; border: 1.5px solid var(--border);
+  border-radius: 10px; padding: 12px;
+}
+.prop-card-name { font-family: 'Fira Code', monospace; font-weight: 700;
+  font-size: .82rem; color: #0369a1; margin-bottom: 4px; }
+.prop-card-vals { font-size: .78rem; color: var(--text-muted); line-height: 1.7; }
+.prop-card-vals code { background: #e0f2fe; padding: 1px 5px; border-radius: 3px;
+  font-family: 'Fira Code', monospace; font-size: .74rem; color: #0369a1; }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="crumbs">
+    <a href="../../index.html">🏠 الرئيسية</a>
+    <span class="sep">/</span>
+    <a href="./index.html">📱 React Native</a>
+    <span class="sep">/</span>
+    <span class="current">🎨 الدرس 6: StyleSheet و Flexbox</span>
+  </div>
+  <div class="progress-mini">
+    <div class="progress-bar-mini"><div class="progress-fill-mini" id="progFill"></div></div>
+    <span id="progText">0%</span>
+  </div>
+</div>
+
+<div class="notebook">
+
+  <div class="notebook-header">
+    <div class="lesson-tag">🎨 الدرس السادس</div>
+    <h1><span class="sparkle">✦</span> StyleSheet و Flexbox <span class="sparkle">✦</span></h1>
+    <div class="lesson-meta">
+      <span>⏱️ 45 دقيقة</span>
+      <span>📊 مبتدئ+</span>
+      <span>🎯 5 تمارين + اختبار</span>
+    </div>
+  </div>
+
+  <div class="toc-card">
+    <h2>📑 فهرس الدرس</h2>
+    <ol>
+      <li><a href="#s1">StyleSheet.create — لماذا وكيف؟</a></li>
+      <li><a href="#s2">Inline Styles مقابل StyleSheet</a></li>
+      <li><a href="#s3">Flexbox — مفهوم الحاوية والعناصر</a></li>
+      <li><a href="#s4">flexDirection — اتجاه المحور</a></li>
+      <li><a href="#s5">justifyContent — التوزيع على المحور الرئيسي</a></li>
+      <li><a href="#s6">alignItems — التوزيع على المحور المتقاطع</a></li>
+      <li><a href="#s7">flex — توزيع المساحة</a></li>
+      <li><a href="#s8">محرر تفاعلي — Flexbox Playground</a></li>
+      <li><a href="#exercises">التمارين</a></li>
+      <li><a href="#quiz">اختبر فهمك</a></li>
+    </ol>
+  </div>
+
+  <!-- S1 -->
+  <div class="section" id="s1">
+    <h2 class="section-title"><span class="num">.1</span> StyleSheet.create — لماذا وكيف؟ <span class="en">StyleSheet</span></h2>
+    <div class="content">
+      <p>تخيّل أنك تبني بيتاً — إما تشتري الطوب في كل مرة تحتاجه، أو تجهّزه كله مرة واحدة في المستودع. <strong>StyleSheet.create</strong> هو المستودع: تُعرّف الأنماط مرة واحدة، ويستخدمها التطبيق بكفاءة عالية.</p>
+
+      <div class="code-box">
+<div class="code-header"><span>🎨 StyleSheet.create — الطريقة الصحيحة</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-name">import</span> { View, Text, StyleSheet } <span class="tag-name">from</span> <span class="attr-val">'react-native'</span>;
+
+<span class="tag-name">export default function</span> <span class="attr">App</span>() {
+  <span class="tag-name">return</span> (
+    &lt;<span class="attr">View</span> style={styles.container}&gt;
+      &lt;<span class="attr">View</span> style={styles.card}&gt;
+        &lt;<span class="attr">Text</span> style={styles.title}&gt;عنوان&lt;/<span class="attr">Text</span>&gt;
+        &lt;<span class="attr">Text</span> style={styles.body}&gt;محتوى النص&lt;/<span class="attr">Text</span>&gt;
+      &lt;/<span class="attr">View</span>&gt;
+    &lt;/<span class="attr">View</span>&gt;
+  );
+}
+
+<span class="comment">// يُعرَّف خارج المكوّن — مرة واحدة عند تحميل الملف</span>
+<span class="tag-name">const</span> <span class="attr">styles</span> = StyleSheet.create({
+  container: {
+    flex: <span class="attr-val">1</span>,
+    backgroundColor: <span class="attr-val">'#f0f9ff'</span>,
+    padding: <span class="attr-val">20</span>,
+  },
+  card: {
+    backgroundColor: <span class="attr-val">'white'</span>,
+    borderRadius: <span class="attr-val">16</span>,
+    padding: <span class="attr-val">20</span>,
+    elevation: <span class="attr-val">4</span>,
+    shadowColor: <span class="attr-val">'#000'</span>,
+    shadowOffset: { width: <span class="attr-val">0</span>, height: <span class="attr-val">2</span> },
+    shadowOpacity: <span class="attr-val">0.1</span>,
+  },
+  title: { fontSize: <span class="attr-val">22</span>, fontWeight: <span class="attr-val">'bold'</span>, color: <span class="attr-val">'#0f172a'</span>, marginBottom: <span class="attr-val">8</span> },
+  body:  { fontSize: <span class="attr-val">15</span>, color: <span class="attr-val">'#64748b'</span>, lineHeight: <span class="attr-val">24</span> },
+});</pre>
+      </div>
+
+      <div class="tip-box"><strong>لماذا خارج المكوّن؟</strong> لو عرّفت StyleSheet داخل الدالة، ستُعاد إنشاؤها في كل render. خارجها: تُنشأ مرة واحدة فقط = أداء أفضل.</div>
+    </div>
+  </div>
+
+  <!-- S2 -->
+  <div class="section" id="s2">
+    <h2 class="section-title"><span class="num">.2</span> Inline Styles مقابل StyleSheet <span class="en">Inline vs StyleSheet</span></h2>
+    <div class="content">
+      <div class="compare-grid">
+        <div class="cg-box bad">
+          <div class="cg-label">⚠️ Inline (للاختبار فقط)</div>
+          <div class="code-box" style="margin:0"><pre style="font-size:.75rem"><span class="comment">// تُنشأ object جديد في كل render</span>
+&lt;<span class="attr">Text</span> style={{
+  fontSize: <span class="attr-val">18</span>,
+  color: <span class="attr-val">'#0369a1'</span>,
+  fontWeight: <span class="attr-val">'bold'</span>,
+}}&gt;
+  عنوان
+&lt;/<span class="attr">Text</span>&gt;</pre></div>
+        </div>
+        <div class="cg-box good">
+          <div class="cg-label">✅ StyleSheet (المعتاد)</div>
+          <div class="code-box" style="margin:0"><pre style="font-size:.75rem"><span class="comment">// مُحسَّب مرة واحدة</span>
+&lt;<span class="attr">Text</span> style={styles.title}&gt;
+  عنوان
+&lt;/<span class="attr">Text</span>&gt;
+
+<span class="comment">// ...</span>
+<span class="tag-name">const</span> <span class="attr">styles</span> = StyleSheet.create({
+  title: {
+    fontSize: <span class="attr-val">18</span>,
+    color: <span class="attr-val">'#0369a1'</span>,
+    fontWeight: <span class="attr-val">'bold'</span>,
+  },
+});</pre></div>
+        </div>
+      </div>
+
+      <p><strong>دمج أنماط متعددة — Array Style:</strong></p>
+      <div class="code-box blue">
+<div class="code-header"><span>🔀 دمج الأنماط</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">// تمرير Array من الأنماط — الأخير يتغلب</span>
+&lt;<span class="attr">View</span> style={[styles.card, styles.featured]}&gt;...&lt;/<span class="attr">View</span>&gt;
+
+<span class="comment">// نمط شرطي</span>
+&lt;<span class="attr">View</span> style={[styles.btn, isActive && styles.btnActive]}&gt;...&lt;/<span class="attr">View</span>&gt;
+
+<span class="comment">// مع Inline للتخصيص السريع</span>
+&lt;<span class="attr">Text</span> style={[styles.text, { color: accentColor }]}&gt;...&lt;/<span class="attr">Text</span>&gt;</pre>
+      </div>
+
+      <div class="info-box"><strong>متى تستخدم Inline؟</strong> فقط عندما تكون القيمة ديناميكية بالكامل (مثل لون يأتي من props أو state). غير ذلك استخدم StyleSheet.</div>
+    </div>
+  </div>
+
+  <!-- S3 -->
+  <div class="section" id="s3">
+    <h2 class="section-title"><span class="num">.3</span> Flexbox — مفهوم الحاوية والعناصر <span class="en">Flexbox Concept</span></h2>
+    <div class="content">
+      <p>Flexbox في RN يعمل تماماً مثل CSS Flexbox — لكن بفارق واحد مهم: <strong>كل View هي Flex Container تلقائياً</strong> باتجاه عمودي.</p>
+
+      <div class="info-box">
+        <strong>القاعدة الذهبية:</strong> في Flexbox يوجد محوران:<br>
+        • <strong>المحور الرئيسي</strong> (Main Axis): اتجاه المحتوى — يتحكم فيه <code>flexDirection</code><br>
+        • <strong>المحور المتقاطع</strong> (Cross Axis): العمودي على المحور الرئيسي
+      </div>
+
+      <div class="flex-demo">
+        <div class="flex-demo-label">flexDirection: 'column' (الافتراضي في RN)</div>
+        <div style="background:#0f172a; border-radius:8px; padding:10px; display:flex; flex-direction:column; gap:6px; height:160px;">
+          <div class="fb fb1" style="height:40px;">A</div>
+          <div class="fb fb2" style="height:40px;">B</div>
+          <div class="fb fb3" style="height:40px;">C</div>
+        </div>
+      </div>
+
+      <div class="flex-demo">
+        <div class="flex-demo-label">flexDirection: 'row' — اتجاه أفقي</div>
+        <div style="background:#0f172a; border-radius:8px; padding:10px; display:flex; flex-direction:row; gap:6px; height:60px;">
+          <div class="fb fb1" style="flex:1;">A</div>
+          <div class="fb fb2" style="flex:1;">B</div>
+          <div class="fb fb3" style="flex:1;">C</div>
+        </div>
+      </div>
+
+      <div class="code-box">
+<div class="code-header"><span>📦 الفرق الرئيسي عن CSS</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">/* CSS الويب — Flexbox غير مفعّل افتراضياً */</span>
+.container { display: flex; flex-direction: row; }
+
+<span class="comment">// React Native — كل View هي Flex تلقائياً!</span>
+<span class="tag-name">const</span> <span class="attr">styles</span> = StyleSheet.create({
+  container: {
+    <span class="comment">// display: 'flex' ← غير ضروري، هو الافتراضي</span>
+    flexDirection: <span class="attr-val">'row'</span>,  <span class="comment">// فقط إن أردت أفقياً</span>
+  },
+});</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- S4 -->
+  <div class="section" id="s4">
+    <h2 class="section-title"><span class="num">.4</span> flexDirection — اتجاه المحور <span class="en">flexDirection</span></h2>
+    <div class="content">
+      <div class="prop-grid">
+        <div class="prop-card">
+          <div class="prop-card-name">column</div>
+          <div class="prop-card-vals">الافتراضي في RN<br>العناصر تحت بعضها ↓</div>
+        </div>
+        <div class="prop-card">
+          <div class="prop-card-name">column-reverse</div>
+          <div class="prop-card-vals">عمودي معكوس<br>العناصر من الأسفل ↑</div>
+        </div>
+        <div class="prop-card">
+          <div class="prop-card-name">row</div>
+          <div class="prop-card-vals">أفقي من اليسار →<br>(أو اليمين في RTL)</div>
+        </div>
+        <div class="prop-card">
+          <div class="prop-card-name">row-reverse</div>
+          <div class="prop-card-vals">أفقي معكوس<br>← من اليمين</div>
+        </div>
+      </div>
+
+      <div class="code-box">
+<div class="code-header"><span>↔️ flexDirection عملياً</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">// صف أفقي (Row) — شائع جداً في الـ Headers</span>
+&lt;<span class="attr">View</span> style={{ flexDirection: <span class="attr-val">'row'</span>, alignItems: <span class="attr-val">'center'</span> }}&gt;
+  &lt;<span class="attr">Image</span> source={avatar} style={styles.avatar} /&gt;
+  &lt;<span class="attr">View</span>&gt;
+    &lt;<span class="attr">Text</span> style={styles.name}&gt;أحمد خالد&lt;/<span class="attr">Text</span>&gt;
+    &lt;<span class="attr">Text</span> style={styles.role}&gt;مطور RN&lt;/<span class="attr">Text</span>&gt;
+  &lt;/<span class="attr">View</span>&gt;
+&lt;/<span class="attr">View</span>&gt;
+
+<span class="comment">// في StyleSheet</span>
+<span class="tag-name">const</span> <span class="attr">styles</span> = StyleSheet.create({
+  header: {
+    flexDirection: <span class="attr-val">'row'</span>,
+    alignItems: <span class="attr-val">'center'</span>,
+    gap: <span class="attr-val">12</span>,
+    padding: <span class="attr-val">16</span>,
+  },
+});</pre>
+      </div>
+
+      <div class="sub-header">مثال مرئي — column vs row:</div>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin:12px 0;">
+        <div>
+          <div style="font-size:.75rem; color:#64748b; text-align:center; margin-bottom:6px; font-family:'Fira Code'">column (افتراضي)</div>
+          <div style="background:#1e293b; border-radius:10px; padding:10px; display:flex; flex-direction:column; gap:5px; height:130px;">
+            <div class="fb fb1" style="flex:1;">1</div>
+            <div class="fb fb2" style="flex:1;">2</div>
+            <div class="fb fb3" style="flex:1;">3</div>
+          </div>
+        </div>
+        <div>
+          <div style="font-size:.75rem; color:#64748b; text-align:center; margin-bottom:6px; font-family:'Fira Code'">row</div>
+          <div style="background:#1e293b; border-radius:10px; padding:10px; display:flex; flex-direction:row; gap:5px; height:130px;">
+            <div class="fb fb1" style="flex:1;">1</div>
+            <div class="fb fb2" style="flex:1;">2</div>
+            <div class="fb fb3" style="flex:1;">3</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- S5 -->
+  <div class="section" id="s5">
+    <h2 class="section-title"><span class="num">.5</span> justifyContent — المحور الرئيسي <span class="en">justifyContent</span></h2>
+    <div class="content">
+      <p>يتحكم في توزيع العناصر على <strong>المحور الرئيسي</strong> (نفس اتجاه flexDirection).</p>
+
+      <div class="prop-grid">
+        <div class="prop-card">
+          <div class="prop-card-name">flex-start</div>
+          <div class="prop-card-vals">الافتراضي<br>العناصر في البداية</div>
+        </div>
+        <div class="prop-card">
+          <div class="prop-card-name">flex-end</div>
+          <div class="prop-card-vals">العناصر في النهاية</div>
+        </div>
+        <div class="prop-card">
+          <div class="prop-card-name">center</div>
+          <div class="prop-card-vals">توسيط في المنتصف</div>
+        </div>
+        <div class="prop-card">
+          <div class="prop-card-name">space-between</div>
+          <div class="prop-card-vals">مساحات متساوية بين العناصر</div>
+        </div>
+        <div class="prop-card">
+          <div class="prop-card-name">space-around</div>
+          <div class="prop-card-vals">مساحات متساوية حول كل عنصر</div>
+        </div>
+        <div class="prop-card">
+          <div class="prop-card-name">space-evenly</div>
+          <div class="prop-card-vals">مساحات متساوية تماماً</div>
+        </div>
+      </div>
+
+      <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin:14px 0;">
+        <div>
+          <div style="font-size:.68rem; color:#64748b; text-align:center; margin-bottom:4px; font-family:'Fira Code'">flex-start</div>
+          <div style="background:#1e293b; border-radius:8px; padding:6px; display:flex; flex-direction:column; justify-content:flex-start; gap:4px; height:110px;">
+            <div class="fb fb1" style="height:24px; font-size:.65rem;">A</div>
+            <div class="fb fb2" style="height:24px; font-size:.65rem;">B</div>
+          </div>
+        </div>
+        <div>
+          <div style="font-size:.68rem; color:#64748b; text-align:center; margin-bottom:4px; font-family:'Fira Code'">center</div>
+          <div style="background:#1e293b; border-radius:8px; padding:6px; display:flex; flex-direction:column; justify-content:center; gap:4px; height:110px;">
+            <div class="fb fb2" style="height:24px; font-size:.65rem;">A</div>
+            <div class="fb fb3" style="height:24px; font-size:.65rem;">B</div>
+          </div>
+        </div>
+        <div>
+          <div style="font-size:.68rem; color:#64748b; text-align:center; margin-bottom:4px; font-family:'Fira Code'">space-between</div>
+          <div style="background:#1e293b; border-radius:8px; padding:6px; display:flex; flex-direction:column; justify-content:space-between; height:110px;">
+            <div class="fb fb4" style="height:24px; font-size:.65rem;">A</div>
+            <div class="fb fb5" style="height:24px; font-size:.65rem;">B</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="code-box">
+<div class="code-header"><span>🎯 توسيط كامل (الشائع جداً)</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">// توسيط المحتوى أفقياً وعمودياً</span>
+container: {
+  flex: <span class="attr-val">1</span>,
+  justifyContent: <span class="attr-val">'center'</span>,   <span class="comment">// توسيط عمودي (column)</span>
+  alignItems: <span class="attr-val">'center'</span>,       <span class="comment">// توسيط أفقي</span>
+},
+
+<span class="comment">// شريط تنقل (navbar)</span>
+navbar: {
+  flexDirection: <span class="attr-val">'row'</span>,
+  justifyContent: <span class="attr-val">'space-between'</span>,  <span class="comment">// عنوان ← → زر القائمة</span>
+  alignItems: <span class="attr-val">'center'</span>,
+  padding: <span class="attr-val">16</span>,
+},</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- S6 -->
+  <div class="section" id="s6">
+    <h2 class="section-title"><span class="num">.6</span> alignItems — المحور المتقاطع <span class="en">alignItems</span></h2>
+    <div class="content">
+      <p>يتحكم في توزيع العناصر على <strong>المحور المتقاطع</strong> (العمودي على flexDirection).</p>
+
+      <div class="prop-grid">
+        <div class="prop-card">
+          <div class="prop-card-name">stretch</div>
+          <div class="prop-card-vals">الافتراضي<br>يمتد لملء الحاوية</div>
+        </div>
+        <div class="prop-card">
+          <div class="prop-card-name">flex-start</div>
+          <div class="prop-card-vals">محاذاة لبداية المحور</div>
+        </div>
+        <div class="prop-card">
+          <div class="prop-card-name">center</div>
+          <div class="prop-card-vals">توسيط على المحور المتقاطع</div>
+        </div>
+        <div class="prop-card">
+          <div class="prop-card-name">flex-end</div>
+          <div class="prop-card-vals">محاذاة لنهاية المحور</div>
+        </div>
+        <div class="prop-card">
+          <div class="prop-card-name">baseline</div>
+          <div class="prop-card-vals">محاذاة على خط الأساس للنص</div>
+        </div>
+      </div>
+
+      <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin:14px 0;">
+        <div>
+          <div style="font-size:.68rem; color:#64748b; text-align:center; margin-bottom:4px; font-family:'Fira Code'">flex-start</div>
+          <div style="background:#1e293b; border-radius:8px; padding:6px; display:flex; flex-direction:row; align-items:flex-start; gap:4px; height:80px;">
+            <div class="fb fb1" style="width:30px; height:50px; font-size:.65rem;">A</div>
+            <div class="fb fb2" style="width:30px; height:30px; font-size:.65rem;">B</div>
+            <div class="fb fb3" style="width:30px; height:40px; font-size:.65rem;">C</div>
+          </div>
+        </div>
+        <div>
+          <div style="font-size:.68rem; color:#64748b; text-align:center; margin-bottom:4px; font-family:'Fira Code'">center</div>
+          <div style="background:#1e293b; border-radius:8px; padding:6px; display:flex; flex-direction:row; align-items:center; gap:4px; height:80px;">
+            <div class="fb fb1" style="width:30px; height:50px; font-size:.65rem;">A</div>
+            <div class="fb fb2" style="width:30px; height:30px; font-size:.65rem;">B</div>
+            <div class="fb fb3" style="width:30px; height:40px; font-size:.65rem;">C</div>
+          </div>
+        </div>
+        <div>
+          <div style="font-size:.68rem; color:#64748b; text-align:center; margin-bottom:4px; font-family:'Fira Code'">flex-end</div>
+          <div style="background:#1e293b; border-radius:8px; padding:6px; display:flex; flex-direction:row; align-items:flex-end; gap:4px; height:80px;">
+            <div class="fb fb1" style="width:30px; height:50px; font-size:.65rem;">A</div>
+            <div class="fb fb2" style="width:30px; height:30px; font-size:.65rem;">B</div>
+            <div class="fb fb3" style="width:30px; height:40px; font-size:.65rem;">C</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="code-box">
+<div class="code-header"><span>🔧 alignSelf — تجاوز alignItems لعنصر واحد</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">// الحاوية تحاذي كل شيء إلى المركز</span>
+&lt;<span class="attr">View</span> style={{ alignItems: <span class="attr-val">'center'</span> }}&gt;
+  &lt;<span class="attr">Text</span>&gt;في المنتصف&lt;/<span class="attr">Text</span>&gt;
+  &lt;<span class="attr">Text</span>&gt;في المنتصف أيضاً&lt;/<span class="attr">Text</span>&gt;
+  <span class="comment">{/* هذا العنصر يتجاوز ويذهب لليسار */}</span>
+  &lt;<span class="attr">Text</span> style={{ alignSelf: <span class="attr-val">'flex-start'</span> }}&gt;
+    أنا مختلف!
+  &lt;/<span class="attr">Text</span>&gt;
+&lt;/<span class="attr">View</span>&gt;</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- S7 -->
+  <div class="section" id="s7">
+    <h2 class="section-title"><span class="num">.7</span> flex — توزيع المساحة <span class="en">flex Property</span></h2>
+    <div class="content">
+      <p>خاصية <code>flex</code> تُحدد كيف يأخذ العنصر المساحة المتاحة. فكّر فيها كـ "حصص" من المساحة.</p>
+
+      <div class="code-box">
+<div class="code-header"><span>📐 flex — توزيع الحصص</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">// flex: 1 — اشغل كل المساحة المتاحة</span>
+container: { flex: <span class="attr-val">1</span> }   <span class="comment">// الشاشة كلها</span>
+
+<span class="comment">// توزيع متساوي بين 3 أقسام</span>
+&lt;<span class="attr">View</span> style={{ flex: <span class="attr-val">1</span>, flexDirection: <span class="attr-val">'row'</span> }}&gt;
+  &lt;<span class="attr">View</span> style={{ flex: <span class="attr-val">1</span>, backgroundColor: <span class="attr-val">'#dbeafe'</span> }} /&gt;  <span class="comment">// 33%</span>
+  &lt;<span class="attr">View</span> style={{ flex: <span class="attr-val">1</span>, backgroundColor: <span class="attr-val">'#fce7f3'</span> }} /&gt;  <span class="comment">// 33%</span>
+  &lt;<span class="attr">View</span> style={{ flex: <span class="attr-val">1</span>, backgroundColor: <span class="attr-val">'#d1fae5'</span> }} /&gt;  <span class="comment">// 33%</span>
+&lt;/<span class="attr">View</span>&gt;
+
+<span class="comment">// توزيع غير متساوٍ — 2:1:1</span>
+&lt;<span class="attr">View</span> style={{ flex: <span class="attr-val">1</span>, flexDirection: <span class="attr-val">'row'</span> }}&gt;
+  &lt;<span class="attr">View</span> style={{ flex: <span class="attr-val">2</span>, backgroundColor: <span class="attr-val">'#0ea5e9'</span> }} /&gt;  <span class="comment">// 50%</span>
+  &lt;<span class="attr">View</span> style={{ flex: <span class="attr-val">1</span>, backgroundColor: <span class="attr-val">'#7c3aed'</span> }} /&gt;  <span class="comment">// 25%</span>
+  &lt;<span class="attr">View</span> style={{ flex: <span class="attr-val">1</span>, backgroundColor: <span class="attr-val">'#f43f5e'</span> }} /&gt;  <span class="comment">// 25%</span>
+&lt;/<span class="attr">View</span>&gt;</pre>
+      </div>
+
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin:14px 0;">
+        <div>
+          <div style="font-size:.74rem; color:#64748b; text-align:center; margin-bottom:6px;">flex 1:1:1 (متساوي)</div>
+          <div style="background:#1e293b; border-radius:8px; padding:8px; display:flex; flex-direction:row; gap:4px; height:50px;">
+            <div class="fb fb1" style="flex:1; font-size:.65rem;">1</div>
+            <div class="fb fb2" style="flex:1; font-size:.65rem;">1</div>
+            <div class="fb fb3" style="flex:1; font-size:.65rem;">1</div>
+          </div>
+        </div>
+        <div>
+          <div style="font-size:.74rem; color:#64748b; text-align:center; margin-bottom:6px;">flex 2:1:1</div>
+          <div style="background:#1e293b; border-radius:8px; padding:8px; display:flex; flex-direction:row; gap:4px; height:50px;">
+            <div class="fb fb1" style="flex:2; font-size:.65rem;">2</div>
+            <div class="fb fb2" style="flex:1; font-size:.65rem;">1</div>
+            <div class="fb fb3" style="flex:1; font-size:.65rem;">1</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="code-box blue">
+<div class="code-header"><span>🏗️ Layout شائع: Sidebar + Content</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">// تخطيط: شريط جانبي + محتوى رئيسي</span>
+&lt;<span class="attr">View</span> style={{ flex: <span class="attr-val">1</span>, flexDirection: <span class="attr-val">'row'</span> }}&gt;
+
+  <span class="comment">{/* شريط جانبي — عرض ثابت */}</span>
+  &lt;<span class="attr">View</span> style={{ width: <span class="attr-val">70</span>, backgroundColor: <span class="attr-val">'#1e293b'</span> }}&gt;
+    ...
+  &lt;/<span class="attr">View</span>&gt;
+
+  <span class="comment">{/* محتوى — يملأ الباقي */}</span>
+  &lt;<span class="attr">View</span> style={{ flex: <span class="attr-val">1</span>, backgroundColor: <span class="attr-val">'#f8fafc'</span> }}&gt;
+    ...
+  &lt;/<span class="attr">View</span>&gt;
+
+&lt;/<span class="attr">View</span>&gt;</pre>
+      </div>
+
+      <div class="tip-box"><strong>gap في RN:</strong> يمكن استخدام <code>gap</code>، <code>rowGap</code>، <code>columnGap</code> مثل CSS — مدعومة في React Native 0.71+.</div>
+    </div>
+  </div>
+
+  <!-- S8 -->
+  <div class="section" id="s8">
+    <h2 class="section-title"><span class="num">.8</span> محرر تفاعلي — Flexbox Playground <span class="en">Live Editor</span></h2>
+    <div class="content"><p>غيّر خصائص Flexbox وشاهد التأثير مباشرة على الجوال:</p></div>
+    <div class="live-preview">
+      <div class="lp-header">
+        <span>📱 معاينة حية — Flexbox في العمل</span>
+        <span class="lp-tag">flexDirection + justifyContent</span>
+      </div>
+      <div class="lp-body">
+        <div class="lp-code">
+<pre><span class="k">const</span> styles = StyleSheet.create({
+  screen: {
+    flex: <span class="n">1</span>,
+    backgroundColor: <span class="s">'#f0f9ff'</span>,
+    padding: <span class="n">12</span>,
+  },
+
+  <span class="c">// شريط الترويسة — صف أفقي</span>
+  header: {
+    flexDirection: <span class="s">'row'</span>,
+    justifyContent: <span class="s">'space-between'</span>,
+    alignItems: <span class="s">'center'</span>,
+    padding: <span class="n">14</span>,
+    backgroundColor: <span class="s">'white'</span>,
+    borderRadius: <span class="n">12</span>,
+  },
+
+  <span class="c">// شبكة بطاقات — توزيع متساوي</span>
+  grid: {
+    flex: <span class="n">1</span>,
+    flexDirection: <span class="s">'row'</span>,
+    justifyContent: <span class="s">'space-between'</span>,
+    marginTop: <span class="n">10</span>,
+    gap: <span class="n">8</span>,
+  },
+  card: {
+    flex: <span class="n">1</span>,
+    backgroundColor: <span class="s">'white'</span>,
+    borderRadius: <span class="n">12</span>,
+    padding: <span class="n">14</span>,
+    alignItems: <span class="s">'center'</span>,
+    justifyContent: <span class="s">'center'</span>,
+  },
+});</pre>
+        </div>
+        <div class="lp-phone-wrap">
+          <div class="lp-phone">
+            <div class="lp-phone-bar"></div>
+            <div class="lp-phone-screen" style="gap:10px;">
+              <div style="display:flex; flex-direction:row; justify-content:space-between; align-items:center; padding:10px; background:white; border-radius:10px;">
+                <div style="font-size:.72rem; font-weight:800; color:#0369a1; font-family:'Cairo',sans-serif;">الرئيسية</div>
+                <div style="font-size:1rem;">🔔</div>
+              </div>
+              <div style="display:flex; flex-direction:row; gap:8px; flex:1;">
+                <div style="flex:1; background:linear-gradient(135deg,#0ea5e9,#0284c7); border-radius:10px; display:flex; align-items:center; justify-content:center; color:white; font-weight:700; font-size:.7rem; font-family:'Cairo',sans-serif;">flex: 1</div>
+                <div style="flex:1; background:linear-gradient(135deg,#7c3aed,#6d28d9); border-radius:10px; display:flex; align-items:center; justify-content:center; color:white; font-weight:700; font-size:.7rem; font-family:'Cairo',sans-serif;">flex: 1</div>
+              </div>
+              <div style="display:flex; flex-direction:row; gap:8px; height:70px;">
+                <div style="flex:2; background:#fbbf24; border-radius:10px; display:flex; align-items:center; justify-content:center; color:white; font-weight:700; font-size:.7rem; font-family:'Cairo',sans-serif;">flex: 2</div>
+                <div style="flex:1; background:#f43f5e; border-radius:10px; display:flex; align-items:center; justify-content:center; color:white; font-weight:700; font-size:.7rem; font-family:'Cairo',sans-serif;">flex: 1</div>
+              </div>
+              <div style="text-align:center; font-size:.58rem; color:#64748b; font-family:monospace; padding-top:2px;">justifyContent · alignItems · gap</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EXERCISES -->
+  <div class="section" id="exercises">
+    <h2 class="section-title"><span class="num">📝</span> التمارين العملية <span class="en">Exercises</span></h2>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 1: توسيط كامل</div>
+      <p>اكتب StyleSheet لـ container يُوسّط محتواه أفقياً وعمودياً، مع خلفية <code>#f0f9ff</code> وتملأ الشاشة كلها.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box"><pre><span class="tag-name">const</span> <span class="attr">styles</span> = StyleSheet.create({
+  container: {
+    flex: <span class="attr-val">1</span>,
+    justifyContent: <span class="attr-val">'center'</span>,
+    alignItems: <span class="attr-val">'center'</span>,
+    backgroundColor: <span class="attr-val">'#f0f9ff'</span>,
+  },
+});</pre></div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 2: شريط تنقل</div>
+      <p>اكتب View تُشبه Navbar: صورة شخصية على اليسار، عنوان في المنتصف، أيقونة إشعارات على اليمين.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box"><pre>&lt;<span class="attr">View</span> style={styles.navbar}&gt;
+  &lt;<span class="attr">Image</span> source={avatar} style={styles.avatar} /&gt;
+  &lt;<span class="attr">Text</span> style={styles.navTitle}&gt;الرئيسية&lt;/<span class="attr">Text</span>&gt;
+  &lt;<span class="attr">TouchableOpacity</span>&gt;
+    &lt;<span class="attr">Text</span> style={{ fontSize: <span class="attr-val">22</span> }}&gt;🔔&lt;/<span class="attr">Text</span>&gt;
+  &lt;/<span class="attr">TouchableOpacity</span>&gt;
+&lt;/<span class="attr">View</span>&gt;
+
+navbar: {
+  flexDirection: <span class="attr-val">'row'</span>,
+  justifyContent: <span class="attr-val">'space-between'</span>,
+  alignItems: <span class="attr-val">'center'</span>,
+  padding: <span class="attr-val">16</span>,
+  backgroundColor: <span class="attr-val">'white'</span>,
+},</pre></div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 3: توزيع flex</div>
+      <p>قسّم الشاشة أفقياً: الجزء الأيسر يأخذ 30% والأيمن 70%. استخدم flex بدون نسب مئوية.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box"><pre>&lt;<span class="attr">View</span> style={{ flex: <span class="attr-val">1</span>, flexDirection: <span class="attr-val">'row'</span> }}&gt;
+  &lt;<span class="attr">View</span> style={{ flex: <span class="attr-val">3</span>, backgroundColor: <span class="attr-val">'#1e293b'</span> }} /&gt;
+  <span class="comment">{/* 3/(3+7) = 30% */}</span>
+  &lt;<span class="attr">View</span> style={{ flex: <span class="attr-val">7</span>, backgroundColor: <span class="attr-val">'#f0f9ff'</span> }} /&gt;
+  <span class="comment">{/* 7/(3+7) = 70% */}</span>
+&lt;/<span class="attr">View</span>&gt;</pre></div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 4: نمط شرطي</div>
+      <p>اكتب زر يتغير لونه من أزرق إلى أخضر عندما تكون <code>isSelected = true</code>. استخدم Array Style.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box"><pre><span class="tag-name">const</span> [isSelected, setIsSelected] = useState(<span class="attr-val">false</span>);
+
+&lt;<span class="attr">TouchableOpacity</span>
+  style={[styles.btn, isSelected && styles.btnSelected]}
+  onPress={() => setIsSelected(!isSelected)}
+&gt;
+  &lt;<span class="attr">Text</span> style={styles.btnText}&gt;
+    {isSelected ? <span class="attr-val">'محدد ✓'</span> : <span class="attr-val">'اضغط'</span>}
+  &lt;/<span class="attr">Text</span>&gt;
+&lt;/<span class="attr">TouchableOpacity</span>&gt;
+
+btn:         { backgroundColor: <span class="attr-val">'#0ea5e9'</span>, padding: <span class="attr-val">12</span>, borderRadius: <span class="attr-val">8</span> },
+btnSelected: { backgroundColor: <span class="attr-val">'#16a34a'</span> },
+btnText:     { color: <span class="attr-val">'white'</span>, fontWeight: <span class="attr-val">'bold'</span> },</pre></div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 5: بطاقة منتج</div>
+      <p>صمّم بطاقة منتج تحتوي: صورة في الأعلى، ثم صف أفقي فيه الاسم (flex:1) والسعر (ثابت)، ثم زر "أضف للسلة" في الأسفل.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box"><pre>&lt;<span class="attr">View</span> style={styles.card}&gt;
+  &lt;<span class="attr">Image</span> source={{ uri: imgUrl }} style={styles.img} resizeMode=<span class="attr-val">"cover"</span> /&gt;
+  &lt;<span class="attr">View</span> style={styles.row}&gt;
+    &lt;<span class="attr">Text</span> style={[styles.name, { flex: <span class="attr-val">1</span> }]} numberOfLines={<span class="attr-val">1</span>}&gt;اسم المنتج&lt;/<span class="attr">Text</span>&gt;
+    &lt;<span class="attr">Text</span> style={styles.price}&gt;<span class="attr-val">99 ريال</span>&lt;/<span class="attr">Text</span>&gt;
+  &lt;/<span class="attr">View</span>&gt;
+  &lt;<span class="attr">TouchableOpacity</span> style={styles.btn}&gt;
+    &lt;<span class="attr">Text</span> style={styles.btnText}&gt;🛒 أضف للسلة&lt;/<span class="attr">Text</span>&gt;
+  &lt;/<span class="attr">TouchableOpacity</span>&gt;
+&lt;/<span class="attr">View</span>&gt;
+
+card: { backgroundColor:<span class="attr-val">'white'</span>, borderRadius:<span class="attr-val">14</span>, overflow:<span class="attr-val">'hidden'</span>, elevation:<span class="attr-val">3</span> },
+img:  { width:<span class="attr-val">'100%'</span>, height:<span class="attr-val">140</span> },
+row:  { flexDirection:<span class="attr-val">'row'</span>, alignItems:<span class="attr-val">'center'</span>, padding:<span class="attr-val">10</span>, gap:<span class="attr-val">8</span> },
+btn:  { backgroundColor:<span class="attr-val">'#0ea5e9'</span>, margin:<span class="attr-val">10</span>, padding:<span class="attr-val">10</span>, borderRadius:<span class="attr-val">10</span>, alignItems:<span class="attr-val">'center'</span> },</pre></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="quiz-container" id="quiz">
+    <div class="quiz-intro"><p>اختبر فهمك لـ StyleSheet و Flexbox!</p></div>
+    <div class="quiz-type-tabs">
+      <button class="qt-tab active" onclick="switchQuiz(this,'tf')">✓✗ صح وخطأ</button>
+      <button class="qt-tab" onclick="switchQuiz(this,'mc')">🔘 اختيار من متعدد</button>
+    </div>
+
+    <div class="quiz-section active" id="quiz-tf">
+      <div class="quiz-question" data-correct="false">
+        <span class="q-num">1</span><span class="q-text">الاتجاه الافتراضي لـ Flexbox في React Native هو 'row' (أفقي).</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">2</span><span class="q-text">يمكن تمرير Array من الأنماط إلى خاصية style في React Native.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">3</span><span class="q-text">StyleSheet.create يُعرَّف خارج المكوّن لتجنب إعادة إنشائه في كل render.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="false">
+        <span class="q-num">4</span><span class="q-text">justifyContent يتحكم في محاذاة العناصر على المحور المتقاطع.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">5</span><span class="q-text">flex: 1 تجعل العنصر يملأ كل المساحة المتاحة في الحاوية.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <button class="quiz-submit" onclick="submitQuiz('tf')">عرض النتيجة 🎯</button>
+      <div class="quiz-result" id="result-tf"><div class="result-score" id="score-tf">0/5</div><div class="result-label">إجابات صحيحة</div><div class="result-message" id="msg-tf"></div><button class="retry-btn" onclick="retryQuiz('tf')">🔄 حاول تاني</button></div>
+    </div>
+
+    <div class="quiz-section" id="quiz-mc">
+      <div class="quiz-question" data-correct="2">
+        <span class="q-num">1</span><span class="q-text">ما القيمة الافتراضية لـ alignItems في React Native؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">center</button>
+          <button class="q-opt" onclick="answerMC(this,1)">flex-start</button>
+          <button class="q-opt" onclick="answerMC(this,2)">stretch</button>
+          <button class="q-opt" onclick="answerMC(this,3)">flex-end</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="3">
+        <span class="q-num">2</span><span class="q-text">لتوزيع 3 عناصر بمسافات متساوية بينها نستخدم:</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">alignItems: 'center'</button>
+          <button class="q-opt" onclick="answerMC(this,1)">justifyContent: 'center'</button>
+          <button class="q-opt" onclick="answerMC(this,2)">justifyContent: 'space-around'</button>
+          <button class="q-opt" onclick="answerMC(this,3)">justifyContent: 'space-between'</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="1">
+        <span class="q-num">3</span><span class="q-text">عنصر لديه flex:2 وآخر flex:1 في حاوية عرضها 300. ما عرض الأول؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">100</button>
+          <button class="q-opt" onclick="answerMC(this,1)">200</button>
+          <button class="q-opt" onclick="answerMC(this,2)">150</button>
+          <button class="q-opt" onclick="answerMC(this,3)">250</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="0">
+        <span class="q-num">4</span><span class="q-text">لتجاوز alignItems لعنصر واحد فقط نستخدم:</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">alignSelf</button>
+          <button class="q-opt" onclick="answerMC(this,1)">selfAlign</button>
+          <button class="q-opt" onclick="answerMC(this,2)">itemAlign</button>
+          <button class="q-opt" onclick="answerMC(this,3)">overrideAlign</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="2">
+        <span class="q-num">5</span><span class="q-text">ما الفرق بين padding وـ contentContainerStyle في ScrollView؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">لا فرق</button>
+          <button class="q-opt" onclick="answerMC(this,1)">padding للأجهزة القديمة</button>
+          <button class="q-opt" onclick="answerMC(this,2)">padding يؤثر على الحاوية الخارجية، contentContainerStyle على المحتوى الداخلي القابل للتمرير</button>
+          <button class="q-opt" onclick="answerMC(this,3)">contentContainerStyle للصور فقط</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <button class="quiz-submit" onclick="submitQuiz('mc')">عرض النتيجة 🎯</button>
+      <div class="quiz-result" id="result-mc"><div class="result-score" id="score-mc">0/5</div><div class="result-label">إجابات صحيحة</div><div class="result-message" id="msg-mc"></div><button class="retry-btn" onclick="retryQuiz('mc')">🔄 حاول تاني</button></div>
+    </div>
+  </div>
+
+  <div class="lesson-nav">
+    <a href="./lesson-05.html" class="nav-btn"><span>⬅️</span><span>الدرس السابق</span></a>
+    <button class="nav-btn complete-btn" id="completeBtn" onclick="markComplete(this)"><span>✅</span><span>علّم كمكتمل</span></button>
+    <a href="./lesson-07.html" class="nav-btn"><span>الدرس التالي</span><span>➡️</span></a>
+  </div>
+
+  <div class="notebook-footer">
+    <h3>🎉 أتقنت StyleSheet و Flexbox!</h3>
+    <p>الآن تستطيع تخطيط أي واجهة جوال باحترافية. 💪<br><strong>الدرس التالي: الأبعاد والوحدات — Dimensions API 📐</strong></p>
+  </div>
+</div>
+
+<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">⬆️</button>
+<div class="toast" id="toast"></div>
+<script src="../../js/data/courses.js"></script>
+<script src="../../js/progress.js"></script>
+<script>
+const COURSE_ID='react-native', LESSON_ID=6, TOTAL=28;
+function toggleSolution(b){const s=b.nextElementSibling;s.classList.toggle('show');b.textContent=s.classList.contains('show')?'إخفاء الحل ▲':'عرض الحل ▼';}
+function copyCode(b){const p=b.closest('.code-box').querySelector('pre');navigator.clipboard.writeText(p.innerText).then(()=>{b.classList.add('copied');b.textContent='✓ تم النسخ';setTimeout(()=>{b.classList.remove('copied');b.textContent='📋 نسخ';},2000);});}
+function switchQuiz(b,t){document.querySelectorAll('.qt-tab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.quiz-section').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.getElementById('quiz-'+t).classList.add('active');}
+const answers={tf:{},mc:{}};
+function answerTF(b,v){const q=b.closest('.quiz-question'),i=Array.from(q.parentNode.querySelectorAll('.quiz-question')).indexOf(q);q.querySelectorAll('.q-opt').forEach(o=>o.classList.remove('selected'));b.classList.add('selected');answers.tf[i]=v;}
+function answerMC(b,i){const q=b.closest('.quiz-question'),qi=Array.from(q.parentNode.querySelectorAll('.quiz-question')).indexOf(q);q.querySelectorAll('.q-opt').forEach(o=>o.classList.remove('selected'));b.classList.add('selected');answers.mc[qi]=i;}
+function submitQuiz(type){const sec=document.getElementById('quiz-'+type),qs=sec.querySelectorAll('.quiz-question');let c=0;qs.forEach((q,i)=>{const ca=type==='tf'?(q.dataset.correct==='true'):parseInt(q.dataset.correct),ua=answers[type][i],fb=q.querySelector('.q-feedback'),opts=q.querySelectorAll('.q-opt');opts.forEach(o=>{o.classList.remove('selected');o.disabled=true;});if(ua===undefined){fb.className='q-feedback wrong show';fb.textContent='⚠️ ما اخترتش إجابة!';return;}if(ua===ca){c++;fb.className='q-feedback correct show';fb.textContent='✓ إجابة صحيحة!';if(type==='tf')opts[ca?0:1].classList.add('correct');else opts[ca].classList.add('correct');}else{fb.className='q-feedback wrong show';if(type==='tf'){opts[ca?0:1].classList.add('correct');opts[ua?0:1].classList.add('wrong');fb.textContent='✗ خطأ.';}else{opts[ca].classList.add('correct');opts[ua].classList.add('wrong');fb.textContent='✗ الإجابة بالأخضر.';}}});const r=document.getElementById('result-'+type);document.getElementById('score-'+type).textContent=c+'/'+qs.length;const m=document.getElementById('msg-'+type);if(c===qs.length){m.textContent='🏆 ممتاز 100%!';m.className='result-message excellent';}else if(c>=3){m.textContent='👍 جيد!';m.className='result-message good';}else{m.textContent='📚 راجع الدرس.';m.className='result-message try-again';}r.classList.add('show');r.scrollIntoView({behavior:'smooth',block:'center'});}
+function retryQuiz(type){const sec=document.getElementById('quiz-'+type);sec.querySelectorAll('.q-opt').forEach(o=>{o.classList.remove('selected','correct','wrong');o.disabled=false;});sec.querySelectorAll('.q-feedback').forEach(f=>{f.classList.remove('show','correct','wrong');f.textContent='';});document.getElementById('result-'+type).classList.remove('show');answers[type]={};}
+function markComplete(btn){const done=Progress.toggleLessonComplete(COURSE_ID,LESSON_ID);btn.classList.toggle('completed',done);btn.querySelector('span:last-child').textContent=done?'مكتمل! ⭐':'علّم كمكتمل';showToast(done?'🎉 أكملت درس StyleSheet و Flexbox!':'تم إلغاء الإكمال');}
+if(Progress.isLessonComplete(COURSE_ID,LESSON_ID)){const b=document.getElementById('completeBtn');b.classList.add('completed');b.querySelector('span:last-child').textContent='مكتمل! ⭐';}
+(function(){const p=Progress.getCourseProgress(COURSE_ID,TOTAL);document.getElementById('progFill').style.width=p+'%';document.getElementById('progText').textContent=p+'%';})();
+function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
+window.addEventListener('scroll',()=>{document.getElementById('scrollTop').classList.toggle('show',window.scrollY>300);});
+document.querySelectorAll('.toc-card a').forEach(l=>{l.addEventListener('click',e=>{e.preventDefault();const t=document.querySelector(l.getAttribute('href'));if(t)t.scrollIntoView({behavior:'smooth',block:'start'});});});
+</script>
+</body>
+</html>

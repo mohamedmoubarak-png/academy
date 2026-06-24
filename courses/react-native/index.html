@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-V2NCKVL16D"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-V2NCKVL16D');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>مسار React Native — دفتر البرمجة</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=Cairo:wght@300;400;500;600;700;900&family=Caveat:wght@400;700&family=Fira+Code:wght@400;500;600&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../css/shared.css">
+<style>
+.page-wrap { max-width: 1100px; margin: 0 auto; padding: 20px 16px 50px; }
+.top-bar { max-width: 1100px; margin: 0 auto 16px; }
+
+.course-header {
+  background: var(--paper);
+  background-image: linear-gradient(var(--paper-line) 1px, transparent 1px);
+  background-size: 100% 32px;
+  background-position: 0 80px;
+  border-radius: 10px;
+  box-shadow: var(--shadow-lg), 0 0 0 1px rgba(0,0,0,0.04);
+  padding: 34px 60px 30px;
+  margin-bottom: 24px;
+  position: relative;
+  overflow: hidden;
+}
+.course-header::before {
+  content: ''; position: absolute; top: 0; bottom: 0; right: 50px;
+  width: 2px; background: var(--paper-margin); opacity: 0.6;
+}
+.course-header::after {
+  content: ''; position: absolute; left: 18px; top: 0; bottom: 0;
+  width: 14px;
+  background-image: radial-gradient(circle at center, #d4b896 0%, #d4b896 50%, transparent 51%);
+  background-size: 14px 14px; background-repeat: repeat-y; background-position: center 50px;
+}
+.course-tag {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: white; border: 2px solid #0ea5e9; color: #0ea5e9;
+  padding: 5px 16px; border-radius: 20px;
+  font-family: 'Caveat', cursive; font-size: 1.05rem; font-weight: 700;
+  margin-bottom: 12px; transform: rotate(-1deg);
+}
+.course-title {
+  font-family: 'Aref Ruqaa', serif;
+  font-size: clamp(1.7rem, 4vw, 2.5rem);
+  color: #0369a1; font-weight: 700;
+  text-decoration: underline; text-decoration-color: var(--ink-red);
+  text-decoration-thickness: 2px; text-underline-offset: 8px;
+  margin-bottom: 10px;
+}
+.sparkle { color: var(--ink-red); display: inline-block; animation: twinkle 2s ease-in-out infinite; margin: 0 6px; }
+.course-meta { display: flex; gap: 18px; flex-wrap: wrap; margin-bottom: 22px;
+  font-family: 'Caveat', cursive; font-size: 1.1rem; color: var(--ink-purple); }
+.course-meta span { display: inline-flex; align-items: center; gap: 5px; }
+
+.overall-progress {
+  background: rgba(14,165,233,0.06); border: 2px solid #0ea5e9;
+  border-radius: 12px; padding: 16px 20px;
+  display: flex; align-items: center; gap: 20px; flex-wrap: wrap;
+}
+.overall-progress .label { font-family: 'Aref Ruqaa', serif; font-size: 1rem; color: #0369a1; font-weight: 700; white-space: nowrap; }
+.overall-progress .bar-wrap { flex: 1; min-width: 150px; }
+.overall-progress .bar { height: 10px; background: var(--border); border-radius: 5px; overflow: hidden; margin-bottom: 4px; }
+.overall-progress .fill { height: 100%; background: linear-gradient(90deg, #0ea5e9, var(--ink-green)); border-radius: 5px; transition: width 0.6s ease; }
+.overall-progress .pct-text { font-family: 'Caveat', cursive; font-size: 1rem; color: #0369a1; font-weight: 700; }
+.overall-progress .count-text { font-family: 'Tajawal', sans-serif; font-size: 1.5rem; font-weight: 900; color: #0369a1; white-space: nowrap; }
+
+.stages-list { display: flex; flex-direction: column; gap: 22px; }
+.stage-card { background: var(--paper); border-radius: 12px; box-shadow: var(--shadow); overflow: hidden; border: 1px solid rgba(0,0,0,0.04); animation: fadeIn 0.4s ease both; }
+.stage-header {
+  padding: 16px 22px; display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 10px; cursor: pointer; user-select: none;
+  border-bottom: 2px dashed var(--border); background: rgba(255,255,255,0.6); transition: background 0.2s;
+}
+.stage-header:hover { background: rgba(255,255,255,0.9); }
+.stage-header-left { display: flex; align-items: center; gap: 12px; }
+.stage-num {
+  font-family: 'Tajawal', sans-serif; font-size: 1.8rem; font-weight: 900; color: white;
+  width: 48px; height: 48px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.stage-info h3 { font-family: 'Aref Ruqaa', serif; font-size: 1.2rem; color: #0369a1; font-weight: 700; line-height: 1.3; }
+.stage-info .stage-count { font-family: 'Caveat', cursive; color: var(--text-muted); font-size: 0.95rem; }
+.stage-header-right { display: flex; align-items: center; gap: 12px; }
+.stage-progress-mini { display: flex; align-items: center; gap: 6px; font-size: 0.82rem; font-weight: 600; color: var(--text-muted); }
+.stage-progress-bar { width: 70px; height: 5px; background: var(--border); border-radius: 3px; overflow: hidden; }
+.stage-progress-fill { height: 100%; background: var(--ink-green); transition: width 0.5s; }
+.stage-toggle { font-size: 1rem; color: var(--text-muted); transition: transform 0.25s; }
+.stage-card.open .stage-toggle { transform: rotate(180deg); }
+
+.lessons-list { display: none; padding: 12px 16px; }
+.stage-card.open .lessons-list { display: block; }
+.lesson-item { display: flex; align-items: center; gap: 14px; padding: 12px 10px; border-radius: 10px; transition: background 0.15s; text-decoration: none; color: inherit; cursor: default; }
+.lesson-item.available { cursor: pointer; }
+.lesson-item.available:hover { background: rgba(14,165,233,0.06); }
+.lesson-item + .lesson-item { border-top: 1px dashed var(--border); }
+
+.lesson-num { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'Caveat', cursive; font-size: 1.1rem; font-weight: 700; flex-shrink: 0; transition: all 0.2s; }
+.lesson-num.done { background: var(--ink-green); color: white; }
+.lesson-num.active { background: #0ea5e9; color: white; box-shadow: 0 0 0 3px rgba(14,165,233,0.15); }
+.lesson-num.locked { background: #f1f5f9; color: var(--text-muted); border: 1.5px dashed var(--border); }
+
+.lesson-info { flex: 1; min-width: 0; }
+.lesson-title { font-family: 'Cairo', sans-serif; font-size: 0.98rem; font-weight: 600; color: var(--text); line-height: 1.4; }
+.lesson-item.locked-item .lesson-title { color: var(--text-muted); }
+.lesson-meta-row { display: flex; gap: 12px; align-items: center; margin-top: 3px; }
+.lesson-duration { font-family: 'Caveat', cursive; font-size: 0.88rem; color: var(--text-muted); }
+.lesson-status-badge { font-size: 0.75rem; font-weight: 700; padding: 2px 8px; border-radius: 10px; }
+.lesson-status-badge.done { background: #dcfce7; color: var(--ink-green); }
+.lesson-status-badge.active { background: #e0f2fe; color: #0369a1; }
+.lesson-status-badge.locked { background: #f1f5f9; color: var(--text-muted); }
+.lesson-arrow { color: #0ea5e9; font-size: 1.1rem; flex-shrink: 0; opacity: 0; transition: opacity 0.15s, transform 0.15s; }
+.lesson-item.available:hover .lesson-arrow { opacity: 1; transform: translateX(-3px); }
+.lesson-item.locked-item { opacity: 0.7; }
+
+.back-btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 11px 20px; background: white; border: 2px solid #0ea5e9;
+  border-radius: 10px; color: #0369a1;
+  font-family: 'Cairo', sans-serif; font-weight: 700; font-size: 0.95rem;
+  cursor: pointer; transition: all 0.2s; text-decoration: none; margin-top: 24px;
+}
+.back-btn:hover { background: #0ea5e9; color: white; }
+
+@media (max-width: 700px) {
+  .course-header { padding: 24px 30px 22px 40px; }
+  .course-header::before { right: 28px; }
+  .course-header::after { left: 10px; width: 10px; background-size: 10px 10px; }
+  .course-title { font-size: 1.5rem; }
+  .stage-num { width: 38px; height: 38px; font-size: 1.4rem; }
+}
+</style>
+</head>
+<body>
+
+<div class="page-wrap" style="padding-bottom:0; margin-bottom:0;">
+  <div class="top-bar" style="background:white;border-radius:var(--radius);padding:12px 20px;box-shadow:var(--shadow);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:16px;">
+    <div class="crumbs">
+      <a href="../../index.html">🏠 الرئيسية</a>
+      <span class="sep">/</span>
+      <span class="current">📱 مسار React Native</span>
+    </div>
+    <div class="progress-mini">
+      <div class="progress-bar-mini">
+        <div class="progress-fill-mini" id="progFill" style="width:0%"></div>
+      </div>
+      <span id="progText">0%</span>
+    </div>
+  </div>
+</div>
+
+<div class="page-wrap" style="padding-top:0;">
+
+  <div class="course-header">
+    <div class="course-tag">📱 المسار الثاني</div>
+    <h1 class="course-title">
+      <span class="sparkle">✦</span> مسار React Native <span class="sparkle">✦</span>
+    </h1>
+    <div class="course-meta">
+      <span>📚 28 درس</span>
+      <span>🏁 6 مراحل</span>
+      <span>⏱️ ~22 ساعة</span>
+      <span>🎯 iOS & Android</span>
+    </div>
+
+    <div class="overall-progress">
+      <div class="label">📈 تقدمك الكلي:</div>
+      <div class="bar-wrap">
+        <div class="bar"><div class="fill" id="overallFill" style="width:0%"></div></div>
+        <div class="pct-text" id="overallPct">0%</div>
+      </div>
+      <div class="count-text"><span id="overallCount">0</span>/28 درس</div>
+    </div>
+  </div>
+
+  <div class="stages-list" id="stagesList"></div>
+
+  <a href="../../index.html" class="back-btn">⬅️ الرئيسية</a>
+
+</div>
+
+<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">⬆️</button>
+<div class="toast" id="toast"></div>
+
+<script src="../../js/data/courses.js"></script>
+<script src="../../js/progress.js"></script>
+<script>
+const COURSE_ID = 'react-native';
+const TOTAL = 28;
+const STAGE_COLORS = ['#0ea5e9', '#7c3aed', '#ea580c', '#ca8a04', '#0d9488', '#dc2626'];
+
+function buildCoursePage() {
+  const course = COURSES.find(c => c.id === COURSE_ID);
+  if (!course || !course.stages) return;
+
+  updateOverallProgress();
+  const list = document.getElementById('stagesList');
+
+  course.stages.forEach((stage, si) => {
+    const color = STAGE_COLORS[si] || '#0ea5e9';
+    const completedInStage = stage.lessons.filter(l => Progress.isLessonComplete(COURSE_ID, l.id)).length;
+    const stagePct = Math.round((completedInStage / stage.lessons.length) * 100);
+
+    const card = document.createElement('div');
+    card.className = 'stage-card' + (si === 0 ? ' open' : '');
+    card.style.animationDelay = (si * 0.08) + 's';
+
+    const lessonsHTML = stage.lessons.map(lesson => {
+      const isDone = Progress.isLessonComplete(COURSE_ID, lesson.id);
+      const isAvailable = lesson.available;
+      let numClass = isDone ? 'done' : (isAvailable ? 'active' : 'locked');
+      let numContent = isDone ? '✓' : lesson.id;
+      let statusText = isDone ? 'مكتمل' : (isAvailable ? 'ابدأ' : 'قريباً');
+      let statusClass = isDone ? 'done' : (isAvailable ? 'active' : 'locked');
+      let itemClass = 'lesson-item' + (isAvailable ? ' available' : ' locked-item');
+      let tag = isAvailable ? 'a' : 'div';
+      let href = isAvailable ? `href="lesson-${String(lesson.id).padStart(2,'0')}.html"` : '';
+
+      return `
+        <${tag} class="${itemClass}" ${href}>
+          <div class="lesson-num ${numClass}">${numContent}</div>
+          <div class="lesson-info">
+            <div class="lesson-title">${lesson.title}</div>
+            <div class="lesson-meta-row">
+              <span class="lesson-duration">⏱️ ${lesson.duration} دقيقة</span>
+              <span class="lesson-status-badge ${statusClass}">${statusText}</span>
+            </div>
+          </div>
+          ${isAvailable ? '<span class="lesson-arrow">←</span>' : ''}
+        </${tag}>
+      `;
+    }).join('');
+
+    card.innerHTML = `
+      <div class="stage-header" onclick="toggleStage(this)">
+        <div class="stage-header-left">
+          <div class="stage-num" style="background:${color}">${stage.icon}</div>
+          <div class="stage-info">
+            <h3>${stage.name}</h3>
+            <span class="stage-count">${stage.lessons.length} دروس · ${completedInStage}/${stage.lessons.length} مكتمل</span>
+          </div>
+        </div>
+        <div class="stage-header-right">
+          <div class="stage-progress-mini">
+            <div class="stage-progress-bar">
+              <div class="stage-progress-fill" style="width:${stagePct}%; background:${color}"></div>
+            </div>
+            <span>${stagePct}%</span>
+          </div>
+          <span class="stage-toggle">▼</span>
+        </div>
+      </div>
+      <div class="lessons-list">${lessonsHTML}</div>
+    `;
+    list.appendChild(card);
+  });
+}
+
+function toggleStage(header) { header.closest('.stage-card').classList.toggle('open'); }
+
+function updateOverallProgress() {
+  const pct = Progress.getCourseProgress(COURSE_ID, TOTAL);
+  const count = Progress.getCompletedCount(COURSE_ID, TOTAL);
+  document.getElementById('overallFill').style.width = pct + '%';
+  document.getElementById('overallPct').textContent = pct + '%';
+  document.getElementById('overallCount').textContent = count;
+  document.getElementById('progFill').style.width = pct + '%';
+  document.getElementById('progText').textContent = pct + '%';
+}
+
+window.addEventListener('scroll', () => {
+  document.getElementById('scrollTop').classList.toggle('show', window.scrollY > 300);
+});
+
+document.addEventListener('DOMContentLoaded', buildCoursePage);
+</script>
+</body>
+</html>

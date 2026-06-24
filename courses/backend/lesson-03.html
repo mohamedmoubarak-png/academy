@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-V2NCKVL16D"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-V2NCKVL16D');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>fs + path + الأسينكرونية — دفتر البرمجة</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=Cairo:wght@300;400;500;600;700;900&family=Caveat:wght@400;700&family=Fira+Code:wght@400;500;600&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../css/shared.css">
+<link rel="stylesheet" href="../../css/notebook.css">
+<style>
+body { padding: 20px 10px; }
+
+/* ── path methods ── */
+.path-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 10px; margin: 14px 0;
+}
+.path-card {
+  background: white; border-radius: 10px; padding: 12px 14px;
+  border: 1.5px solid var(--border);
+}
+.path-fn   { font-family: 'Fira Code', monospace; font-size: .82rem; font-weight: 700; color: #7c3aed; }
+.path-desc { font-size: .78rem; color: #64748b; margin-top: 4px; }
+.path-ex   { font-family: 'Fira Code', monospace; font-size: .73rem; color: #16a34a; margin-top: 5px; background: #f0fdf4; padding: 4px 7px; border-radius: 5px; }
+
+/* ── fs methods ── */
+.fs-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; border-radius: 10px; margin: 14px 0; }
+.fs-table { width: 100%; border-collapse: collapse; font-size: .81rem; min-width: 380px; }
+.fs-table th { background: #1e293b; color: white; padding: 10px 12px; text-align: right; white-space: nowrap; }
+.fs-table td { padding: 9px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+.fs-table tr:last-child td { border: none; }
+.fs-table tr:nth-child(even) td { background: #f8fafc; }
+.fs-table code { font-size: .77rem; background: #f1f5f9; padding: 2px 5px; border-radius: 4px; }
+
+/* ── async stages ── */
+.async-stages {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px; margin: 16px 0;
+}
+.async-card {
+  background: white; border-radius: 12px; padding: 14px;
+  border: 2px solid var(--border); text-align: center;
+  position: relative;
+}
+.async-card.old   { border-color: #f87171; background: #fef2f2; }
+.async-card.mid   { border-color: #fbbf24; background: #fffbeb; }
+.async-card.new   { border-color: #4ade80; background: #f0fdf4; }
+.async-badge {
+  font-family: 'Caveat', cursive; font-size: 1rem; font-weight: 700;
+  display: block; margin-bottom: 6px;
+}
+.async-card.old  .async-badge { color: #dc2626; }
+.async-card.mid  .async-badge { color: #b45309; }
+.async-card.new  .async-badge { color: #15803d; }
+.async-name { font-family: 'Fira Code', monospace; font-size: .85rem; font-weight: 700; }
+.async-note { font-size: .75rem; color: #64748b; margin-top: 5px; }
+
+/* ── blocking diagram ── */
+.block-compare { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 14px 0; }
+.block-col { border-radius: 12px; padding: 14px; }
+.block-col.blocking    { background: #fef2f2; border: 1.5px solid #fca5a5; }
+.block-col.nonblocking { background: #f0fdf4; border: 1.5px solid #86efac; }
+.block-title { font-family: 'Aref Ruqaa', serif; font-weight: 700; font-size: .95rem; margin-bottom: 10px; }
+.block-col.blocking    .block-title { color: #dc2626; }
+.block-col.nonblocking .block-title { color: #15803d; }
+.block-step {
+  font-family: 'Fira Code', monospace; font-size: .73rem;
+  padding: 5px 9px; border-radius: 6px; margin-bottom: 5px;
+}
+.block-col.blocking    .block-step { background: #fee2e2; color: #7f1d1d; }
+.block-col.nonblocking .block-step { background: #dcfce7; color: #14532d; }
+.block-step.wait { opacity: .5; font-style: italic; }
+
+/* ── terminal ── */
+.lp-terminal { background: #0f172a; padding: 18px; display: flex; align-items: flex-start; justify-content: center; }
+.terminal-window { width: 100%; max-width: 300px; border: 2px solid #334155; border-radius: 10px; overflow: hidden; box-shadow: 0 12px 32px rgba(0,0,0,.6); }
+.terminal-bar { background: #334155; padding: 8px 12px; display: flex; align-items: center; gap: 6px; }
+.t-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+.t-dot.red    { background: #f87171; }
+.t-dot.yellow { background: #fbbf24; }
+.t-dot.green  { background: #4ade80; }
+.t-title { font-family: 'Fira Code', monospace; font-size: .65rem; color: #94a3b8; margin-right: auto; }
+.terminal-screen {
+  padding: 13px; font-family: 'Fira Code', monospace;
+  font-size: .73rem; line-height: 1.8; color: #e2e8f0;
+  background: #0f172a; min-height: 200px; direction: ltr; text-align: left;
+  overflow-x: auto;
+}
+.t-prompt { color: #4ade80; }
+.t-cmd    { color: #e2e8f0; }
+.t-out    { color: #94a3b8; }
+.t-ok     { color: #4ade80; font-weight: 600; }
+.t-info   { color: #60a5fa; }
+.t-err    { color: #f87171; }
+.t-cursor { display: inline-block; width: 7px; height: 13px; background: #4ade80; animation: blink 1s step-end infinite; vertical-align: middle; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+/* ── MOBILE ── */
+@media (max-width: 640px) {
+  .async-stages       { grid-template-columns: 1fr; }
+  .block-compare      { grid-template-columns: 1fr; }
+  .path-grid          { grid-template-columns: 1fr 1fr; }
+  .lp-body            { flex-direction: column !important; }
+  .lp-code            { min-width: 100% !important; border-left: none !important; border-bottom: 1px solid rgba(255,255,255,.1); }
+  .lp-terminal        { min-width: 100% !important; padding: 14px; }
+  .terminal-window    { max-width: 100%; }
+  .code-box pre       { font-size: .7rem; }
+  .fs-table           { font-size: .75rem; }
+  .q-opt              { min-height: 44px; font-size: .85rem; padding: 10px 14px; }
+  .solution-toggle    { min-height: 40px; width: 100%; font-size: .88rem; }
+}
+@media (max-width: 400px) {
+  .path-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="crumbs">
+    <a href="../../index.html">🏠</a>
+    <span class="sep">/</span>
+    <a href="./index.html">⚙️ الباك إند</a>
+    <span class="sep">/</span>
+    <span class="current">📂 الدرس 3: fs + path + Async</span>
+  </div>
+  <div class="progress-mini">
+    <div class="progress-bar-mini"><div class="progress-fill-mini" id="progFill"></div></div>
+    <span id="progText">0%</span>
+  </div>
+</div>
+
+<div class="notebook">
+
+  <div class="notebook-header">
+    <div class="lesson-tag" style="border-color:#7c3aed; color:#7c3aed;">📂 الدرس الثالث</div>
+    <h1><span class="sparkle">✦</span> fs + path + الأسينكرونية <span class="sparkle">✦</span></h1>
+    <div class="lesson-meta">
+      <span>⏱️ 40 دقيقة</span>
+      <span>📊 مبتدئ+</span>
+      <span>🎯 أساسي جداً</span>
+    </div>
+  </div>
+
+  <div class="toc-card">
+    <h2>📑 فهرس الدرس</h2>
+    <ol>
+      <li><a href="#s1">وحدة path — المسارات</a></li>
+      <li><a href="#s2">وحدة fs — الملفات</a></li>
+      <li><a href="#s3">Blocking vs Non-Blocking</a></li>
+      <li><a href="#s4">Callbacks — الطريقة الأولى</a></li>
+      <li><a href="#s5">Promises — الطريقة الأفضل</a></li>
+      <li><a href="#s6">Async/Await — الطريقة الحديثة</a></li>
+      <li><a href="#s7">fs.promises — التطبيق الكامل</a></li>
+      <li><a href="#s8">قراءة ملف — حي</a></li>
+      <li><a href="#exercises">التمارين</a></li>
+      <li><a href="#quiz">اختبر فهمك</a></li>
+    </ol>
+  </div>
+
+  <!-- S1 -->
+  <div class="section" id="s1">
+    <h2 class="section-title"><span class="num">.1</span> وحدة path — المسارات <span class="en">path module</span></h2>
+    <div class="content">
+      <p>وحدة <code>path</code> تتعامل مع مسارات الملفات بشكل آمن على كل الأنظمة (Windows يستخدم <code>\</code> ولينكس <code>/</code>).</p>
+
+      <div class="path-grid">
+        <div class="path-card">
+          <div class="path-fn">path.join()</div>
+          <div class="path-desc">يدمج أجزاء المسار بأمان</div>
+          <div class="path-ex">join('src','data','file.json')<br>→ src/data/file.json</div>
+        </div>
+        <div class="path-card">
+          <div class="path-fn">path.resolve()</div>
+          <div class="path-desc">يُحوّل لمسار مطلق كامل</div>
+          <div class="path-ex">resolve('src','app.js')<br>→ /home/user/project/src/app.js</div>
+        </div>
+        <div class="path-card">
+          <div class="path-fn">path.basename()</div>
+          <div class="path-desc">اسم الملف من المسار</div>
+          <div class="path-ex">basename('/src/app.js')<br>→ app.js</div>
+        </div>
+        <div class="path-card">
+          <div class="path-fn">path.dirname()</div>
+          <div class="path-desc">اسم المجلد من المسار</div>
+          <div class="path-ex">dirname('/src/app.js')<br>→ /src</div>
+        </div>
+        <div class="path-card">
+          <div class="path-fn">path.extname()</div>
+          <div class="path-desc">امتداد الملف</div>
+          <div class="path-ex">extname('app.js')<br>→ .js</div>
+        </div>
+        <div class="path-card">
+          <div class="path-fn">path.parse()</div>
+          <div class="path-desc">يُحلّل المسار لأجزائه</div>
+          <div class="path-ex">parse('/src/app.js')<br>→ { root, dir, base, ext, name }</div>
+        </div>
+      </div>
+
+      <div class="code-box">
+<div class="code-header"><span>📂 path — أمثلة عملية</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-name">const</span> path = require(<span class="attr-val">'path'</span>);
+
+<span class="comment">// ✅ الطريقة الصحيحة لبناء المسارات</span>
+<span class="tag-name">const</span> dbPath = path.join(__dirname, <span class="attr-val">'data'</span>, <span class="attr-val">'db.json'</span>);
+<span class="comment">// → /project/data/db.json  (يعمل على Windows وLinux)</span>
+
+<span class="comment">// ❌ الطريقة الخاطئة</span>
+<span class="tag-name">const</span> wrong = __dirname + <span class="attr-val">'/data/db.json'</span>;
+<span class="comment">// → لا يعمل صح على Windows (يستخدم \)</span>
+
+<span class="comment">// تحقق من امتداد الملف</span>
+<span class="tag-name">const</span> file = <span class="attr-val">'image.png'</span>;
+<span class="tag-name">if</span> (path.extname(file) === <span class="attr-val">'.png'</span>) {
+  console.log(<span class="attr-val">'صورة PNG ✓'</span>);
+}</pre>
+      </div>
+
+      <div class="tip-box">استخدم <code>path.join(__dirname, ...)</code> دائماً بدل دمج النصوص — يمنع أخطاء المسارات على بيئات مختلفة.</div>
+    </div>
+  </div>
+
+  <!-- S2 -->
+  <div class="section" id="s2">
+    <h2 class="section-title"><span class="num">.2</span> وحدة fs — الملفات <span class="en">File System</span></h2>
+    <div class="content">
+
+      <div class="fs-table-wrap">
+        <table class="fs-table">
+          <thead><tr><th>الدالة</th><th>الوصف</th><th>مثال</th></tr></thead>
+          <tbody>
+            <tr><td><code>readFileSync()</code></td><td>قراءة ملف (تزامني)</td><td><code>fs.readFileSync('f.txt', 'utf8')</code></td></tr>
+            <tr><td><code>readFile()</code></td><td>قراءة ملف (غير تزامني)</td><td><code>fs.readFile('f.txt', 'utf8', cb)</code></td></tr>
+            <tr><td><code>writeFileSync()</code></td><td>كتابة ملف (يُنشئ أو يُعيد الكتابة)</td><td><code>fs.writeFileSync('f.txt', data)</code></td></tr>
+            <tr><td><code>writeFile()</code></td><td>كتابة ملف (غير تزامني)</td><td><code>fs.writeFile('f.txt', data, cb)</code></td></tr>
+            <tr><td><code>appendFileSync()</code></td><td>إضافة للنهاية (لا يمسح المحتوى)</td><td><code>fs.appendFileSync('log.txt', msg)</code></td></tr>
+            <tr><td><code>existsSync()</code></td><td>تحقق من وجود ملف/مجلد</td><td><code>fs.existsSync('./data')</code></td></tr>
+            <tr><td><code>mkdirSync()</code></td><td>إنشاء مجلد</td><td><code>fs.mkdirSync('uploads', {recursive:true})</code></td></tr>
+            <tr><td><code>readdirSync()</code></td><td>قائمة محتويات مجلد</td><td><code>fs.readdirSync('./src')</code></td></tr>
+            <tr><td><code>unlinkSync()</code></td><td>حذف ملف</td><td><code>fs.unlinkSync('temp.txt')</code></td></tr>
+            <tr><td><code>statSync()</code></td><td>معلومات الملف (حجم، تاريخ)</td><td><code>fs.statSync('f.txt').size</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="code-box">
+<div class="code-header"><span>📄 fs — أمثلة عملية</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-name">const</span> fs   = require(<span class="attr-val">'fs'</span>);
+<span class="tag-name">const</span> path = require(<span class="attr-val">'path'</span>);
+
+<span class="comment">// إنشاء مجلد إذا لم يكن موجوداً</span>
+<span class="tag-name">const</span> dir = path.join(__dirname, <span class="attr-val">'uploads'</span>);
+<span class="tag-name">if</span> (!fs.existsSync(dir)) {
+  fs.mkdirSync(dir, { recursive: <span class="tag-name">true</span> });
+  console.log(<span class="attr-val">'✓ مجلد uploads أُنشئ'</span>);
+}
+
+<span class="comment">// كتابة JSON في ملف</span>
+<span class="tag-name">const</span> users = [{ id: 1, name: <span class="attr-val">'أحمد'</span> }];
+fs.writeFileSync(
+  path.join(dir, <span class="attr-val">'users.json'</span>),
+  JSON.stringify(users, <span class="tag-name">null</span>, 2),
+  <span class="attr-val">'utf8'</span>
+);
+
+<span class="comment">// قراءة الملف وتحويله</span>
+<span class="tag-name">const</span> data = fs.readFileSync(
+  path.join(dir, <span class="attr-val">'users.json'</span>), <span class="attr-val">'utf8'</span>
+);
+console.log(JSON.parse(data)); <span class="comment">// [{id:1, name:'أحمد'}]</span></pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- S3 -->
+  <div class="section" id="s3">
+    <h2 class="section-title"><span class="num">.3</span> Blocking vs Non-Blocking <span class="en">المشكلة</span></h2>
+    <div class="content">
+      <p>Node.js به <strong>خيط واحد</strong> — إذا انتظر قراءة ملف أو استعلام قاعدة بيانات، فالطلبات الأخرى تتوقف. هذه هي مشكلة Blocking.</p>
+
+      <div class="block-compare">
+        <div class="block-col blocking">
+          <div class="block-title">🔴 Blocking (تزامني)</div>
+          <div class="block-step">→ طلب قراءة الملف</div>
+          <div class="block-step wait">⏸ يوقف كل شيء...</div>
+          <div class="block-step wait">⏸ ينتظر الملف...</div>
+          <div class="block-step">→ يرد على الطلب</div>
+          <div class="block-step wait">⚠️ الطلبات الأخرى تنتظر!</div>
+        </div>
+        <div class="block-col nonblocking">
+          <div class="block-title">🟢 Non-Blocking (غير تزامني)</div>
+          <div class="block-step">→ طلب قراءة الملف</div>
+          <div class="block-step">→ يكمل الطلبات الأخرى ✓</div>
+          <div class="block-step">→ يكمل الطلبات الأخرى ✓</div>
+          <div class="block-step">✓ الملف جاهز — يُعالجه</div>
+          <div class="block-step">→ كل الطلبات تخدمت!</div>
+        </div>
+      </div>
+
+      <div class="note-box"><code>readFileSync</code> مناسبة للإعداد عند بدء التشغيل فقط. في داخل الـ API، استخدم دائماً النسخة الـ Async.</div>
+    </div>
+  </div>
+
+  <!-- S4 -->
+  <div class="section" id="s4">
+    <h2 class="section-title"><span class="num">.4</span> Callbacks — الطريقة الأولى <span class="en">Callbacks</span></h2>
+    <div class="content">
+      <p>الـ Callback دالة تُمرَّر لدالة أخرى وتُنفَّذ عندما تنتهي المهمة. كانت الطريقة الوحيدة في Node.js القديم.</p>
+
+      <div class="code-box">
+<div class="code-header"><span>📞 Callbacks — الأساس</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-name">const</span> fs = require(<span class="attr-val">'fs'</span>);
+
+<span class="comment">// النمط: (err, data) — خطأ أولاً دائماً</span>
+fs.readFile(<span class="attr-val">'data.txt'</span>, <span class="attr-val">'utf8'</span>, (err, data) => {
+  <span class="tag-name">if</span> (err) {
+    console.error(<span class="attr-val">'خطأ:'</span>, err.message);
+    <span class="tag-name">return</span>; <span class="comment">← مهم: أوقف التنفيذ</span>
+  }
+  console.log(<span class="attr-val">'المحتوى:'</span>, data);
+});
+
+console.log(<span class="attr-val">'هذا يظهر قبل قراءة الملف!'</span>);
+<span class="comment">// ← لأن fs.readFile لا تُوقف التنفيذ</span></pre>
+      </div>
+
+      <div class="code-box" style="border-color:#fca5a5;">
+<div class="code-header" style="color:#dc2626;"><span>😱 Callback Hell — لماذا نتجنبه</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">// قراءة → معالجة → كتابة → إرسال بريد</span>
+fs.readFile(<span class="attr-val">'input.txt'</span>, <span class="attr-val">'utf8'</span>, (err, data) => {
+  <span class="tag-name">if</span> (err) <span class="tag-name">return</span> handleErr(err);
+  processData(data, (err, result) => {
+    <span class="tag-name">if</span> (err) <span class="tag-name">return</span> handleErr(err);
+    fs.writeFile(<span class="attr-val">'out.txt'</span>, result, (err) => {
+      <span class="tag-name">if</span> (err) <span class="tag-name">return</span> handleErr(err);
+      sendEmail(result, (err) => {        <span class="comment">← الهرم الأبدي!</span>
+        <span class="tag-name">if</span> (err) <span class="tag-name">return</span> handleErr(err);
+        console.log(<span class="attr-val">'تم!'</span>); <span class="comment">← 4 مستويات عمق</span>
+      });
+    });
+  });
+});</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- S5 -->
+  <div class="section" id="s5">
+    <h2 class="section-title"><span class="num">.5</span> Promises — الطريقة الأفضل <span class="en">Promises</span></h2>
+    <div class="content">
+      <p>الـ Promise وعد بنتيجة مستقبلية — إما نجاح (<code>resolve</code>) أو فشل (<code>reject</code>).</p>
+
+      <div class="code-box">
+<div class="code-header"><span>🤝 Promises — المفهوم والاستخدام</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">// إنشاء Promise</span>
+<span class="tag-name">function</span> readUserFromDB(id) {
+  <span class="tag-name">return new</span> Promise((resolve, reject) => {
+    <span class="tag-name">const</span> user = findUser(id);
+    <span class="tag-name">if</span> (user) resolve(user);    <span class="comment">← نجاح</span>
+    <span class="tag-name">else</span>    reject(<span class="tag-name">new</span> Error(<span class="attr-val">'مستخدم غير موجود'</span>));
+  });
+}
+
+<span class="comment">// الاستخدام — .then().catch()</span>
+readUserFromDB(42)
+  .then(user  => console.log(<span class="attr-val">'المستخدم:'</span>, user))
+  .catch(err  => console.error(<span class="attr-val">'خطأ:'</span>, err.message))
+  .finally(()  => console.log(<span class="attr-val">'انتهى (دائماً)'</span>));
+
+<span class="comment">// الحل لـ Callback Hell — promise chaining</span>
+readFile(<span class="attr-val">'input.txt'</span>)
+  .then(data   => processData(data))
+  .then(result => writeFile(<span class="attr-val">'out.txt'</span>, result))
+  .then(()     => sendEmail())
+  .catch(err   => handleErr(err)); <span class="comment">← خطأ واحد يكفي</span></pre>
+      </div>
+
+      <div class="code-box blue">
+<div class="code-header"><span>⚡ Promise.all — تشغيل متوازٍ</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">// تنتظر انتهاء الكل قبل المتابعة</span>
+<span class="tag-name">const</span> [users, posts] = <span class="tag-name">await</span> Promise.all([
+  fetchUsers(),
+  fetchPosts(),
+]);
+<span class="comment">// كلاهما يعملان بالتوازي — أسرع من التسلسل!</span></pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- S6 -->
+  <div class="section" id="s6">
+    <h2 class="section-title"><span class="num">.6</span> Async/Await — الطريقة الحديثة <span class="en">Async / Await</span></h2>
+    <div class="content">
+      <p><code>async/await</code> سكّر نحوي فوق الـ Promises — يجعل الكود الغير تزامني يبدو مثل التزامني تماماً.</p>
+
+      <div class="async-stages">
+        <div class="async-card old">
+          <span class="async-badge">قديم ❌</span>
+          <div class="async-name">Callbacks</div>
+          <div class="async-note">Callback Hell<br>صعب القراءة</div>
+        </div>
+        <div class="async-card mid">
+          <span class="async-badge">أفضل ✓</span>
+          <div class="async-name">Promises</div>
+          <div class="async-note">.then() .catch()<br>أنظف لكن verbose</div>
+        </div>
+        <div class="async-card new">
+          <span class="async-badge">الأحدث ⭐</span>
+          <div class="async-name">Async/Await</div>
+          <div class="async-note">أوضح وأنظف<br>يُستخدم دائماً</div>
+        </div>
+      </div>
+
+      <div class="code-box">
+<div class="code-header"><span>⚡ Async/Await — القواعد</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">// 1. الدالة يجب أن تكون async</span>
+<span class="tag-name">async function</span> getUser(id) {
+
+  <span class="comment">// 2. await يُوقف التنفيذ حتى ينتهي Promise</span>
+  <span class="tag-name">const</span> user = <span class="tag-name">await</span> fetchFromDB(id);
+
+  <span class="comment">// 3. للأخطاء: try/catch بدل .catch()</span>
+  <span class="tag-name">try</span> {
+    <span class="tag-name">const</span> posts = <span class="tag-name">await</span> fetchPostsByUser(user.id);
+    <span class="tag-name">return</span> { user, posts };
+  } <span class="tag-name">catch</span> (err) {
+    console.error(<span class="attr-val">'فشل جلب البيانات:'</span>, err.message);
+    <span class="tag-name">throw</span> err; <span class="comment">← أعد رمي الخطأ</span>
+  }
+}
+
+<span class="comment">// ← async دالة تُعيد Promise دائماً</span>
+getUser(1).then(d => console.log(d));</pre>
+      </div>
+
+      <div class="tip-box"><strong>خطأ شائع:</strong> نسيان <code>await</code> أمام الـ Promise — الكود يُكمل بدون انتظار النتيجة! الـ TypeScript يُنبّهك، في JS العادية إحذر.</div>
+    </div>
+  </div>
+
+  <!-- S7 -->
+  <div class="section" id="s7">
+    <h2 class="section-title"><span class="num">.7</span> fs.promises — التطبيق الكامل <span class="en">Async File Operations</span></h2>
+    <div class="content">
+      <p>وحدة <code>fs</code> تحتوي <code>fs.promises</code> التي تُعيد Promises — استخدمها مع async/await.</p>
+
+      <div class="code-box">
+<div class="code-header"><span>📁 fs.promises مع async/await</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-name">const</span> fs   = require(<span class="attr-val">'fs'</span>).promises; <span class="comment">← أو: const {promises: fs}</span>
+<span class="tag-name">const</span> path = require(<span class="attr-val">'path'</span>);
+
+<span class="tag-name">async function</span> processUserFile() {
+  <span class="tag-name">const</span> filePath = path.join(__dirname, <span class="attr-val">'users.json'</span>);
+
+  <span class="tag-name">try</span> {
+    <span class="comment">// قراءة الملف</span>
+    <span class="tag-name">const</span> raw   = <span class="tag-name">await</span> fs.readFile(filePath, <span class="attr-val">'utf8'</span>);
+    <span class="tag-name">const</span> users = JSON.parse(raw);
+
+    <span class="comment">// معالجة البيانات</span>
+    <span class="tag-name">const</span> active = users.filter(u => u.active);
+
+    <span class="comment">// كتابة ملف جديد</span>
+    <span class="tag-name">const</span> outPath = path.join(__dirname, <span class="attr-val">'active-users.json'</span>);
+    <span class="tag-name">await</span> fs.writeFile(outPath, JSON.stringify(active, <span class="tag-name">null</span>, 2));
+
+    <span class="comment">// قائمة الملفات في المجلد</span>
+    <span class="tag-name">const</span> files = <span class="tag-name">await</span> fs.readdir(__dirname);
+    console.log(<span class="attr-val">'الملفات:'</span>, files);
+
+    <span class="tag-name">return</span> active;
+
+  } <span class="tag-name">catch</span> (err) {
+    <span class="tag-name">if</span> (err.code === <span class="attr-val">'ENOENT'</span>) {
+      console.error(<span class="attr-val">'الملف غير موجود!'</span>);
+    } <span class="tag-name">else</span> {
+      <span class="tag-name">throw</span> err;
+    }
+  }
+}
+
+processUserFile();</pre>
+      </div>
+
+      <div class="info-box">أكواد خطأ fs الشائعة: <code>ENOENT</code> = الملف غير موجود | <code>EACCES</code> = لا صلاحية | <code>EEXIST</code> = موجود مسبقاً</div>
+    </div>
+  </div>
+
+  <!-- S8 Live Preview -->
+  <div class="section" id="s8">
+    <h2 class="section-title"><span class="num">.8</span> قراءة ملف — حي <span class="en">Live Demo</span></h2>
+    <div class="content"><p>سكريبت كامل يقرأ ملف JSON ويكتب ملفاً جديداً، مع معالجة الأخطاء:</p></div>
+
+    <div class="live-preview">
+      <div class="lp-header">
+        <span>📂 fs + async/await — مثال كامل</span>
+        <span class="lp-tag">Node.js</span>
+      </div>
+      <div class="lp-body">
+        <div class="lp-code">
+<pre><span class="c">// process-data.js</span>
+<span class="t">const</span> fs = require(<span class="s">'fs'</span>).promises;
+<span class="t">const</span> path = require(<span class="s">'path'</span>);
+
+<span class="k">async function</span> run() {
+  <span class="t">const</span> src = path.join(
+    __dirname, <span class="s">'data.json'</span>
+  );
+
+  <span class="c">// تحقق من وجود الملف</span>
+  <span class="t">const</span> exists = <span class="t">await</span> fs
+    .access(src)
+    .then(() => <span class="k">true</span>)
+    .catch(() => <span class="k">false</span>);
+
+  <span class="t">if</span> (!exists) {
+    console.log(<span class="s">'إنشاء ملف البيانات...'</span>);
+    <span class="t">await</span> fs.writeFile(src,
+      JSON.stringify(
+        [{ id:<span class="n">1</span>, name:<span class="s">'أحمد'</span> }],
+        <span class="k">null</span>, <span class="n">2</span>
+      )
+    );
+  }
+
+  <span class="c">// قراءة ومعالجة</span>
+  <span class="t">const</span> raw = <span class="t">await</span> fs.readFile(
+    src, <span class="s">'utf8'</span>
+  );
+  <span class="t">const</span> users = JSON.parse(raw);
+  console.log(<span class="s">'المستخدمون:'</span>, users);
+}
+
+run();</pre>
+        </div>
+        <div class="lp-terminal">
+          <div class="terminal-window">
+            <div class="terminal-bar">
+              <div class="t-dot red"></div>
+              <div class="t-dot yellow"></div>
+              <div class="t-dot green"></div>
+              <span class="t-title">node process-data.js</span>
+            </div>
+            <div class="terminal-screen">
+              <div><span class="t-prompt">$</span> <span class="t-cmd">node process-data.js</span></div>
+              <div><span class="t-out">──────────────────────</span></div>
+              <div><span class="t-info">✓ تحقق من الملف...</span></div>
+              <div><span class="t-out">  لم يُوجد data.json</span></div>
+              <div><span class="t-ok">✓ إنشاء ملف البيانات...</span></div>
+              <div><span class="t-out">──────────────────────</span></div>
+              <div><span class="t-info">✓ قراءة data.json</span></div>
+              <div><span class="t-out">المستخدمون:</span></div>
+              <div><span class="t-out">  [</span></div>
+              <div><span class="t-out">    { id: 1, name: 'أحمد' }</span></div>
+              <div><span class="t-out">  ]</span></div>
+              <div><span class="t-out">──────────────────────</span></div>
+              <div><span class="t-ok">✓ تم بنجاح (23ms)</span></div>
+              <div><span class="t-prompt">$</span> <span class="t-cursor"></span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EXERCISES -->
+  <div class="section" id="exercises">
+    <h2 class="section-title"><span class="num">📝</span> التمارين العملية</h2>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 1: path</div>
+      <p>استخدم <code>path.join</code> لبناء مسار لملف <code>config.json</code> داخل مجلد <code>config</code> في مجلد المشروع الحالي، ثم اطبع:<br>
+      اسم الملف فقط، المجلد فقط، الامتداد فقط.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box"><pre>const path = require('path');
+const filePath = path.join(__dirname, 'config', 'config.json');
+
+console.log(path.basename(filePath)); // config.json
+console.log(path.dirname(filePath));  // .../config
+console.log(path.extname(filePath));  // .json</pre></div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 2: كتابة وقراءة</div>
+      <p>اكتب سكريبت يُنشئ ملف <code>notes.txt</code> ويكتب فيه 3 ملاحظات (كل واحدة في سطر). ثم يقرأه ويطبع عدد الأسطر.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box"><pre>const fs   = require('fs').promises;
+const path = require('path');
+
+async function run() {
+  const file = path.join(__dirname, 'notes.txt');
+  const content = 'ملاحظة أولى\nملاحظة ثانية\nملاحظة ثالثة';
+
+  await fs.writeFile(file, content, 'utf8');
+  const data  = await fs.readFile(file, 'utf8');
+  const lines = data.split('\n');
+  console.log('عدد الملاحظات:', lines.length); // 3
+}
+run();</pre></div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 3: Async/Await</div>
+      <p>حوّل هذا الكود من Callbacks لـ async/await:<br>
+      <code>fs.readFile('a.txt', 'utf8', (err, data) => { if (err) throw err; fs.writeFile('b.txt', data.toUpperCase(), err => { if (err) throw err; console.log('تم'); }); });</code></p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box"><pre>const fs = require('fs').promises;
+
+async function convert() {
+  try {
+    const data = await fs.readFile('a.txt', 'utf8');
+    await fs.writeFile('b.txt', data.toUpperCase());
+    console.log('تم');
+  } catch (err) {
+    console.error(err.message);
+  }
+}
+convert();</pre></div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 4: Promise.all</div>
+      <p>اكتب دالة async تقرأ ملفين (<code>users.json</code> و <code>products.json</code>) في آنٍ واحد بـ <code>Promise.all</code>، وتطبع حجم كل مصفوفة.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box"><pre>const fs = require('fs').promises;
+
+async function loadData() {
+  const [usersRaw, productsRaw] = await Promise.all([
+    fs.readFile('users.json',    'utf8'),
+    fs.readFile('products.json', 'utf8'),
+  ]);
+
+  const users    = JSON.parse(usersRaw);
+  const products = JSON.parse(productsRaw);
+
+  console.log('المستخدمون:', users.length);
+  console.log('المنتجات:', products.length);
+}
+loadData();</pre></div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 5: Logger بسيط</div>
+      <p>اكتب وحدة <code>logger.js</code> تُصدّر دالة <code>log(message)</code> تُضيف كل رسالة في ملف <code>app.log</code> مع التوقيت. استخدمها في <code>app.js</code>.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box"><pre>// logger.js
+const fs   = require('fs').promises;
+const path = require('path');
+const LOG  = path.join(__dirname, 'app.log');
+
+async function log(message) {
+  const line = `[${new Date().toISOString()}] ${message}\n`;
+  await fs.appendFile(LOG, line, 'utf8');
+}
+
+module.exports = { log };
+
+// app.js
+const { log } = require('./logger');
+async function main() {
+  await log('بدأ التطبيق');
+  await log('تم معالجة الطلب');
+}
+main();</pre></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="quiz-container" id="quiz">
+    <div class="quiz-intro"><p>اختبر فهمك للملفات والأسينكرونية!</p></div>
+    <div class="quiz-type-tabs">
+      <button class="qt-tab active" onclick="switchQuiz(this,'tf')">✓✗ صح وخطأ</button>
+      <button class="qt-tab" onclick="switchQuiz(this,'mc')">🔘 اختيار من متعدد</button>
+    </div>
+
+    <div class="quiz-section active" id="quiz-tf">
+      <div class="quiz-question" data-correct="false">
+        <span class="q-num">1</span><span class="q-text">يُنصح باستخدام readFileSync داخل أي API endpoint لقراءة الملفات.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">2</span><span class="q-text">دالة async دائماً تُعيد Promise، حتى لو لم تكتب return promise.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">3</span><span class="q-text">path.join() أفضل من دمج النصوص بـ + لبناء مسارات الملفات.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="false">
+        <span class="q-num">4</span><span class="q-text">await يمكن استخدامه في أي دالة عادية بدون الكلمة async.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">5</span><span class="q-text">Promise.all() تُشغّل عدة Promises في آنٍ واحد وأسرع من التسلسل.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <button class="quiz-submit" onclick="submitQuiz('tf')">عرض النتيجة 🎯</button>
+      <div class="quiz-result" id="result-tf"><div class="result-score" id="score-tf">0/5</div><div class="result-label">إجابات صحيحة</div><div class="result-message" id="msg-tf"></div><button class="retry-btn" onclick="retryQuiz('tf')">🔄 حاول تاني</button></div>
+    </div>
+
+    <div class="quiz-section" id="quiz-mc">
+      <div class="quiz-question" data-correct="2">
+        <span class="q-num">1</span><span class="q-text">ما الأفضل لقراءة ملف كبير داخل API endpoint؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">readFileSync</button>
+          <button class="q-opt" onclick="answerMC(this,1)">لا فرق</button>
+          <button class="q-opt" onclick="answerMC(this,2)">fs.promises.readFile مع await</button>
+          <button class="q-opt" onclick="answerMC(this,3)">require الملف مباشرة</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="0">
+        <span class="q-num">2</span><span class="q-text">ما كود الخطأ الذي تُعيده fs عندما الملف غير موجود؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">ENOENT</button>
+          <button class="q-opt" onclick="answerMC(this,1)">EACCES</button>
+          <button class="q-opt" onclick="answerMC(this,2)">EEXIST</button>
+          <button class="q-opt" onclick="answerMC(this,3)">404</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="1">
+        <span class="q-num">3</span><span class="q-text">ما الترتيب الصحيح لمعاملات Callback في Node.js؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">(data, err)</button>
+          <button class="q-opt" onclick="answerMC(this,1)">(err, data)</button>
+          <button class="q-opt" onclick="answerMC(this,2)">(result, error)</button>
+          <button class="q-opt" onclick="answerMC(this,3)">أي ترتيب</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="3">
+        <span class="q-num">4</span><span class="q-text">ما الدالة التي تُضيف محتوى لنهاية ملف دون مسح ما فيه؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">writeFile</button>
+          <button class="q-opt" onclick="answerMC(this,1)">createFile</button>
+          <button class="q-opt" onclick="answerMC(this,2)">insertFile</button>
+          <button class="q-opt" onclick="answerMC(this,3)">appendFile</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="2">
+        <span class="q-num">5</span><span class="q-text">ماذا يُعيد path.extname('photo.jpeg')؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">jpeg</button>
+          <button class="q-opt" onclick="answerMC(this,1)">photo</button>
+          <button class="q-opt" onclick="answerMC(this,2)">.jpeg</button>
+          <button class="q-opt" onclick="answerMC(this,3)">photo.jpeg</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <button class="quiz-submit" onclick="submitQuiz('mc')">عرض النتيجة 🎯</button>
+      <div class="quiz-result" id="result-mc"><div class="result-score" id="score-mc">0/5</div><div class="result-label">إجابات صحيحة</div><div class="result-message" id="msg-mc"></div><button class="retry-btn" onclick="retryQuiz('mc')">🔄 حاول تاني</button></div>
+    </div>
+  </div>
+
+  <div class="lesson-nav">
+    <a href="./lesson-02.html" class="nav-btn"><span>⬅️</span><span>الدرس السابق</span></a>
+    <button class="nav-btn complete-btn" id="completeBtn" onclick="markComplete(this)" style="background:#7c3aed; border-color:#7c3aed;"><span>✅</span><span>علّم كمكتمل</span></button>
+    <a href="./lesson-04.html" class="nav-btn"><span>الدرس التالي</span><span>➡️</span></a>
+  </div>
+
+  <div class="notebook-footer">
+    <h3>🎉 الأسينكرونية في جيبك الآن!</h3>
+    <p>fs + path + async/await — هذا ما يستخدمه كل مطور Node.js يومياً. 📂<br><strong>الدرس التالي: EventEmitter و Streams ⚡</strong></p>
+  </div>
+</div>
+
+<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">⬆️</button>
+<div class="toast" id="toast"></div>
+<script src="../../js/data/courses.js"></script>
+<script src="../../js/progress.js"></script>
+<script>
+const COURSE_ID='backend', LESSON_ID=3, TOTAL=32;
+function toggleSolution(b){const s=b.nextElementSibling;s.classList.toggle('show');b.textContent=s.classList.contains('show')?'إخفاء الحل ▲':'عرض الحل ▼';}
+function copyCode(b){const p=b.closest('.code-box').querySelector('pre');navigator.clipboard.writeText(p.innerText).then(()=>{b.classList.add('copied');b.textContent='✓ تم النسخ';setTimeout(()=>{b.classList.remove('copied');b.textContent='📋 نسخ';},2000);});}
+function switchQuiz(b,t){document.querySelectorAll('.qt-tab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.quiz-section').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.getElementById('quiz-'+t).classList.add('active');}
+const answers={tf:{},mc:{}};
+function answerTF(b,v){const q=b.closest('.quiz-question'),i=Array.from(q.parentNode.querySelectorAll('.quiz-question')).indexOf(q);q.querySelectorAll('.q-opt').forEach(o=>o.classList.remove('selected'));b.classList.add('selected');answers.tf[i]=v;}
+function answerMC(b,i){const q=b.closest('.quiz-question'),qi=Array.from(q.parentNode.querySelectorAll('.quiz-question')).indexOf(q);q.querySelectorAll('.q-opt').forEach(o=>o.classList.remove('selected'));b.classList.add('selected');answers.mc[qi]=i;}
+function submitQuiz(type){const sec=document.getElementById('quiz-'+type),qs=sec.querySelectorAll('.quiz-question');let c=0;qs.forEach((q,i)=>{const ca=type==='tf'?(q.dataset.correct==='true'):parseInt(q.dataset.correct),ua=answers[type][i],fb=q.querySelector('.q-feedback'),opts=q.querySelectorAll('.q-opt');opts.forEach(o=>{o.classList.remove('selected');o.disabled=true;});if(ua===undefined){fb.className='q-feedback wrong show';fb.textContent='⚠️ ما اخترتش إجابة!';return;}if(ua===ca){c++;fb.className='q-feedback correct show';fb.textContent='✓ إجابة صحيحة!';if(type==='tf')opts[ca?0:1].classList.add('correct');else opts[ca].classList.add('correct');}else{fb.className='q-feedback wrong show';if(type==='tf'){opts[ca?0:1].classList.add('correct');opts[ua?0:1].classList.add('wrong');fb.textContent='✗ خطأ.';}else{opts[ca].classList.add('correct');opts[ua].classList.add('wrong');fb.textContent='✗ الإجابة بالأخضر.';}}});const r=document.getElementById('result-'+type);document.getElementById('score-'+type).textContent=c+'/'+qs.length;const m=document.getElementById('msg-'+type);if(c===qs.length){m.textContent='🏆 ممتاز 100%!';m.className='result-message excellent';}else if(c>=3){m.textContent='👍 جيد!';m.className='result-message good';}else{m.textContent='📚 راجع الدرس.';m.className='result-message try-again';}r.classList.add('show');r.scrollIntoView({behavior:'smooth',block:'center'});}
+function retryQuiz(type){const sec=document.getElementById('quiz-'+type);sec.querySelectorAll('.q-opt').forEach(o=>{o.classList.remove('selected','correct','wrong');o.disabled=false;});sec.querySelectorAll('.q-feedback').forEach(f=>{f.classList.remove('show','correct','wrong');f.textContent='';});document.getElementById('result-'+type).classList.remove('show');answers[type]={};}
+function markComplete(btn){const done=Progress.toggleLessonComplete(COURSE_ID,LESSON_ID);btn.classList.toggle('completed',done);btn.querySelector('span:last-child').textContent=done?'مكتمل! ⭐':'علّم كمكتمل';showToast(done?'🎉 أكملت الدرس الثالث!':'تم إلغاء الإكمال');}
+if(Progress.isLessonComplete(COURSE_ID,LESSON_ID)){const b=document.getElementById('completeBtn');b.classList.add('completed');b.querySelector('span:last-child').textContent='مكتمل! ⭐';}
+(function(){const p=Progress.getCourseProgress(COURSE_ID,TOTAL);document.getElementById('progFill').style.width=p+'%';document.getElementById('progText').textContent=p+'%';})();
+function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
+window.addEventListener('scroll',()=>{document.getElementById('scrollTop').classList.toggle('show',window.scrollY>300);});
+document.querySelectorAll('.toc-card a').forEach(l=>{l.addEventListener('click',e=>{e.preventDefault();const t=document.querySelector(l.getAttribute('href'));if(t)t.scrollIntoView({behavior:'smooth',block:'start'});});});
+</script>
+</body>
+</html>

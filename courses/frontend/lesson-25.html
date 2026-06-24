@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-V2NCKVL16D"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-V2NCKVL16D');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>تنظيم الكود Modules — دفتر البرمجة</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=Cairo:wght@300;400;500;600;700;900&family=Caveat:wght@400;700&family=Fira+Code:wght@400;500;600&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../css/shared.css">
+<link rel="stylesheet" href="../../css/notebook.css">
+<style>
+body { padding: 20px 10px; }
+/* file tree */
+.file-tree {
+  background: #1e293b; border-radius: 10px; padding: 16px 20px;
+  font-family: 'Fira Code', monospace; font-size: .88rem;
+  direction: ltr; color: #94a3b8; line-height: 2;
+}
+.ft-dir  { color: #7dd3fc; }
+.ft-file { color: #4ade80; }
+.ft-note { color: #475569; font-style: italic; }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="crumbs">
+    <a href="../../index.html">🏠 الرئيسية</a>
+    <span class="sep">/</span>
+    <a href="./index.html">🌐 الفرونت إند</a>
+    <span class="sep">/</span>
+    <span class="current">⚡ الدرس 25: Modules</span>
+  </div>
+  <div class="progress-mini">
+    <div class="progress-bar-mini"><div class="progress-fill-mini" id="progFill"></div></div>
+    <span id="progText">0%</span>
+  </div>
+</div>
+
+<div class="notebook">
+
+  <div class="notebook-header">
+    <div class="lesson-tag">⚡ الدرس الخامس والعشرون</div>
+    <h1><span class="sparkle">✦</span> تنظيم الكود — Modules <span class="sparkle">✦</span></h1>
+    <div class="lesson-meta">
+      <span>⏱️ 40 دقيقة</span>
+      <span>📊 متوسط</span>
+      <span>🎯 5 تمارين + اختبار</span>
+    </div>
+  </div>
+
+  <div class="toc-card">
+    <h2>📑 فهرس الدرس</h2>
+    <ol>
+      <li><a href="#s1">لماذا نقسّم الكود؟</a></li>
+      <li><a href="#s2">ES Modules — import/export</a></li>
+      <li><a href="#s3">Named vs Default exports</a></li>
+      <li><a href="#s4">Dynamic import</a></li>
+      <li><a href="#s5">تنظيم مشروع حقيقي</a></li>
+      <li><a href="#s6">مبدأ Single Responsibility</a></li>
+      <li><a href="#s7">الأنماط الشائعة</a></li>
+      <li><a href="#s8">محرر الكود الحي</a></li>
+      <li><a href="#exercises">التمارين</a></li>
+      <li><a href="#quiz">اختبر فهمك</a></li>
+    </ol>
+  </div>
+
+  <!-- S1 -->
+  <div class="section" id="s1">
+    <h2 class="section-title"><span class="num">.1</span> لماذا نقسّم الكود؟ <span class="en">Why Modules?</span></h2>
+    <div class="content">
+      <p>لما يكبر مشروعك، كتابة كل الكود في ملف واحد تصبح كارثة. الـ Modules تحل هذه المشكلة.</p>
+      <div class="analogy">
+        <div class="analogy-title">📚 تخيل مكتبة:</div>
+        <p>
+          الكتب مقسّمة حسب الموضوع — علوم، رياضيات، أدب... كل قسم مستقل وسهل الإيجاد.
+          Modules هكذا — كل ملف مسؤول عن وظيفة محددة.
+        </p>
+      </div>
+      <table class="cool-table">
+        <thead><tr><th>بدون Modules</th><th>مع Modules</th></tr></thead>
+        <tbody>
+          <tr><td>ملف واحد ضخم</td><td>ملفات صغيرة متخصصة</td></tr>
+          <tr><td>صعب الصيانة</td><td>سهل التعديل والاختبار</td></tr>
+          <tr><td>تعارض أسماء المتغيرات</td><td>كل module له نطاقه الخاص</td></tr>
+          <tr><td>لا إعادة استخدام</td><td>import في أي مكان</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- S2 -->
+  <div class="section" id="s2">
+    <h2 class="section-title"><span class="num">.2</span> ES Modules <span class="en">import / export</span></h2>
+    <div class="content">
+      <div class="code-box">
+<div class="code-header"><span>📤 math.js — التصدير</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">// math.js</span>
+<span class="tag-name">export const</span> <span class="attr">PI</span> = <span class="attr-val">3.14159</span>;
+
+<span class="tag-name">export function</span> <span class="attr">add</span>(<span class="attr">a</span>, <span class="attr">b</span>)      { <span class="tag-name">return</span> <span class="attr">a</span> + <span class="attr">b</span>; }
+<span class="tag-name">export function</span> <span class="attr">multiply</span>(<span class="attr">a</span>, <span class="attr">b</span>) { <span class="tag-name">return</span> <span class="attr">a</span> * <span class="attr">b</span>; }
+<span class="tag-name">export const</span>   <span class="attr">square</span> = <span class="attr">n</span> => <span class="attr">n</span> ** <span class="attr-val">2</span>;</pre>
+      </div>
+
+      <div class="code-box blue">
+<div class="code-header"><span>📥 app.js — الاستيراد</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">// استيراد ما تحتاجه فقط</span>
+<span class="tag-name">import</span> { <span class="attr">add</span>, <span class="attr">PI</span> } <span class="tag-name">from</span> <span class="attr-val">'./math.js'</span>;
+
+<span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr">add</span>(<span class="attr-val">3</span>, <span class="attr-val">4</span>));  <span class="comment">// 7</span>
+<span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr">PI</span>);       <span class="comment">// 3.14159</span>
+
+<span class="comment">// استيراد بأسماء مختلفة</span>
+<span class="tag-name">import</span> { <span class="attr">multiply</span> <span class="tag-name">as</span> <span class="attr">mul</span> } <span class="tag-name">from</span> <span class="attr-val">'./math.js'</span>;
+<span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr">mul</span>(<span class="attr-val">3</span>, <span class="attr-val">4</span>));  <span class="comment">// 12</span>
+
+<span class="comment">// استيراد كل شيء</span>
+<span class="tag-name">import</span> * <span class="tag-name">as</span> <span class="attr">Math</span> <span class="tag-name">from</span> <span class="attr-val">'./math.js'</span>;
+<span class="attr">Math</span>.<span class="attr">square</span>(<span class="attr-val">5</span>);  <span class="comment">// 25</span></pre>
+      </div>
+
+      <div class="note-box"><strong>في HTML:</strong> أضف <em>type="module"</em> للسكريبت:<br><em>&lt;script type="module" src="app.js"&gt;&lt;/script&gt;</em><br>Modules تعمل مع server فقط (لا تعمل بفتح الملف مباشرة بـ file://).</div>
+    </div>
+  </div>
+
+  <!-- S3 -->
+  <div class="section" id="s3">
+    <h2 class="section-title"><span class="num">.3</span> Named vs Default <span class="en">Export Types</span></h2>
+    <div class="content">
+      <div class="code-box">
+<div class="code-header"><span>🏷️ Named Export — أسماء محددة</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">// utils.js</span>
+<span class="tag-name">export const</span> <span class="attr">VERSION</span>  = <span class="attr-val">'1.0'</span>;
+<span class="tag-name">export function</span> <span class="attr">format</span>(<span class="attr">d</span>) { ... }
+<span class="tag-name">export function</span> <span class="attr">validate</span>(<span class="attr">v</span>) { ... }
+
+<span class="comment">// الاستيراد: الأقواس {} إجبارية</span>
+<span class="tag-name">import</span> { <span class="attr">VERSION</span>, <span class="attr">format</span> } <span class="tag-name">from</span> <span class="attr-val">'./utils.js'</span>;</pre>
+      </div>
+
+      <div class="code-box green">
+<div class="code-header"><span>⭐ Default Export — تصدير افتراضي</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">// Button.js — مكوّن واحد رئيسي</span>
+<span class="tag-name">export default function</span> <span class="attr">Button</span>({ <span class="attr">text</span>, <span class="attr">onClick</span> }) {
+  <span class="tag-name">const</span> <span class="attr">btn</span> = <span class="attr">document</span>.<span class="tag-name">createElement</span>(<span class="attr-val">'button'</span>);
+  <span class="attr">btn</span>.<span class="attr">textContent</span> = <span class="attr">text</span>;
+  <span class="attr">btn</span>.<span class="tag-name">addEventListener</span>(<span class="attr-val">'click'</span>, <span class="attr">onClick</span>);
+  <span class="tag-name">return</span> <span class="attr">btn</span>;
+}
+
+<span class="comment">// الاستيراد: بدون {} وأي اسم تريده</span>
+<span class="tag-name">import</span> <span class="attr">Button</span>       <span class="tag-name">from</span> <span class="attr-val">'./Button.js'</span>;
+<span class="tag-name">import</span> <span class="attr">MyButton</span>     <span class="tag-name">from</span> <span class="attr-val">'./Button.js'</span>;  <span class="comment">// نفس الشيء</span>
+
+<span class="comment">// الجمع بين الاثنين</span>
+<span class="tag-name">import</span> <span class="attr">Button</span>, { <span class="attr">buttonStyles</span> } <span class="tag-name">from</span> <span class="attr-val">'./Button.js'</span>;</pre>
+      </div>
+
+      <table class="cool-table">
+        <thead><tr><th></th><th>Named</th><th>Default</th></tr></thead>
+        <tbody>
+          <tr><td>عدد التصديرات</td><td>أي عدد</td><td>واحد فقط لكل ملف</td></tr>
+          <tr><td>الاستيراد</td><td><code>{ name }</code></td><td>أي اسم بدون {}</td></tr>
+          <tr><td>متى تستخدم؟</td><td>دوال/ثوابت متعددة</td><td>الشيء الرئيسي في الملف</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- S4 -->
+  <div class="section" id="s4">
+    <h2 class="section-title"><span class="num">.4</span> Dynamic Import <span class="en">Lazy Loading</span></h2>
+    <div class="content">
+      <p>تحميل module عند الحاجة فقط — يحسّن الأداء بشكل كبير:</p>
+      <div class="code-box">
+<div class="code-header"><span>⚡ import() الديناميكي</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">// تحميل module عند الضغط على زر</span>
+<span class="attr">btn</span>.<span class="tag-name">addEventListener</span>(<span class="attr-val">'click'</span>, <span class="tag-name">async</span> () => {
+  <span class="comment">// يُحمَّل فقط لما يضغط المستخدم</span>
+  <span class="tag-name">const</span> { <span class="attr">heavyFunction</span> } = <span class="tag-name">await</span> <span class="tag-name">import</span>(<span class="attr-val">'./heavy.js'</span>);
+  <span class="attr">heavyFunction</span>();
+});
+
+<span class="comment">// تحميل مشروط</span>
+<span class="tag-name">const</span> <span class="attr">module</span> = <span class="tag-name">await</span> <span class="tag-name">import</span>(
+  <span class="attr">isDark</span> ? <span class="attr-val">'./dark-theme.js'</span> : <span class="attr-val">'./light-theme.js'</span>
+);</pre>
+      </div>
+      <div class="tip-box"><strong>فائدة:</strong> الصفحة تُحمَّل أسرع لأن الكود الثقيل لا يُحمَّل إلا عند الحاجة الفعلية.</div>
+    </div>
+  </div>
+
+  <!-- S5 -->
+  <div class="section" id="s5">
+    <h2 class="section-title"><span class="num">.5</span> تنظيم مشروع حقيقي <span class="en">Project Structure</span></h2>
+    <div class="content">
+      <p>هيكل مشروع منظم يجعل التطوير أسرع والصيانة أسهل:</p>
+      <div class="file-tree">
+        <span class="ft-dir">src/</span><br>
+        &nbsp;&nbsp;├── <span class="ft-dir">components/</span><span class="ft-note">  ← مكوّنات UI</span><br>
+        &nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── <span class="ft-file">Button.js</span><br>
+        &nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── <span class="ft-file">Modal.js</span><br>
+        &nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;└── <span class="ft-file">Card.js</span><br>
+        &nbsp;&nbsp;├── <span class="ft-dir">utils/</span><span class="ft-note">     ← دوال مساعدة</span><br>
+        &nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── <span class="ft-file">api.js</span><br>
+        &nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── <span class="ft-file">storage.js</span><br>
+        &nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;└── <span class="ft-file">helpers.js</span><br>
+        &nbsp;&nbsp;├── <span class="ft-dir">data/</span><span class="ft-note">      ← البيانات الثابتة</span><br>
+        &nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;└── <span class="ft-file">constants.js</span><br>
+        &nbsp;&nbsp;└── <span class="ft-file">main.js</span><span class="ft-note">    ← نقطة الدخول</span>
+      </div>
+
+      <div class="code-box">
+<div class="code-header"><span>📁 index.js — barrel export</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">// components/index.js — تجميع التصديرات</span>
+<span class="tag-name">export</span> { <span class="tag-name">default</span> <span class="tag-name">as</span> <span class="attr">Button</span> } <span class="tag-name">from</span> <span class="attr-val">'./Button.js'</span>;
+<span class="tag-name">export</span> { <span class="tag-name">default</span> <span class="tag-name">as</span> <span class="attr">Modal</span>  } <span class="tag-name">from</span> <span class="attr-val">'./Modal.js'</span>;
+<span class="tag-name">export</span> { <span class="tag-name">default</span> <span class="tag-name">as</span> <span class="attr">Card</span>   } <span class="tag-name">from</span> <span class="attr-val">'./Card.js'</span>;
+
+<span class="comment">// في main.js — استيراد نظيف</span>
+<span class="tag-name">import</span> { <span class="attr">Button</span>, <span class="attr">Modal</span>, <span class="attr">Card</span> } <span class="tag-name">from</span> <span class="attr-val">'./components/index.js'</span>;</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- S6 -->
+  <div class="section" id="s6">
+    <h2 class="section-title"><span class="num">.6</span> Single Responsibility <span class="en">One Job per Module</span></h2>
+    <div class="content">
+      <p><strong>كل ملف (module) يجب أن يكون مسؤولاً عن شيء واحد فقط.</strong> هذا المبدأ يجعل الكود سهل الفهم والاختبار.</p>
+      <div class="code-box">
+<div class="code-header"><span>✅ تقسيم صحيح</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">// api.js — فقط التواصل مع الـ API</span>
+<span class="tag-name">export async function</span> <span class="attr">fetchUsers</span>() { ... }
+<span class="tag-name">export async function</span> <span class="attr">createUser</span>(<span class="attr">data</span>) { ... }
+
+<span class="comment">// storage.js — فقط localStorage</span>
+<span class="tag-name">export const</span> <span class="attr">storage</span> = { <span class="attr">get</span>() {}, <span class="attr">set</span>() {}, <span class="attr">remove</span>() {} };
+
+<span class="comment">// ui.js — فقط تحديث الواجهة</span>
+<span class="tag-name">export function</span> <span class="attr">renderUsers</span>(<span class="attr">users</span>) { ... }
+<span class="tag-name">export function</span> <span class="attr">showError</span>(<span class="attr">msg</span>) { ... }
+
+<span class="comment">// main.js — يجمّع كل شيء</span>
+<span class="tag-name">import</span> { <span class="attr">fetchUsers</span> }  <span class="tag-name">from</span> <span class="attr-val">'./api.js'</span>;
+<span class="tag-name">import</span> { <span class="attr">storage</span> }     <span class="tag-name">from</span> <span class="attr-val">'./storage.js'</span>;
+<span class="tag-name">import</span> { <span class="attr">renderUsers</span> } <span class="tag-name">from</span> <span class="attr-val">'./ui.js'</span>;</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- S7 -->
+  <div class="section" id="s7">
+    <h2 class="section-title"><span class="num">.7</span> الأنماط الشائعة <span class="en">Common Patterns</span></h2>
+    <div class="content">
+      <div class="code-box">
+<div class="code-header"><span>🔧 constants.js — الثوابت المركزية</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">// constants.js</span>
+<span class="tag-name">export const</span> <span class="attr">API_URL</span>   = <span class="attr-val">'https://api.myapp.com'</span>;
+<span class="tag-name">export const</span> <span class="attr">MAX_ITEMS</span> = <span class="attr-val">50</span>;
+<span class="tag-name">export const</span> <span class="attr">THEMES</span>    = { <span class="attr">LIGHT</span>: <span class="attr-val">'light'</span>, <span class="attr">DARK</span>: <span class="attr-val">'dark'</span> };</pre>
+      </div>
+
+      <div class="code-box blue">
+<div class="code-header"><span>🎣 Custom Hook Pattern</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">// useCounter.js — منطق مستقل قابل لإعادة الاستخدام</span>
+<span class="tag-name">export function</span> <span class="attr">createCounter</span>(<span class="attr">initial</span> = <span class="attr-val">0</span>) {
+  <span class="tag-name">let</span> <span class="attr">count</span> = <span class="attr">initial</span>;
+  <span class="tag-name">return</span> {
+    <span class="attr">get</span>:       () => <span class="attr">count</span>,
+    <span class="attr">increment</span>: () => ++<span class="attr">count</span>,
+    <span class="attr">decrement</span>: () => --<span class="attr">count</span>,
+    <span class="attr">reset</span>:     () => { <span class="attr">count</span> = <span class="attr">initial</span>; }
+  };
+}
+
+<span class="comment">// في main.js</span>
+<span class="tag-name">import</span> { <span class="attr">createCounter</span> } <span class="tag-name">from</span> <span class="attr-val">'./useCounter.js'</span>;
+<span class="tag-name">const</span> <span class="attr">counter</span> = <span class="attr">createCounter</span>(<span class="attr-val">10</span>);
+<span class="attr">counter</span>.<span class="attr">increment</span>();  <span class="comment">// 11</span></pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- S8 -->
+  <div class="section" id="s8">
+    <h2 class="section-title"><span class="num">.8</span> محرر الكود الحي <span class="en">Live Editor</span></h2>
+    <div class="content"><p>جرّب مفهوم الـ Modules بتقسيم الكود إلى وحدات منطقية:</p></div>
+    <div class="try-it">
+      <div class="try-it-header">
+        <span>⚡ جرّب تنظيم الكود</span>
+        <div class="try-it-controls">
+          <button class="try-btn" onclick="runCode(this)">▶️ تشغيل</button>
+          <button class="try-btn" onclick="resetCode(this)">🔄 إعادة</button>
+        </div>
+      </div>
+      <div class="try-it-body">
+        <textarea class="try-it-editor" spellcheck="false" data-default='<!DOCTYPE html>
+<html><head><meta charset="UTF-8">
+<style>
+  body{font-family:Arial;padding:20px;direction:rtl;background:#f8fafc;}
+  .module{background:white;border-radius:12px;padding:16px;margin:10px 0;box-shadow:0 2px 8px rgba(0,0,0,.06);border-right:4px solid #1e3a8a;}
+  .module h3{color:#1e3a8a;margin-bottom:10px;font-size:.95rem;}
+  .module pre{background:#f1f5f9;padding:12px;border-radius:8px;font-size:.82rem;direction:ltr;overflow-x:auto;}
+  .output{background:#1e293b;color:#4ade80;padding:16px;border-radius:10px;font-family:monospace;white-space:pre-line;margin-top:16px;}
+</style>
+</head>
+<body>
+  <h2>📦 محاكاة Modules</h2>
+
+  <div class="module">
+    <h3>📐 math.js</h3>
+    <pre>export const add = (a,b) => a+b
+export const multiply = (a,b) => a*b
+export const square = n => n**2</pre>
+  </div>
+
+  <div class="module">
+    <h3>💾 storage.js</h3>
+    <pre>export const storage = {
+  get: (k, d=null) => JSON.parse(localStorage.getItem(k)) ?? d,
+  set: (k,v) => localStorage.setItem(k, JSON.stringify(v))
+}</pre>
+  </div>
+
+  <div class="module">
+    <h3>⚙️ main.js (يستخدم كليهما)</h3>
+    <pre>import { add, square } from "./math.js"
+import { storage } from "./storage.js"
+const result = add(square(4), square(3))
+storage.set("result", result)</pre>
+  </div>
+
+  <div id="output" class="output"></div>
+
+<script>
+// محاكاة الـ modules في المتصفح
+const p = s => document.getElementById("output").textContent += s + "\n";
+
+// === math.js ===
+const math = {
+  add: (a,b) => a+b,
+  multiply: (a,b) => a*b,
+  square: n => n**2,
+  avg: (...ns) => ns.reduce((s,n)=>s+n,0)/ns.length
+};
+
+// === storage.js ===
+const storage = {
+  get: (k, d=null) => { try { return JSON.parse(localStorage.getItem(k))??d; } catch{return d;} },
+  set: (k,v) => localStorage.setItem(k, JSON.stringify(v))
+};
+
+// === main.js ===
+p("=== نتائج math.js ===");
+p(`add(3,4) = ${math.add(3,4)}`);
+p(`square(5) = ${math.square(5)}`);
+p(`multiply(6,7) = ${math.multiply(6,7)}`);
+p(`avg(10,20,30) = ${math.avg(10,20,30)}`);
+
+p("\n=== storage.js ===");
+storage.set("score", { value: 95, level: "A" });
+const saved = storage.get("score", {});
+p(`درجة محفوظة: ${saved.value} — تقدير: ${saved.level}`);
+</script>
+</body></html>'><!DOCTYPE html>
+<html><head><meta charset="UTF-8">
+<style>
+  body{font-family:Arial;padding:20px;direction:rtl;background:#f8fafc;}
+  .module{background:white;border-radius:12px;padding:16px;margin:10px 0;box-shadow:0 2px 8px rgba(0,0,0,.06);border-right:4px solid #1e3a8a;}
+  .module h3{color:#1e3a8a;margin-bottom:10px;font-size:.95rem;}
+  .output{background:#1e293b;color:#4ade80;padding:16px;border-radius:10px;font-family:monospace;white-space:pre-line;margin-top:16px;}
+</style></head>
+<body>
+<h2>📦 محاكاة Modules</h2>
+<div id="output" class="output"></div>
+<script>
+  const p = s => document.getElementById("output").textContent += s + "\n";
+  const math = { add:(a,b)=>a+b, square:n=>n**2, multiply:(a,b)=>a*b, avg:(...ns)=>ns.reduce((s,n)=>s+n,0)/ns.length };
+  const storage = { get:(k,d=null)=>{try{return JSON.parse(localStorage.getItem(k))??d;}catch{return d;}}, set:(k,v)=>localStorage.setItem(k,JSON.stringify(v)) };
+  p("=== math.js ===");
+  p(`add(3,4) = ${math.add(3,4)}`);
+  p(`square(5) = ${math.square(5)}`);
+  p(`avg(10,20,30) = ${math.avg(10,20,30)}`);
+  p("\n=== storage.js ===");
+  storage.set("score", { value: 95, level: "A" });
+  const s = storage.get("score", {});
+  p(`درجة: ${s.value} — تقدير: ${s.level}`);
+</script>
+</body></html></textarea>
+        <div class="try-it-preview"><iframe srcdoc="" sandbox="allow-scripts allow-same-origin allow-modals allow-popups allow-forms" title="معاينة الكود"></iframe></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EXERCISES -->
+  <div class="section" id="exercises">
+    <h2 class="section-title"><span class="num">📝</span> التمارين العملية <span class="en">Exercises</span></h2>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 1: تصدير Named</div>
+      <p>اكتب ملف <em>greetings.js</em> يصدّر دالتين: <em>hello(name)</em> تعيد "مرحباً name" و<em>bye(name)</em> تعيد "وداعاً name".</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre><span class="comment">// greetings.js</span>
+<span class="tag-name">export function</span> <span class="attr">hello</span>(<span class="attr">name</span>) { <span class="tag-name">return</span> <span class="attr-val">`مرحباً ${name}`</span>; }
+<span class="tag-name">export function</span> <span class="attr">bye</span>(<span class="attr">name</span>)   { <span class="tag-name">return</span> <span class="attr-val">`وداعاً ${name}`</span>; }
+
+<span class="comment">// main.js</span>
+<span class="tag-name">import</span> { <span class="attr">hello</span>, <span class="attr">bye</span> } <span class="tag-name">from</span> <span class="attr-val">'./greetings.js'</span>;</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 2: Default Export</div>
+      <p>اكتب ملف <em>Calculator.js</em> يصدّر كائناً افتراضياً يحتوي على: add، subtract، multiply.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre><span class="comment">// Calculator.js</span>
+<span class="tag-name">const</span> <span class="attr">Calculator</span> = {
+  <span class="attr">add</span>:      (<span class="attr">a</span>, <span class="attr">b</span>) => <span class="attr">a</span> + <span class="attr">b</span>,
+  <span class="attr">subtract</span>: (<span class="attr">a</span>, <span class="attr">b</span>) => <span class="attr">a</span> - <span class="attr">b</span>,
+  <span class="attr">multiply</span>: (<span class="attr">a</span>, <span class="attr">b</span>) => <span class="attr">a</span> * <span class="attr">b</span>,
+};
+<span class="tag-name">export default</span> <span class="attr">Calculator</span>;
+
+<span class="comment">// main.js</span>
+<span class="tag-name">import</span> <span class="attr">Calculator</span> <span class="tag-name">from</span> <span class="attr-val">'./Calculator.js'</span>;</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 3: Barrel Export</div>
+      <p>عندك ملفات <em>api.js</em> و <em>storage.js</em> و <em>helpers.js</em>. اكتب <em>index.js</em> يصدّر كل شيء منهم.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre><span class="comment">// utils/index.js</span>
+<span class="tag-name">export</span> * <span class="tag-name">from</span> <span class="attr-val">'./api.js'</span>;
+<span class="tag-name">export</span> * <span class="tag-name">from</span> <span class="attr-val">'./storage.js'</span>;
+<span class="tag-name">export</span> * <span class="tag-name">from</span> <span class="attr-val">'./helpers.js'</span>;</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 4: Import بأسماء مختلفة</div>
+      <p>استورد <em>fetchData</em> باسم <em>getData</em> و <em>postData</em> باسم <em>sendData</em> من ملف <em>api.js</em>.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre><span class="tag-name">import</span> {
+  <span class="attr">fetchData</span> <span class="tag-name">as</span> <span class="attr">getData</span>,
+  <span class="attr">postData</span>  <span class="tag-name">as</span> <span class="attr">sendData</span>
+} <span class="tag-name">from</span> <span class="attr-val">'./api.js'</span>;</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 5: Dynamic Import</div>
+      <p>اكتب كوداً يحمّل module ثقيل <em>chart.js</em> فقط عند الضغط على زر "عرض الرسم البياني".</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre><span class="attr">document</span>.<span class="tag-name">querySelector</span>(<span class="attr-val">'#showChart'</span>)
+  .<span class="tag-name">addEventListener</span>(<span class="attr-val">'click'</span>, <span class="tag-name">async</span> () => {
+    <span class="tag-name">const</span> { <span class="attr">renderChart</span> } = <span class="tag-name">await</span> <span class="tag-name">import</span>(<span class="attr-val">'./chart.js'</span>);
+    <span class="attr">renderChart</span>();
+  });</pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="quiz-container" id="quiz">
+    <div class="quiz-intro"><p>اختبر فهمك للـ Modules!</p></div>
+    <div class="quiz-type-tabs">
+      <button class="qt-tab active" onclick="switchQuiz(this,'tf')">✓✗ صح وخطأ</button>
+      <button class="qt-tab" onclick="switchQuiz(this,'mc')">🔘 اختيار من متعدد</button>
+    </div>
+    <div class="quiz-section active" id="quiz-tf">
+      <div class="quiz-question" data-correct="false">
+        <span class="q-num">1</span><span class="q-text">يمكن استخدام أكثر من export default في نفس الملف.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">2</span><span class="q-text">Named imports تحتاج أقواس {} عند الاستيراد.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">3</span><span class="q-text">Dynamic import يحسّن الأداء بتحميل الكود عند الحاجة فقط.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="false">
+        <span class="q-num">4</span><span class="q-text">Modules تعمل بدون مشاكل عند فتح الملف مباشرة بـ file://.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">5</span><span class="q-text">يمكن استيراد default export بأي اسم تريده.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <button class="quiz-submit" onclick="submitQuiz('tf')">عرض النتيجة 🎯</button>
+      <div class="quiz-result" id="result-tf"><div class="result-score" id="score-tf">0/5</div><div class="result-label">إجابات صحيحة</div><div class="result-message" id="msg-tf"></div><button class="retry-btn" onclick="retryQuiz('tf')">🔄 حاول تاني</button></div>
+    </div>
+    <div class="quiz-section" id="quiz-mc">
+      <div class="quiz-question" data-correct="2">
+        <span class="q-num">1</span><span class="q-text">كيف تستورد كل exports من ملف تحت namespace واحد؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">import all from './file.js'</button>
+          <button class="q-opt" onclick="answerMC(this,1)">import { * } from './file.js'</button>
+          <button class="q-opt" onclick="answerMC(this,2)">import * as Name from './file.js'</button>
+          <button class="q-opt" onclick="answerMC(this,3)">import everything from './file.js'</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="0">
+        <span class="q-num">2</span><span class="q-text">ما فائدة مبدأ Single Responsibility في الـ Modules؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">كود أسهل في الفهم والصيانة والاختبار</button>
+          <button class="q-opt" onclick="answerMC(this,1)">تقليل حجم الملفات</button>
+          <button class="q-opt" onclick="answerMC(this,2)">تسريع التنفيذ</button>
+          <button class="q-opt" onclick="answerMC(this,3)">منع الأخطاء تلقائياً</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="3">
+        <span class="q-num">3</span><span class="q-text">كيف تضيف type="module" لسكريبت في HTML؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">&lt;script module src="app.js"&gt;</button>
+          <button class="q-opt" onclick="answerMC(this,1)">&lt;script import src="app.js"&gt;</button>
+          <button class="q-opt" onclick="answerMC(this,2)">&lt;module src="app.js"&gt;</button>
+          <button class="q-opt" onclick="answerMC(this,3)">&lt;script type="module" src="app.js"&gt;</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="1">
+        <span class="q-num">4</span><span class="q-text">ما الفرق بين Named و Default export؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">لا فرق</button>
+          <button class="q-opt" onclick="answerMC(this,1)">Named بأسماء محددة بـ {}، Default بأي اسم بدون {}</button>
+          <button class="q-opt" onclick="answerMC(this,2)">Default أسرع</button>
+          <button class="q-opt" onclick="answerMC(this,3)">Named للدوال فقط</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="2">
+        <span class="q-num">5</span><span class="q-text">ما الـ pattern المسمى Barrel Export؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">تصدير ملف واحد كبير</button>
+          <button class="q-opt" onclick="answerMC(this,1)">استيراد كل شيء بـ *</button>
+          <button class="q-opt" onclick="answerMC(this,2)">ملف index.js يُعيد تصدير كل exports من عدة ملفات</button>
+          <button class="q-opt" onclick="answerMC(this,3)">Dynamic import</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <button class="quiz-submit" onclick="submitQuiz('mc')">عرض النتيجة 🎯</button>
+      <div class="quiz-result" id="result-mc"><div class="result-score" id="score-mc">0/5</div><div class="result-label">إجابات صحيحة</div><div class="result-message" id="msg-mc"></div><button class="retry-btn" onclick="retryQuiz('mc')">🔄 حاول تاني</button></div>
+    </div>
+  </div>
+
+  <div class="lesson-nav">
+    <a href="./lesson-24.html" class="nav-btn"><span>⬅️</span><span>الدرس السابق</span></a>
+    <button class="nav-btn complete-btn" id="completeBtn" onclick="markComplete(this)"><span>✅</span><span>علّم كمكتمل</span></button>
+    <a href="./lesson-26.html" class="nav-btn"><span>الدرس التالي</span><span>➡️</span></a>
+  </div>
+
+  <div class="notebook-footer">
+    <h3>🎉 أتقنت تنظيم الكود!</h3>
+    <p>مشاريعك الآن نظيفة ومنظمة كالمحترفين ❤️<br><strong>الدرس التالي: Git و GitHub 🐙</strong></p>
+  </div>
+</div>
+
+<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">⬆️</button>
+<div class="toast" id="toast"></div>
+<script src="../../js/data/courses.js"></script>
+<script src="../../js/progress.js"></script>
+<script src="../../js/lesson-editor.js"></script>
+<script>
+const COURSE_ID='frontend',LESSON_ID=25,TOTAL=32;
+function toggleSolution(b){const s=b.nextElementSibling;s.classList.toggle('show');b.textContent=s.classList.contains('show')?'إخفاء الحل ▲':'عرض الحل ▼';}
+function copyCode(b){const p=b.closest('.code-box').querySelector('pre');navigator.clipboard.writeText(p.innerText).then(()=>{b.classList.add('copied');b.textContent='✓ تم النسخ';setTimeout(()=>{b.classList.remove('copied');b.textContent='📋 نسخ';},2000);});}
+function runCode(b){const t=b.closest('.try-it');t.querySelector('iframe').srcdoc=t.querySelector('.try-it-editor').value;}
+function resetCode(b){const t=b.closest('.try-it'),e=t.querySelector('.try-it-editor');e.value=e.dataset.default;t.querySelector('iframe').srcdoc=e.value;}
+window.addEventListener('load',()=>{document.querySelectorAll('.try-it').forEach(t=>{const e=t.querySelector('.try-it-editor');t.querySelector('iframe').srcdoc=e.value;});});
+function switchQuiz(b,t){document.querySelectorAll('.qt-tab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.quiz-section').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.getElementById('quiz-'+t).classList.add('active');}
+const answers={tf:{},mc:{}};
+function answerTF(b,v){const q=b.closest('.quiz-question'),i=Array.from(q.parentNode.querySelectorAll('.quiz-question')).indexOf(q);q.querySelectorAll('.q-opt').forEach(o=>o.classList.remove('selected'));b.classList.add('selected');answers.tf[i]=v;}
+function answerMC(b,i){const q=b.closest('.quiz-question'),qi=Array.from(q.parentNode.querySelectorAll('.quiz-question')).indexOf(q);q.querySelectorAll('.q-opt').forEach(o=>o.classList.remove('selected'));b.classList.add('selected');answers.mc[qi]=i;}
+function submitQuiz(type){const sec=document.getElementById('quiz-'+type),qs=sec.querySelectorAll('.quiz-question');let c=0;qs.forEach((q,i)=>{const ca=type==='tf'?(q.dataset.correct==='true'):parseInt(q.dataset.correct),ua=answers[type][i],fb=q.querySelector('.q-feedback'),opts=q.querySelectorAll('.q-opt');opts.forEach(o=>{o.classList.remove('selected');o.disabled=true;});if(ua===undefined){fb.className='q-feedback wrong show';fb.textContent='⚠️ ما اخترتش إجابة!';return;}if(ua===ca){c++;fb.className='q-feedback correct show';fb.textContent='✓ إجابة صحيحة!';if(type==='tf')opts[ca?0:1].classList.add('correct');else opts[ca].classList.add('correct');}else{fb.className='q-feedback wrong show';if(type==='tf'){opts[ca?0:1].classList.add('correct');opts[ua?0:1].classList.add('wrong');fb.textContent='✗ خطأ.';}else{opts[ca].classList.add('correct');opts[ua].classList.add('wrong');fb.textContent='✗ الإجابة بالأخضر.';}}});const r=document.getElementById('result-'+type);document.getElementById('score-'+type).textContent=c+'/'+qs.length;const m=document.getElementById('msg-'+type);if(c===qs.length){m.textContent='🏆 ممتاز 100%!';m.className='result-message excellent';}else if(c>=3){m.textContent='👍 جيد!';m.className='result-message good';}else{m.textContent='📚 راجع الدرس.';m.className='result-message try-again';}r.classList.add('show');r.scrollIntoView({behavior:'smooth',block:'center'});}
+function retryQuiz(type){const sec=document.getElementById('quiz-'+type);sec.querySelectorAll('.q-opt').forEach(o=>{o.classList.remove('selected','correct','wrong');o.disabled=false;});sec.querySelectorAll('.q-feedback').forEach(f=>{f.classList.remove('show','correct','wrong');f.textContent='';});document.getElementById('result-'+type).classList.remove('show');answers[type]={};}
+function markComplete(btn){const done=Progress.toggleLessonComplete(COURSE_ID,LESSON_ID);btn.classList.toggle('completed',done);btn.querySelector('span:last-child').textContent=done?'مكتمل! ⭐':'علّم كمكتمل';showToast(done?'🎉 أكملت درس Modules!':'تم إلغاء الإكمال');}
+if(Progress.isLessonComplete(COURSE_ID,LESSON_ID)){const b=document.getElementById('completeBtn');b.classList.add('completed');b.querySelector('span:last-child').textContent='مكتمل! ⭐';}
+(function(){const p=Progress.getCourseProgress(COURSE_ID,TOTAL);document.getElementById('progFill').style.width=p+'%';document.getElementById('progText').textContent=p+'%';})();
+function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
+window.addEventListener('scroll',()=>{document.getElementById('scrollTop').classList.toggle('show',window.scrollY>300);});
+document.querySelectorAll('.toc-card a').forEach(l=>{l.addEventListener('click',e=>{e.preventDefault();const t=document.querySelector(l.getAttribute('href'));if(t)t.scrollIntoView({behavior:'smooth',block:'start'});});});
+</script>
+</body>
+</html>

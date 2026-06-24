@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-V2NCKVL16D"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-V2NCKVL16D');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>الألوان والخطوط والنصوص — دفتر البرمجة</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=Cairo:wght@300;400;500;600;700;900&family=Caveat:wght@400;700&family=Fira+Code:wght@400;500;600&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../css/shared.css">
+<link rel="stylesheet" href="../../css/notebook.css">
+<style>
+body { padding: 20px 10px; }
+
+/* Color swatches */
+.color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px,1fr)); gap: 10px; margin: 16px 0; }
+.swatch { border-radius: 10px; overflow: hidden; box-shadow: var(--shadow); }
+.swatch-color { height: 60px; }
+.swatch-label { background: white; padding: 6px 8px; font-size: .78rem; font-family: 'Fira Code', monospace; text-align: center; color: var(--text-muted); }
+
+/* Font preview */
+.font-preview { background: white; border: 2px solid var(--border); border-radius: 12px; padding: 16px 20px; margin: 10px 0; }
+.font-preview .fp-name { font-family: 'Caveat', cursive; color: var(--text-muted); font-size: .9rem; margin-bottom: 6px; }
+.font-preview .fp-sample { font-size: 1.4rem; line-height: 1.6; }
+
+/* Text properties demo */
+.text-demo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 14px 0; }
+@media(max-width:600px){ .text-demo-grid { grid-template-columns: 1fr; } }
+.text-demo-card { background: white; border-radius: 10px; padding: 14px; border: 1.5px solid var(--border); }
+.text-demo-card .prop { font-family: 'Fira Code', monospace; font-size: .78rem; color: var(--ink-purple); margin-bottom: 8px; }
+.text-demo-card p { font-size: 1rem; }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="crumbs">
+    <a href="../../index.html">🏠 الرئيسية</a>
+    <span class="sep">/</span>
+    <a href="./index.html">🌐 الفرونت إند</a>
+    <span class="sep">/</span>
+    <span class="current">🎨 الدرس 7: الألوان والخطوط والنصوص</span>
+  </div>
+  <div class="progress-mini">
+    <div class="progress-bar-mini"><div class="progress-fill-mini" id="progFill"></div></div>
+    <span id="progText">0%</span>
+  </div>
+</div>
+
+<div class="notebook">
+
+  <div class="notebook-header">
+    <div class="lesson-tag">🎨 الدرس السابع</div>
+    <h1><span class="sparkle">✦</span> الألوان والخطوط والنصوص <span class="sparkle">✦</span></h1>
+    <div class="lesson-meta">
+      <span>⏱️ 35 دقيقة</span>
+      <span>📊 مبتدئ</span>
+      <span>🎯 5 تمارين + اختبار</span>
+    </div>
+  </div>
+
+  <div class="toc-card">
+    <h2>📑 فهرس الدرس</h2>
+    <ol>
+      <li><a href="#s1">الألوان في CSS</a></li>
+      <li><a href="#s2">صيغ الألوان</a></li>
+      <li><a href="#s3">CSS Variables</a></li>
+      <li><a href="#s4">خصائص الخطوط</a></li>
+      <li><a href="#s5">Google Fonts</a></li>
+      <li><a href="#s6">خصائص النصوص</a></li>
+      <li><a href="#s7">محرر الكود الحي</a></li>
+      <li><a href="#exercises">التمارين</a></li>
+      <li><a href="#quiz">اختبر فهمك</a></li>
+    </ol>
+  </div>
+
+  <!-- S1 -->
+  <div class="section" id="s1">
+    <h2 class="section-title"><span class="num">.1</span> الألوان في CSS <span class="en">CSS Colors</span></h2>
+    <div class="content">
+      <p>CSS بيدعم طرق متعددة لتحديد الألوان. كل صيغة ليها مميزاتها:</p>
+
+      <div class="color-grid">
+        <div class="swatch"><div class="swatch-color" style="background:#1e3a8a"></div><div class="swatch-label">#1e3a8a<br>Hex</div></div>
+        <div class="swatch"><div class="swatch-color" style="background:rgb(30,58,138)"></div><div class="swatch-label">rgb(30,58,138)<br>RGB</div></div>
+        <div class="swatch"><div class="swatch-color" style="background:rgba(30,58,138,0.4)"></div><div class="swatch-label">rgba(…,0.4)<br>شفافية</div></div>
+        <div class="swatch"><div class="swatch-color" style="background:hsl(225,64%,33%)"></div><div class="swatch-label">hsl(225,64%,33%)<br>HSL</div></div>
+        <div class="swatch"><div class="swatch-color" style="background:tomato"></div><div class="swatch-label">tomato<br>Name</div></div>
+        <div class="swatch"><div class="swatch-color" style="background:linear-gradient(135deg,#1e3a8a,#7c3aed)"></div><div class="swatch-label">gradient<br>متدرج</div></div>
+      </div>
+
+      <p>الخصائص اللي بتقبل لون:</p>
+      <div class="code-box">
+<div class="code-header"><span>🎨 خصائص اللون</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre>p {
+  color: #333;                    <span class="comment">/* لون النص */</span>
+  background-color: #f9f9f9;      <span class="comment">/* لون الخلفية */</span>
+  border-color: #ddd;             <span class="comment">/* لون الحدود */</span>
+  outline-color: blue;            <span class="comment">/* لون الإطار */</span>
+}
+
+<span class="comment">/* الشفافية على العنصر كله */</span>
+.faded { opacity: 0.5; }         <span class="comment">/* 0=شفاف كامل، 1=معتم كامل */</span></pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- S2 -->
+  <div class="section" id="s2">
+    <h2 class="section-title"><span class="num">.2</span> صيغ الألوان <span class="en">Color Formats</span></h2>
+    <div class="content">
+
+      <div class="code-box blue">
+<div class="code-header"><span>🌈 كل الصيغ</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">/* 1. أسماء (Color Names) — 140 اسم */</span>
+color: red;  color: blue;  color: tomato;  color: steelblue;
+
+<span class="comment">/* 2. Hex — الأكثر شيوعاً */</span>
+color: #ff0000;      <span class="comment">/* أحمر كامل */</span>
+color: #f00;         <span class="comment">/* اختصار لـ #ff0000 */</span>
+color: #1e3a8a;      <span class="comment">/* أزرق داكن */</span>
+
+<span class="comment">/* 3. RGB — أحمر، أخضر، أزرق (0-255) */</span>
+color: rgb(255, 0, 0);        <span class="comment">/* أحمر */</span>
+color: rgb(30, 58, 138);      <span class="comment">/* أزرق داكن */</span>
+
+<span class="comment">/* 4. RGBA — مع شفافية (0-1) */</span>
+color: rgba(30, 58, 138, 0.5);   <span class="comment">/* نصف شفاف */</span>
+background: rgba(0, 0, 0, 0.3);  <span class="comment">/* أسود شفاف */</span>
+
+<span class="comment">/* 5. HSL — تدرج الألوان، الإشباع، الإضاءة */</span>
+color: hsl(225, 64%, 33%);    <span class="comment">/* نفس الأزرق الداكن */</span>
+color: hsla(225, 64%, 33%, 0.7); <span class="comment">/* مع شفافية */</span>
+
+<span class="comment">/* 6. Gradient — تدرج لوني */</span>
+background: linear-gradient(to right, #1e3a8a, #7c3aed);
+background: radial-gradient(circle, #fff, #1e3a8a);</pre>
+      </div>
+
+      <div class="tip-box"><strong>متى تستخدم كل صيغة؟</strong><br>
+        • <em>Hex</em>: في معظم الحالات — أشهر وأسرع<br>
+        • <em>RGBA</em>: لما تحتاج شفافية على لون محدد<br>
+        • <em>HSL</em>: لما تعمل ثيمات — سهل تغيير الإضاءة<br>
+        • <em>Opacity</em>: لما تريد تشفيف العنصر كله (نص + خلفية)
+      </div>
+    </div>
+  </div>
+
+  <!-- S3 -->
+  <div class="section" id="s3">
+    <h2 class="section-title"><span class="num">.3</span> CSS Variables <span class="en">Custom Properties</span></h2>
+    <div class="content">
+      <p>المتغيرات في CSS (Custom Properties) تسمح بتعريف قيم مرة واحدة واستخدامها في كل مكان. هذا يجعل تغيير الثيم أمراً سهلاً للغاية!</p>
+
+      <div class="analogy">
+        <div class="analogy-title">📦 تخيل صندوق ألوان:</div>
+        <p>بدل ما تكتب <em>#1e3a8a</em> في كل مكان، تعرّف متغير <em>--primary: #1e3a8a</em> مرة واحدة. لو غيّرت اللون، كل الموقع يتغير تلقائياً!</p>
+      </div>
+
+      <div class="code-box green">
+<div class="code-header"><span>📦 CSS Variables</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">/* تعريف المتغيرات في :root (متاحة في كل الصفحة) */</span>
+:root {
+  --primary:   #1e3a8a;
+  --secondary: #7c3aed;
+  --accent:    #ea580c;
+  --bg:        #f9fafb;
+  --text:      #1e293b;
+  --radius:    10px;
+  --spacing:   16px;
+}
+
+<span class="comment">/* استخدام المتغيرات بدالة var() */</span>
+h1 { color: var(--primary); }
+.card {
+  background: var(--bg);
+  border-radius: var(--radius);
+  padding: var(--spacing);
+}
+button { background: var(--accent); }
+
+<span class="comment">/* قيمة افتراضية لو المتغير غير معرّف */</span>
+color: var(--missing, red);</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- S4 -->
+  <div class="section" id="s4">
+    <h2 class="section-title"><span class="num">.4</span> خصائص الخطوط <span class="en">Font Properties</span></h2>
+    <div class="content">
+
+      <div class="code-box">
+<div class="code-header"><span>🔤 خصائص الخط</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre>p {
+  <span class="comment">/* نوع الخط — قائمة fallback */</span>
+  font-family: 'Cairo', 'Arial', sans-serif;
+
+  <span class="comment">/* الحجم */</span>
+  font-size: 16px;      <span class="comment">/* بكسل */</span>
+  font-size: 1rem;      <span class="comment">/* نسبة للجذر (16px افتراضي) */</span>
+  font-size: 1.5em;     <span class="comment">/* نسبة للأب */</span>
+  font-size: clamp(1rem, 2.5vw, 1.5rem); <span class="comment">/* متجاوب! */</span>
+
+  <span class="comment">/* السُمك */</span>
+  font-weight: normal;  <span class="comment">/* = 400 */</span>
+  font-weight: bold;    <span class="comment">/* = 700 */</span>
+  font-weight: 900;     <span class="comment">/* الأثقل */</span>
+
+  <span class="comment">/* الأسلوب */</span>
+  font-style: normal;
+  font-style: italic;   <span class="comment">/* مائل */</span>
+
+  <span class="comment">/* اختصار لكل الخصائص مرة واحدة */</span>
+  font: italic bold 1.2rem/1.8 'Cairo', sans-serif;
+  <span class="comment">/*    style weight size/line-height family */</span>
+}</pre>
+      </div>
+
+      <div class="sub-header">معاينة أنواع الخطوط:</div>
+
+      <div class="font-preview">
+        <div class="fp-name">font-family: 'Cairo', sans-serif (الخط المستخدم في هذه الأكاديمية)</div>
+        <div class="fp-sample" style="font-family:'Cairo',sans-serif;">دفتر البرمجة — نتعلم معاً 🚀</div>
+      </div>
+      <div class="font-preview">
+        <div class="fp-name">font-family: 'Aref Ruqaa' (العناوين الخطية)</div>
+        <div class="fp-sample" style="font-family:'Aref Ruqaa',serif;font-size:1.8rem;">دفتر البرمجة</div>
+      </div>
+      <div class="font-preview">
+        <div class="fp-name">font-family: 'Fira Code' (الكود البرمجي)</div>
+        <div class="fp-sample" style="font-family:'Fira Code',monospace;direction:ltr;text-align:left;">const academy = "برمجة بالعربي";</div>
+      </div>
+
+      <table class="cool-table">
+        <thead><tr><th>الوحدة</th><th>المعنى</th><th>متى تستخدمها</th></tr></thead>
+        <tbody>
+          <tr><td><code>px</code></td><td>بكسل ثابت</td><td>Borders، الحواف الدقيقة</td></tr>
+          <tr><td><code>rem</code></td><td>نسبة لحجم خط الجذر (html)</td><td>الخطوط والمسافات — الأفضل</td></tr>
+          <tr><td><code>em</code></td><td>نسبة لحجم خط الأب</td><td>الـ padding والـ margin النسبية</td></tr>
+          <tr><td><code>%</code></td><td>نسبة مئوية للأب</td><td>العروض والارتفاعات</td></tr>
+          <tr><td><code>vw/vh</code></td><td>نسبة من عرض/ارتفاع الشاشة</td><td>Sections الكاملة</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- S5 -->
+  <div class="section" id="s5">
+    <h2 class="section-title"><span class="num">.5</span> Google Fonts <span class="en">Google Fonts</span></h2>
+    <div class="content">
+      <p>Google Fonts مكتبة مجانية بمئات الخطوط. طريقة الاستخدام بسيطة جداً:</p>
+
+      <div class="code-box blue">
+<div class="code-header"><span>🔗 استخدام Google Fonts</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">&lt;!-- الخطوة 1: أضف في &lt;head&gt; --&gt;</span>
+<span class="tag-open">&lt;</span><span class="tag-name">link</span> <span class="attr">rel</span>=<span class="attr-val">"preconnect"</span> <span class="attr">href</span>=<span class="attr-val">"https://fonts.googleapis.com"</span><span class="tag-close">&gt;</span>
+<span class="tag-open">&lt;</span><span class="tag-name">link</span>
+  <span class="attr">href</span>=<span class="attr-val">"https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap"</span>
+  <span class="attr">rel</span>=<span class="attr-val">"stylesheet"</span>
+<span class="tag-close">&gt;</span>
+
+<span class="comment">/* الخطوة 2: استخدم في CSS */</span>
+body {
+  font-family: 'Cairo', sans-serif;
+}
+
+<span class="comment">/* للعربية: خطوط مُوصى بها */</span>
+<span class="comment">/* Cairo    — واضح وحديث للنصوص */</span>
+<span class="comment">/* Aref Ruqaa — خطي جميل للعناوين */</span>
+<span class="comment">/* Tajawal  — خفيف ومريح للقراءة */</span>
+<span class="comment">/* Reem Kufi — هندسي للعناوين */</span></pre>
+      </div>
+
+      <div class="tip-box"><strong>للأداء:</strong> لا تحمّل أكثر من 2-3 خطوط ومتغيراتهم. كل خط إضافي يبطئ تحميل الصفحة.</div>
+    </div>
+  </div>
+
+  <!-- S6 -->
+  <div class="section" id="s6">
+    <h2 class="section-title"><span class="num">.6</span> خصائص النصوص <span class="en">Text Properties</span></h2>
+    <div class="content">
+
+      <div class="text-demo-grid">
+        <div class="text-demo-card">
+          <div class="prop">text-align: center;</div>
+          <p style="text-align:center;background:#f0f4ff;padding:8px;border-radius:6px;">النص في المنتصف</p>
+        </div>
+        <div class="text-demo-card">
+          <div class="prop">text-align: right;</div>
+          <p style="text-align:right;background:#f0f4ff;padding:8px;border-radius:6px;">النص لليمين</p>
+        </div>
+        <div class="text-demo-card">
+          <div class="prop">text-decoration: underline;</div>
+          <p style="text-decoration:underline;padding:8px;">نص مسطّر تحته خط</p>
+        </div>
+        <div class="text-demo-card">
+          <div class="prop">text-decoration: line-through;</div>
+          <p style="text-decoration:line-through;padding:8px;">نص مشطوب عليه</p>
+        </div>
+        <div class="text-demo-card">
+          <div class="prop">text-transform: uppercase;</div>
+          <p style="text-transform:uppercase;padding:8px;">text transform</p>
+        </div>
+        <div class="text-demo-card">
+          <div class="prop">line-height: 2;</div>
+          <p style="line-height:2;background:#f0f4ff;padding:8px;border-radius:6px;">ارتفاع السطر ضعف الحجم يريح العين</p>
+        </div>
+        <div class="text-demo-card">
+          <div class="prop">letter-spacing: 3px;</div>
+          <p style="letter-spacing:3px;padding:8px;">م س ا ف ة بين الحروف</p>
+        </div>
+        <div class="text-demo-card">
+          <div class="prop">text-shadow: 2px 2px 4px rgba(0,0,0,0.3);</div>
+          <p style="text-shadow:2px 2px 4px rgba(0,0,0,0.3);font-size:1.1rem;padding:8px;">ظل النص</p>
+        </div>
+      </div>
+
+      <div class="code-box pink">
+<div class="code-header"><span>✏️ خصائص النصوص كاملة</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre>h1 {
+  text-align: center;            <span class="comment">/* left | right | center | justify */</span>
+  text-decoration: none;         <span class="comment">/* none | underline | line-through */</span>
+  text-transform: uppercase;     <span class="comment">/* none | lowercase | uppercase | capitalize */</span>
+  line-height: 1.8;              <span class="comment">/* ارتفاع السطر (بدون وحدة = نسبة) */</span>
+  letter-spacing: 1px;           <span class="comment">/* مسافة بين الحروف */</span>
+  word-spacing: 4px;             <span class="comment">/* مسافة بين الكلمات */</span>
+  white-space: nowrap;           <span class="comment">/* منع كسر السطر */</span>
+  text-overflow: ellipsis;       <span class="comment">/* ... عند القص (مع overflow:hidden) */</span>
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.2); <span class="comment">/* ظل */</span>
+}</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- S7: TRY IT -->
+  <div class="section" id="s7">
+    <h2 class="section-title"><span class="num">.7</span> جرب بنفسك! <span class="en">Try It Live</span></h2>
+    <div class="content">
+      <div class="try-it">
+        <div class="try-it-header">
+          <span>💻 محرر الكود الحي</span>
+          <div class="try-it-controls">
+            <button class="try-btn" onclick="runCode(this)">▶️ تشغيل</button>
+            <button class="try-btn" onclick="resetCode(this)">🔄 إعادة</button>
+          </div>
+        </div>
+        <div class="try-it-body">
+          <textarea class="try-it-editor" spellcheck="false" data-default='<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&family=Tajawal:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --primary: #1e3a8a;
+    --accent:  #ea580c;
+    --bg:      #f0f4ff;
+    --radius:  10px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: "Cairo", sans-serif; background: #f9f9f9; padding: 20px; }
+
+  h1 {
+    font-size: 2rem;
+    font-weight: 900;
+    color: var(--primary);
+    text-align: center;
+    text-shadow: 2px 2px 8px rgba(30,58,138,0.2);
+    margin-bottom: 20px;
+    letter-spacing: 1px;
+  }
+
+  .subtitle {
+    text-align: center;
+    color: #64748b;
+    font-family: "Tajawal", sans-serif;
+    font-weight: 300;
+    font-size: 1.1rem;
+    margin-bottom: 30px;
+  }
+
+  .card {
+    background: white;
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-bottom: 16px;
+    border-right: 5px solid var(--primary);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  }
+
+  .card h2 {
+    color: var(--primary);
+    font-size: 1.2rem;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-size: 0.9rem;
+  }
+
+  .card p {
+    color: #334155;
+    line-height: 1.9;
+    font-size: 1rem;
+  }
+
+  .tag {
+    display: inline-block;
+    background: var(--bg);
+    color: var(--primary);
+    padding: 3px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    margin: 4px 2px;
+  }
+
+  .highlight { color: var(--accent); font-weight: 700; }
+  del { color: #94a3b8; }
+</style>
+</head>
+<body>
+  <h1>مرحباً بك في عالم CSS 🎨</h1>
+  <p class="subtitle">تعلّم الألوان والخطوط — اجعل صفحتك تتكلم!</p>
+
+  <div class="card">
+    <h2>📌 الخطوط</h2>
+    <p>الخط المناسب يصنع <span class="highlight">فرقاً كبيراً</span> في تجربة المستخدم. هذه الصفحة تستخدم <del>خطًا مملًا</del> خطوط Cairo وTajawal.</p>
+  </div>
+
+  <div class="card">
+    <h2>🎨 الألوان</h2>
+    <p>نظام الألوان يعتمد على <strong>متغيرات CSS</strong> — غيّر --primary في :root وكل الصفحة تتغير!</p>
+    <div>
+      <span class="tag">#1e3a8a</span>
+      <span class="tag">#ea580c</span>
+      <span class="tag">#f0f4ff</span>
+    </div>
+  </div>
+</body>
+</html>'><!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&family=Tajawal:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+  :root { --primary:#1e3a8a; --accent:#ea580c; --bg:#f0f4ff; --radius:10px; }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:"Cairo",sans-serif;background:#f9f9f9;padding:20px;}
+  h1{font-size:2rem;font-weight:900;color:var(--primary);text-align:center;text-shadow:2px 2px 8px rgba(30,58,138,0.2);margin-bottom:20px;}
+  .subtitle{text-align:center;color:#64748b;font-family:"Tajawal",sans-serif;font-weight:300;margin-bottom:30px;}
+  .card{background:white;border-radius:var(--radius);padding:20px;margin-bottom:16px;border-right:5px solid var(--primary);box-shadow:0 2px 8px rgba(0,0,0,0.06);}
+  .card h2{color:var(--primary);font-size:0.9rem;margin-bottom:8px;text-transform:uppercase;letter-spacing:2px;}
+  .card p{color:#334155;line-height:1.9;}
+  .tag{display:inline-block;background:var(--bg);color:var(--primary);padding:3px 12px;border-radius:20px;font-size:0.8rem;font-weight:700;margin:4px 2px;}
+  .highlight{color:var(--accent);font-weight:700;}
+  del{color:#94a3b8;}
+</style>
+</head>
+<body>
+  <h1>مرحباً بك في عالم CSS 🎨</h1>
+  <p class="subtitle">تعلّم الألوان والخطوط!</p>
+  <div class="card">
+    <h2>📌 الخطوط</h2>
+    <p>الخط المناسب يصنع <span class="highlight">فرقاً كبيراً</span> — هذه الصفحة تستخدم <del>خطًا مملًا</del> خط Cairo الجميل.</p>
+  </div>
+  <div class="card">
+    <h2>🎨 الألوان</h2>
+    <p>نظام الألوان بـ <strong>CSS Variables</strong> — غيّر --primary وكل شيء يتغير!</p>
+    <div><span class="tag">#1e3a8a</span><span class="tag">#ea580c</span></div>
+  </div>
+</body>
+</html></textarea>
+          <div class="try-it-preview"><iframe srcdoc="" sandbox="allow-scripts allow-same-origin allow-modals allow-popups allow-forms" title="معاينة الكود"></iframe></div>
+        </div>
+      </div>
+      <div class="tip-box"><strong>جرب:</strong> غيّر قيمة <em>--primary</em> في <em>:root</em> لأي لون تحبه وشوف كيف كل شيء يتغير!</div>
+    </div>
+  </div>
+
+  <!-- EXERCISES -->
+  <div class="section" id="exercises">
+    <h2 class="section-title"><span class="num">📝</span> التمارين <span class="en">Exercises</span></h2>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 1: نظام ألوان بـ CSS Variables</div>
+      <p>عرّف في :root متغيرات لـ: لون رئيسي، ثانوي، خلفية، نص. ثم استخدمهم في تنسيق h1 وp وbutton.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre>:root {
+  --primary:  #1e3a8a;
+  --secondary: #7c3aed;
+  --bg:        #f8fafc;
+  --text:      #1e293b;
+}
+
+h1     { color: var(--primary); }
+p      { color: var(--text); background: var(--bg); }
+button { background: var(--secondary); color: white; }</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 2: تنسيق النصوص</div>
+      <p>اكتب CSS يجعل: عنوان الصفحة بالوسط وبحجم 2.5rem، الفقرات بـ line-height: 1.9 وfont-size: 1.05rem، والروابط بدون تسطير وتظهر باللون الأزرق عند hover.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre>h1 { text-align: center; font-size: 2.5rem; }
+p  { line-height: 1.9; font-size: 1.05rem; }
+a  { text-decoration: none; color: inherit; }
+a:hover { color: #1e3a8a; }</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 3: ألوان الخلفية والشفافية</div>
+      <p>اعمل بطاقة .card بخلفية بيضاء وظل. داخلها عنوان بخلفية rgba زرقاء شفافة (0.15)، وفقرة بلون رمادي.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre>.card {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+}
+
+.card h2 {
+  background: rgba(30, 58, 138, 0.15);
+  color: #1e3a8a;
+  padding: 8px 14px;
+  border-radius: 6px;
+  margin-bottom: 12px;
+}
+
+.card p { color: #64748b; line-height: 1.8; }</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 4: typography كاملة</div>
+      <p>اكتب CSS لـ body يحدد: font-family بـ 3 خطوط fallback، font-size: 16px، color للنص، background للصفحة، line-height، وdirection: rtl.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre>body {
+  font-family: 'Cairo', 'Segoe UI', Arial, sans-serif;
+  font-size: 16px;
+  color: #1e293b;
+  background-color: #f8fafc;
+  line-height: 1.8;
+  direction: rtl;
+}</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 5: بطاقة أسعار منسّقة</div>
+      <p>اعمل بطاقة سعر فيها: السعر القديم بـ text-decoration: line-through وlون رمادي، السعر الجديد بحجم كبير ولون أخضر، وبادج "خصم 25%".</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre>.price-card { background: white; border-radius: 12px; padding: 24px; text-align: center; }
+.old-price  { text-decoration: line-through; color: #94a3b8; font-size: 1rem; }
+.new-price  { font-size: 2.5rem; font-weight: 900; color: #15803d; margin: 8px 0; }
+.badge      {
+  display: inline-block;
+  background: #dcfce7;
+  color: #15803d;
+  font-size: 0.85rem;
+  font-weight: 700;
+  padding: 4px 14px;
+  border-radius: 20px;
+  letter-spacing: 0.5px;
+}</pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="quiz-container" id="quiz">
+    <div class="quiz-intro"><p>اختبر فهمك!</p></div>
+    <div class="quiz-type-tabs">
+      <button class="qt-tab active" onclick="switchQuiz(this,'tf')">✓✗ صح وخطأ</button>
+      <button class="qt-tab" onclick="switchQuiz(this,'mc')">🔘 اختيار من متعدد</button>
+    </div>
+
+    <div class="quiz-section active" id="quiz-tf">
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">1</span><span class="q-text">CSS Variables بتُعرَّف بـ دبلة ناقص (--) في البداية مثل --primary.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="false">
+        <span class="q-num">2</span><span class="q-text">opacity: 0.5 تجعل خلفية العنصر شفافة بدون التأثير على النص.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">3</span><span class="q-text">rem هو وحدة نسبية لحجم خط عنصر html الجذر.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="false">
+        <span class="q-num">4</span><span class="q-text">font-weight: bold تعادل font-weight: 500.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">5</span><span class="q-text">RGBA يسمح بتحديد شفافية اللون بدلاً من الـ opacity التي تؤثر على كل العنصر.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <button class="quiz-submit" onclick="submitQuiz('tf')">عرض النتيجة 🎯</button>
+      <div class="quiz-result" id="result-tf"><div class="result-score" id="score-tf">0/5</div><div class="result-label">إجابات صحيحة</div><div class="result-message" id="msg-tf"></div><button class="retry-btn" onclick="retryQuiz('tf')">🔄 حاول تاني</button></div>
+    </div>
+
+    <div class="quiz-section" id="quiz-mc">
+      <div class="quiz-question" data-correct="3">
+        <span class="q-num">1</span><span class="q-text">إيه الخاصية اللي بتتحكم في مسافة ارتفاع السطر؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">letter-spacing</button>
+          <button class="q-opt" onclick="answerMC(this,1)">word-spacing</button>
+          <button class="q-opt" onclick="answerMC(this,2)">text-height</button>
+          <button class="q-opt" onclick="answerMC(this,3)">line-height</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="1">
+        <span class="q-num">2</span><span class="q-text">إيه الفرق بين color وbackground-color؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">مفيش فرق</button>
+          <button class="q-opt" onclick="answerMC(this,1)">color للنص، background-color للخلفية</button>
+          <button class="q-opt" onclick="answerMC(this,2)">color للخلفية، background-color للنص</button>
+          <button class="q-opt" onclick="answerMC(this,3)">color للبوردر فقط</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="2">
+        <span class="q-num">3</span><span class="q-text">إيه القيمة الصحيحة لـ font-weight لو عايز خط عريض جداً؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">font-weight: 400</button>
+          <button class="q-opt" onclick="answerMC(this,1)">font-weight: normal</button>
+          <button class="q-opt" onclick="answerMC(this,2)">font-weight: 900</button>
+          <button class="q-opt" onclick="answerMC(this,3)">font-weight: thin</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="0">
+        <span class="q-num">4</span><span class="q-text">إيه الكود الصح لاستخدام CSS Variable اسمها --primary-color؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">color: var(--primary-color)</button>
+          <button class="q-opt" onclick="answerMC(this,1)">color: $primary-color</button>
+          <button class="q-opt" onclick="answerMC(this,2)">color: --primary-color</button>
+          <button class="q-opt" onclick="answerMC(this,3)">color: variable(primary-color)</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="1">
+        <span class="q-num">5</span><span class="q-text">إيه خاصية CSS اللي بتشطب خط تحت النص؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">text-decoration: overline</button>
+          <button class="q-opt" onclick="answerMC(this,1)">text-decoration: line-through</button>
+          <button class="q-opt" onclick="answerMC(this,2)">text-decoration: underline</button>
+          <button class="q-opt" onclick="answerMC(this,3)">text-style: strike</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <button class="quiz-submit" onclick="submitQuiz('mc')">عرض النتيجة 🎯</button>
+      <div class="quiz-result" id="result-mc"><div class="result-score" id="score-mc">0/5</div><div class="result-label">إجابات صحيحة</div><div class="result-message" id="msg-mc"></div><button class="retry-btn" onclick="retryQuiz('mc')">🔄 حاول تاني</button></div>
+    </div>
+  </div>
+
+  <div class="lesson-nav">
+    <a href="./lesson-06.html" class="nav-btn"><span>⬅️</span><span>الدرس السابق</span></a>
+    <button class="nav-btn complete-btn" id="completeBtn" onclick="markComplete(this)"><span>✅</span><span>علّم كمكتمل</span></button>
+    <a href="./lesson-08.html" class="nav-btn"><span>الدرس التالي</span><span>➡️</span></a>
+  </div>
+
+  <div class="notebook-footer">
+    <h3>🎉 صفحاتك بقت ملوّنة ومُنسَّقة!</h3>
+    <p>الألوان والخطوط هي روح التصميم ❤️<br><strong>الدرس التالي: Box Model — أسرار المسافات! 📦</strong></p>
+  </div>
+</div>
+
+<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">⬆️</button>
+<div class="toast" id="toast"></div>
+
+<script src="../../js/data/courses.js"></script>
+<script src="../../js/progress.js"></script>
+<script src="../../js/lesson-editor.js"></script>
+<script>
+const COURSE_ID='frontend',LESSON_ID=7,TOTAL=32;
+function toggleSolution(b){const s=b.nextElementSibling;s.classList.toggle('show');b.textContent=s.classList.contains('show')?'إخفاء الحل ▲':'عرض الحل ▼';}
+function copyCode(b){const p=b.closest('.code-box').querySelector('pre');navigator.clipboard.writeText(p.innerText).then(()=>{b.classList.add('copied');b.textContent='✓ تم النسخ';setTimeout(()=>{b.classList.remove('copied');b.textContent='📋 نسخ';},2000);});}
+function runCode(b){const t=b.closest('.try-it');t.querySelector('iframe').srcdoc=t.querySelector('.try-it-editor').value;}
+function resetCode(b){const t=b.closest('.try-it'),e=t.querySelector('.try-it-editor');e.value=e.dataset.default;t.querySelector('iframe').srcdoc=e.value;}
+window.addEventListener('load',()=>{document.querySelectorAll('.try-it').forEach(t=>{const e=t.querySelector('.try-it-editor');t.querySelector('iframe').srcdoc=e.value;});});
+function switchQuiz(b,t){document.querySelectorAll('.qt-tab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.quiz-section').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.getElementById('quiz-'+t).classList.add('active');}
+const answers={tf:{},mc:{}};
+function answerTF(b,v){const q=b.closest('.quiz-question'),i=Array.from(q.parentNode.querySelectorAll('.quiz-question')).indexOf(q);q.querySelectorAll('.q-opt').forEach(o=>o.classList.remove('selected'));b.classList.add('selected');answers.tf[i]=v;}
+function answerMC(b,i){const q=b.closest('.quiz-question'),qi=Array.from(q.parentNode.querySelectorAll('.quiz-question')).indexOf(q);q.querySelectorAll('.q-opt').forEach(o=>o.classList.remove('selected'));b.classList.add('selected');answers.mc[qi]=i;}
+function submitQuiz(type){const sec=document.getElementById('quiz-'+type),qs=sec.querySelectorAll('.quiz-question');let c=0;qs.forEach((q,i)=>{const ca=type==='tf'?(q.dataset.correct==='true'):parseInt(q.dataset.correct),ua=answers[type][i],fb=q.querySelector('.q-feedback'),opts=q.querySelectorAll('.q-opt');opts.forEach(o=>{o.classList.remove('selected');o.disabled=true;});if(ua===undefined){fb.className='q-feedback wrong show';fb.textContent='⚠️ ما اخترتش إجابة!';return;}if(ua===ca){c++;fb.className='q-feedback correct show';fb.textContent='✓ إجابة صحيحة!';if(type==='tf')opts[ca?0:1].classList.add('correct');else opts[ca].classList.add('correct');}else{fb.className='q-feedback wrong show';if(type==='tf'){opts[ca?0:1].classList.add('correct');opts[ua?0:1].classList.add('wrong');fb.textContent='✗ خطأ.';}else{opts[ca].classList.add('correct');opts[ua].classList.add('wrong');fb.textContent='✗ الإجابة بالأخضر.';}}});const r=document.getElementById('result-'+type);document.getElementById('score-'+type).textContent=c+'/'+qs.length;const m=document.getElementById('msg-'+type);if(c===qs.length){m.textContent='🏆 ممتاز 100%!';m.className='result-message excellent';}else if(c>=3){m.textContent='👍 جيد!';m.className='result-message good';}else{m.textContent='📚 راجع الدرس.';m.className='result-message try-again';}r.classList.add('show');r.scrollIntoView({behavior:'smooth',block:'center'});}
+function retryQuiz(type){const sec=document.getElementById('quiz-'+type);sec.querySelectorAll('.q-opt').forEach(o=>{o.classList.remove('selected','correct','wrong');o.disabled=false;});sec.querySelectorAll('.q-feedback').forEach(f=>{f.classList.remove('show','correct','wrong');f.textContent='';});document.getElementById('result-'+type).classList.remove('show');answers[type]={};}
+function markComplete(btn){const done=Progress.toggleLessonComplete(COURSE_ID,LESSON_ID);btn.classList.toggle('completed',done);btn.querySelector('span:last-child').textContent=done?'مكتمل! ⭐':'علّم كمكتمل';showToast(done?'🎉 أكملت الدرس السابع!':'تم إلغاء الإكمال');}
+if(Progress.isLessonComplete(COURSE_ID,LESSON_ID)){const b=document.getElementById('completeBtn');b.classList.add('completed');b.querySelector('span:last-child').textContent='مكتمل! ⭐';}
+(function(){const p=Progress.getCourseProgress(COURSE_ID,TOTAL);document.getElementById('progFill').style.width=p+'%';document.getElementById('progText').textContent=p+'%';})();
+function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
+window.addEventListener('scroll',()=>{document.getElementById('scrollTop').classList.toggle('show',window.scrollY>300);});
+document.querySelectorAll('.toc-card a').forEach(l=>{l.addEventListener('click',e=>{e.preventDefault();const t=document.querySelector(l.getAttribute('href'));if(t)t.scrollIntoView({behavior:'smooth',block:'start'});});});
+</script>
+</body>
+</html>

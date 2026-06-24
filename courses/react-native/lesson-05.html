@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-V2NCKVL16D"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-V2NCKVL16D');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>المكونات الأساسية — دفتر البرمجة</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=Cairo:wght@300;400;500;600;700;900&family=Caveat:wght@400;700&family=Fira+Code:wght@400;500;600&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../css/shared.css">
+<link rel="stylesheet" href="../../css/notebook.css">
+<style>
+body { padding: 20px 10px; }
+
+/* phone frame */
+.phone-frame {
+  width: 260px; margin: 20px auto;
+  border: 12px solid #1e293b; border-radius: 34px;
+  background: white; box-shadow: 0 16px 40px rgba(0,0,0,.3);
+  overflow: hidden;
+}
+.phone-notch {
+  background: #1e293b; height: 20px;
+  display: flex; align-items: center; justify-content: center;
+}
+.phone-notch::before {
+  content: ''; width: 56px; height: 12px;
+  background: #0f172a; border-radius: 0 0 8px 8px;
+}
+.phone-screen { min-height: 340px; }
+
+/* component hero cards */
+.comp-hero {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(200px,1fr));
+  gap: 14px; margin: 16px 0;
+}
+.ch-card {
+  border-radius: 14px; padding: 18px;
+  border: 2px solid transparent;
+}
+.ch-card.view   { background: #eff6ff; border-color: #3b82f6; }
+.ch-card.text   { background: #fdf4ff; border-color: #a855f7; }
+.ch-card.image  { background: #fff7ed; border-color: #f97316; }
+.ch-card.scroll { background: #f0fdf4; border-color: #22c55e; }
+.ch-card.touch  { background: #fff1f2; border-color: #f43f5e; }
+.ch-icon  { font-size: 2rem; margin-bottom: 8px; }
+.ch-name  { font-family: 'Fira Code', monospace; font-weight: 700; font-size: .95rem; margin-bottom: 4px; }
+.ch-desc  { font-size: .82rem; color: var(--text-muted); line-height: 1.6; }
+.ch-equiv { display: inline-block; background: rgba(0,0,0,.07); border-radius: 4px;
+  font-family: 'Fira Code', monospace; font-size: .72rem; padding: 2px 7px; margin-top: 6px; }
+
+/* props table */
+.props-table {
+  width: 100%; border-collapse: collapse; margin: 12px 0; font-size: .85rem;
+}
+.props-table th {
+  background: #1e293b; color: white; padding: 8px 12px; text-align: right;
+  font-weight: 600;
+}
+.props-table td { padding: 8px 12px; border-bottom: 1px solid var(--border); }
+.props-table tr:last-child td { border-bottom: none; }
+.props-table tr:nth-child(even) td { background: #f8fafc; }
+.prop-name { font-family: 'Fira Code', monospace; color: #0369a1; font-weight: 600; }
+.prop-type { font-family: 'Fira Code', monospace; color: #7c3aed; font-size: .78rem; }
+
+/* html vs rn compare */
+.vs-table {
+  width: 100%; border-collapse: collapse; margin: 12px 0; font-size: .84rem;
+}
+.vs-table th { padding: 8px 14px; text-align: center; }
+.vs-table th.html-h { background: #fef3c7; color: #92400e; border-radius: 6px 0 0 0; }
+.vs-table th.rn-h   { background: #e0f2fe; color: #0369a1; border-radius: 0 6px 0 0; }
+.vs-table td { padding: 7px 14px; border-bottom: 1px solid var(--border); text-align: center; }
+.vs-table td:first-child { background: #fffbeb; font-family: 'Fira Code',monospace; font-size: .8rem; }
+.vs-table td:last-child  { background: #f0f9ff; font-family: 'Fira Code',monospace; font-size: .8rem; }
+
+/* step build */
+.build-step {
+  display: flex; gap: 14px; margin: 16px 0; align-items: flex-start;
+}
+.bs-num {
+  background: #0ea5e9; color: white; width: 28px; height: 28px;
+  border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  font-weight: 800; font-size: .85rem; flex-shrink: 0; margin-top: 2px;
+}
+.bs-content { flex: 1; }
+.bs-title { font-weight: 700; margin-bottom: 6px; font-size: .95rem; }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="crumbs">
+    <a href="../../index.html">🏠 الرئيسية</a>
+    <span class="sep">/</span>
+    <a href="./index.html">📱 React Native</a>
+    <span class="sep">/</span>
+    <span class="current">🧱 الدرس 5: المكونات الأساسية</span>
+  </div>
+  <div class="progress-mini">
+    <div class="progress-bar-mini"><div class="progress-fill-mini" id="progFill"></div></div>
+    <span id="progText">0%</span>
+  </div>
+</div>
+
+<div class="notebook">
+
+  <div class="notebook-header">
+    <div class="lesson-tag">🧱 الدرس الخامس</div>
+    <h1><span class="sparkle">✦</span> المكونات الأساسية <span class="sparkle">✦</span></h1>
+    <div class="lesson-meta">
+      <span>⏱️ 45 دقيقة</span>
+      <span>📊 مبتدئ+</span>
+      <span>🎯 5 تمارين + اختبار</span>
+    </div>
+  </div>
+
+  <div class="toc-card">
+    <h2>📑 فهرس الدرس</h2>
+    <ol>
+      <li><a href="#s1">نظرة عامة — المكونات الخمسة</a></li>
+      <li><a href="#s2">View — الحاوية الأساسية</a></li>
+      <li><a href="#s3">Text — عرض النصوص</a></li>
+      <li><a href="#s4">Image — عرض الصور</a></li>
+      <li><a href="#s5">ScrollView — التمرير</a></li>
+      <li><a href="#s6">TouchableOpacity — الضغط والتفاعل</a></li>
+      <li><a href="#s7">مقارنة مع HTML</a></li>
+      <li><a href="#s8">محرر تفاعلي — UI Builder</a></li>
+      <li><a href="#exercises">التمارين</a></li>
+      <li><a href="#quiz">اختبر فهمك</a></li>
+    </ol>
+  </div>
+
+  <!-- S1 -->
+  <div class="section" id="s1">
+    <h2 class="section-title"><span class="num">.1</span> نظرة عامة — المكونات الخمسة <span class="en">Core Components</span></h2>
+    <div class="content">
+      <p>كل واجهة في React Native مهما كانت معقدة، تتكون من هذه المكونات الخمسة الأساسية. تخيّلها كأدوات النجار الأساسية — منشار، مطرقة، مفك — تبني بها أي شيء.</p>
+
+      <div class="comp-hero">
+        <div class="ch-card view">
+          <div class="ch-icon">📦</div>
+          <div class="ch-name">&lt;View&gt;</div>
+          <div class="ch-desc">الحاوية الأساسية. تجمع المكونات وتُطبّق Flexbox. كل واجهة تبدأ بـ View.</div>
+          <span class="ch-equiv">&lt;div&gt; في HTML</span>
+        </div>
+        <div class="ch-card text">
+          <div class="ch-icon">📝</div>
+          <div class="ch-name">&lt;Text&gt;</div>
+          <div class="ch-desc">أي نص في التطبيق يجب أن يكون داخل Text. تدعم تنسيق الخط واللون والحجم.</div>
+          <span class="ch-equiv">&lt;p&gt; &lt;h1&gt; &lt;span&gt;</span>
+        </div>
+        <div class="ch-card image">
+          <div class="ch-icon">🖼️</div>
+          <div class="ch-name">&lt;Image&gt;</div>
+          <div class="ch-desc">لعرض الصور سواء من الجهاز أو من الإنترنت. تحتاج تحديد حجم دائماً.</div>
+          <span class="ch-equiv">&lt;img&gt; في HTML</span>
+        </div>
+        <div class="ch-card scroll">
+          <div class="ch-icon">📜</div>
+          <div class="ch-name">&lt;ScrollView&gt;</div>
+          <div class="ch-desc">تُضيف إمكانية التمرير. للمحتوى الأطول من الشاشة. تدعم التمرير الرأسي والأفقي.</div>
+          <span class="ch-equiv">overflow: scroll</span>
+        </div>
+        <div class="ch-card touch">
+          <div class="ch-icon">👆</div>
+          <div class="ch-name">&lt;TouchableOpacity&gt;</div>
+          <div class="ch-desc">يجعل أي مكوّن قابلاً للضغط مع تأثير تلاشي بصري. الأساس لبناء الأزرار.</div>
+          <span class="ch-equiv">&lt;button&gt; &lt;a&gt;</span>
+        </div>
+      </div>
+
+      <div class="tip-box"><strong>قاعدة 90/10:</strong> 90% من الواجهات في RN تبنيها بهذه المكونات الخمسة فقط. باقي المكونات تأتي لاحقاً عند الحاجة.</div>
+    </div>
+  </div>
+
+  <!-- S2 -->
+  <div class="section" id="s2">
+    <h2 class="section-title"><span class="num">.2</span> View — الحاوية الأساسية <span class="en">View Component</span></h2>
+    <div class="content">
+      <p>View هي الطوبة الأساسية في بناء واجهات RN. وحدها لا تعرض شيئاً مرئياً — لكنها تُنظّم وتُرتّب كل ما بداخلها.</p>
+
+      <div class="code-box">
+<div class="code-header"><span>📦 View الأساسية</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-name">import</span> { View, Text, StyleSheet } <span class="tag-name">from</span> <span class="attr-val">'react-native'</span>;
+
+<span class="tag-name">export default function</span> <span class="attr">App</span>() {
+  <span class="tag-name">return</span> (
+    <span class="comment">{/* View خارجية — تملأ الشاشة كلها */}</span>
+    &lt;<span class="attr">View</span> style={styles.screen}&gt;
+
+      <span class="comment">{/* View داخلية — بطاقة */}</span>
+      &lt;<span class="attr">View</span> style={styles.card}&gt;
+        &lt;<span class="attr">Text</span>&gt;محتوى البطاقة&lt;/<span class="attr">Text</span>&gt;
+      &lt;/<span class="attr">View</span>&gt;
+
+      <span class="comment">{/* View أفقية — صف */}</span>
+      &lt;<span class="attr">View</span> style={styles.row}&gt;
+        &lt;<span class="attr">Text</span>&gt;يسار&lt;/<span class="attr">Text</span>&gt;
+        &lt;<span class="attr">Text</span>&gt;يمين&lt;/<span class="attr">Text</span>&gt;
+      &lt;/<span class="attr">View</span>&gt;
+
+    &lt;/<span class="attr">View</span>&gt;
+  );
+}
+
+<span class="tag-name">const</span> <span class="attr">styles</span> = StyleSheet.create({
+  screen: { flex: <span class="attr-val">1</span>, backgroundColor: <span class="attr-val">'#f0f9ff'</span>, padding: <span class="attr-val">16</span> },
+  card: {
+    backgroundColor: <span class="attr-val">'white'</span>, borderRadius: <span class="attr-val">12</span>,
+    padding: <span class="attr-val">16</span>, marginBottom: <span class="attr-val">12</span>,
+    elevation: <span class="attr-val">3</span>,                      <span class="comment">// Android shadow</span>
+    shadowColor: <span class="attr-val">'#000'</span>,               <span class="comment">// iOS shadow</span>
+    shadowOffset: { width: <span class="attr-val">0</span>, height: <span class="attr-val">2</span> },
+    shadowOpacity: <span class="attr-val">0.1</span>,
+  },
+  row: { flexDirection: <span class="attr-val">'row'</span>, justifyContent: <span class="attr-val">'space-between'</span> },
+});</pre>
+      </div>
+
+      <p><strong>الخصائص المهمة لـ View:</strong></p>
+      <table class="props-table">
+        <thead><tr><th>الخاصية</th><th>النوع</th><th>الاستخدام</th></tr></thead>
+        <tbody>
+          <tr><td class="prop-name">style</td><td class="prop-type">object | array</td><td>الأنماط (مطلوب في الغالب)</td></tr>
+          <tr><td class="prop-name">onLayout</td><td class="prop-type">function</td><td>يُنفَّذ عند حساب أبعاد العنصر</td></tr>
+          <tr><td class="prop-name">accessible</td><td class="prop-type">boolean</td><td>لدعم إمكانية الوصول</td></tr>
+          <tr><td class="prop-name">testID</td><td class="prop-type">string</td><td>للاختبارات التلقائية</td></tr>
+          <tr><td class="prop-name">pointerEvents</td><td class="prop-type">string</td><td>التحكم في استقبال أحداث الضغط</td></tr>
+        </tbody>
+      </table>
+
+      <div class="info-box"><strong>Flexbox في View:</strong> View تستخدم Flexbox تلقائياً بـ <code>flexDirection: 'column'</code>. لصف أفقي: <code>flexDirection: 'row'</code>. للتوسيط: <code>alignItems: 'center'</code> و <code>justifyContent: 'center'</code>.</div>
+    </div>
+  </div>
+
+  <!-- S3 -->
+  <div class="section" id="s3">
+    <h2 class="section-title"><span class="num">.3</span> Text — عرض النصوص <span class="en">Text Component</span></h2>
+    <div class="content">
+      <p>كل نص في RN — عنوان، فقرة، رقم، رمز — يجب أن يكون داخل <code>&lt;Text&gt;</code>. لا استثناءات!</p>
+
+      <div class="code-box">
+<div class="code-header"><span>📝 Text والخصائص المهمة</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-name">import</span> { Text } <span class="tag-name">from</span> <span class="attr-val">'react-native'</span>;
+
+<span class="comment">// 1. نص عادي</span>
+&lt;<span class="attr">Text</span>&gt;مرحباً بالعالم&lt;/<span class="attr">Text</span>&gt;
+
+<span class="comment">// 2. مع تنسيق</span>
+&lt;<span class="attr">Text</span> style={{
+  fontSize: <span class="attr-val">24</span>,
+  fontWeight: <span class="attr-val">'bold'</span>,
+  color: <span class="attr-val">'#0369a1'</span>,
+  textAlign: <span class="attr-val">'center'</span>,
+  letterSpacing: <span class="attr-val">1</span>,
+  lineHeight: <span class="attr-val">32</span>,
+}}&gt;
+  عنوان رئيسي
+&lt;/<span class="attr">Text</span>&gt;
+
+<span class="comment">// 3. تقليص النص الطويل (مفيد للبطاقات)</span>
+&lt;<span class="attr">Text</span>
+  numberOfLines={<span class="attr-val">2</span>}
+  ellipsizeMode=<span class="attr-val">"tail"</span>
+&gt;
+  هذا نص طويل جداً سيتم اقتطاعه بعد سطرين...
+&lt;/<span class="attr">Text</span>&gt;
+
+<span class="comment">// 4. نص قابل للضغط</span>
+&lt;<span class="attr">Text</span> onPress={() => alert(<span class="attr-val">'ضُغط!'</span>)}&gt;
+  اضغط هنا
+&lt;/<span class="attr">Text</span>&gt;
+
+<span class="comment">// 5. نصوص متداخلة (مزج أنماط)</span>
+&lt;<span class="attr">Text</span> style={{ fontSize: <span class="attr-val">16</span> }}&gt;
+  مرحباً &lt;<span class="attr">Text</span> style={{ color: <span class="attr-val">'#0ea5e9'</span>, fontWeight: <span class="attr-val">'bold'</span> }}&gt;
+    أحمد
+  &lt;/<span class="attr">Text</span>&gt;، كيف حالك؟
+&lt;/<span class="attr">Text</span>&gt;</pre>
+      </div>
+
+      <table class="props-table">
+        <thead><tr><th>الخاصية</th><th>النوع</th><th>الوظيفة</th></tr></thead>
+        <tbody>
+          <tr><td class="prop-name">numberOfLines</td><td class="prop-type">number</td><td>الحد الأقصى لعدد الأسطر</td></tr>
+          <tr><td class="prop-name">ellipsizeMode</td><td class="prop-type">'tail' | 'head' | 'middle'</td><td>موضع ... عند الاقتطاع</td></tr>
+          <tr><td class="prop-name">selectable</td><td class="prop-type">boolean</td><td>السماح بتحديد النص ونسخه</td></tr>
+          <tr><td class="prop-name">onPress</td><td class="prop-type">function</td><td>حدث الضغط على النص</td></tr>
+          <tr><td class="prop-name">onLongPress</td><td class="prop-type">function</td><td>حدث الضغط المطوّل</td></tr>
+        </tbody>
+      </table>
+
+      <div class="warning-box"><strong>خطأ شائع جداً:</strong><br>
+      ❌ <code>&lt;View&gt;مرحباً&lt;/View&gt;</code> — تعطل التطبيق!<br>
+      ✅ <code>&lt;View&gt;&lt;Text&gt;مرحباً&lt;/Text&gt;&lt;/View&gt;</code> — صحيح!</div>
+    </div>
+  </div>
+
+  <!-- S4 -->
+  <div class="section" id="s4">
+    <h2 class="section-title"><span class="num">.4</span> Image — عرض الصور <span class="en">Image Component</span></h2>
+    <div class="content">
+      <p>مكوّن Image يعرض الصور من مصدرين: صور محلية (داخل مشروعك) أو صور من الإنترنت (URL).</p>
+
+      <div class="code-box">
+<div class="code-header"><span>🖼️ طرق تحميل الصور</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-name">import</span> { Image } <span class="tag-name">from</span> <span class="attr-val">'react-native'</span>;
+
+<span class="comment">// 1. صورة محلية (داخل المشروع)</span>
+<span class="tag-name">import</span> logo <span class="tag-name">from</span> <span class="attr-val">'./assets/logo.png'</span>;
+
+&lt;<span class="attr">Image</span>
+  source={logo}                  <span class="comment">// مصدر محلي</span>
+  style={{ width: <span class="attr-val">100</span>, height: <span class="attr-val">100</span> }}
+/&gt;
+
+<span class="comment">// 2. صورة من الإنترنت</span>
+&lt;<span class="attr">Image</span>
+  source={{ uri: <span class="attr-val">'https://picsum.photos/200'</span> }}
+  style={{ width: <span class="attr-val">200</span>, height: <span class="attr-val">200</span>, borderRadius: <span class="attr-val">100</span> }}
+/&gt;
+
+<span class="comment">// 3. مع resizeMode (كيفية ملء المساحة)</span>
+&lt;<span class="attr">Image</span>
+  source={{ uri: <span class="attr-val">'https://picsum.photos/400/200'</span> }}
+  style={{ width: <span class="attr-val">'100%'</span>, height: <span class="attr-val">150</span> }}
+  resizeMode=<span class="attr-val">"cover"</span>             <span class="comment">// cover | contain | stretch | center</span>
+/&gt;
+
+<span class="comment">// 4. مع صورة بديلة عند الخطأ</span>
+&lt;<span class="attr">Image</span>
+  source={{ uri: imageUrl }}
+  defaultSource={require(<span class="attr-val">'./assets/placeholder.png'</span>)}
+  style={{ width: <span class="attr-val">80</span>, height: <span class="attr-val">80</span> }}
+/&gt;</pre>
+      </div>
+
+      <p><strong>resizeMode — كيفية ملء الصورة للمساحة:</strong></p>
+      <table class="props-table">
+        <thead><tr><th>القيمة</th><th>الوصف</th><th>متى تستخدمها</th></tr></thead>
+        <tbody>
+          <tr><td class="prop-name">cover</td><td>تملأ المساحة وتقطع الزائد</td><td>صور الغلاف والخلفيات</td></tr>
+          <tr><td class="prop-name">contain</td><td>تظهر كاملة داخل المساحة</td><td>الشعارات والأيقونات</td></tr>
+          <tr><td class="prop-name">stretch</td><td>تمتد لتملأ المساحة بالضبط</td><td>نادراً — تشوّه الصورة</td></tr>
+          <tr><td class="prop-name">center</td><td>تتوسط دون تكبير أو تقليص</td><td>الصور الصغيرة</td></tr>
+        </tbody>
+      </table>
+
+      <div class="tip-box"><strong>مهم:</strong> Image في RN دائماً تحتاج <code>width</code> و <code>height</code> محددين في الـ style. بدونهما لن تظهر الصورة!</div>
+
+      <div class="sub-header">مثال — صور دائرية (الشائع في الصور الشخصية):</div>
+      <div class="code-box blue">
+<div class="code-header"><span>👤 صورة دائرية</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre>&lt;<span class="attr">Image</span>
+  source={{ uri: <span class="attr-val">'https://picsum.photos/seed/user/200'</span> }}
+  style={{
+    width: <span class="attr-val">80</span>,
+    height: <span class="attr-val">80</span>,
+    borderRadius: <span class="attr-val">40</span>,          <span class="comment">// نصف العرض/الارتفاع = دائرة</span>
+    borderWidth: <span class="attr-val">3</span>,
+    borderColor: <span class="attr-val">'#0ea5e9'</span>,
+  }}
+  resizeMode=<span class="attr-val">"cover"</span>
+/&gt;</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- S5 -->
+  <div class="section" id="s5">
+    <h2 class="section-title"><span class="num">.5</span> ScrollView — التمرير <span class="en">ScrollView Component</span></h2>
+    <div class="content">
+      <p>عندما يكون المحتوى أطول من ارتفاع الشاشة، تحتاج ScrollView. بدونها سيُقطع المحتوى الزائد ولن يرى المستخدم باقيه.</p>
+
+      <div class="code-box">
+<div class="code-header"><span>📜 ScrollView الأساسية</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-name">import</span> { ScrollView, View, Text } <span class="tag-name">from</span> <span class="attr-val">'react-native'</span>;
+
+<span class="comment">// تمرير رأسي (الافتراضي)</span>
+&lt;<span class="attr">ScrollView</span>
+  contentContainerStyle={{ padding: <span class="attr-val">16</span> }}
+  showsVerticalScrollIndicator={<span class="attr-val">false</span>}    <span class="comment">// إخفاء شريط التمرير</span>
+&gt;
+  {<span class="comment">/* أي عدد من العناصر */</span>}
+  &lt;<span class="attr">View</span> style={{ height: <span class="attr-val">200</span>, backgroundColor: <span class="attr-val">'#dbeafe'</span> }} /&gt;
+  &lt;<span class="attr">View</span> style={{ height: <span class="attr-val">200</span>, backgroundColor: <span class="attr-val">'#fce7f3'</span> }} /&gt;
+  &lt;<span class="attr">View</span> style={{ height: <span class="attr-val">200</span>, backgroundColor: <span class="attr-val">'#d1fae5'</span> }} /&gt;
+&lt;/<span class="attr">ScrollView</span>&gt;
+
+<span class="comment">// تمرير أفقي (مثل قوائم Netflix)</span>
+&lt;<span class="attr">ScrollView</span>
+  horizontal                                  <span class="comment">// أفقي</span>
+  showsHorizontalScrollIndicator={<span class="attr-val">false</span>}
+  contentContainerStyle={{ gap: <span class="attr-val">10</span>, padding: <span class="attr-val">8</span> }}
+&gt;
+  &lt;<span class="attr">View</span> style={{ width: <span class="attr-val">140</span>, height: <span class="attr-val">100</span>, backgroundColor: <span class="attr-val">'#dbeafe'</span>, borderRadius: <span class="attr-val">10</span> }} /&gt;
+  &lt;<span class="attr">View</span> style={{ width: <span class="attr-val">140</span>, height: <span class="attr-val">100</span>, backgroundColor: <span class="attr-val">'#fce7f3'</span>, borderRadius: <span class="attr-val">10</span> }} /&gt;
+  &lt;<span class="attr">View</span> style={{ width: <span class="attr-val">140</span>, height: <span class="attr-val">100</span>, backgroundColor: <span class="attr-val">'#d1fae5'</span>, borderRadius: <span class="attr-val">10</span> }} /&gt;
+&lt;/<span class="attr">ScrollView</span>&gt;</pre>
+      </div>
+
+      <table class="props-table">
+        <thead><tr><th>الخاصية</th><th>النوع</th><th>الوظيفة</th></tr></thead>
+        <tbody>
+          <tr><td class="prop-name">horizontal</td><td class="prop-type">boolean</td><td>تمرير أفقي بدل الرأسي</td></tr>
+          <tr><td class="prop-name">contentContainerStyle</td><td class="prop-type">object</td><td>نمط محتوى التمرير (للـ padding مثلاً)</td></tr>
+          <tr><td class="prop-name">showsVerticalScrollIndicator</td><td class="prop-type">boolean</td><td>إظهار/إخفاء شريط التمرير</td></tr>
+          <tr><td class="prop-name">onScroll</td><td class="prop-type">function</td><td>حدث التمرير (للأنيميشن)</td></tr>
+          <tr><td class="prop-name">refreshControl</td><td class="prop-type">element</td><td>تحديث بسحب الصفحة للأسفل</td></tr>
+          <tr><td class="prop-name">keyboardDismissMode</td><td class="prop-type">string</td><td>إغلاق لوحة المفاتيح عند التمرير</td></tr>
+        </tbody>
+      </table>
+
+      <div class="warning-box"><strong>ScrollView vs FlatList:</strong> ScrollView تُحمّل كل المحتوى دفعة واحدة. لو عندك قائمة طويلة (50+ عنصر) استخدم FlatList (درس 12) لأداء أفضل.</div>
+    </div>
+  </div>
+
+  <!-- S6 -->
+  <div class="section" id="s6">
+    <h2 class="section-title"><span class="num">.6</span> TouchableOpacity — الضغط والتفاعل <span class="en">TouchableOpacity</span></h2>
+    <div class="content">
+      <p>في React Native لا يوجد <code>onClick</code>. بدلاً منه نلف العناصر بـ TouchableOpacity الذي يعطي تأثير تلاشي جميل عند الضغط.</p>
+
+      <div class="code-box">
+<div class="code-header"><span>👆 TouchableOpacity — الأساس</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-name">import</span> { TouchableOpacity, Text, View } <span class="tag-name">from</span> <span class="attr-val">'react-native'</span>;
+
+<span class="comment">// زر بسيط</span>
+&lt;<span class="attr">TouchableOpacity</span>
+  onPress={() => alert(<span class="attr-val">'تم الضغط!'</span>)}
+  activeOpacity={<span class="attr-val">0.7</span>}           <span class="comment">// 0-1: درجة الشفافية عند الضغط</span>
+  style={styles.button}
+&gt;
+  &lt;<span class="attr">Text</span> style={styles.buttonText}&gt;اضغط هنا&lt;/<span class="attr">Text</span>&gt;
+&lt;/<span class="attr">TouchableOpacity</span>&gt;
+
+<span class="comment">// بطاقة قابلة للضغط</span>
+&lt;<span class="attr">TouchableOpacity</span>
+  onPress={() => navigateTo(<span class="attr-val">'Details'</span>)}
+  onLongPress={() => showOptions()}       <span class="comment">// ضغط مطوّل</span>
+  style={styles.card}
+&gt;
+  &lt;<span class="attr">Image</span> source={...} style={styles.cardImg} /&gt;
+  &lt;<span class="attr">Text</span> style={styles.cardTitle}&gt;عنوان&lt;/<span class="attr">Text</span>&gt;
+&lt;/<span class="attr">TouchableOpacity</span>&gt;
+
+<span class="comment">// زر معطل (disabled)</span>
+&lt;<span class="attr">TouchableOpacity</span>
+  onPress={handleSubmit}
+  disabled={isLoading}
+  style={[styles.button, isLoading && styles.disabled]}
+&gt;
+  &lt;<span class="attr">Text</span>&gt;{isLoading ? <span class="attr-val">'جاري الإرسال...'</span> : <span class="attr-val">'إرسال'</span>}&lt;/<span class="attr">Text</span>&gt;
+&lt;/<span class="attr">TouchableOpacity</span>&gt;</pre>
+      </div>
+
+      <div class="code-box blue">
+<div class="code-header"><span>🎨 تصميم زر احترافي</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-name">const</span> <span class="attr">styles</span> = StyleSheet.create({
+  button: {
+    backgroundColor: <span class="attr-val">'#0ea5e9'</span>,
+    paddingVertical: <span class="attr-val">14</span>,
+    paddingHorizontal: <span class="attr-val">28</span>,
+    borderRadius: <span class="attr-val">999</span>,            <span class="comment">// حواف دائرية كاملة</span>
+    alignItems: <span class="attr-val">'center'</span>,
+    shadowColor: <span class="attr-val">'#0ea5e9'</span>,
+    shadowOffset: { width: <span class="attr-val">0</span>, height: <span class="attr-val">4</span> },
+    shadowOpacity: <span class="attr-val">0.3</span>,
+    elevation: <span class="attr-val">6</span>,
+  },
+  buttonText: {
+    color: <span class="attr-val">'white'</span>, fontSize: <span class="attr-val">16</span>, fontWeight: <span class="attr-val">'700'</span>,
+  },
+  disabled: {
+    backgroundColor: <span class="attr-val">'#94a3b8'</span>, shadowOpacity: <span class="attr-val">0</span>, elevation: <span class="attr-val">0</span>,
+  },
+});</pre>
+      </div>
+
+      <div class="info-box"><strong>متى تستخدم ماذا؟</strong><br>
+      • <code>TouchableOpacity</code> — للأزرار، البطاقات، القوائم (أشيع خيار)<br>
+      • <code>Pressable</code> — للتحكم الدقيق في حالات الضغط (أحدث)<br>
+      • <code>TouchableHighlight</code> — لو تريد تغيير اللون بدل الشفافية</div>
+    </div>
+  </div>
+
+  <!-- S7 -->
+  <div class="section" id="s7">
+    <h2 class="section-title"><span class="num">.7</span> مقارنة مع HTML <span class="en">HTML vs RN</span></h2>
+    <div class="content">
+      <p>لو قادم من HTML/CSS، هذه المقارنة ستوضح الصورة كاملاً دفعة واحدة:</p>
+
+      <table class="vs-table">
+        <thead>
+          <tr>
+            <th class="html-h">🌐 HTML</th>
+            <th class="rn-h">📱 React Native</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>&lt;div&gt;</td><td>&lt;View&gt;</td></tr>
+          <tr><td>&lt;p&gt;, &lt;h1&gt;...&lt;h6&gt;, &lt;span&gt;</td><td>&lt;Text&gt;</td></tr>
+          <tr><td>&lt;img&gt;</td><td>&lt;Image&gt;</td></tr>
+          <tr><td>overflow: scroll</td><td>&lt;ScrollView&gt;</td></tr>
+          <tr><td>&lt;button&gt;, &lt;a&gt;</td><td>&lt;TouchableOpacity&gt;</td></tr>
+          <tr><td>&lt;input type="text"&gt;</td><td>&lt;TextInput&gt;</td></tr>
+          <tr><td>&lt;ul&gt; &lt;li&gt;</td><td>&lt;FlatList&gt;</td></tr>
+          <tr><td>className="..."</td><td>style={styles.name}</td></tr>
+          <tr><td>onClick</td><td>onPress</td></tr>
+          <tr><td>font-size: 16px</td><td>fontSize: 16</td></tr>
+          <tr><td>background-color</td><td>backgroundColor</td></tr>
+          <tr><td>margin-top: 10px</td><td>marginTop: 10</td></tr>
+          <tr><td>display: flex</td><td>افتراضي دائماً</td></tr>
+          <tr><td>flex-direction: row</td><td>flexDirection: 'row'</td></tr>
+        </tbody>
+      </table>
+
+      <div class="tip-box"><strong>اختصار:</strong> كل خاصية CSS تتحول من kebab-case (<code>font-size</code>) إلى camelCase (<code>fontSize</code>) في RN. الأرقام بدون px. الأسماء كـ strings.</div>
+    </div>
+  </div>
+
+  <!-- S8 -->
+  <div class="section" id="s8">
+    <h2 class="section-title"><span class="num">.8</span> محرر تفاعلي — UI Builder <span class="en">Live Editor</span></h2>
+    <div class="content"><p>ابنِ واجهة كاملة باستخدام المكونات الخمسة. عدّل الكود وشاهد النتيجة مباشرة على شاشة الجوال:</p></div>
+    <div class="live-preview">
+      <div class="lp-header">
+        <span>📱 معاينة حية — المكونات الخمسة معاً</span>
+        <span class="lp-tag">View+Text+Image+Scroll+Touch</span>
+      </div>
+      <div class="lp-body">
+        <div class="lp-code">
+<pre><span class="k">import</span> {
+  View, Text, Image,
+  ScrollView, TouchableOpacity,
+} <span class="k">from</span> <span class="s">'react-native'</span>;
+
+<span class="k">export default function</span> <span class="t">App</span>() {
+  <span class="k">return</span> (
+    <span class="p">&lt;</span><span class="t">ScrollView</span> style={s.screen}<span class="p">&gt;</span>
+
+      <span class="c">{/* View — الترويسة */}</span>
+      <span class="p">&lt;</span><span class="t">View</span> style={s.header}<span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="t">Text</span> style={s.title}<span class="p">&gt;</span>
+          🎓 أكاديمية البرمجة
+        <span class="p">&lt;/</span><span class="t">Text</span><span class="p">&gt;</span>
+      <span class="p">&lt;/</span><span class="t">View</span><span class="p">&gt;</span>
+
+      <span class="c">{/* Image — صورة الغلاف */}</span>
+      <span class="p">&lt;</span><span class="t">Image</span>
+        source={{ uri: bannerUrl }}
+        style={s.banner}
+        resizeMode=<span class="s">"cover"</span>
+      <span class="p">/&gt;</span>
+
+      <span class="c">{/* Text — قسم */}</span>
+      <span class="p">&lt;</span><span class="t">Text</span> style={s.sectionTitle}<span class="p">&gt;</span>
+        📚 آخر الدروس
+      <span class="p">&lt;/</span><span class="t">Text</span><span class="p">&gt;</span>
+
+      <span class="c">{/* TouchableOpacity — بطاقة قابلة للضغط */}</span>
+      <span class="p">&lt;</span><span class="t">TouchableOpacity</span>
+        style={s.card}
+        onPress={openLesson}
+      <span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="t">Text</span> style={s.cardTitle}<span class="p">&gt;</span>
+          المكونات الأساسية
+        <span class="p">&lt;/</span><span class="t">Text</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="t">Text</span> style={s.cardSub}<span class="p">&gt;</span>
+          ⏱️ 45 دقيقة
+        <span class="p">&lt;/</span><span class="t">Text</span><span class="p">&gt;</span>
+      <span class="p">&lt;/</span><span class="t">TouchableOpacity</span><span class="p">&gt;</span>
+
+    <span class="p">&lt;/</span><span class="t">ScrollView</span><span class="p">&gt;</span>
+  );
+}</pre>
+        </div>
+        <div class="lp-phone-wrap">
+          <div class="lp-phone">
+            <div class="lp-phone-bar"></div>
+            <div class="lp-phone-screen" style="padding:0;">
+              <div style="background:#0ea5e9; padding:10px 12px;">
+                <div style="color:white; font-size:.82rem; font-weight:800; font-family:'Cairo',sans-serif;">🎓 أكاديمية البرمجة</div>
+              </div>
+              <div style="height:60px; background:linear-gradient(135deg,#7c3aed,#0ea5e9); display:flex; align-items:center; justify-content:center;">
+                <div style="color:white; font-size:.65rem; font-family:monospace; opacity:.85;">&lt;Image /&gt; banner</div>
+              </div>
+              <div style="padding:10px 12px 6px; font-size:.72rem; font-weight:800; color:#0f172a; font-family:'Cairo',sans-serif;">📚 آخر الدروس</div>
+              <div style="background:white; margin:0 10px; border-radius:8px; padding:10px; border:1px solid #e2e8f0; box-shadow:0 2px 6px rgba(0,0,0,.04);">
+                <div style="font-size:.78rem; font-weight:700; color:#0f172a; font-family:'Cairo',sans-serif;">المكونات الأساسية</div>
+                <div style="font-size:.65rem; color:#64748b; margin-top:2px; font-family:'Cairo',sans-serif;">⏱️ 45 دقيقة</div>
+              </div>
+              <div style="background:white; margin:6px 10px; border-radius:8px; padding:10px; border:1px solid #e2e8f0;">
+                <div style="font-size:.78rem; font-weight:700; color:#0f172a; font-family:'Cairo',sans-serif;">مراجعة JSX و ES6</div>
+                <div style="font-size:.65rem; color:#64748b; margin-top:2px; font-family:'Cairo',sans-serif;">⏱️ 35 دقيقة</div>
+              </div>
+              <div style="text-align:center; padding:6px; font-size:.6rem; color:#94a3b8; font-family:monospace;">↓ Scrollable ↓</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EXERCISES -->
+  <div class="section" id="exercises">
+    <h2 class="section-title"><span class="num">📝</span> التمارين العملية <span class="en">Exercises</span></h2>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 1: المكوّن الصحيح</div>
+      <p>ما المكوّن المناسب لكل حالة؟<br>
+      أ) قائمة تحتاج تمرير عمودي &nbsp; ب) زر "أضف للسلة" &nbsp; ج) صورة شخصية &nbsp; د) نص "الإجمالي: 150 ريال"</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <p>أ) <code>&lt;ScrollView&gt;</code><br>
+        ب) <code>&lt;TouchableOpacity&gt;</code><br>
+        ج) <code>&lt;Image&gt;</code> مع <code>borderRadius</code> دائري<br>
+        د) <code>&lt;Text&gt;</code></p>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 2: إصلاح الكود</div>
+      <p>الكود التالي لن يُظهر الصورة. ما السبب وكيف تصلحه؟</p>
+      <div class="code-box">
+<pre>&lt;<span class="attr">Image</span> source={{ uri: <span class="attr-val">'https://picsum.photos/200'</span> }} /&gt;</pre>
+      </div>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <p>Image لا تظهر بدون <code>width</code> و <code>height</code>!</p>
+        <div class="code-box">
+<pre>&lt;<span class="attr">Image</span>
+  source={{ uri: <span class="attr-val">'https://picsum.photos/200'</span> }}
+  style={{ width: <span class="attr-val">200</span>, height: <span class="attr-val">200</span> }}
+/&gt;</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 3: ScrollView أفقي</div>
+      <p>اكتب ScrollView أفقي يعرض 4 بطاقات ملونة كل واحدة عرضها 120 وارتفاعها 80 بألوان مختلفة.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre>&lt;<span class="attr">ScrollView</span>
+  horizontal
+  showsHorizontalScrollIndicator={<span class="attr-val">false</span>}
+  contentContainerStyle={{ gap: <span class="attr-val">10</span>, padding: <span class="attr-val">10</span> }}
+&gt;
+  {[<span class="attr-val">'#dbeafe'</span>, <span class="attr-val">'#fce7f3'</span>, <span class="attr-val">'#d1fae5'</span>, <span class="attr-val">'#fef3c7'</span>].map((color, i) => (
+    &lt;<span class="attr">View</span>
+      key={i}
+      style={{
+        width: <span class="attr-val">120</span>, height: <span class="attr-val">80</span>,
+        backgroundColor: color,
+        borderRadius: <span class="attr-val">12</span>,
+      }}
+    /&gt;
+  ))}
+&lt;/<span class="attr">ScrollView</span>&gt;</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 4: زر متغيّر</div>
+      <p>اكتب TouchableOpacity يُغيّر نصه من "إضافة ❤️" إلى "تم الإضافة ✓" عند الضغط. (تلميح: useState)</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre><span class="tag-name">import</span> { useState } <span class="tag-name">from</span> <span class="attr-val">'react'</span>;
+<span class="tag-name">import</span> { TouchableOpacity, Text } <span class="tag-name">from</span> <span class="attr-val">'react-native'</span>;
+
+<span class="tag-name">function</span> <span class="attr">FavoriteButton</span>() {
+  <span class="tag-name">const</span> [added, setAdded] = useState(<span class="attr-val">false</span>);
+
+  <span class="tag-name">return</span> (
+    &lt;<span class="attr">TouchableOpacity</span>
+      onPress={() => setAdded(!added)}
+      style={{
+        backgroundColor: added ? <span class="attr-val">'#22c55e'</span> : <span class="attr-val">'#0ea5e9'</span>,
+        padding: <span class="attr-val">12</span>, borderRadius: <span class="attr-val">999</span>,
+      }}
+    &gt;
+      &lt;<span class="attr">Text</span> style={{ color: <span class="attr-val">'white'</span>, fontWeight: <span class="attr-val">'bold'</span> }}&gt;
+        {added ? <span class="attr-val">'تم الإضافة ✓'</span> : <span class="attr-val">'إضافة ❤️'</span>}
+      &lt;/<span class="attr">Text</span>&gt;
+    &lt;/<span class="attr">TouchableOpacity</span>&gt;
+  );
+}</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 5: بطاقة كاملة</div>
+      <p>اكتب مكوّن <code>CourseCard</code> يعرض: صورة الدورة، اسمها، عدد الدروس، وزر "ابدأ الآن" قابل للضغط.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre><span class="tag-name">function</span> <span class="attr">CourseCard</span>({ title, lessons, imageUri, onPress }) {
+  <span class="tag-name">return</span> (
+    &lt;<span class="attr">View</span> style={styles.card}&gt;
+      &lt;<span class="attr">Image</span>
+        source={{ uri: imageUri }}
+        style={styles.image}
+        resizeMode=<span class="attr-val">"cover"</span>
+      /&gt;
+      &lt;<span class="attr">View</span> style={styles.info}&gt;
+        &lt;<span class="attr">Text</span> style={styles.title}
+          numberOfLines={<span class="attr-val">1</span>}
+        &gt;{title}&lt;/<span class="attr">Text</span>&gt;
+        &lt;<span class="attr">Text</span> style={styles.sub}&gt;{lessons} درس&lt;/<span class="attr">Text</span>&gt;
+        &lt;<span class="attr">TouchableOpacity</span>
+          onPress={onPress}
+          style={styles.btn}
+        &gt;
+          &lt;<span class="attr">Text</span> style={styles.btnText}&gt;ابدأ الآن ▶️&lt;/<span class="attr">Text</span>&gt;
+        &lt;/<span class="attr">TouchableOpacity</span>&gt;
+      &lt;/<span class="attr">View</span>&gt;
+    &lt;/<span class="attr">View</span>&gt;
+  );
+}</pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="quiz-container" id="quiz">
+    <div class="quiz-intro"><p>اختبر فهمك للمكونات الأساسية في React Native!</p></div>
+    <div class="quiz-type-tabs">
+      <button class="qt-tab active" onclick="switchQuiz(this,'tf')">✓✗ صح وخطأ</button>
+      <button class="qt-tab" onclick="switchQuiz(this,'mc')">🔘 اختيار من متعدد</button>
+    </div>
+
+    <div class="quiz-section active" id="quiz-tf">
+      <div class="quiz-question" data-correct="false">
+        <span class="q-num">1</span><span class="q-text">Image في React Native تظهر بدون تحديد الـ width و height في الـ style.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">2</span><span class="q-text">لعرض قائمة أفقية قابلة للتمرير، نستخدم ScrollView مع خاصية horizontal.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="false">
+        <span class="q-num">3</span><span class="q-text">View في React Native تعرض نصاً مباشرة داخلها بدون حاجة لـ Text.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">4</span><span class="q-text">TouchableOpacity يتيح الضغط على أي مكوّن مع تأثير بصري تلقائي.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="false">
+        <span class="q-num">5</span><span class="q-text">ScrollView أفضل من FlatList لعرض قوائم طويلة تحتوي على 200+ عنصر.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <button class="quiz-submit" onclick="submitQuiz('tf')">عرض النتيجة 🎯</button>
+      <div class="quiz-result" id="result-tf"><div class="result-score" id="score-tf">0/5</div><div class="result-label">إجابات صحيحة</div><div class="result-message" id="msg-tf"></div><button class="retry-btn" onclick="retryQuiz('tf')">🔄 حاول تاني</button></div>
+    </div>
+
+    <div class="quiz-section" id="quiz-mc">
+      <div class="quiz-question" data-correct="1">
+        <span class="q-num">1</span><span class="q-text">ما مقابل &lt;div&gt; في React Native؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">Text</button>
+          <button class="q-opt" onclick="answerMC(this,1)">View</button>
+          <button class="q-opt" onclick="answerMC(this,2)">Box</button>
+          <button class="q-opt" onclick="answerMC(this,3)">Container</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="2">
+        <span class="q-num">2</span><span class="q-text">ما الخاصية التي تتحكم في طريقة ملء الصورة للمساحة المتاحة؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">imageStyle</button>
+          <button class="q-opt" onclick="answerMC(this,1)">objectFit</button>
+          <button class="q-opt" onclick="answerMC(this,2)">resizeMode</button>
+          <button class="q-opt" onclick="answerMC(this,3)">fillMode</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="3">
+        <span class="q-num">3</span><span class="q-text">لتحديد padding محتوى ScrollView نستخدم:</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">style={{ padding: 16 }}</button>
+          <button class="q-opt" onclick="answerMC(this,1)">innerStyle={{ padding: 16 }}</button>
+          <button class="q-opt" onclick="answerMC(this,2)">scrollStyle={{ padding: 16 }}</button>
+          <button class="q-opt" onclick="answerMC(this,3)">contentContainerStyle={{ padding: 16 }}</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="0">
+        <span class="q-num">4</span><span class="q-text">ما الخاصية التي تتحكم في درجة شفافية TouchableOpacity عند الضغط؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">activeOpacity</button>
+          <button class="q-opt" onclick="answerMC(this,1)">pressOpacity</button>
+          <button class="q-opt" onclick="answerMC(this,2)">touchOpacity</button>
+          <button class="q-opt" onclick="answerMC(this,3)">onPressOpacity</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="1">
+        <span class="q-num">5</span><span class="q-text">كيف تجعل صورة دائرية الشكل؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">shape="circle"</button>
+          <button class="q-opt" onclick="answerMC(this,1)">borderRadius يساوي نصف العرض</button>
+          <button class="q-opt" onclick="answerMC(this,2)">circular={true}</button>
+          <button class="q-opt" onclick="answerMC(this,3)">borderShape="round"</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <button class="quiz-submit" onclick="submitQuiz('mc')">عرض النتيجة 🎯</button>
+      <div class="quiz-result" id="result-mc"><div class="result-score" id="score-mc">0/5</div><div class="result-label">إجابات صحيحة</div><div class="result-message" id="msg-mc"></div><button class="retry-btn" onclick="retryQuiz('mc')">🔄 حاول تاني</button></div>
+    </div>
+  </div>
+
+  <div class="lesson-nav">
+    <a href="./lesson-04.html" class="nav-btn"><span>⬅️</span><span>الدرس السابق</span></a>
+    <button class="nav-btn complete-btn" id="completeBtn" onclick="markComplete(this)"><span>✅</span><span>علّم كمكتمل</span></button>
+    <a href="./lesson-06.html" class="nav-btn"><span>الدرس التالي</span><span>➡️</span></a>
+  </div>
+
+  <div class="notebook-footer">
+    <h3>🎉 أتقنت المكونات الأساسية!</h3>
+    <p>الآن عندك كل الأدوات لبناء أي واجهة جوال. 💪<br><strong>الدرس التالي: StyleSheet و Flexbox — تنسيق الواجهات 🎨</strong></p>
+  </div>
+</div>
+
+<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">⬆️</button>
+<div class="toast" id="toast"></div>
+<script src="../../js/data/courses.js"></script>
+<script src="../../js/progress.js"></script>
+<script>
+const COURSE_ID='react-native', LESSON_ID=5, TOTAL=28;
+function toggleSolution(b){const s=b.nextElementSibling;s.classList.toggle('show');b.textContent=s.classList.contains('show')?'إخفاء الحل ▲':'عرض الحل ▼';}
+function copyCode(b){const p=b.closest('.code-box').querySelector('pre');navigator.clipboard.writeText(p.innerText).then(()=>{b.classList.add('copied');b.textContent='✓ تم النسخ';setTimeout(()=>{b.classList.remove('copied');b.textContent='📋 نسخ';},2000);});}
+function switchQuiz(b,t){document.querySelectorAll('.qt-tab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.quiz-section').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.getElementById('quiz-'+t).classList.add('active');}
+const answers={tf:{},mc:{}};
+function answerTF(b,v){const q=b.closest('.quiz-question'),i=Array.from(q.parentNode.querySelectorAll('.quiz-question')).indexOf(q);q.querySelectorAll('.q-opt').forEach(o=>o.classList.remove('selected'));b.classList.add('selected');answers.tf[i]=v;}
+function answerMC(b,i){const q=b.closest('.quiz-question'),qi=Array.from(q.parentNode.querySelectorAll('.quiz-question')).indexOf(q);q.querySelectorAll('.q-opt').forEach(o=>o.classList.remove('selected'));b.classList.add('selected');answers.mc[qi]=i;}
+function submitQuiz(type){const sec=document.getElementById('quiz-'+type),qs=sec.querySelectorAll('.quiz-question');let c=0;qs.forEach((q,i)=>{const ca=type==='tf'?(q.dataset.correct==='true'):parseInt(q.dataset.correct),ua=answers[type][i],fb=q.querySelector('.q-feedback'),opts=q.querySelectorAll('.q-opt');opts.forEach(o=>{o.classList.remove('selected');o.disabled=true;});if(ua===undefined){fb.className='q-feedback wrong show';fb.textContent='⚠️ ما اخترتش إجابة!';return;}if(ua===ca){c++;fb.className='q-feedback correct show';fb.textContent='✓ إجابة صحيحة!';if(type==='tf')opts[ca?0:1].classList.add('correct');else opts[ca].classList.add('correct');}else{fb.className='q-feedback wrong show';if(type==='tf'){opts[ca?0:1].classList.add('correct');opts[ua?0:1].classList.add('wrong');fb.textContent='✗ خطأ.';}else{opts[ca].classList.add('correct');opts[ua].classList.add('wrong');fb.textContent='✗ الإجابة بالأخضر.';}}});const r=document.getElementById('result-'+type);document.getElementById('score-'+type).textContent=c+'/'+qs.length;const m=document.getElementById('msg-'+type);if(c===qs.length){m.textContent='🏆 ممتاز 100%!';m.className='result-message excellent';}else if(c>=3){m.textContent='👍 جيد!';m.className='result-message good';}else{m.textContent='📚 راجع الدرس.';m.className='result-message try-again';}r.classList.add('show');r.scrollIntoView({behavior:'smooth',block:'center'});}
+function retryQuiz(type){const sec=document.getElementById('quiz-'+type);sec.querySelectorAll('.q-opt').forEach(o=>{o.classList.remove('selected','correct','wrong');o.disabled=false;});sec.querySelectorAll('.q-feedback').forEach(f=>{f.classList.remove('show','correct','wrong');f.textContent='';});document.getElementById('result-'+type).classList.remove('show');answers[type]={};}
+function markComplete(btn){const done=Progress.toggleLessonComplete(COURSE_ID,LESSON_ID);btn.classList.toggle('completed',done);btn.querySelector('span:last-child').textContent=done?'مكتمل! ⭐':'علّم كمكتمل';showToast(done?'🎉 أكملت درس المكونات الأساسية!':'تم إلغاء الإكمال');}
+if(Progress.isLessonComplete(COURSE_ID,LESSON_ID)){const b=document.getElementById('completeBtn');b.classList.add('completed');b.querySelector('span:last-child').textContent='مكتمل! ⭐';}
+(function(){const p=Progress.getCourseProgress(COURSE_ID,TOTAL);document.getElementById('progFill').style.width=p+'%';document.getElementById('progText').textContent=p+'%';})();
+function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
+window.addEventListener('scroll',()=>{document.getElementById('scrollTop').classList.toggle('show',window.scrollY>300);});
+document.querySelectorAll('.toc-card a').forEach(l=>{l.addEventListener('click',e=>{e.preventDefault();const t=document.querySelector(l.getAttribute('href'));if(t)t.scrollIntoView({behavior:'smooth',block:'start'});});});
+</script>
+</body>
+</html>

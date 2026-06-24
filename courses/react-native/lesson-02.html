@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-V2NCKVL16D"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-V2NCKVL16D');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>إعداد البيئة — React Native — دفتر البرمجة</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=Cairo:wght@300;400;500;600;700;900&family=Caveat:wght@400;700&family=Fira+Code:wght@400;500;600&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../css/shared.css">
+<link rel="stylesheet" href="../../css/notebook.css">
+<style>
+body { padding: 20px 10px; }
+
+/* terminal */
+.terminal {
+  background: #0f172a; border-radius: 10px; padding: 16px 20px;
+  font-family: 'Fira Code', monospace; font-size: .86rem;
+  direction: ltr; color: #e2e8f0; line-height: 2.1;
+  border: 1px solid #334155; margin: 12px 0;
+}
+.t-prompt { color: #4ade80; }
+.t-prompt::before { content: '$ '; color: #7c3aed; }
+.t-out    { color: #94a3b8; }
+.t-success { color: #4ade80; }
+.t-warn   { color: #fbbf24; }
+
+/* steps */
+.setup-steps { display: flex; flex-direction: column; gap: 18px; margin: 16px 0; }
+.setup-step {
+  display: flex; gap: 16px; align-items: flex-start;
+  background: #f8fafc; border: 1px solid var(--border);
+  border-radius: 12px; padding: 16px;
+}
+.step-num {
+  background: #0ea5e9; color: white;
+  width: 32px; height: 32px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 800; font-size: .9rem; flex-shrink: 0;
+}
+.step-body h4 { font-size: .95rem; font-weight: 700; margin-bottom: 6px; color: #0369a1; }
+.step-body p  { font-size: .88rem; color: var(--text-muted); line-height: 1.7; margin: 0; }
+
+/* path comparison */
+.path-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 14px; margin: 14px 0;
+}
+@media(max-width:600px) { .path-grid { grid-template-columns: 1fr; } }
+
+.path-card {
+  border-radius: 12px; padding: 16px;
+  border: 2px solid var(--border);
+}
+.path-card.expo { border-color: #0ea5e9; background: #f0f9ff; }
+.path-card.cli  { border-color: #7c3aed; background: #faf5ff; }
+.path-head { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+.path-icon { font-size: 1.6rem; }
+.path-name { font-weight: 700; font-size: 1rem; }
+.path-badge { font-size: .72rem; padding: 2px 8px; border-radius: 999px;
+  background: #dcfce7; color: #166534; font-weight: 700; margin-right: auto; }
+.path-list { font-size: .85rem; color: var(--text-muted); line-height: 1.9; padding-right: 16px; }
+
+/* phone mock for Expo Go */
+.expo-go-demo {
+  background: #0f172a; border-radius: 14px; padding: 16px 20px;
+  color: #e2e8f0; font-family: 'Fira Code', monospace;
+  font-size: .82rem; direction: ltr; line-height: 2;
+  margin: 14px 0;
+}
+.expo-line-header { color: #60a5fa; font-weight: 700; }
+.expo-line-qr     { color: #4ade80; }
+.expo-line-info   { color: #94a3b8; }
+
+/* file tree */
+.file-tree {
+  background: #1e293b; border-radius: 10px; padding: 16px 20px;
+  font-family: 'Fira Code', monospace; font-size: .84rem;
+  direction: ltr; color: #94a3b8; line-height: 2.1; margin: 12px 0;
+}
+.ft-dir  { color: #7dd3fc; }
+.ft-file { color: #4ade80; }
+.ft-important { color: #fbbf24; font-weight: 700; }
+.ft-note { color: #475569; font-style: italic; }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="crumbs">
+    <a href="../../index.html">🏠 الرئيسية</a>
+    <span class="sep">/</span>
+    <a href="./index.html">📱 React Native</a>
+    <span class="sep">/</span>
+    <span class="current">🛠️ الدرس 2: إعداد البيئة</span>
+  </div>
+  <div class="progress-mini">
+    <div class="progress-bar-mini"><div class="progress-fill-mini" id="progFill"></div></div>
+    <span id="progText">0%</span>
+  </div>
+</div>
+
+<div class="notebook">
+
+  <div class="notebook-header">
+    <div class="lesson-tag">🛠️ الدرس الثاني</div>
+    <h1><span class="sparkle">✦</span> إعداد بيئة التطوير <span class="sparkle">✦</span></h1>
+    <div class="lesson-meta">
+      <span>⏱️ 45 دقيقة</span>
+      <span>📊 مبتدئ</span>
+      <span>🎯 5 تمارين + اختبار</span>
+    </div>
+  </div>
+
+  <div class="toc-card">
+    <h2>📑 فهرس الدرس</h2>
+    <ol>
+      <li><a href="#s1">طريقتان لبدء مشروع RN</a></li>
+      <li><a href="#s2">Expo — الطريقة الموصى بها</a></li>
+      <li><a href="#s3">تثبيت Node.js</a></li>
+      <li><a href="#s4">تثبيت Expo CLI وإنشاء مشروع</a></li>
+      <li><a href="#s5">تشغيل التطبيق على جهازك</a></li>
+      <li><a href="#s6">محرر الكود — VS Code</a></li>
+      <li><a href="#s7">هيكل الملفات الأولي</a></li>
+      <li><a href="#s8">محاكاة بيئة التطوير</a></li>
+      <li><a href="#exercises">التمارين</a></li>
+      <li><a href="#quiz">اختبر فهمك</a></li>
+    </ol>
+  </div>
+
+  <!-- S1 -->
+  <div class="section" id="s1">
+    <h2 class="section-title"><span class="num">.1</span> طريقتان لبدء مشروع RN <span class="en">Two Paths</span></h2>
+    <div class="content">
+      <p>عندك طريقتان لإنشاء مشروع React Native:</p>
+
+      <div class="path-grid">
+        <div class="path-card expo">
+          <div class="path-head">
+            <span class="path-icon">⚡</span>
+            <span class="path-name">Expo</span>
+            <span class="path-badge">✅ الموصى به</span>
+          </div>
+          <ul class="path-list">
+            <li>✅ إعداد سهل وسريع</li>
+            <li>✅ لا تحتاج Android Studio</li>
+            <li>✅ شغّل على جهازك فوراً</li>
+            <li>✅ مكتبات جاهزة (كاميرا، GPS...)</li>
+            <li>✅ للمبتدئين والمحترفين</li>
+          </ul>
+        </div>
+        <div class="path-card cli">
+          <div class="path-head">
+            <span class="path-icon">🔧</span>
+            <span class="path-name">React Native CLI</span>
+          </div>
+          <ul class="path-list">
+            <li>✅ تحكم كامل</li>
+            <li>❌ يحتاج Android Studio</li>
+            <li>❌ إعداد معقد</li>
+            <li>❌ للمشاريع المتقدمة جداً</li>
+            <li>⚠️ ليس لهذا المسار</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="tip-box"><strong>قرارنا:</strong> سنستخدم <strong>Expo</strong> في كل هذا المسار. هو الخيار الأذكى للتعلم وحتى للمشاريع الحقيقية!</div>
+    </div>
+  </div>
+
+  <!-- S2 -->
+  <div class="section" id="s2">
+    <h2 class="section-title"><span class="num">.2</span> ما هو Expo؟ <span class="en">What is Expo?</span></h2>
+    <div class="content">
+      <p><strong>Expo</strong> منصة مبنية فوق React Native تُسهّل التطوير بشكل كبير. تتكون من ثلاثة أجزاء:</p>
+
+      <table class="cool-table">
+        <thead><tr><th>الجزء</th><th>ما هو؟</th><th>الاستخدام</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Expo SDK</strong></td><td>مجموعة مكتبات جاهزة</td><td>كاميرا، GPS، إشعارات...</td></tr>
+          <tr><td><strong>Expo CLI</strong></td><td>أداة سطر أوامر</td><td>إنشاء المشاريع وتشغيلها</td></tr>
+          <tr><td><strong>Expo Go</strong></td><td>تطبيق على جهازك</td><td>معاينة التطبيق فوراً</td></tr>
+        </tbody>
+      </table>
+
+      <div class="analogy">
+        <div class="analogy-title">📱 Expo Go = كاميرا حية:</div>
+        <p>بدل ما تبني وتنشر كل مرة، تشغّل Expo Go على جهازك وكل تغيير في الكود يظهر فوراً على الشاشة!</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- S3 -->
+  <div class="section" id="s3">
+    <h2 class="section-title"><span class="num">.3</span> الخطوة 1: تثبيت Node.js <span class="en">Install Node.js</span></h2>
+    <div class="content">
+      <p>React Native يعمل على Node.js. نحتاج الإصدار <strong>18+</strong>:</p>
+
+      <div class="setup-steps">
+        <div class="setup-step">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <h4>حمّل Node.js LTS</h4>
+            <p>افتح <strong>nodejs.org</strong> واختر الإصدار LTS (Long Term Support). هو الأستقر.</p>
+          </div>
+        </div>
+        <div class="setup-step">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <h4>ثبّت وتحقق</h4>
+            <p>بعد التثبيت، افتح Terminal أو CMD وشغّل:</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="terminal">
+        <div class="t-prompt">node --version</div>
+        <div class="t-success">v20.11.0</div>
+        <div class="t-prompt">npm --version</div>
+        <div class="t-success">10.2.4</div>
+      </div>
+
+      <div class="tip-box">لو ظهر الإصدار، Node.js جاهز ✅. لو ظهر خطأ، أعد التثبيت.</div>
+    </div>
+  </div>
+
+  <!-- S4 -->
+  <div class="section" id="s4">
+    <h2 class="section-title"><span class="num">.4</span> الخطوة 2: إنشاء مشروع Expo <span class="en">Create Project</span></h2>
+    <div class="content">
+      <p>أمر واحد ينشئ لك مشروعاً كاملاً:</p>
+
+      <div class="code-box">
+<div class="code-header"><span>🚀 إنشاء مشروع جديد</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment"># الطريقة الأسهل بـ npx</span>
+npx create-expo-app MyFirstApp
+
+<span class="comment"># أو حدد القالب</span>
+npx create-expo-app MyFirstApp --template blank
+
+<span class="comment"># ادخل للمجلد</span>
+cd MyFirstApp</pre>
+      </div>
+
+      <div class="terminal">
+        <div class="t-prompt">npx create-expo-app MyFirstApp</div>
+        <div class="t-out">✔ Downloaded and extracted project files.</div>
+        <div class="t-out">Installing packages: npm install...</div>
+        <div class="t-success">✅ Your project is ready!</div>
+        <div class="t-out"></div>
+        <div class="t-warn">To run your project, navigate to the directory and run one of the following npm commands.</div>
+      </div>
+
+      <div class="sub-header">القوالب المتاحة:</div>
+      <table class="cool-table">
+        <thead><tr><th>القالب</th><th>المحتوى</th><th>متى تستخدمه؟</th></tr></thead>
+        <tbody>
+          <tr><td><code>blank</code></td><td>مشروع فارغ بسيط</td><td>للتعلم — هذا ما سنستخدمه</td></tr>
+          <tr><td><code>blank-typescript</code></td><td>مشروع فارغ + TypeScript</td><td>للمشاريع الاحترافية</td></tr>
+          <tr><td><code>tabs</code></td><td>تطبيق بشريط تنقل سفلي</td><td>هيكل جاهز مع Navigation</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- S5 -->
+  <div class="section" id="s5">
+    <h2 class="section-title"><span class="num">.5</span> الخطوة 3: تشغيل التطبيق <span class="en">Run the App</span></h2>
+    <div class="content">
+      <div class="code-box">
+<div class="code-header"><span>▶️ تشغيل المشروع</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre>cd MyFirstApp
+npx expo start</pre>
+      </div>
+
+      <div class="expo-go-demo">
+        <div class="expo-line-header">Starting Metro Bundler</div>
+        <div class="expo-line-info">› Metro waiting on exp://192.168.1.5:8081</div>
+        <div class="expo-line-info">› Scan the QR code above with Expo Go (Android)</div>
+        <div class="expo-line-info">› or the Camera app (iOS)</div>
+        <div class="expo-line-info"></div>
+        <div class="expo-line-qr">█▀▀▀█ ▄ ▄▄▄ █▀▀▀█</div>
+        <div class="expo-line-qr">█ ▀ █ ██ ██ █ ▀ █</div>
+        <div class="expo-line-qr">▀▀▀▀▀ ▀ ▀ ▀ ▀▀▀▀▀</div>
+        <div class="expo-line-info"></div>
+        <div class="expo-line-header">Press a │ open Android emulator</div>
+        <div class="expo-line-header">Press w │ open web browser</div>
+      </div>
+
+      <div class="setup-steps">
+        <div class="setup-step">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <h4>حمّل Expo Go على جهازك</h4>
+            <p>من Google Play (Android) أو App Store (iPhone) — مجاني 100%</p>
+          </div>
+        </div>
+        <div class="setup-step">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <h4>امسح QR Code</h4>
+            <p>افتح Expo Go وامسح الـ QR Code الظاهر في Terminal. جهازك والكمبيوتر على نفس الـ WiFi!</p>
+          </div>
+        </div>
+        <div class="setup-step">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <h4>شاهد التطبيق على شاشتك!</h4>
+            <p>أي تغيير في الكود يظهر تلقائياً بثوانٍ بفضل <strong>Fast Refresh</strong> ⚡</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="sub-header">بدائل لو ما عندك جهاز:</div>
+      <div class="code-box blue">
+<div class="code-header"><span>💻 تشغيل على الويب أو المحاكي</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment"># تشغيل في المتصفح (أسهل)</span>
+npx expo start --web
+
+<span class="comment"># أو اضغط w في Terminal</span></pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- S6 -->
+  <div class="section" id="s6">
+    <h2 class="section-title"><span class="num">.6</span> VS Code — محرر الكود <span class="en">Code Editor</span></h2>
+    <div class="content">
+      <p>VS Code هو الأفضل لـ React Native. الإضافات المهمة:</p>
+
+      <table class="cool-table">
+        <thead><tr><th>الإضافة</th><th>الوظيفة</th></tr></thead>
+        <tbody>
+          <tr><td><strong>React Native Tools</strong></td><td>دعم كامل لـ RN — debugging وتلميحات</td></tr>
+          <tr><td><strong>ES7+ React/Redux</strong></td><td>اختصارات سريعة لكتابة مكونات RN</td></tr>
+          <tr><td><strong>Prettier</strong></td><td>تنسيق الكود تلقائياً</td></tr>
+          <tr><td><strong>Auto Rename Tag</strong></td><td>تغيير اسم الوسم الافتتاحي والختامي معاً</td></tr>
+          <tr><td><strong>Path Intellisense</strong></td><td>إكمال تلقائي لمسارات الملفات</td></tr>
+        </tbody>
+      </table>
+
+      <div class="code-box">
+<div class="code-header"><span>⚡ اختصارات ES7 مفيدة في VS Code</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">// اكتب rnfe ثم Tab → ينشئ مكوّن كامل:</span>
+<span class="tag-name">import</span> React <span class="tag-name">from</span> <span class="attr-val">'react'</span>
+<span class="tag-name">import</span> { View, Text } <span class="tag-name">from</span> <span class="attr-val">'react-native'</span>
+
+<span class="tag-name">const</span> <span class="attr">MyComponent</span> = () => {
+  <span class="tag-name">return</span> (
+    &lt;<span class="attr">View</span>&gt;
+      &lt;<span class="attr">Text</span>&gt;MyComponent&lt;/<span class="attr">Text</span>&gt;
+    &lt;/<span class="attr">View</span>&gt;
+  )
+}
+<span class="tag-name">export default</span> <span class="attr">MyComponent</span></pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- S7 -->
+  <div class="section" id="s7">
+    <h2 class="section-title"><span class="num">.7</span> هيكل ملفات المشروع <span class="en">File Structure</span></h2>
+    <div class="content">
+      <p>بعد إنشاء مشروع Expo، هذا ما ستجد:</p>
+
+      <div class="file-tree">
+<span class="ft-dir">MyFirstApp/</span>
+├── <span class="ft-dir">app/</span>               <span class="ft-note">← ملفات الشاشات (Expo Router)</span>
+│   └── <span class="ft-important">index.tsx</span>      <span class="ft-note">← الشاشة الرئيسية</span>
+├── <span class="ft-dir">assets/</span>            <span class="ft-note">← صور وأيقونات</span>
+│   ├── icon.png
+│   └── splash.png
+├── <span class="ft-dir">components/</span>        <span class="ft-note">← مكوناتك المخصصة</span>
+├── <span class="ft-important">App.js</span>             <span class="ft-note">← نقطة البداية</span>
+├── <span class="ft-file">app.json</span>           <span class="ft-note">← إعدادات التطبيق (الاسم، الأيقونة...)</span>
+├── <span class="ft-file">package.json</span>       <span class="ft-note">← الحزم والسكريبتات</span>
+└── <span class="ft-file">babel.config.js</span>    <span class="ft-note">← إعدادات Babel</span>
+      </div>
+
+      <div class="sub-header">أهم ملف: <code>App.js</code></div>
+      <div class="code-box">
+<div class="code-header"><span>📄 App.js — نقطة البداية</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-name">import</span> { StatusBar } <span class="tag-name">from</span> <span class="attr-val">'expo-status-bar'</span>;
+<span class="tag-name">import</span> { StyleSheet, Text, View } <span class="tag-name">from</span> <span class="attr-val">'react-native'</span>;
+
+<span class="tag-name">export default function</span> <span class="attr">App</span>() {
+  <span class="tag-name">return</span> (
+    &lt;<span class="attr">View</span> style={styles.container}&gt;
+      &lt;<span class="attr">Text</span>&gt;Open up App.js to start working!&lt;/<span class="attr">Text</span>&gt;
+      &lt;<span class="attr">StatusBar</span> style=<span class="attr-val">"auto"</span> /&gt;
+    &lt;/<span class="attr">View</span>&gt;
+  );
+}
+
+<span class="tag-name">const</span> <span class="attr">styles</span> = StyleSheet.create({
+  container: {
+    flex: <span class="attr-val">1</span>,
+    backgroundColor: <span class="attr-val">'#fff'</span>,
+    alignItems: <span class="attr-val">'center'</span>,
+    justifyContent: <span class="attr-val">'center'</span>,
+  },
+});</pre>
+      </div>
+
+      <div class="tip-box"><strong>لاحظ:</strong> <code>styles.container</code> يستخدم <code>flex:1</code> — هذا يجعل الـ View يملأ الشاشة كاملة. سنشرح Flexbox في تفصيل في الدرس 6!</div>
+    </div>
+  </div>
+
+  <!-- S8 -->
+  <div class="section" id="s8">
+    <h2 class="section-title"><span class="num">.8</span> محاكاة بيئة التطوير <span class="en">Live Simulation</span></h2>
+    <div class="content"><p>انظر كيف يبدو الـ workflow الكامل لـ Expo:</p></div>
+    <div class="live-preview">
+      <div class="lp-header">
+        <span>📱 معاينة حية — Expo Workflow</span>
+        <span class="lp-tag">App.js</span>
+      </div>
+      <div class="lp-body">
+        <div class="lp-code">
+<pre><span class="c">// 1️⃣ افتح App.js في VS Code</span>
+<span class="k">import</span> { StatusBar } <span class="k">from</span> <span class="s">'expo-status-bar'</span>;
+<span class="k">import</span> { StyleSheet, Text, View } <span class="k">from</span> <span class="s">'react-native'</span>;
+
+<span class="k">export default function</span> <span class="t">App</span>() {
+  <span class="k">return</span> (
+    <span class="p">&lt;</span><span class="t">View</span> style={styles.container}<span class="p">&gt;</span>
+      <span class="p">&lt;</span><span class="t">Text</span> style={styles.title}<span class="p">&gt;</span>
+        مرحباً Expo! 🚀
+      <span class="p">&lt;/</span><span class="t">Text</span><span class="p">&gt;</span>
+      <span class="p">&lt;</span><span class="t">StatusBar</span> style=<span class="s">"auto"</span> <span class="p">/&gt;</span>
+    <span class="p">&lt;/</span><span class="t">View</span><span class="p">&gt;</span>
+  );
+}
+
+<span class="k">const</span> styles = StyleSheet.create({
+  container: {
+    flex: <span class="n">1</span>,
+    backgroundColor: <span class="s">'#f0f9ff'</span>,
+    alignItems: <span class="s">'center'</span>,
+    justifyContent: <span class="s">'center'</span>,
+  },
+  title: {
+    fontSize: <span class="n">24</span>,
+    fontWeight: <span class="s">'bold'</span>,
+    color: <span class="s">'#0369a1'</span>,
+  },
+});
+
+<span class="c">// 2️⃣ احفظ الملف — Expo يُعيد التحميل تلقائياً!</span></pre>
+        </div>
+        <div class="lp-phone-wrap">
+          <div class="lp-phone">
+            <div class="lp-phone-bar"></div>
+            <div class="lp-phone-screen" style="align-items:center; justify-content:center;">
+              <div style="text-align:center;">
+                <div style="font-size:1.15rem; font-weight:800; color:#0369a1; font-family:'Cairo',sans-serif;">مرحباً Expo! 🚀</div>
+                <div style="font-size:.7rem; color:#94a3b8; margin-top:14px; font-family:monospace;">⚡ Hot Reload نشط</div>
+                <div style="margin-top:18px; display:inline-block; background:#dcfce7; color:#15803d; padding:4px 12px; border-radius:999px; font-size:.7rem; font-weight:700; font-family:'Cairo',sans-serif;">✓ التطبيق يعمل</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EXERCISES -->
+  <div class="section" id="exercises">
+    <h2 class="section-title"><span class="num">📝</span> التمارين العملية <span class="en">Exercises</span></h2>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 1: الفرق بين Expo وCLI</div>
+      <p>اذكر <strong>فرقين رئيسيين</strong> بين Expo و React Native CLI.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <p>1. <strong>سهولة الإعداد:</strong> Expo لا يحتاج Android Studio، بينما CLI يحتاج إعداداً معقداً<br>
+        2. <strong>التشغيل:</strong> Expo يشغّل على جهازك الحقيقي فوراً بـ Expo Go، بينما CLI يحتاج محاكياً</p>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 2: أمر الإنشاء</div>
+      <p>اكتب الأمر الكامل لإنشاء مشروع Expo اسمه <em>MyPortfolioApp</em> بالقالب الفارغ.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre>npx create-expo-app MyPortfolioApp --template blank</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 3: مكونات Expo الثلاثة</div>
+      <p>اذكر الأجزاء الثلاثة لـ Expo ووظيفة كل منها.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <p><strong>Expo SDK</strong>: مجموعة مكتبات جاهزة (كاميرا، GPS، إشعارات...)<br>
+        <strong>Expo CLI</strong>: أداة سطر أوامر لإنشاء وتشغيل المشاريع<br>
+        <strong>Expo Go</strong>: تطبيق على الجهاز لمعاينة التطبيق فوراً</p>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 4: Fast Refresh</div>
+      <p>ما هو Fast Refresh ولماذا هو مفيد في تطوير تطبيقات الجوال؟</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <p>Fast Refresh هو ميزة تُظهر التغييرات في الكود على الجهاز فوراً (خلال ثوانٍ) بدون إعادة تشغيل التطبيق كاملاً، مما يوفّر الوقت ويسرّع التطوير.</p>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 5: إضافات VS Code</div>
+      <p>اذكر <strong>إضافتين</strong> مفيدتين لـ VS Code عند تطوير React Native.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <p><strong>React Native Tools</strong>: دعم كامل لـ RN مع debugging وتلميحات<br>
+        <strong>ES7+ React/Redux Snippets</strong>: اختصارات سريعة (اكتب rnfe + Tab لإنشاء مكوّن كامل)</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="quiz-container" id="quiz">
+    <div class="quiz-intro"><p>اختبر فهمك لإعداد البيئة!</p></div>
+    <div class="quiz-type-tabs">
+      <button class="qt-tab active" onclick="switchQuiz(this,'tf')">✓✗ صح وخطأ</button>
+      <button class="qt-tab" onclick="switchQuiz(this,'mc')">🔘 اختيار من متعدد</button>
+    </div>
+
+    <div class="quiz-section active" id="quiz-tf">
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">1</span><span class="q-text">Expo Go تطبيق مجاني يُنزَّل على الجهاز لمعاينة تطبيقات RN.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="false">
+        <span class="q-num">2</span><span class="q-text">React Native CLI أسهل في الإعداد من Expo للمبتدئين.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">3</span><span class="q-text">الملف App.js هو نقطة البداية لتطبيق Expo.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="false">
+        <span class="q-num">4</span><span class="q-text">npx expo start تحتاج شبكة WiFi مختلفة بين الجهاز والكمبيوتر.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">5</span><span class="q-text">يمكن تشغيل مشروع Expo في المتصفح عبر npx expo start --web.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <button class="quiz-submit" onclick="submitQuiz('tf')">عرض النتيجة 🎯</button>
+      <div class="quiz-result" id="result-tf"><div class="result-score" id="score-tf">0/5</div><div class="result-label">إجابات صحيحة</div><div class="result-message" id="msg-tf"></div><button class="retry-btn" onclick="retryQuiz('tf')">🔄 حاول تاني</button></div>
+    </div>
+
+    <div class="quiz-section" id="quiz-mc">
+      <div class="quiz-question" data-correct="0">
+        <span class="q-num">1</span><span class="q-text">ما الأمر لإنشاء مشروع Expo جديد؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">npx create-expo-app MyApp</button>
+          <button class="q-opt" onclick="answerMC(this,1)">npm install expo MyApp</button>
+          <button class="q-opt" onclick="answerMC(this,2)">expo create MyApp</button>
+          <button class="q-opt" onclick="answerMC(this,3)">react-native init MyApp</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="2">
+        <span class="q-num">2</span><span class="q-text">ما الأمر لتشغيل مشروع Expo؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">npm start</button>
+          <button class="q-opt" onclick="answerMC(this,1)">expo run</button>
+          <button class="q-opt" onclick="answerMC(this,2)">npx expo start</button>
+          <button class="q-opt" onclick="answerMC(this,3)">node App.js</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="1">
+        <span class="q-num">3</span><span class="q-text">أين يُعرَّف StyleSheet في React Native؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">في ملف CSS منفصل</button>
+          <button class="q-opt" onclick="answerMC(this,1)">داخل ملف JS باستخدام StyleSheet.create</button>
+          <button class="q-opt" onclick="answerMC(this,2)">في ملف style.json</button>
+          <button class="q-opt" onclick="answerMC(this,3)">في ملف app.json</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="3">
+        <span class="q-num">4</span><span class="q-text">ما الإصدار الأدنى المطلوب من Node.js لـ Expo؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">10+</button>
+          <button class="q-opt" onclick="answerMC(this,1)">14+</button>
+          <button class="q-opt" onclick="answerMC(this,2)">16+</button>
+          <button class="q-opt" onclick="answerMC(this,3)">18+</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="0">
+        <span class="q-num">5</span><span class="q-text">ما وظيفة ملف app.json في مشروع Expo؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">إعدادات التطبيق (الاسم، الأيقونة، الإصدار...)</button>
+          <button class="q-opt" onclick="answerMC(this,1)">الكود الرئيسي للتطبيق</button>
+          <button class="q-opt" onclick="answerMC(this,2)">قائمة الحزم المثبتة</button>
+          <button class="q-opt" onclick="answerMC(this,3)">إعدادات البايبل</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <button class="quiz-submit" onclick="submitQuiz('mc')">عرض النتيجة 🎯</button>
+      <div class="quiz-result" id="result-mc"><div class="result-score" id="score-mc">0/5</div><div class="result-label">إجابات صحيحة</div><div class="result-message" id="msg-mc"></div><button class="retry-btn" onclick="retryQuiz('mc')">🔄 حاول تاني</button></div>
+    </div>
+  </div>
+
+  <div class="lesson-nav">
+    <a href="./lesson-01.html" class="nav-btn"><span>⬅️</span><span>الدرس السابق</span></a>
+    <button class="nav-btn complete-btn" id="completeBtn" onclick="markComplete(this)"><span>✅</span><span>علّم كمكتمل</span></button>
+    <a href="./lesson-03.html" class="nav-btn"><span>الدرس التالي</span><span>➡️</span></a>
+  </div>
+
+  <div class="notebook-footer">
+    <h3>🎉 بيئتك جاهزة!</h3>
+    <p>Expo مثبّت وجاهز — أول مشروعك ينتظرك ❤️<br><strong>الدرس التالي: بنية مشروع Expo + أول تطبيق حقيقي 🚀</strong></p>
+  </div>
+</div>
+
+<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">⬆️</button>
+<div class="toast" id="toast"></div>
+<script src="../../js/data/courses.js"></script>
+<script src="../../js/progress.js"></script>
+<script>
+const COURSE_ID='react-native',LESSON_ID=2,TOTAL=28;
+function toggleSolution(b){const s=b.nextElementSibling;s.classList.toggle('show');b.textContent=s.classList.contains('show')?'إخفاء الحل ▲':'عرض الحل ▼';}
+function copyCode(b){const p=b.closest('.code-box').querySelector('pre');navigator.clipboard.writeText(p.innerText).then(()=>{b.classList.add('copied');b.textContent='✓ تم النسخ';setTimeout(()=>{b.classList.remove('copied');b.textContent='📋 نسخ';},2000);});}
+function switchQuiz(b,t){document.querySelectorAll('.qt-tab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.quiz-section').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.getElementById('quiz-'+t).classList.add('active');}
+const answers={tf:{},mc:{}};
+function answerTF(b,v){const q=b.closest('.quiz-question'),i=Array.from(q.parentNode.querySelectorAll('.quiz-question')).indexOf(q);q.querySelectorAll('.q-opt').forEach(o=>o.classList.remove('selected'));b.classList.add('selected');answers.tf[i]=v;}
+function answerMC(b,i){const q=b.closest('.quiz-question'),qi=Array.from(q.parentNode.querySelectorAll('.quiz-question')).indexOf(q);q.querySelectorAll('.q-opt').forEach(o=>o.classList.remove('selected'));b.classList.add('selected');answers.mc[qi]=i;}
+function submitQuiz(type){const sec=document.getElementById('quiz-'+type),qs=sec.querySelectorAll('.quiz-question');let c=0;qs.forEach((q,i)=>{const ca=type==='tf'?(q.dataset.correct==='true'):parseInt(q.dataset.correct),ua=answers[type][i],fb=q.querySelector('.q-feedback'),opts=q.querySelectorAll('.q-opt');opts.forEach(o=>{o.classList.remove('selected');o.disabled=true;});if(ua===undefined){fb.className='q-feedback wrong show';fb.textContent='⚠️ ما اخترتش إجابة!';return;}if(ua===ca){c++;fb.className='q-feedback correct show';fb.textContent='✓ إجابة صحيحة!';if(type==='tf')opts[ca?0:1].classList.add('correct');else opts[ca].classList.add('correct');}else{fb.className='q-feedback wrong show';if(type==='tf'){opts[ca?0:1].classList.add('correct');opts[ua?0:1].classList.add('wrong');fb.textContent='✗ خطأ.';}else{opts[ca].classList.add('correct');opts[ua].classList.add('wrong');fb.textContent='✗ الإجابة بالأخضر.';}}});const r=document.getElementById('result-'+type);document.getElementById('score-'+type).textContent=c+'/'+qs.length;const m=document.getElementById('msg-'+type);if(c===qs.length){m.textContent='🏆 ممتاز 100%!';m.className='result-message excellent';}else if(c>=3){m.textContent='👍 جيد!';m.className='result-message good';}else{m.textContent='📚 راجع الدرس.';m.className='result-message try-again';}r.classList.add('show');r.scrollIntoView({behavior:'smooth',block:'center'});}
+function retryQuiz(type){const sec=document.getElementById('quiz-'+type);sec.querySelectorAll('.q-opt').forEach(o=>{o.classList.remove('selected','correct','wrong');o.disabled=false;});sec.querySelectorAll('.q-feedback').forEach(f=>{f.classList.remove('show','correct','wrong');f.textContent='';});document.getElementById('result-'+type).classList.remove('show');answers[type]={};}
+function markComplete(btn){const done=Progress.toggleLessonComplete(COURSE_ID,LESSON_ID);btn.classList.toggle('completed',done);btn.querySelector('span:last-child').textContent=done?'مكتمل! ⭐':'علّم كمكتمل';showToast(done?'🎉 أكملت درس إعداد البيئة!':'تم إلغاء الإكمال');}
+if(Progress.isLessonComplete(COURSE_ID,LESSON_ID)){const b=document.getElementById('completeBtn');b.classList.add('completed');b.querySelector('span:last-child').textContent='مكتمل! ⭐';}
+(function(){const p=Progress.getCourseProgress(COURSE_ID,TOTAL);document.getElementById('progFill').style.width=p+'%';document.getElementById('progText').textContent=p+'%';})();
+function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
+window.addEventListener('scroll',()=>{document.getElementById('scrollTop').classList.toggle('show',window.scrollY>300);});
+document.querySelectorAll('.toc-card a').forEach(l=>{l.addEventListener('click',e=>{e.preventDefault();const t=document.querySelector(l.getAttribute('href'));if(t)t.scrollIntoView({behavior:'smooth',block:'start'});});});
+</script>
+</body>
+</html>

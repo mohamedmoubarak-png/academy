@@ -1,0 +1,1114 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-V2NCKVL16D"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-V2NCKVL16D');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TextInput وإدخال البيانات — دفتر البرمجة</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=Cairo:wght@300;400;500;600;700;900&family=Caveat:wght@400;700&family=Fira+Code:wght@400;500;600&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../css/shared.css">
+<link rel="stylesheet" href="../../css/notebook.css">
+<style>
+body { padding: 20px 10px; }
+
+/* input demo */
+.input-demo {
+  display: flex; flex-direction: column; gap: 10px; margin: 14px 0;
+}
+.demo-input {
+  width: 100%; padding: 11px 14px; border-radius: 10px;
+  font-family: 'Cairo', sans-serif; font-size: .88rem;
+  border: 2px solid #e2e8f0; background: white; outline: none;
+  transition: border-color .2s;
+  direction: rtl; text-align: right;
+}
+.demo-input:focus { border-color: #0ea5e9; box-shadow: 0 0 0 3px rgba(14,165,233,.1); }
+.demo-input.error { border-color: #f43f5e; box-shadow: 0 0 0 3px rgba(244,63,94,.1); }
+.demo-input.success { border-color: #16a34a; box-shadow: 0 0 0 3px rgba(22,163,74,.1); }
+.input-label { font-size: .82rem; font-weight: 700; color: #475569; margin-bottom: 4px; display: block; }
+.input-hint { font-size: .75rem; color: #94a3b8; margin-top: 4px; }
+.input-error { font-size: .75rem; color: #f43f5e; margin-top: 4px; font-weight: 600; }
+
+/* comparison table */
+.comp-table {
+  width: 100%; border-collapse: collapse; font-size: .83rem; margin: 14px 0;
+}
+.comp-table th {
+  background: #1e293b; color: white;
+  padding: 10px 14px; text-align: right;
+}
+.comp-table td { padding: 9px 14px; border-bottom: 1px solid var(--border); }
+.comp-table tr:last-child td { border: none; }
+.comp-table tr:nth-child(even) td { background: #f8fafc; }
+.comp-table .check { color: #16a34a; font-weight: 700; }
+.comp-table .cross { color: #dc2626; }
+
+/* keyboard grid */
+.kb-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 10px; margin: 14px 0;
+}
+.kb-card {
+  background: white; border: 1.5px solid var(--border); border-radius: 10px;
+  padding: 12px; text-align: center;
+}
+.kb-card-type {
+  font-family: 'Fira Code', monospace; font-size: .72rem;
+  color: #7c3aed; font-weight: 600; margin-bottom: 6px; background: #ede9fe;
+  padding: 2px 8px; border-radius: 20px; display: inline-block;
+}
+.kb-card-desc { font-size: .78rem; color: #64748b; margin-top: 6px; }
+.kb-card-icon { font-size: 1.4rem; margin-bottom: 4px; }
+
+/* validation states */
+.val-states { display: flex; gap: 10px; margin: 14px 0; flex-wrap: wrap; }
+.val-card {
+  flex: 1; min-width: 120px;
+  border-radius: 10px; padding: 12px;
+  text-align: center; border: 2px solid transparent;
+}
+.val-card.normal  { background: #f8fafc; border-color: #e2e8f0; }
+.val-card.focused { background: #f0f9ff; border-color: #0ea5e9; }
+.val-card.valid   { background: #f0fdf4; border-color: #16a34a; }
+.val-card.invalid { background: #fff1f2; border-color: #f43f5e; }
+.val-card-title { font-weight: 700; font-size: .8rem; margin-bottom: 6px; }
+.val-card.normal  .val-card-title { color: #64748b; }
+.val-card.focused .val-card-title { color: #0ea5e9; }
+.val-card.valid   .val-card-title { color: #16a34a; }
+.val-card.invalid .val-card-title { color: #f43f5e; }
+.val-card-icon { font-size: 1.5rem; }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="crumbs">
+    <a href="../../index.html">🏠 الرئيسية</a>
+    <span class="sep">/</span>
+    <a href="./index.html">📱 React Native</a>
+    <span class="sep">/</span>
+    <span class="current">⌨️ الدرس 11: TextInput وإدخال البيانات</span>
+  </div>
+  <div class="progress-mini">
+    <div class="progress-bar-mini"><div class="progress-fill-mini" id="progFill"></div></div>
+    <span id="progText">0%</span>
+  </div>
+</div>
+
+<div class="notebook">
+
+  <div class="notebook-header">
+    <div class="lesson-tag">⌨️ الدرس الحادي عشر</div>
+    <h1><span class="sparkle">✦</span> TextInput وإدخال البيانات <span class="sparkle">✦</span></h1>
+    <div class="lesson-meta">
+      <span>⏱️ 45 دقيقة</span>
+      <span>📊 متوسط</span>
+      <span>🎯 5 تمارين + اختبار</span>
+    </div>
+  </div>
+
+  <div class="toc-card">
+    <h2>📑 فهرس الدرس</h2>
+    <ol>
+      <li><a href="#s1">TextInput — المدخل الأساسي</a></li>
+      <li><a href="#s2">الخصائص الأساسية</a></li>
+      <li><a href="#s3">Controlled vs Uncontrolled</a></li>
+      <li><a href="#s4">أنواع لوحة المفاتيح</a></li>
+      <li><a href="#s5">secureTextEntry و multiline</a></li>
+      <li><a href="#s6">تنسيق TextInput</a></li>
+      <li><a href="#s7">التحقق من المدخلات</a></li>
+      <li><a href="#s8">مثال كامل: شاشة تسجيل</a></li>
+      <li><a href="#s9">معاينة حية</a></li>
+      <li><a href="#exercises">التمارين</a></li>
+      <li><a href="#quiz">اختبر فهمك</a></li>
+    </ol>
+  </div>
+
+  <!-- S1 -->
+  <div class="section" id="s1">
+    <h2 class="section-title"><span class="num">.1</span> TextInput — المدخل الأساسي <span class="en">TextInput Intro</span></h2>
+    <div class="content">
+      <p><code>TextInput</code> هو المكوّن الوحيد في React Native لاستقبال النصوص من المستخدم — يقابل عنصر <code>&lt;input&gt;</code> و <code>&lt;textarea&gt;</code> في HTML معاً.</p>
+
+      <div class="input-demo">
+        <div>
+          <label class="input-label">الاسم الكامل</label>
+          <input class="demo-input" type="text" placeholder="أدخل اسمك الكامل..." />
+          <span class="input-hint">مثال على حقل نصي عادي</span>
+        </div>
+        <div>
+          <label class="input-label">البريد الإلكتروني</label>
+          <input class="demo-input success" type="email" value="user@example.com" readonly />
+          <span class="input-hint" style="color:#16a34a;">✓ صيغة صحيحة</span>
+        </div>
+        <div>
+          <label class="input-label">كلمة المرور</label>
+          <input class="demo-input" type="password" placeholder="••••••••" />
+          <span class="input-hint">النص مخفي مع secureTextEntry</span>
+        </div>
+      </div>
+
+      <div class="info-box">في HTML عندك <code>&lt;input type="text"&gt;</code>، <code>&lt;input type="email"&gt;</code>، <code>&lt;textarea&gt;</code>... أما في RN فمكوّن واحد فقط: <code>TextInput</code> — الفرق يكون عبر الخصائص (props).</div>
+    </div>
+  </div>
+
+  <!-- S2 -->
+  <div class="section" id="s2">
+    <h2 class="section-title"><span class="num">.2</span> الخصائص الأساسية <span class="en">Core Props</span></h2>
+    <div class="content">
+      <p>هذه أهم الخصائص التي ستستخدمها يومياً:</p>
+
+      <table class="comp-table">
+        <thead><tr><th>الخاصية</th><th>النوع</th><th>الوصف</th><th>مثال</th></tr></thead>
+        <tbody>
+          <tr><td><code>placeholder</code></td><td>string</td><td>نص توضيحي يختفي عند الكتابة</td><td><code>"أدخل اسمك..."</code></td></tr>
+          <tr><td><code>value</code></td><td>string</td><td>القيمة الحالية (Controlled)</td><td><code>{name}</code></td></tr>
+          <tr><td><code>onChangeText</code></td><td>function</td><td>يُطلق عند تغيير النص</td><td><code>setName</code></td></tr>
+          <tr><td><code>keyboardType</code></td><td>string</td><td>نوع لوحة المفاتيح</td><td><code>"email-address"</code></td></tr>
+          <tr><td><code>secureTextEntry</code></td><td>boolean</td><td>إخفاء النص (كلمة مرور)</td><td><code>true</code></td></tr>
+          <tr><td><code>multiline</code></td><td>boolean</td><td>يسمح بعدة أسطر</td><td><code>true</code></td></tr>
+          <tr><td><code>maxLength</code></td><td>number</td><td>الحد الأقصى للأحرف</td><td><code>150</code></td></tr>
+          <tr><td><code>editable</code></td><td>boolean</td><td>تفعيل/تعطيل التحرير</td><td><code>false</code></td></tr>
+          <tr><td><code>autoFocus</code></td><td>boolean</td><td>التركيز التلقائي عند الفتح</td><td><code>true</code></td></tr>
+          <tr><td><code>returnKeyType</code></td><td>string</td><td>نوع زر الإرسال في الكيبورد</td><td><code>"done"</code></td></tr>
+          <tr><td><code>onFocus</code></td><td>function</td><td>عند التركيز على الحقل</td><td><code>handleFocus</code></td></tr>
+          <tr><td><code>onBlur</code></td><td>function</td><td>عند مغادرة الحقل</td><td><code>handleBlur</code></td></tr>
+          <tr><td><code>onSubmitEditing</code></td><td>function</td><td>عند الضغط على زر الإرسال</td><td><code>handleSubmit</code></td></tr>
+        </tbody>
+      </table>
+
+      <div class="code-box">
+<div class="code-header"><span>⌨️ TextInput — الاستخدام الأساسي</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-name">import</span> { TextInput, View, Text } <span class="tag-name">from</span> <span class="attr-val">'react-native'</span>;
+
+&lt;<span class="attr">TextInput</span>
+  style={styles.input}
+  placeholder=<span class="attr-val">"أدخل اسمك..."</span>
+  placeholderTextColor=<span class="attr-val">"#94a3b8"</span>
+  value={name}
+  onChangeText={setName}
+  maxLength={<span class="attr-val">50</span>}
+  returnKeyType=<span class="attr-val">"next"</span>        <span class="comment">// زر التالي في الكيبورد</span>
+  onSubmitEditing={() => emailRef.current?.focus()}
+  autoCapitalize=<span class="attr-val">"words"</span>      <span class="comment">// تكبير أول حرف من كل كلمة</span>
+  autoCorrect={<span class="attr-val">false</span>}         <span class="comment">// تعطيل التصحيح التلقائي</span>
+/&gt;</pre>
+      </div>
+
+      <div class="tip-box"><strong>placeholderTextColor</strong> — لا يتوفر في CSS عادي بل هو prop مستقل في RN. دائماً حدّد لون واضحاً مثل <code>#94a3b8</code> بدل ترك اللون الافتراضي الرمادي الفاتح جداً.</div>
+    </div>
+  </div>
+
+  <!-- S3 -->
+  <div class="section" id="s3">
+    <h2 class="section-title"><span class="num">.3</span> Controlled vs Uncontrolled <span class="en">Input Modes</span></h2>
+    <div class="content">
+      <p>أهم مفهوم في TextInput — هل React يتحكم في قيمة الحقل أم لا؟</p>
+
+      <div class="code-box">
+<div class="code-header"><span>🔴 Uncontrolled — لا تُوصى به في RN</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">// ❌ Uncontrolled — بدون value و onChangeText</span>
+<span class="comment">// React لا يعرف ما كتبه المستخدم</span>
+&lt;<span class="attr">TextInput</span>
+  style={styles.input}
+  placeholder=<span class="attr-val">"اكتب هنا..."</span>
+  defaultValue=<span class="attr-val">"قيمة افتراضية"</span>  <span class="comment">// للقراءة الأولى فقط</span>
+/&gt;
+
+<span class="comment">// لا تعرف القيمة إلا بـ ref:</span>
+<span class="tag-name">const</span> inputRef = useRef(null);
+<span class="tag-name">const</span> getValue = () => {
+  <span class="comment">// لا يوجد طريقة مباشرة كـ inputRef.current.value</span>
+  <span class="comment">// يجب تتبّع القيمة يدوياً</span>
+};</pre>
+      </div>
+
+      <div class="code-box blue">
+<div class="code-header"><span>✅ Controlled — المنهج الصحيح في RN</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-name">import</span> { useState } <span class="tag-name">from</span> <span class="attr-val">'react'</span>;
+<span class="tag-name">import</span> { TextInput, Text } <span class="tag-name">from</span> <span class="attr-val">'react-native'</span>;
+
+<span class="tag-name">function</span> <span class="attr">SearchBar</span>() {
+  <span class="tag-name">const</span> [query, setQuery] = useState(<span class="attr-val">''</span>);
+
+  <span class="tag-name">return</span> (
+    &lt;&gt;
+      &lt;<span class="attr">TextInput</span>
+        style={styles.input}
+        placeholder=<span class="attr-val">"ابحث..."</span>
+        value={query}              <span class="comment">// ✅ React يتحكم في القيمة</span>
+        onChangeText={setQuery}    <span class="comment">// ✅ يُحدّث الـ state</span>
+      /&gt;
+      &lt;<span class="attr">Text</span>&gt;كتبت: {query}&lt;/<span class="attr">Text</span>&gt;  <span class="comment">// ✅ دائماً محدّث</span>
+    &lt;/&gt;
+  );
+}
+
+<span class="comment">// ✅ يمكنك الآن:</span>
+<span class="comment">// - مسح الحقل: setQuery('')</span>
+<span class="comment">// - ملء الحقل مسبقاً: setQuery('React Native')</span>
+<span class="comment">// - التحقق من القيمة في أي وقت: query</span>
+<span class="comment">// - تحريك التركيز بين حقول متعددة</span></pre>
+      </div>
+
+      <div class="analogy" style="background:linear-gradient(135deg,#fef3c7,#fde68a);border:2px solid #f59e0b;border-radius:12px;padding:16px 20px;margin:14px 0;position:relative;">
+        <div style="position:absolute;top:-14px;right:18px;background:var(--paper);padding:0 8px;font-size:1.4rem;">🤔</div>
+        <div style="font-family:'Aref Ruqaa',serif;color:#92400e;font-weight:700;margin-bottom:8px;">تشبيه بسيط</div>
+        <p style="font-size:.95rem;color:#78350f;">المدخل <strong>Uncontrolled</strong> كورقة تكتب عليها — أنت لا تعرف ما فيها إلا لما تقرأها.<br>المدخل <strong>Controlled</strong> كشخص يملي عليك وأنت تكتب — أنت دائماً تعرف ما قاله.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- S4 -->
+  <div class="section" id="s4">
+    <h2 class="section-title"><span class="num">.4</span> أنواع لوحة المفاتيح <span class="en">Keyboard Types</span></h2>
+    <div class="content">
+      <p>خاصية <code>keyboardType</code> تُخبر نظام التشغيل أي لوحة مفاتيح تُظهر — يُحسّن تجربة المستخدم كثيراً:</p>
+
+      <div class="kb-grid">
+        <div class="kb-card">
+          <div class="kb-card-icon">🔤</div>
+          <div class="kb-card-type">default</div>
+          <div class="kb-card-desc">لوحة الحروف العادية</div>
+        </div>
+        <div class="kb-card">
+          <div class="kb-card-icon">📧</div>
+          <div class="kb-card-type">email-address</div>
+          <div class="kb-card-desc">يُضيف @ و . بسهولة</div>
+        </div>
+        <div class="kb-card">
+          <div class="kb-card-icon">🔢</div>
+          <div class="kb-card-type">numeric</div>
+          <div class="kb-card-desc">أرقام فقط (0-9)</div>
+        </div>
+        <div class="kb-card">
+          <div class="kb-card-icon">📞</div>
+          <div class="kb-card-type">phone-pad</div>
+          <div class="kb-card-desc">لوحة الهاتف كلاسيكية</div>
+        </div>
+        <div class="kb-card">
+          <div class="kb-card-icon">💰</div>
+          <div class="kb-card-type">decimal-pad</div>
+          <div class="kb-card-desc">أرقام + نقطة عشرية</div>
+        </div>
+        <div class="kb-card">
+          <div class="kb-card-icon">🌐</div>
+          <div class="kb-card-type">url</div>
+          <div class="kb-card-desc">يُضيف / و .com</div>
+        </div>
+      </div>
+
+      <div class="code-box">
+<div class="code-header"><span>⌨️ keyboardType — أمثلة عملية</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">// 1. حقل البريد الإلكتروني</span>
+&lt;<span class="attr">TextInput</span>
+  keyboardType=<span class="attr-val">"email-address"</span>
+  autoCapitalize=<span class="attr-val">"none"</span>       <span class="comment">// لا تكبير تلقائي</span>
+  autoCorrect={<span class="attr-val">false</span>}
+  placeholder=<span class="attr-val">"example@email.com"</span>
+/&gt;
+
+<span class="comment">// 2. حقل رقم الهاتف</span>
+&lt;<span class="attr">TextInput</span>
+  keyboardType=<span class="attr-val">"phone-pad"</span>
+  maxLength={<span class="attr-val">10</span>}
+  placeholder=<span class="attr-val">"05XXXXXXXX"</span>
+/&gt;
+
+<span class="comment">// 3. حقل السعر</span>
+&lt;<span class="attr">TextInput</span>
+  keyboardType=<span class="attr-val">"decimal-pad"</span>
+  placeholder=<span class="attr-val">"0.00"</span>
+/&gt;
+
+<span class="comment">// returnKeyType — نص زر الإرسال</span>
+&lt;<span class="attr">TextInput</span> returnKeyType=<span class="attr-val">"search"</span>  /&gt;  <span class="comment">// 🔍 بحث</span>
+&lt;<span class="attr">TextInput</span> returnKeyType=<span class="attr-val">"next"</span>    /&gt;  <span class="comment">// التالي</span>
+&lt;<span class="attr">TextInput</span> returnKeyType=<span class="attr-val">"done"</span>    /&gt;  <span class="comment">// تم</span>
+&lt;<span class="attr">TextInput</span> returnKeyType=<span class="attr-val">"send"</span>    /&gt;  <span class="comment">// إرسال</span>
+&lt;<span class="attr">TextInput</span> returnKeyType=<span class="attr-val">"go"</span>      /&gt;  <span class="comment">// اذهب</span></pre>
+      </div>
+
+      <div class="note-box"><strong>autoCapitalize</strong> له 4 قيم: <code>"none"</code> (بدون تكبير)، <code>"sentences"</code> (أول كل جملة)، <code>"words"</code> (أول كل كلمة)، <code>"characters"</code> (كل الحروف). للبريد والرابط استخدم دائماً <code>"none"</code>.</div>
+    </div>
+  </div>
+
+  <!-- S5 -->
+  <div class="section" id="s5">
+    <h2 class="section-title"><span class="num">.5</span> secureTextEntry و multiline <span class="en">Special Modes</span></h2>
+    <div class="content">
+
+      <div class="code-box">
+<div class="code-header"><span>🔐 secureTextEntry — حقل كلمة المرور</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-name">import</span> { useState } <span class="tag-name">from</span> <span class="attr-val">'react'</span>;
+<span class="tag-name">import</span> { TextInput, TouchableOpacity, Text, View } <span class="tag-name">from</span> <span class="attr-val">'react-native'</span>;
+
+<span class="tag-name">function</span> <span class="attr">PasswordInput</span>({ value, onChangeText }) {
+  <span class="tag-name">const</span> [visible, setVisible] = useState(<span class="attr-val">false</span>);
+
+  <span class="tag-name">return</span> (
+    &lt;<span class="attr">View</span> style={styles.passwordWrap}&gt;
+      &lt;<span class="attr">TextInput</span>
+        style={styles.input}
+        value={value}
+        onChangeText={onChangeText}
+        secureTextEntry={!visible}     <span class="comment">// إخفاء النص</span>
+        placeholder=<span class="attr-val">"كلمة المرور..."</span>
+        autoCorrect={<span class="attr-val">false</span>}
+        autoCapitalize=<span class="attr-val">"none"</span>
+      /&gt;
+      &lt;<span class="attr">TouchableOpacity</span>
+        style={styles.eyeBtn}
+        onPress={() => setVisible(v => !v)}
+      &gt;
+        &lt;<span class="attr">Text</span>&gt;{visible ? <span class="attr-val">'🙈'</span> : <span class="attr-val">'👁️'</span>}&lt;/<span class="attr">Text</span>&gt;
+      &lt;/<span class="attr">TouchableOpacity</span>&gt;
+    &lt;/<span class="attr">View</span>&gt;
+  );
+}
+
+styles = StyleSheet.create({
+  passwordWrap: { flexDirection: <span class="attr-val">'row'</span>, alignItems: <span class="attr-val">'center'</span> },
+  input:  { flex: <span class="attr-val">1</span>, padding: <span class="attr-val">12</span>, borderRadius: <span class="attr-val">10</span>, borderWidth: <span class="attr-val">2</span>, borderColor: <span class="attr-val">'#e2e8f0'</span> },
+  eyeBtn: { position: <span class="attr-val">'absolute'</span>, left: <span class="attr-val">12</span>, padding: <span class="attr-val">4</span> },
+});</pre>
+      </div>
+
+      <div class="code-box blue">
+<div class="code-header"><span>📝 multiline — حقل متعدد الأسطر</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">// multiline — يتصرف كـ textarea</span>
+&lt;<span class="attr">TextInput</span>
+  style={[styles.input, styles.textArea]}
+  placeholder=<span class="attr-val">"اكتب رسالتك هنا..."</span>
+  value={message}
+  onChangeText={setMessage}
+  multiline={<span class="attr-val">true</span>}
+  numberOfLines={<span class="attr-val">5</span>}        <span class="comment">// ارتفاع ابتدائي</span>
+  maxLength={<span class="attr-val">500</span>}
+  textAlignVertical=<span class="attr-val">"top"</span>   <span class="comment">// Android: النص من الأعلى</span>
+/&gt;
+
+<span class="comment">// عداد الأحرف</span>
+&lt;<span class="attr">Text</span> style={styles.counter}&gt;
+  {message.length} / <span class="attr-val">500</span>
+&lt;/<span class="attr">Text</span>&gt;
+
+textArea: {
+  height: <span class="attr-val">120</span>,           <span class="comment">// ارتفاع ثابت</span>
+  textAlignVertical: <span class="attr-val">'top'</span>, <span class="comment">// Android فقط</span>
+  paddingTop: <span class="attr-val">12</span>,
+}
+
+<span class="comment">// ⚠️ لا تستخدم returnKeyType مع multiline</span>
+<span class="comment">// ⚠️ iOS: يتمدد تلقائياً — تحكم بـ style.height</span></pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- S6 -->
+  <div class="section" id="s6">
+    <h2 class="section-title"><span class="num">.6</span> تنسيق TextInput <span class="en">Styling Inputs</span></h2>
+    <div class="content">
+      <p>التنسيق في RN يختلف عن HTML — لا <code>outline</code> ولا <code>:focus</code> pseudo-class. نُحاكي التركيز بـ <code>onFocus</code> و <code>onBlur</code> مع state:</p>
+
+      <div class="code-box">
+<div class="code-header"><span>🎨 حقل مع تأثير التركيز — الطريقة الاحترافية</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-name">import</span> { useState } <span class="tag-name">from</span> <span class="attr-val">'react'</span>;
+<span class="tag-name">import</span> { TextInput, View, Text, StyleSheet } <span class="tag-name">from</span> <span class="attr-val">'react-native'</span>;
+
+<span class="tag-name">function</span> <span class="attr">AppInput</span>({ label, error, ...props }) {
+  <span class="tag-name">const</span> [focused, setFocused] = useState(<span class="attr-val">false</span>);
+
+  <span class="tag-name">return</span> (
+    &lt;<span class="attr">View</span> style={s.wrapper}&gt;
+      {label && &lt;<span class="attr">Text</span> style={s.label}&gt;{label}&lt;/<span class="attr">Text</span>&gt;}
+      &lt;<span class="attr">TextInput</span>
+        style={[
+          s.input,
+          focused && s.focused,   <span class="comment">// حدود زرقاء عند التركيز</span>
+          error  && s.error,      <span class="comment">// حدود حمراء عند الخطأ</span>
+        ]}
+        onFocus={() => setFocused(<span class="attr-val">true</span>)}
+        onBlur={() => setFocused(<span class="attr-val">false</span>)}
+        placeholderTextColor=<span class="attr-val">"#94a3b8"</span>
+        {...props}
+      /&gt;
+      {error && &lt;<span class="attr">Text</span> style={s.errorText}&gt;{error}&lt;/<span class="attr">Text</span>&gt;}
+    &lt;/<span class="attr">View</span>&gt;
+  );
+}
+
+<span class="tag-name">const</span> s = StyleSheet.create({
+  wrapper: { marginBottom: <span class="attr-val">16</span> },
+  label:   { fontSize: <span class="attr-val">14</span>, fontWeight: <span class="attr-val">'700'</span>, color: <span class="attr-val">'#475569'</span>, marginBottom: <span class="attr-val">6</span> },
+  input: {
+    borderWidth: <span class="attr-val">2</span>,
+    borderColor: <span class="attr-val">'#e2e8f0'</span>,
+    borderRadius: <span class="attr-val">12</span>,
+    padding: <span class="attr-val">14</span>,
+    fontSize: <span class="attr-val">15</span>,
+    backgroundColor: <span class="attr-val">'white'</span>,
+    color: <span class="attr-val">'#1e293b'</span>,
+  },
+  focused: {
+    borderColor: <span class="attr-val">'#0ea5e9'</span>,
+    shadowColor: <span class="attr-val">'#0ea5e9'</span>,   <span class="comment">// iOS</span>
+    shadowOpacity: <span class="attr-val">0.2</span>,
+    shadowRadius: <span class="attr-val">6</span>,
+    elevation: <span class="attr-val">2</span>,             <span class="comment">// Android</span>
+  },
+  error:     { borderColor: <span class="attr-val">'#f43f5e'</span> },
+  errorText: { color: <span class="attr-val">'#f43f5e'</span>, fontSize: <span class="attr-val">12</span>, marginTop: <span class="attr-val">4</span>, fontWeight: <span class="attr-val">'600'</span> },
+});</pre>
+      </div>
+
+      <div class="val-states">
+        <div class="val-card normal">
+          <div class="val-card-title">عادي</div>
+          <div class="val-card-icon">◻️</div>
+          <div style="font-size:.72rem;color:#94a3b8;margin-top:4px;">borderColor: #e2e8f0</div>
+        </div>
+        <div class="val-card focused">
+          <div class="val-card-title">مُركَّز</div>
+          <div class="val-card-icon">🔵</div>
+          <div style="font-size:.72rem;color:#0ea5e9;margin-top:4px;">borderColor: #0ea5e9</div>
+        </div>
+        <div class="val-card valid">
+          <div class="val-card-title">صحيح</div>
+          <div class="val-card-icon">✅</div>
+          <div style="font-size:.72rem;color:#16a34a;margin-top:4px;">borderColor: #16a34a</div>
+        </div>
+        <div class="val-card invalid">
+          <div class="val-card-title">خطأ</div>
+          <div class="val-card-icon">❌</div>
+          <div style="font-size:.72rem;color:#f43f5e;margin-top:4px;">borderColor: #f43f5e</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- S7 -->
+  <div class="section" id="s7">
+    <h2 class="section-title"><span class="num">.7</span> التحقق من المدخلات <span class="en">Form Validation</span></h2>
+    <div class="content">
+      <p>التحقق من المدخلات يحمي بياناتك ويُحسّن تجربة المستخدم — النمط الأكثر شيوعاً هو التحقق عند <code>onBlur</code>:</p>
+
+      <div class="code-box">
+<div class="code-header"><span>✅ نمط التحقق عند مغادرة الحقل</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-name">function</span> <span class="attr">LoginForm</span>() {
+  <span class="tag-name">const</span> [email, setEmail] = useState(<span class="attr-val">''</span>);
+  <span class="tag-name">const</span> [password, setPassword] = useState(<span class="attr-val">''</span>);
+  <span class="tag-name">const</span> [errors, setErrors] = useState({});
+
+  <span class="comment">// دوال التحقق</span>
+  <span class="tag-name">const</span> validateEmail = (val) => {
+    <span class="tag-name">const</span> re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    <span class="tag-name">if</span> (!val) <span class="tag-name">return</span> <span class="attr-val">'البريد مطلوب'</span>;
+    <span class="tag-name">if</span> (!re.test(val)) <span class="tag-name">return</span> <span class="attr-val">'صيغة البريد غير صحيحة'</span>;
+    <span class="tag-name">return</span> <span class="attr-val">''</span>;
+  };
+
+  <span class="tag-name">const</span> validatePassword = (val) => {
+    <span class="tag-name">if</span> (!val) <span class="tag-name">return</span> <span class="attr-val">'كلمة المرور مطلوبة'</span>;
+    <span class="tag-name">if</span> (val.length &lt; <span class="attr-val">8</span>) <span class="tag-name">return</span> <span class="attr-val">'8 أحرف على الأقل'</span>;
+    <span class="tag-name">return</span> <span class="attr-val">''</span>;
+  };
+
+  <span class="comment">// التحقق عند مغادرة الحقل</span>
+  <span class="tag-name">const</span> handleBlur = (field) => {
+    <span class="tag-name">const</span> validators = { email: validateEmail, password: validatePassword };
+    <span class="tag-name">const</span> values = { email, password };
+    <span class="tag-name">const</span> err = validators[field](values[field]);
+    setErrors(prev => ({ ...prev, [field]: err }));
+  };
+
+  <span class="comment">// التحقق الكامل عند الإرسال</span>
+  <span class="tag-name">const</span> handleSubmit = () => {
+    <span class="tag-name">const</span> emailErr = validateEmail(email);
+    <span class="tag-name">const</span> passErr  = validatePassword(password);
+    <span class="tag-name">if</span> (emailErr || passErr) {
+      setErrors({ email: emailErr, password: passErr });
+      <span class="tag-name">return</span>;
+    }
+    <span class="comment">// ✅ نجح التحقق — أرسل البيانات</span>
+  };
+
+  <span class="tag-name">return</span> (
+    &lt;<span class="attr">View</span>&gt;
+      &lt;<span class="attr">AppInput</span>
+        label=<span class="attr-val">"البريد الإلكتروني"</span>
+        value={email}
+        onChangeText={(t) => { setEmail(t); setErrors(e => ({ ...e, email: <span class="attr-val">''</span> })); }}
+        onBlur={() => handleBlur(<span class="attr-val">'email'</span>)}
+        error={errors.email}
+        keyboardType=<span class="attr-val">"email-address"</span>
+        autoCapitalize=<span class="attr-val">"none"</span>
+      /&gt;
+      &lt;<span class="attr">AppInput</span>
+        label=<span class="attr-val">"كلمة المرور"</span>
+        value={password}
+        onChangeText={(t) => { setPassword(t); setErrors(e => ({ ...e, password: <span class="attr-val">''</span> })); }}
+        onBlur={() => handleBlur(<span class="attr-val">'password'</span>)}
+        error={errors.password}
+        secureTextEntry
+      /&gt;
+    &lt;/<span class="attr">View</span>&gt;
+  );
+}</pre>
+      </div>
+
+      <div class="tip-box"><strong>نمط مفيد:</strong> امسح الخطأ فور بدء الكتابة (<code>setErrors(e => ({...e, field: ''}))</code>) — هذا يُشعر المستخدم بأن التطبيق يستجيب لتصحيحه، ويُعيد التحقق فقط عند مغادرة الحقل.</div>
+    </div>
+  </div>
+
+  <!-- S8 -->
+  <div class="section" id="s8">
+    <h2 class="section-title"><span class="num">.8</span> مثال كامل: شاشة تسجيل <span class="en">Registration Screen</span></h2>
+    <div class="content">
+      <p>نجمع كل ما تعلمناه في شاشة تسجيل كاملة مع refs للانتقال بين الحقول:</p>
+
+      <div class="code-box">
+<div class="code-header"><span>🏗️ RegisterScreen — شاشة تسجيل كاملة</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-name">import</span> { useRef, useState } <span class="tag-name">from</span> <span class="attr-val">'react'</span>;
+<span class="tag-name">import</span> {
+  View, Text, TextInput, TouchableOpacity,
+  ScrollView, KeyboardAvoidingView, Platform, StyleSheet,
+} <span class="tag-name">from</span> <span class="attr-val">'react-native'</span>;
+
+<span class="tag-name">export function</span> <span class="attr">RegisterScreen</span>() {
+  <span class="tag-name">const</span> [form, setForm] = useState({
+    name: <span class="attr-val">''</span>, email: <span class="attr-val">''</span>, phone: <span class="attr-val">''</span>,
+    password: <span class="attr-val">''</span>, confirm: <span class="attr-val">''</span>, bio: <span class="attr-val">''</span>,
+  });
+  <span class="tag-name">const</span> [errors, setErrors] = useState({});
+  <span class="tag-name">const</span> [showPass, setShowPass] = useState(<span class="attr-val">false</span>);
+
+  <span class="comment">// refs للتنقل بين الحقول بزر "التالي"</span>
+  <span class="tag-name">const</span> emailRef   = useRef(null);
+  <span class="tag-name">const</span> phoneRef   = useRef(null);
+  <span class="tag-name">const</span> passRef    = useRef(null);
+  <span class="tag-name">const</span> confirmRef = useRef(null);
+  <span class="tag-name">const</span> bioRef     = useRef(null);
+
+  <span class="tag-name">const</span> update = (field, val) =>
+    setForm(f => ({ ...f, [field]: val }));
+
+  <span class="tag-name">const</span> validate = () => {
+    <span class="tag-name">const</span> e = {};
+    <span class="tag-name">if</span> (!form.name.trim())          e.name = <span class="attr-val">'الاسم مطلوب'</span>;
+    <span class="tag-name">if</span> (!/\S+@\S+\.\S+/.test(form.email)) e.email = <span class="attr-val">'بريد غير صحيح'</span>;
+    <span class="tag-name">if</span> (form.password.length &lt; <span class="attr-val">8</span>)  e.password = <span class="attr-val">'8 أحرف على الأقل'</span>;
+    <span class="tag-name">if</span> (form.password !== form.confirm) e.confirm = <span class="attr-val">'كلمتا المرور غير متطابقتين'</span>;
+    setErrors(e);
+    <span class="tag-name">return</span> Object.keys(e).length === <span class="attr-val">0</span>;
+  };
+
+  <span class="tag-name">const</span> handleRegister = () => {
+    <span class="tag-name">if</span> (validate()) console.log(<span class="attr-val">'✅ تسجيل ناجح'</span>, form);
+  };
+
+  <span class="tag-name">return</span> (
+    <span class="comment">// KeyboardAvoidingView يمنع الكيبورد من إخفاء الحقول</span>
+    &lt;<span class="attr">KeyboardAvoidingView</span>
+      behavior={Platform.OS === <span class="attr-val">'ios'</span> ? <span class="attr-val">'padding'</span> : <span class="attr-val">'height'</span>}
+      style={{ flex: <span class="attr-val">1</span> }}
+    &gt;
+      &lt;<span class="attr">ScrollView</span> contentContainerStyle={s.container}&gt;
+
+        &lt;<span class="attr">Text</span> style={s.title}&gt;إنشاء حساب&lt;/<span class="attr">Text</span>&gt;
+
+        <span class="comment">// الاسم</span>
+        &lt;<span class="attr">TextInput</span>
+          style={[s.input, errors.name && s.inputErr]}
+          placeholder=<span class="attr-val">"الاسم الكامل"</span>
+          value={form.name} onChangeText={v => update(<span class="attr-val">'name'</span>, v)}
+          returnKeyType=<span class="attr-val">"next"</span>
+          onSubmitEditing={() => emailRef.current?.focus()}
+          autoCapitalize=<span class="attr-val">"words"</span>
+        /&gt;
+        {errors.name && &lt;<span class="attr">Text</span> style={s.err}&gt;{errors.name}&lt;/<span class="attr">Text</span>&gt;}
+
+        <span class="comment">// البريد</span>
+        &lt;<span class="attr">TextInput</span>
+          ref={emailRef} style={[s.input, errors.email && s.inputErr]}
+          placeholder=<span class="attr-val">"البريد الإلكتروني"</span>
+          value={form.email} onChangeText={v => update(<span class="attr-val">'email'</span>, v)}
+          keyboardType=<span class="attr-val">"email-address"</span>
+          autoCapitalize=<span class="attr-val">"none"</span> autoCorrect={<span class="attr-val">false</span>}
+          returnKeyType=<span class="attr-val">"next"</span>
+          onSubmitEditing={() => phoneRef.current?.focus()}
+        /&gt;
+        {errors.email && &lt;<span class="attr">Text</span> style={s.err}&gt;{errors.email}&lt;/<span class="attr">Text</span>&gt;}
+
+        <span class="comment">// الهاتف</span>
+        &lt;<span class="attr">TextInput</span>
+          ref={phoneRef} style={s.input}
+          placeholder=<span class="attr-val">"رقم الهاتف (اختياري)"</span>
+          value={form.phone} onChangeText={v => update(<span class="attr-val">'phone'</span>, v)}
+          keyboardType=<span class="attr-val">"phone-pad"</span> maxLength={<span class="attr-val">10</span>}
+          returnKeyType=<span class="attr-val">"next"</span>
+          onSubmitEditing={() => passRef.current?.focus()}
+        /&gt;
+
+        <span class="comment">// كلمة المرور</span>
+        &lt;<span class="attr">View</span> style={s.passWrap}&gt;
+          &lt;<span class="attr">TextInput</span>
+            ref={passRef}
+            style={[s.input, s.flex1, errors.password && s.inputErr]}
+            placeholder=<span class="attr-val">"كلمة المرور"</span>
+            value={form.password} onChangeText={v => update(<span class="attr-val">'password'</span>, v)}
+            secureTextEntry={!showPass}
+            autoCapitalize=<span class="attr-val">"none"</span>
+            returnKeyType=<span class="attr-val">"next"</span>
+            onSubmitEditing={() => confirmRef.current?.focus()}
+          /&gt;
+          &lt;<span class="attr">TouchableOpacity</span>
+            style={s.eyeBtn} onPress={() => setShowPass(p => !p)}&gt;
+            &lt;<span class="attr">Text</span>&gt;{showPass ? <span class="attr-val">'🙈'</span> : <span class="attr-val">'👁️'</span>}&lt;/<span class="attr">Text</span>&gt;
+          &lt;/<span class="attr">TouchableOpacity</span>&gt;
+        &lt;/<span class="attr">View</span>&gt;
+        {errors.password && &lt;<span class="attr">Text</span> style={s.err}&gt;{errors.password}&lt;/<span class="attr">Text</span>&gt;}
+
+        <span class="comment">// نبذة</span>
+        &lt;<span class="attr">TextInput</span>
+          ref={bioRef} style={[s.input, s.textArea]}
+          placeholder=<span class="attr-val">"نبذة عنك (اختياري)"</span>
+          value={form.bio} onChangeText={v => update(<span class="attr-val">'bio'</span>, v)}
+          multiline numberOfLines={<span class="attr-val">4</span>}
+          textAlignVertical=<span class="attr-val">"top"</span>
+          maxLength={<span class="attr-val">200</span>}
+        /&gt;
+        &lt;<span class="attr">Text</span> style={s.counter}&gt;{form.bio.length}/200&lt;/<span class="attr">Text</span>&gt;
+
+        &lt;<span class="attr">TouchableOpacity</span> style={s.btn} onPress={handleRegister}&gt;
+          &lt;<span class="attr">Text</span> style={s.btnText}&gt;إنشاء الحساب&lt;/<span class="attr">Text</span>&gt;
+        &lt;/<span class="attr">TouchableOpacity</span>&gt;
+
+      &lt;/<span class="attr">ScrollView</span>&gt;
+    &lt;/<span class="attr">KeyboardAvoidingView</span>&gt;
+  );
+}</pre>
+      </div>
+
+      <div class="warning-box"><strong>KeyboardAvoidingView</strong> — أهم مكوّن مع النماذج! يرفع المحتوى عندما يظهر الكيبورد حتى لا يُخفي الحقول. على iOS استخدم <code>behavior="padding"</code>، وعلى Android <code>behavior="height"</code> أو لا شيء.</div>
+    </div>
+  </div>
+
+  <!-- S9 — Live Preview -->
+  <div class="section" id="s9">
+    <h2 class="section-title"><span class="num">.9</span> معاينة حية <span class="en">Live Preview</span></h2>
+    <div class="content"><p>شاشة تسجيل كاملة مع حقول متنوعة وتحقق من المدخلات:</p></div>
+
+    <div class="live-preview">
+      <div class="lp-header">
+        <span>📱 معاينة — Registration Screen</span>
+        <span class="lp-tag">TextInput + Validation</span>
+      </div>
+      <div class="lp-body">
+        <div class="lp-code">
+<pre><span class="c">// حقل الاسم — Controlled</span>
+<span class="p">&lt;</span><span class="t">TextInput</span>
+  <span class="a">style</span>={s.input}
+  <span class="a">placeholder</span>=<span class="s">"الاسم الكامل"</span>
+  <span class="a">value</span>={name}
+  <span class="a">onChangeText</span>={setName}
+  <span class="a">returnKeyType</span>=<span class="s">"next"</span>
+  <span class="a">autoCapitalize</span>=<span class="s">"words"</span>
+<span class="p">/&gt;</span>
+
+<span class="c">// حقل البريد</span>
+<span class="p">&lt;</span><span class="t">TextInput</span>
+  <span class="a">ref</span>={emailRef}
+  <span class="a">keyboardType</span>=<span class="s">"email-address"</span>
+  <span class="a">autoCapitalize</span>=<span class="s">"none"</span>
+  <span class="a">returnKeyType</span>=<span class="s">"next"</span>
+  <span class="a">style</span>={[s.input, errors.email
+    &amp;&amp; s.inputErr]}
+<span class="p">/&gt;</span>
+
+<span class="c">// حقل كلمة المرور</span>
+<span class="p">&lt;</span><span class="t">TextInput</span>
+  <span class="a">secureTextEntry</span>={!showPass}
+  <span class="a">returnKeyType</span>=<span class="s">"done"</span>
+<span class="p">/&gt;</span>
+
+<span class="c">// نبذة متعددة الأسطر</span>
+<span class="p">&lt;</span><span class="t">TextInput</span>
+  <span class="a">multiline</span>
+  <span class="a">numberOfLines</span>={<span class="n">4</span>}
+  <span class="a">maxLength</span>={<span class="n">200</span>}
+  <span class="a">textAlignVertical</span>=<span class="s">"top"</span>
+<span class="p">/&gt;</span></pre>
+        </div>
+        <div class="lp-phone-wrap">
+          <div class="lp-phone">
+            <div class="lp-phone-bar"></div>
+            <div class="lp-phone-screen" style="gap:8px; padding:12px; background:white;">
+              <!-- Title -->
+              <div style="text-align:center; font-family:'Aref Ruqaa',serif; font-size:.95rem; color:#1e3a8a; font-weight:700; margin-bottom:4px; padding-bottom:6px; border-bottom:2px dashed #e2e8f0;">
+                إنشاء حساب
+              </div>
+              <!-- Name -->
+              <div style="border:2px solid #e2e8f0; border-radius:8px; padding:8px 10px; font-family:'Cairo',sans-serif; font-size:.72rem; color:#94a3b8; text-align:right;">
+                الاسم الكامل
+              </div>
+              <!-- Email — success -->
+              <div style="border:2px solid #16a34a; border-radius:8px; padding:8px 10px; font-family:'Cairo',sans-serif; font-size:.72rem; color:#1e293b; text-align:right; background:#f0fdf4;">
+                user@example.com ✓
+              </div>
+              <!-- Phone -->
+              <div style="border:2px solid #e2e8f0; border-radius:8px; padding:8px 10px; font-family:'Cairo',sans-serif; font-size:.72rem; color:#94a3b8; text-align:right;">
+                رقم الهاتف
+              </div>
+              <!-- Password — error -->
+              <div style="border:2px solid #f43f5e; border-radius:8px; padding:8px 10px; font-family:'Fira Code',monospace; font-size:.72rem; color:#1e293b; text-align:left; background:#fff1f2; display:flex; justify-content:space-between; align-items:center;">
+                <span style="font-size:.8rem;">👁️</span>
+                <span>••••</span>
+              </div>
+              <div style="font-size:.65rem; color:#f43f5e; font-family:'Cairo',sans-serif; text-align:right; margin-top:-4px; font-weight:700;">8 أحرف على الأقل</div>
+              <!-- Bio -->
+              <div style="border:2px solid #e2e8f0; border-radius:8px; padding:8px 10px; height:44px; font-family:'Cairo',sans-serif; font-size:.7rem; color:#94a3b8; text-align:right; display:flex; align-items:flex-start;">
+                نبذة عنك...
+              </div>
+              <div style="font-size:.6rem; color:#94a3b8; font-family:'Fira Code',monospace; text-align:left;">0/200</div>
+              <!-- Button -->
+              <div style="background:#0ea5e9; border-radius:10px; padding:10px; text-align:center; margin-top:4px;">
+                <span style="color:white; font-weight:700; font-size:.78rem; font-family:'Cairo',sans-serif;">إنشاء الحساب</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EXERCISES -->
+  <div class="section" id="exercises">
+    <h2 class="section-title"><span class="num">📝</span> التمارين العملية <span class="en">Exercises</span></h2>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 1: حقل البحث</div>
+      <p>اكتب حقل بحث Controlled مع زر "X" لمسح النص. الحقل يقبل أي نص، وزر المسح يظهر فقط عندما يكون هناك نص.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box"><pre><span class="tag-name">function</span> <span class="attr">SearchInput</span>() {
+  <span class="tag-name">const</span> [query, setQuery] = useState(<span class="attr-val">''</span>);
+
+  <span class="tag-name">return</span> (
+    &lt;<span class="attr">View</span> style={{ flexDirection: <span class="attr-val">'row'</span>, alignItems: <span class="attr-val">'center'</span> }}&gt;
+      &lt;<span class="attr">TextInput</span>
+        style={[styles.input, { flex: <span class="attr-val">1</span> }]}
+        placeholder=<span class="attr-val">"ابحث..."</span>
+        value={query}
+        onChangeText={setQuery}
+        returnKeyType=<span class="attr-val">"search"</span>
+      /&gt;
+      {query.length &gt; <span class="attr-val">0</span> && (
+        &lt;<span class="attr">TouchableOpacity</span>
+          style={styles.clearBtn}
+          onPress={() => setQuery(<span class="attr-val">''</span>)}
+        &gt;
+          &lt;<span class="attr">Text</span>&gt;✕&lt;/<span class="attr">Text</span>&gt;
+        &lt;/<span class="attr">TouchableOpacity</span>&gt;
+      )}
+    &lt;/<span class="attr">View</span>&gt;
+  );
+}</pre></div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 2: حقل رقم الهاتف</div>
+      <p>اكتب TextInput لرقم الهاتف السعودي: لوحة مفاتيح phone-pad، حد أقصى 10 أرقام، يتحقق عند onBlur أن الرقم يبدأ بـ 05 وطوله 10 أرقام.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box"><pre><span class="tag-name">function</span> <span class="attr">PhoneInput</span>() {
+  <span class="tag-name">const</span> [phone, setPhone] = useState(<span class="attr-val">''</span>);
+  <span class="tag-name">const</span> [error, setError] = useState(<span class="attr-val">''</span>);
+
+  <span class="tag-name">const</span> validate = () => {
+    <span class="tag-name">if</span> (!/^05\d{8}$/.test(phone)) {
+      setError(<span class="attr-val">'رقم غير صحيح — يجب أن يبدأ بـ 05 ويكون 10 أرقام'</span>);
+    } <span class="tag-name">else</span> {
+      setError(<span class="attr-val">''</span>);
+    }
+  };
+
+  <span class="tag-name">return</span> (
+    &lt;<span class="attr">View</span>&gt;
+      &lt;<span class="attr">TextInput</span>
+        style={[styles.input, error && { borderColor: <span class="attr-val">'#f43f5e'</span> }]}
+        placeholder=<span class="attr-val">"05XXXXXXXX"</span>
+        value={phone}
+        onChangeText={(t) => { setPhone(t); setError(<span class="attr-val">''</span>); }}
+        onBlur={validate}
+        keyboardType=<span class="attr-val">"phone-pad"</span>
+        maxLength={<span class="attr-val">10</span>}
+      /&gt;
+      {error ? &lt;<span class="attr">Text</span> style={{ color: <span class="attr-val">'#f43f5e'</span>, fontSize: <span class="attr-val">12</span> }}&gt;{error}&lt;/<span class="attr">Text</span>&gt; : null}
+    &lt;/<span class="attr">View</span>&gt;
+  );
+}</pre></div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 3: حقل كلمة مرور مع قوة</div>
+      <p>اكتب حقل كلمة مرور مع مؤشر القوة: أقل من 6 أحرف (ضعيف)، 6-10 (متوسط)، أكثر من 10 (قوي).</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box"><pre><span class="tag-name">function</span> <span class="attr">getStrength</span>(pass) {
+  <span class="tag-name">if</span> (pass.length === <span class="attr-val">0</span>)  <span class="tag-name">return</span> null;
+  <span class="tag-name">if</span> (pass.length &lt; <span class="attr-val">6</span>)   <span class="tag-name">return</span> { label: <span class="attr-val">'ضعيف'</span>,   color: <span class="attr-val">'#f43f5e'</span>, width: <span class="attr-val">'33%'</span> };
+  <span class="tag-name">if</span> (pass.length &lt; <span class="attr-val">10</span>)  <span class="tag-name">return</span> { label: <span class="attr-val">'متوسط'</span>,  color: <span class="attr-val">'#f59e0b'</span>, width: <span class="attr-val">'66%'</span> };
+  <span class="tag-name">return</span>                  { label: <span class="attr-val">'قوي'</span>,    color: <span class="attr-val">'#16a34a'</span>, width: <span class="attr-val">'100%'</span> };
+}
+
+<span class="tag-name">function</span> <span class="attr">PasswordStrength</span>() {
+  <span class="tag-name">const</span> [pass, setPass] = useState(<span class="attr-val">''</span>);
+  <span class="tag-name">const</span> strength = getStrength(pass);
+
+  <span class="tag-name">return</span> (
+    &lt;<span class="attr">View</span>&gt;
+      &lt;<span class="attr">TextInput</span>
+        style={styles.input}
+        secureTextEntry
+        value={pass}
+        onChangeText={setPass}
+        placeholder=<span class="attr-val">"كلمة المرور"</span>
+      /&gt;
+      {strength && (
+        &lt;&gt;
+          &lt;<span class="attr">View</span> style={{ height: <span class="attr-val">4</span>, backgroundColor: <span class="attr-val">'#e2e8f0'</span>, borderRadius: <span class="attr-val">2</span>, marginTop: <span class="attr-val">6</span> }}&gt;
+            &lt;<span class="attr">View</span> style={{ height: <span class="attr-val">4</span>, width: strength.width, backgroundColor: strength.color, borderRadius: <span class="attr-val">2</span> }} /&gt;
+          &lt;/<span class="attr">View</span>&gt;
+          &lt;<span class="attr">Text</span> style={{ color: strength.color, fontSize: <span class="attr-val">12</span>, marginTop: <span class="attr-val">4</span> }}&gt;{strength.label}&lt;/<span class="attr">Text</span>&gt;
+        &lt;/&gt;
+      )}
+    &lt;/<span class="attr">View</span>&gt;
+  );
+}</pre></div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 4: حقل متعدد الأسطر مع عداد</div>
+      <p>اكتب TextInput متعدد الأسطر لكتابة تعليق، بحد أقصى 200 حرف، مع عداد يظهر الأحرف المتبقية ويتحول للأحمر عند أقل من 20 حرفاً.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box"><pre><span class="tag-name">function</span> <span class="attr">CommentInput</span>() {
+  <span class="tag-name">const</span> [comment, setComment] = useState(<span class="attr-val">''</span>);
+  <span class="tag-name">const</span> MAX = <span class="attr-val">200</span>;
+  <span class="tag-name">const</span> remaining = MAX - comment.length;
+  <span class="tag-name">const</span> isLow = remaining &lt; <span class="attr-val">20</span>;
+
+  <span class="tag-name">return</span> (
+    &lt;<span class="attr">View</span>&gt;
+      &lt;<span class="attr">TextInput</span>
+        style={[styles.input, { height: <span class="attr-val">100</span>, textAlignVertical: <span class="attr-val">'top'</span> }]}
+        placeholder=<span class="attr-val">"اكتب تعليقك..."</span>
+        value={comment}
+        onChangeText={setComment}
+        multiline
+        maxLength={MAX}
+        textAlignVertical=<span class="attr-val">"top"</span>
+      /&gt;
+      &lt;<span class="attr">Text</span>
+        style={{
+          color: isLow ? <span class="attr-val">'#f43f5e'</span> : <span class="attr-val">'#94a3b8'</span>,
+          fontSize: <span class="attr-val">12</span>, textAlign: <span class="attr-val">'left'</span>, marginTop: <span class="attr-val">4</span>,
+        }}
+      &gt;
+        متبقٍ: {remaining}
+      &lt;/<span class="attr">Text</span>&gt;
+    &lt;/<span class="attr">View</span>&gt;
+  );
+}</pre></div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 5: التنقل بين الحقول</div>
+      <p>اكتب نموذج بـ 3 حقول (اسم، بريد، كلمة مرور) بحيث يُنقل التركيز تلقائياً للحقل التالي عند الضغط على زر "التالي" في الكيبورد، وعند آخر حقل يُرسل النموذج.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box"><pre><span class="tag-name">function</span> <span class="attr">MultiFieldForm</span>() {
+  <span class="tag-name">const</span> [form, setForm] = useState({ name: <span class="attr-val">''</span>, email: <span class="attr-val">''</span>, password: <span class="attr-val">''</span> });
+  <span class="tag-name">const</span> emailRef = useRef(null);
+  <span class="tag-name">const</span> passRef  = useRef(null);
+
+  <span class="tag-name">return</span> (
+    &lt;<span class="attr">View</span>&gt;
+      &lt;<span class="attr">TextInput</span>
+        style={styles.input}
+        placeholder=<span class="attr-val">"الاسم"</span>
+        value={form.name}
+        onChangeText={v => setForm(f => ({ ...f, name: v }))}
+        returnKeyType=<span class="attr-val">"next"</span>
+        onSubmitEditing={() => emailRef.current?.focus()}
+        autoCapitalize=<span class="attr-val">"words"</span>
+      /&gt;
+      &lt;<span class="attr">TextInput</span>
+        ref={emailRef} style={styles.input}
+        placeholder=<span class="attr-val">"البريد"</span>
+        value={form.email}
+        onChangeText={v => setForm(f => ({ ...f, email: v }))}
+        keyboardType=<span class="attr-val">"email-address"</span>
+        autoCapitalize=<span class="attr-val">"none"</span>
+        returnKeyType=<span class="attr-val">"next"</span>
+        onSubmitEditing={() => passRef.current?.focus()}
+      /&gt;
+      &lt;<span class="attr">TextInput</span>
+        ref={passRef} style={styles.input}
+        placeholder=<span class="attr-val">"كلمة المرور"</span>
+        value={form.password}
+        onChangeText={v => setForm(f => ({ ...f, password: v }))}
+        secureTextEntry
+        autoCapitalize=<span class="attr-val">"none"</span>
+        returnKeyType=<span class="attr-val">"done"</span>
+        onSubmitEditing={() => console.log(<span class="attr-val">'إرسال'</span>, form)}
+      /&gt;
+    &lt;/<span class="attr">View</span>&gt;
+  );
+}</pre></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="quiz-container" id="quiz">
+    <div class="quiz-intro"><p>اختبر فهمك لـ TextInput في React Native!</p></div>
+    <div class="quiz-type-tabs">
+      <button class="qt-tab active" onclick="switchQuiz(this,'tf')">✓✗ صح وخطأ</button>
+      <button class="qt-tab" onclick="switchQuiz(this,'mc')">🔘 اختيار من متعدد</button>
+    </div>
+
+    <div class="quiz-section active" id="quiz-tf">
+      <div class="quiz-question" data-correct="false">
+        <span class="q-num">1</span><span class="q-text">يمكن في RN كتابة <code>:focus</code> في StyleSheet لتغيير مظهر الحقل عند التركيز.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">2</span><span class="q-text">خاصية <code>onChangeText</code> تُعطي النص الجديد كاملاً وليس حدث (event).</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">3</span><span class="q-text">يجب استخدام <code>textAlignVertical="top"</code> مع multiline على Android لضمان بدء النص من الأعلى.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="false">
+        <span class="q-num">4</span><span class="q-text"><code>keyboardType="numeric"</code> يمنع المستخدم من إدخال أحرف غير رقمية برمجياً.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">5</span><span class="q-text"><code>KeyboardAvoidingView</code> يمنع الكيبورد من إخفاء حقول الإدخال.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <button class="quiz-submit" onclick="submitQuiz('tf')">عرض النتيجة 🎯</button>
+      <div class="quiz-result" id="result-tf"><div class="result-score" id="score-tf">0/5</div><div class="result-label">إجابات صحيحة</div><div class="result-message" id="msg-tf"></div><button class="retry-btn" onclick="retryQuiz('tf')">🔄 حاول تاني</button></div>
+    </div>
+
+    <div class="quiz-section" id="quiz-mc">
+      <div class="quiz-question" data-correct="1">
+        <span class="q-num">1</span><span class="q-text">ما الخاصية التي تُخبر الكيبورد بنوعه (أرقام، بريد، هاتف)؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">inputType</button>
+          <button class="q-opt" onclick="answerMC(this,1)">keyboardType</button>
+          <button class="q-opt" onclick="answerMC(this,2)">type</button>
+          <button class="q-opt" onclick="answerMC(this,3)">inputMode</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="0">
+        <span class="q-num">2</span><span class="q-text">ما الفرق الرئيسي بين Controlled و Uncontrolled input؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">Controlled يتحكم React في قيمته عبر state، Uncontrolled يتحكم DOM</button>
+          <button class="q-opt" onclick="answerMC(this,1)">Controlled أسرع في الأداء دائماً</button>
+          <button class="q-opt" onclick="answerMC(this,2)">Uncontrolled يتطلب أكثر من سطر كود</button>
+          <button class="q-opt" onclick="answerMC(this,3)">لا فرق في React Native</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="2">
+        <span class="q-num">3</span><span class="q-text">أي حدث نستخدمه للتحقق من مدخل البريد الإلكتروني بعد مغادرة الحقل؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">onChange</button>
+          <button class="q-opt" onclick="answerMC(this,1)">onChangeText</button>
+          <button class="q-opt" onclick="answerMC(this,2)">onBlur</button>
+          <button class="q-opt" onclick="answerMC(this,3)">onSubmitEditing</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="3">
+        <span class="q-num">4</span><span class="q-text">ما الـ prop المستخدم لإخفاء النص في حقل كلمة المرور؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">type="password"</button>
+          <button class="q-opt" onclick="answerMC(this,1)">hideText={true}</button>
+          <button class="q-opt" onclick="answerMC(this,2)">passwordMode</button>
+          <button class="q-opt" onclick="answerMC(this,3)">secureTextEntry={true}</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="1">
+        <span class="q-num">5</span><span class="q-text">لتنقيل التركيز إلى حقل آخر عند الضغط على "التالي" في الكيبورد، نستخدم:</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">onPress مع setTimeout</button>
+          <button class="q-opt" onclick="answerMC(this,1)">ref مع .focus() في onSubmitEditing</button>
+          <button class="q-opt" onclick="answerMC(this,2)">autoFocus={true} على الحقل الثاني</button>
+          <button class="q-opt" onclick="answerMC(this,3)">tabIndex في StyleSheet</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <button class="quiz-submit" onclick="submitQuiz('mc')">عرض النتيجة 🎯</button>
+      <div class="quiz-result" id="result-mc"><div class="result-score" id="score-mc">0/5</div><div class="result-label">إجابات صحيحة</div><div class="result-message" id="msg-mc"></div><button class="retry-btn" onclick="retryQuiz('mc')">🔄 حاول تاني</button></div>
+    </div>
+  </div>
+
+  <div class="lesson-nav">
+    <a href="./lesson-10.html" class="nav-btn"><span>⬅️</span><span>الدرس السابق</span></a>
+    <button class="nav-btn complete-btn" id="completeBtn" onclick="markComplete(this)"><span>✅</span><span>علّم كمكتمل</span></button>
+    <a href="./lesson-12.html" class="nav-btn"><span>الدرس التالي</span><span>➡️</span></a>
+  </div>
+
+  <div class="notebook-footer">
+    <h3>🎉 أتقنت إدخال البيانات!</h3>
+    <p>TextInput الآن في جعبتك — controlled input، التحقق، وتنقل الكيبورد. ⌨️<br><strong>الدرس التالي: FlatList و SectionList — قوائم البيانات الديناميكية 📋</strong></p>
+  </div>
+</div>
+
+<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">⬆️</button>
+<div class="toast" id="toast"></div>
+<script src="../../js/data/courses.js"></script>
+<script src="../../js/progress.js"></script>
+<script>
+const COURSE_ID='react-native', LESSON_ID=11, TOTAL=28;
+function toggleSolution(b){const s=b.nextElementSibling;s.classList.toggle('show');b.textContent=s.classList.contains('show')?'إخفاء الحل ▲':'عرض الحل ▼';}
+function copyCode(b){const p=b.closest('.code-box').querySelector('pre');navigator.clipboard.writeText(p.innerText).then(()=>{b.classList.add('copied');b.textContent='✓ تم النسخ';setTimeout(()=>{b.classList.remove('copied');b.textContent='📋 نسخ';},2000);});}
+function switchQuiz(b,t){document.querySelectorAll('.qt-tab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.quiz-section').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.getElementById('quiz-'+t).classList.add('active');}
+const answers={tf:{},mc:{}};
+function answerTF(b,v){const q=b.closest('.quiz-question'),i=Array.from(q.parentNode.querySelectorAll('.quiz-question')).indexOf(q);q.querySelectorAll('.q-opt').forEach(o=>o.classList.remove('selected'));b.classList.add('selected');answers.tf[i]=v;}
+function answerMC(b,i){const q=b.closest('.quiz-question'),qi=Array.from(q.parentNode.querySelectorAll('.quiz-question')).indexOf(q);q.querySelectorAll('.q-opt').forEach(o=>o.classList.remove('selected'));b.classList.add('selected');answers.mc[qi]=i;}
+function submitQuiz(type){const sec=document.getElementById('quiz-'+type),qs=sec.querySelectorAll('.quiz-question');let c=0;qs.forEach((q,i)=>{const ca=type==='tf'?(q.dataset.correct==='true'):parseInt(q.dataset.correct),ua=answers[type][i],fb=q.querySelector('.q-feedback'),opts=q.querySelectorAll('.q-opt');opts.forEach(o=>{o.classList.remove('selected');o.disabled=true;});if(ua===undefined){fb.className='q-feedback wrong show';fb.textContent='⚠️ ما اخترتش إجابة!';return;}if(ua===ca){c++;fb.className='q-feedback correct show';fb.textContent='✓ إجابة صحيحة!';if(type==='tf')opts[ca?0:1].classList.add('correct');else opts[ca].classList.add('correct');}else{fb.className='q-feedback wrong show';if(type==='tf'){opts[ca?0:1].classList.add('correct');opts[ua?0:1].classList.add('wrong');fb.textContent='✗ خطأ.';}else{opts[ca].classList.add('correct');opts[ua].classList.add('wrong');fb.textContent='✗ الإجابة بالأخضر.';}}});const r=document.getElementById('result-'+type);document.getElementById('score-'+type).textContent=c+'/'+qs.length;const m=document.getElementById('msg-'+type);if(c===qs.length){m.textContent='🏆 ممتاز 100%!';m.className='result-message excellent';}else if(c>=3){m.textContent='👍 جيد!';m.className='result-message good';}else{m.textContent='📚 راجع الدرس.';m.className='result-message try-again';}r.classList.add('show');r.scrollIntoView({behavior:'smooth',block:'center'});}
+function retryQuiz(type){const sec=document.getElementById('quiz-'+type);sec.querySelectorAll('.q-opt').forEach(o=>{o.classList.remove('selected','correct','wrong');o.disabled=false;});sec.querySelectorAll('.q-feedback').forEach(f=>{f.classList.remove('show','correct','wrong');f.textContent='';});document.getElementById('result-'+type).classList.remove('show');answers[type]={};}
+function markComplete(btn){const done=Progress.toggleLessonComplete(COURSE_ID,LESSON_ID);btn.classList.toggle('completed',done);btn.querySelector('span:last-child').textContent=done?'مكتمل! ⭐':'علّم كمكتمل';showToast(done?'🎉 أكملت درس TextInput!':'تم إلغاء الإكمال');}
+if(Progress.isLessonComplete(COURSE_ID,LESSON_ID)){const b=document.getElementById('completeBtn');b.classList.add('completed');b.querySelector('span:last-child').textContent='مكتمل! ⭐';}
+(function(){const p=Progress.getCourseProgress(COURSE_ID,TOTAL);document.getElementById('progFill').style.width=p+'%';document.getElementById('progText').textContent=p+'%';})();
+function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
+window.addEventListener('scroll',()=>{document.getElementById('scrollTop').classList.toggle('show',window.scrollY>300);});
+document.querySelectorAll('.toc-card a').forEach(l=>{l.addEventListener('click',e=>{e.preventDefault();const t=document.querySelector(l.getAttribute('href'));if(t)t.scrollIntoView({behavior:'smooth',block:'start'});});});
+</script>
+</body>
+</html>

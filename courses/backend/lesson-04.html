@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-V2NCKVL16D"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-V2NCKVL16D');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EventEmitter و Streams — دفتر البرمجة</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=Cairo:wght@300;400;500;600;700;900&family=Caveat:wght@400;700&family=Fira+Code:wght@400;500;600&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../css/shared.css">
+<link rel="stylesheet" href="../../css/notebook.css">
+<style>
+body { padding: 20px 10px; }
+
+/* ── event methods ── */
+.ev-methods { display: grid; grid-template-columns: repeat(auto-fill, minmax(185px, 1fr)); gap: 10px; margin: 14px 0; }
+.ev-card { background: white; border-radius: 10px; padding: 12px 14px; border: 1.5px solid var(--border); }
+.ev-fn   { font-family: 'Fira Code', monospace; font-size: .8rem; font-weight: 700; color: #7c3aed; }
+.ev-desc { font-size: .77rem; color: #64748b; margin-top: 4px; }
+
+/* ── stream vs readfile ── */
+.stream-compare { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 14px 0; }
+.sc-col { border-radius: 12px; padding: 14px; }
+.sc-col.bad  { background: #fef2f2; border: 1.5px solid #fca5a5; }
+.sc-col.good { background: #f0fdf4; border: 1.5px solid #86efac; }
+.sc-title { font-family: 'Aref Ruqaa', serif; font-weight: 700; font-size: .95rem; margin-bottom: 8px; }
+.sc-col.bad  .sc-title { color: #dc2626; }
+.sc-col.good .sc-title { color: #15803d; }
+.sc-item { font-size: .8rem; padding: 4px 0; border-bottom: 1px dashed rgba(0,0,0,.08); color: #374151; }
+.sc-item:last-child { border: none; }
+.sc-item .icon { font-size: .9rem; margin-left: 5px; }
+
+/* ── stream flow ── */
+.stream-flow { display: flex; align-items: center; justify-content: center; gap: 6px; flex-wrap: wrap; margin: 16px 0; }
+.sf-box { padding: 10px 14px; border-radius: 10px; font-family: 'Fira Code', monospace; font-size: .79rem; text-align: center; border: 2px solid; min-width: 90px; }
+.sf-box.source    { border-color: #7c3aed; background: #faf5ff; color: #7c3aed; }
+.sf-box.transform { border-color: #0ea5e9; background: #f0f9ff; color: #0369a1; }
+.sf-box.dest      { border-color: #16a34a; background: #f0fdf4; color: #15803d; }
+.sf-arrow { font-size: 1.4rem; color: #94a3b8; }
+
+/* ── stream types ── */
+.stream-types { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 10px; margin: 14px 0; }
+.st-card { background: white; border-radius: 10px; padding: 12px 14px; border: 1.5px solid var(--border); text-align: center; }
+.st-icon { font-size: 1.6rem; margin-bottom: 5px; }
+.st-name { font-family: 'Fira Code', monospace; font-size: .8rem; font-weight: 700; color: #7c3aed; }
+.st-desc { font-size: .74rem; color: #64748b; margin-top: 4px; }
+.st-ex   { font-family: 'Fira Code', monospace; font-size: .68rem; color: #94a3b8; margin-top: 5px; }
+
+/* ── memory bar ── */
+.mem-viz { margin: 14px 0; }
+.mem-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.mem-label { font-family: 'Aref Ruqaa', serif; font-size: .88rem; font-weight: 700; min-width: 85px; }
+.mem-bar-wrap { flex: 1; background: #f1f5f9; border-radius: 20px; height: 22px; overflow: hidden; min-width: 0; }
+.mem-bar { height: 100%; border-radius: 20px; display: flex; align-items: center; padding-right: 8px; }
+.mem-bar.full   { background: linear-gradient(90deg, #dc2626, #f87171); width: 90%; }
+.mem-bar.chunks { background: linear-gradient(90deg, #16a34a, #4ade80); width: 18%; }
+.mem-val { font-family: 'Fira Code', monospace; font-size: .73rem; color: white; font-weight: 700; }
+.mem-note { font-size: .74rem; color: #64748b; min-width: 55px; text-align: left; }
+
+/* ── real world ── */
+.real-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 10px; margin: 14px 0; }
+.real-card { background: white; border-radius: 10px; padding: 12px; border: 1.5px solid var(--border); }
+.real-icon { font-size: 1.5rem; margin-bottom: 5px; }
+.real-name { font-family: 'Aref Ruqaa', serif; font-size: .88rem; font-weight: 700; color: #1e293b; }
+.real-desc { font-size: .75rem; color: #64748b; margin-top: 3px; }
+
+/* ── terminal ── */
+.lp-terminal { background: #0f172a; padding: 18px; display: flex; align-items: flex-start; justify-content: center; }
+.terminal-window { width: 100%; max-width: 300px; border: 2px solid #334155; border-radius: 10px; overflow: hidden; box-shadow: 0 12px 32px rgba(0,0,0,.6); }
+.terminal-bar { background: #334155; padding: 8px 12px; display: flex; align-items: center; gap: 6px; }
+.t-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+.t-dot.red    { background: #f87171; }
+.t-dot.yellow { background: #fbbf24; }
+.t-dot.green  { background: #4ade80; }
+.t-title { font-family: 'Fira Code', monospace; font-size: .65rem; color: #94a3b8; margin-right: auto; }
+.terminal-screen {
+  padding: 13px; font-family: 'Fira Code', monospace;
+  font-size: .73rem; line-height: 1.85; color: #e2e8f0;
+  background: #0f172a; direction: ltr; text-align: left; min-height: 200px;
+}
+.t-prompt { color: #4ade80; }
+.t-cmd    { color: #e2e8f0; }
+.t-out    { color: #94a3b8; }
+.t-ok     { color: #4ade80; font-weight: 600; }
+.t-info   { color: #60a5fa; }
+.t-warn   { color: #fbbf24; }
+.t-ev     { color: #c084fc; }
+.t-cursor { display: inline-block; width: 7px; height: 13px; background: #4ade80; animation: blink 1s step-end infinite; vertical-align: middle; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+/* ── MOBILE ── */
+@media (max-width: 640px) {
+  .stream-compare   { grid-template-columns: 1fr; }
+  .stream-types     { grid-template-columns: 1fr 1fr; }
+  .real-grid        { grid-template-columns: 1fr 1fr; }
+  .ev-methods       { grid-template-columns: 1fr 1fr; }
+  .lp-body          { flex-direction: column !important; }
+  .lp-code          { min-width: 100% !important; border-left: none !important; border-bottom: 1px solid rgba(255,255,255,.1); }
+  .lp-terminal      { min-width: 100% !important; padding: 14px; }
+  .terminal-window  { max-width: 100%; }
+  .code-box pre     { font-size: .7rem; }
+  .stream-flow      { gap: 4px; }
+  .sf-box           { font-size: .73rem; padding: 8px 10px; min-width: 78px; }
+  .mem-label        { min-width: 75px; font-size: .82rem; }
+  .q-opt            { min-height: 44px; font-size: .85rem; padding: 10px 12px; }
+  .solution-toggle  { min-height: 40px; width: 100%; font-size: .88rem; }
+}
+@media (max-width: 400px) {
+  .stream-types  { grid-template-columns: 1fr; }
+  .real-grid     { grid-template-columns: 1fr; }
+  .ev-methods    { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="crumbs">
+    <a href="../../index.html">🏠</a>
+    <span class="sep">/</span>
+    <a href="./index.html">⚙️ الباك إند</a>
+    <span class="sep">/</span>
+    <span class="current">⚡ الدرس 4: EventEmitter و Streams</span>
+  </div>
+  <div class="progress-mini">
+    <div class="progress-bar-mini"><div class="progress-fill-mini" id="progFill"></div></div>
+    <span id="progText">0%</span>
+  </div>
+</div>
+
+<div class="notebook">
+
+  <div class="notebook-header">
+    <div class="lesson-tag" style="border-color:#7c3aed; color:#7c3aed;">⚡ الدرس الرابع</div>
+    <h1><span class="sparkle">✦</span> EventEmitter و Streams <span class="sparkle">✦</span></h1>
+    <div class="lesson-meta">
+      <span>⏱️ 35 دقيقة</span>
+      <span>📊 متوسط</span>
+      <span>🎯 قلب Node.js</span>
+    </div>
+  </div>
+
+  <div class="toc-card">
+    <h2>📑 فهرس الدرس</h2>
+    <ol>
+      <li><a href="#s1">ما هو EventEmitter؟</a></li>
+      <li><a href="#s2">on / emit / once / off</a></li>
+      <li><a href="#s3">توارث EventEmitter</a></li>
+      <li><a href="#s4">الأحداث المدمجة في Node.js</a></li>
+      <li><a href="#s5">ما هي Streams؟</a></li>
+      <li><a href="#s6">أنواع Streams</a></li>
+      <li><a href="#s7">Pipe — ربط التدفقات</a></li>
+      <li><a href="#s8">EventEmitter حي</a></li>
+      <li><a href="#exercises">التمارين</a></li>
+      <li><a href="#quiz">اختبر فهمك</a></li>
+    </ol>
+  </div>
+
+  <!-- S1 -->
+  <div class="section" id="s1">
+    <h2 class="section-title"><span class="num">.1</span> ما هو EventEmitter؟ <span class="en">Event-Driven Model</span></h2>
+    <div class="content">
+      <p>Node.js يعتمد على نموذج <strong>Event-Driven</strong> — الكود لا يُنفَّذ تسلسلياً بل استجابةً للأحداث.</p>
+
+      <div class="analogy" style="background:linear-gradient(135deg,#fdf4ff,#ede9fe);border:2px solid #a78bfa;border-radius:12px;padding:16px 20px;margin:14px 0;position:relative;">
+        <div style="position:absolute;top:-14px;right:18px;background:var(--paper);padding:0 8px;font-size:1.4rem;">📻</div>
+        <div style="font-family:'Aref Ruqaa',serif;color:#6d28d9;font-weight:700;margin-bottom:8px;">تشبيه: راديو FM</div>
+        <p style="font-size:.93rem;color:#4c1d95;margin:0;"><strong>EventEmitter</strong> مثل محطة إذاعية — تبثّ أحداثاً (<em>emit</em>). من يريد الاستماع يضبط المحطة (<em>on</em>). لا علاقة مباشرة بين المُرسِل والمستقبِل.</p>
+      </div>
+
+      <div class="code-box">
+<div class="code-header"><span>📻 EventEmitter — البداية</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-name">const</span> { EventEmitter } = require(<span class="attr-val">'events'</span>);
+
+<span class="comment">// إنشاء emitter</span>
+<span class="tag-name">const</span> emitter = <span class="tag-name">new</span> EventEmitter();
+
+<span class="comment">// الاستماع للحدث 'data'</span>
+emitter.on(<span class="attr-val">'data'</span>, (msg) => {
+  console.log(<span class="attr-val">'📨 استلمت:'</span>, msg);
+});
+
+<span class="comment">// إطلاق الحدث</span>
+emitter.emit(<span class="attr-val">'data'</span>, <span class="attr-val">'مرحباً!'</span>);
+<span class="comment">// ← يطبع: 📨 استلمت: مرحباً!</span>
+
+<span class="comment">// يمكن تمرير أكثر من معامل</span>
+emitter.emit(<span class="attr-val">'data'</span>, <span class="attr-val">'رسالة'</span>, { from: <span class="attr-val">'server'</span>, time: Date.now() });</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- S2 -->
+  <div class="section" id="s2">
+    <h2 class="section-title"><span class="num">.2</span> on / emit / once / off <span class="en">Methods</span></h2>
+    <div class="content">
+
+      <div class="ev-methods">
+        <div class="ev-card">
+          <div class="ev-fn">.on(event, fn)</div>
+          <div class="ev-desc">يستمع للحدث كلما أُطلق (مستمر)</div>
+        </div>
+        <div class="ev-card">
+          <div class="ev-fn">.emit(event, …)</div>
+          <div class="ev-desc">يُطلق الحدث مع معاملات اختيارية</div>
+        </div>
+        <div class="ev-card">
+          <div class="ev-fn">.once(event, fn)</div>
+          <div class="ev-desc">يستمع مرة واحدة فقط ثم يُلغى</div>
+        </div>
+        <div class="ev-card">
+          <div class="ev-fn">.off(event, fn)</div>
+          <div class="ev-desc">يُلغي مستمع محدد</div>
+        </div>
+        <div class="ev-card">
+          <div class="ev-fn">.removeAll()</div>
+          <div class="ev-desc">يُلغي كل المستمعين لحدث</div>
+        </div>
+        <div class="ev-card">
+          <div class="ev-fn">.listeners(ev)</div>
+          <div class="ev-desc">قائمة المستمعين المسجّلين</div>
+        </div>
+      </div>
+
+      <div class="code-box">
+<div class="code-header"><span>⚙️ الطرق الكاملة</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-name">const</span> { EventEmitter } = require(<span class="attr-val">'events'</span>);
+<span class="tag-name">const</span> bus = <span class="tag-name">new</span> EventEmitter();
+
+<span class="comment">// on — يستمع كل مرة</span>
+bus.on(<span class="attr-val">'login'</span>, (user) => {
+  console.log(<span class="attr-val">`سجّل دخول: ${user}`</span>);
+});
+
+<span class="comment">// once — مرة واحدة فقط</span>
+bus.once(<span class="attr-val">'server:start'</span>, () => {
+  console.log(<span class="attr-val">'✓ الخادم بدأ'</span>);
+});
+
+<span class="comment">// emit — إطلاق</span>
+bus.emit(<span class="attr-val">'login'</span>, <span class="attr-val">'أحمد'</span>);   <span class="comment">// → سجّل دخول: أحمد</span>
+bus.emit(<span class="attr-val">'login'</span>, <span class="attr-val">'سارة'</span>);   <span class="comment">// → سجّل دخول: سارة</span>
+bus.emit(<span class="attr-val">'server:start'</span>);     <span class="comment">// → ✓ الخادم بدأ</span>
+bus.emit(<span class="attr-val">'server:start'</span>);     <span class="comment">// ← لا يُطبع (once انتهى)</span>
+
+<span class="comment">// error — حدث خاص يجب التعامل معه</span>
+bus.on(<span class="attr-val">'error'</span>, (err) => {
+  console.error(<span class="attr-val">'خطأ:'</span>, err.message);
+});
+bus.emit(<span class="attr-val">'error'</span>, <span class="tag-name">new</span> Error(<span class="attr-val">'فشل الاتصال'</span>));</pre>
+      </div>
+
+      <div class="warning-box">حدث <code>error</code> خاص — إذا أطلقته بدون مستمع، يُوقف Node.js تلقائياً! دائماً سجّل مستمعاً له.</div>
+    </div>
+  </div>
+
+  <!-- S3 -->
+  <div class="section" id="s3">
+    <h2 class="section-title"><span class="num">.3</span> توارث EventEmitter <span class="en">Extending EventEmitter</span></h2>
+    <div class="content">
+      <p>أفضل ممارسة: بدل استخدام EventEmitter مباشرة، أورّثه في كلاساتك لتصميم نظام أحداث نظيف.</p>
+
+      <div class="code-box">
+<div class="code-header"><span>🏗️ كلاس Server مخصص</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-name">const</span> { EventEmitter } = require(<span class="attr-val">'events'</span>);
+
+<span class="tag-name">class</span> MyServer <span class="tag-name">extends</span> EventEmitter {
+  <span class="tag-name">constructor</span>() {
+    <span class="tag-name">super</span>();
+    <span class="tag-name">this</span>.connections = 0;
+  }
+
+  connect(user) {
+    <span class="tag-name">this</span>.connections++;
+    <span class="this">this</span>.emit(<span class="attr-val">'connect'</span>, user);           <span class="comment">← أطلق حدثاً</span>
+    <span class="tag-name">if</span> (<span class="tag-name">this</span>.connections > 100) {
+      <span class="this">this</span>.emit(<span class="attr-val">'overload'</span>, <span class="tag-name">this</span>.connections);
+    }
+  }
+
+  disconnect(user) {
+    <span class="tag-name">this</span>.connections--;
+    <span class="this">this</span>.emit(<span class="attr-val">'disconnect'</span>, user);
+  }
+}
+
+<span class="comment">// الاستخدام</span>
+<span class="tag-name">const</span> server = <span class="tag-name">new</span> MyServer();
+
+server.on(<span class="attr-val">'connect'</span>,    user => console.log(<span class="attr-val">`✓ ${user} اتصل`</span>));
+server.on(<span class="attr-val">'disconnect'</span>, user => console.log(<span class="attr-val">`✗ ${user} قطع`</span>));
+server.on(<span class="attr-val">'overload'</span>,   n    => console.warn(<span class="attr-val">`⚠️ حمل زائد: ${n}`</span>));
+
+server.connect(<span class="attr-val">'أحمد'</span>);
+server.connect(<span class="attr-val">'سارة'</span>);</pre>
+      </div>
+
+      <div class="tip-box">هذا النمط يستخدمه Node.js داخلياً — الـ <code>http.Server</code> نفسه يُورّث EventEmitter ويُطلق <code>'request'</code>، <code>'connection'</code>، <code>'error'</code>.</div>
+    </div>
+  </div>
+
+  <!-- S4 -->
+  <div class="section" id="s4">
+    <h2 class="section-title"><span class="num">.4</span> الأحداث المدمجة في Node.js <span class="en">Built-in Events</span></h2>
+    <div class="content">
+      <p>معظم وحدات Node.js تستخدم EventEmitter داخلياً — هذه الأحداث التي ستصادفها:</p>
+
+      <div class="code-box">
+<div class="code-header"><span>📡 أحداث http.Server</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-name">const</span> http = require(<span class="attr-val">'http'</span>);
+<span class="tag-name">const</span> server = http.createServer();
+
+server.on(<span class="attr-val">'request'</span>, (req, res) => {   <span class="comment">← طلب جديد</span>
+  res.end(<span class="attr-val">'مرحباً!'</span>);
+});
+
+server.on(<span class="attr-val">'connection'</span>, (socket) => {  <span class="comment">← اتصال TCP جديد</span>
+  console.log(<span class="attr-val">'اتصال من:'</span>, socket.remoteAddress);
+});
+
+server.on(<span class="attr-val">'error'</span>, (err) => {          <span class="comment">← خطأ في الخادم</span>
+  <span class="tag-name">if</span> (err.code === <span class="attr-val">'EADDRINUSE'</span>) {
+    console.error(<span class="attr-val">'المنفذ مستخدم!'</span>);
+  }
+});
+
+server.on(<span class="attr-val">'close'</span>, () => {            <span class="comment">← الخادم أُغلق</span>
+  console.log(<span class="attr-val">'الخادم أُوقف'</span>);
+});
+
+server.listen(3000);</pre>
+      </div>
+
+      <div class="code-box blue">
+<div class="code-header"><span>📂 أحداث process</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">// التقاط أخطاء غير متوقعة — مهم جداً</span>
+process.on(<span class="attr-val">'uncaughtException'</span>, (err) => {
+  console.error(<span class="attr-val">'خطأ غير متوقع:'</span>, err);
+  process.exit(1);
+});
+
+process.on(<span class="attr-val">'unhandledRejection'</span>, (reason) => {
+  console.error(<span class="attr-val">'Promise غير معالج:'</span>, reason);
+});
+
+<span class="comment">// عند إغلاق التطبيق (Ctrl+C)</span>
+process.on(<span class="attr-val">'SIGINT'</span>, () => {
+  console.log(<span class="attr-val">'\nجارٍ الإغلاق بأمان...'</span>);
+  <span class="comment">// أغلق الـ DB connections هنا</span>
+  process.exit(0);
+});</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- S5 -->
+  <div class="section" id="s5">
+    <h2 class="section-title"><span class="num">.5</span> ما هي Streams؟ <span class="en">Streams — Why?</span></h2>
+    <div class="content">
+      <p>تخيّل تحميل فيديو 2 جيجا — هل تنتظر اكتمال التحميل قبل المشاهدة؟ لا! هذا هو مفهوم Streams.</p>
+
+      <p>بدل تحميل الكل في الذاكرة، Streams تُعالج البيانات <strong>قطعة قطعة (chunk by chunk)</strong>:</p>
+
+      <div class="mem-viz">
+        <div class="mem-row">
+          <div class="mem-label">readFile</div>
+          <div class="mem-bar-wrap">
+            <div class="mem-bar full"><span class="mem-val">~2 GB RAM</span></div>
+          </div>
+          <div class="mem-note">🔴 مشكلة</div>
+        </div>
+        <div class="mem-row">
+          <div class="mem-label">Streams</div>
+          <div class="mem-bar-wrap">
+            <div class="mem-bar chunks"><span class="mem-val">~64 KB</span></div>
+          </div>
+          <div class="mem-note">🟢 كفء</div>
+        </div>
+      </div>
+
+      <div class="stream-compare">
+        <div class="sc-col bad">
+          <div class="sc-title">❌ readFile (الكل دفعة)</div>
+          <div class="sc-item"><span class="icon">📦</span>يُحمّل الملف كاملاً في RAM</div>
+          <div class="sc-item"><span class="icon">⏸</span>لا ترد حتى ينتهي التحميل</div>
+          <div class="sc-item"><span class="icon">💥</span>ملف 1GB = 1GB RAM</div>
+          <div class="sc-item"><span class="icon">🐢</span>المستخدم ينتظر طويلاً</div>
+        </div>
+        <div class="sc-col good">
+          <div class="sc-title">✅ Streams (قطعة قطعة)</div>
+          <div class="sc-item"><span class="icon">🔄</span>تُعالج 64KB في كل مرة</div>
+          <div class="sc-item"><span class="icon">⚡</span>تُرسل البيانات فور وصولها</div>
+          <div class="sc-item"><span class="icon">💾</span>ملف 1GB = 64KB RAM فقط!</div>
+          <div class="sc-item"><span class="icon">🚀</span>المستخدم يستقبل البيانات فوراً</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- S6 -->
+  <div class="section" id="s6">
+    <h2 class="section-title"><span class="num">.6</span> أنواع Streams <span class="en">Stream Types</span></h2>
+    <div class="content">
+
+      <div class="stream-types">
+        <div class="st-card">
+          <div class="st-icon">📖</div>
+          <div class="st-name">Readable</div>
+          <div class="st-desc">للقراءة فقط</div>
+          <div class="st-ex">fs.createReadStream<br>http.IncomingMessage</div>
+        </div>
+        <div class="st-card">
+          <div class="st-icon">✏️</div>
+          <div class="st-name">Writable</div>
+          <div class="st-desc">للكتابة فقط</div>
+          <div class="st-ex">fs.createWriteStream<br>http.ServerResponse</div>
+        </div>
+        <div class="st-card">
+          <div class="st-icon">🔄</div>
+          <div class="st-name">Duplex</div>
+          <div class="st-desc">قراءة وكتابة</div>
+          <div class="st-ex">net.Socket<br>TCP connections</div>
+        </div>
+        <div class="st-card">
+          <div class="st-icon">⚗️</div>
+          <div class="st-name">Transform</div>
+          <div class="st-desc">يُعدّل البيانات</div>
+          <div class="st-ex">zlib.createGzip<br>crypto streams</div>
+        </div>
+      </div>
+
+      <div class="code-box">
+<div class="code-header"><span>📖 Readable Stream — أحداثه</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-name">const</span> fs = require(<span class="attr-val">'fs'</span>);
+
+<span class="tag-name">const</span> readStream = fs.createReadStream(<span class="attr-val">'big-file.txt'</span>, {
+  encoding: <span class="attr-val">'utf8'</span>,
+  highWaterMark: 64 * 1024, <span class="comment">← حجم الـ chunk (64KB)</span>
+});
+
+<span class="comment">// حدث: قطعة جديدة جاهزة</span>
+readStream.on(<span class="attr-val">'data'</span>, (chunk) => {
+  console.log(<span class="attr-val">`📦 chunk: ${chunk.length} bytes`</span>);
+});
+
+<span class="comment">// حدث: انتهى الملف</span>
+readStream.on(<span class="attr-val">'end'</span>, () => {
+  console.log(<span class="attr-val">'✓ تمت القراءة'</span>);
+});
+
+<span class="comment">// حدث: خطأ</span>
+readStream.on(<span class="attr-val">'error'</span>, (err) => {
+  console.error(<span class="attr-val">'خطأ:'</span>, err.message);
+});</pre>
+      </div>
+
+      <div class="code-box blue">
+<div class="code-header"><span>✏️ Writable Stream</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-name">const</span> writeStream = fs.createWriteStream(<span class="attr-val">'output.txt'</span>);
+
+<span class="comment">// كتابة قطعة</span>
+writeStream.write(<span class="attr-val">'سطر أول\n'</span>);
+writeStream.write(<span class="attr-val">'سطر ثانٍ\n'</span>);
+
+<span class="comment">// إنهاء الكتابة</span>
+writeStream.end(<span class="attr-val">'سطر أخير\n'</span>);
+
+<span class="comment">// حدث: انتهت الكتابة</span>
+writeStream.on(<span class="attr-val">'finish'</span>, () => {
+  console.log(<span class="attr-val">'✓ كُتب الملف'</span>);
+});
+
+<span class="comment">// مثال حقيقي: الـ Response في Express هو Writable!</span>
+app.get(<span class="attr-val">'/'</span>, (req, res) => {
+  res.write(<span class="attr-val">'بيانات...'</span>);  <span class="comment">← writable.write()</span>
+  res.end();                <span class="comment">← writable.end()</span>
+});</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- S7 -->
+  <div class="section" id="s7">
+    <h2 class="section-title"><span class="num">.7</span> Pipe — ربط التدفقات <span class="en">Piping</span></h2>
+    <div class="content">
+      <p><code>pipe()</code> يُوصّل مخرجات Stream لمدخلات آخر — مثل أنابيب المياه.</p>
+
+      <div class="stream-flow">
+        <div class="sf-box source">📄 Readable<br><small>createReadStream</small></div>
+        <div class="sf-arrow">|</div>
+        <div class="sf-box transform">⚗️ Transform<br><small>zlib.Gzip</small></div>
+        <div class="sf-arrow">|</div>
+        <div class="sf-box dest">📦 Writable<br><small>createWriteStream</small></div>
+      </div>
+
+      <div class="code-box">
+<div class="code-header"><span>🔗 pipe() — نسخ ملف</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-name">const</span> fs = require(<span class="attr-val">'fs'</span>);
+
+<span class="tag-name">const</span> src  = fs.createReadStream(<span class="attr-val">'input.txt'</span>);
+<span class="tag-name">const</span> dest = fs.createWriteStream(<span class="attr-val">'output.txt'</span>);
+
+<span class="comment">// ربط بـ pipe — بديل عشرات الأسطر!</span>
+src.pipe(dest);
+
+dest.on(<span class="attr-val">'finish'</span>, () => console.log(<span class="attr-val">'✓ نُسخ الملف'</span>));</pre>
+      </div>
+
+      <div class="code-box">
+<div class="code-header"><span>🗜️ ضغط ملف بـ zlib + pipe</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-name">const</span> fs   = require(<span class="attr-val">'fs'</span>);
+<span class="tag-name">const</span> zlib = require(<span class="attr-val">'zlib'</span>);
+
+<span class="comment">// قراءة → ضغط → كتابة (كل الملف بـ سطرين!)</span>
+fs.createReadStream(<span class="attr-val">'data.json'</span>)
+  .pipe(zlib.createGzip())                     <span class="comment">← ضغط gzip</span>
+  .pipe(fs.createWriteStream(<span class="attr-val">'data.json.gz'</span>));  <span class="comment">← حفظ</span>
+
+<span class="comment">// مثال حقيقي: خدمة ملفات بـ Streams</span>
+app.get(<span class="attr-val">'/download'</span>, (req, res) => {
+  res.setHeader(<span class="attr-val">'Content-Type'</span>, <span class="attr-val">'text/plain'</span>);
+  fs.createReadStream(<span class="attr-val">'large-file.txt'</span>).pipe(res);
+  <span class="comment">// ← يُرسل مباشرة للمستخدم قطعة قطعة</span>
+});</pre>
+      </div>
+
+      <div class="real-grid">
+        <div class="real-card">
+          <div class="real-icon">📹</div>
+          <div class="real-name">Video Streaming</div>
+          <div class="real-desc">Netflix يستخدم Streams لتشغيل الفيديو</div>
+        </div>
+        <div class="real-card">
+          <div class="real-icon">📤</div>
+          <div class="real-name">File Upload</div>
+          <div class="real-desc">Multer يستخدم Streams لرفع الملفات</div>
+        </div>
+        <div class="real-card">
+          <div class="real-icon">🗜️</div>
+          <div class="real-name">Compression</div>
+          <div class="real-desc">gzip ضغط الاستجابات في Express</div>
+        </div>
+        <div class="real-card">
+          <div class="real-icon">🔐</div>
+          <div class="real-name">Encryption</div>
+          <div class="real-desc">تشفير البيانات أثناء النقل</div>
+        </div>
+      </div>
+
+      <div class="tip-box">في Express، <code>res</code> هو Writable Stream — <code>fs.createReadStream().pipe(res)</code> يُرسل ملفاً كبيراً مباشرة للمستخدم بكفاءة تامة.</div>
+    </div>
+  </div>
+
+  <!-- S8 Live Preview -->
+  <div class="section" id="s8">
+    <h2 class="section-title"><span class="num">.8</span> EventEmitter حي <span class="en">Live Demo</span></h2>
+    <div class="content"><p>نظام أحداث لمحادثة بسيطة (Chat Room) باستخدام EventEmitter:</p></div>
+
+    <div class="live-preview">
+      <div class="lp-header">
+        <span>⚡ EventEmitter — Chat Room</span>
+        <span class="lp-tag">Node.js</span>
+      </div>
+      <div class="lp-body">
+        <div class="lp-code">
+<pre><span class="c">// chat.js</span>
+<span class="t">const</span> { EventEmitter } = require(<span class="s">'events'</span>);
+
+<span class="k">class</span> ChatRoom <span class="k">extends</span> EventEmitter {
+  <span class="k">constructor</span>(name) {
+    <span class="k">super</span>();
+    <span class="k">this</span>.name  = name;
+    <span class="k">this</span>.users = [];
+  }
+
+  join(user) {
+    <span class="k">this</span>.users.push(user);
+    <span class="k">this</span>.emit(<span class="s">'join'</span>, user);
+  }
+
+  send(from, msg) {
+    <span class="k">this</span>.emit(<span class="s">'message'</span>, { from, msg });
+  }
+
+  leave(user) {
+    <span class="k">this</span>.users =
+      <span class="k">this</span>.users.filter(u => u !== user);
+    <span class="k">this</span>.emit(<span class="s">'leave'</span>, user);
+  }
+}
+
+<span class="t">const</span> room = <span class="k">new</span> ChatRoom(<span class="s">'عام'</span>);
+
+room.on(<span class="s">'join'</span>,    u    =>
+  console.log(<span class="s">`✓ ${u} انضم`</span>));
+room.on(<span class="s">'message'</span>, ({from, msg}) =>
+  console.log(<span class="s">`[${from}]: ${msg}`</span>));
+room.on(<span class="s">'leave'</span>,   u    =>
+  console.log(<span class="s">`✗ ${u} غادر`</span>));
+
+room.join(<span class="s">'أحمد'</span>);
+room.join(<span class="s">'سارة'</span>);
+room.send(<span class="s">'أحمد'</span>, <span class="s">'هلا!'</span>);
+room.send(<span class="s">'سارة'</span>, <span class="s">'أهلاً!'</span>);
+room.leave(<span class="s">'أحمد'</span>);</pre>
+        </div>
+        <div class="lp-terminal">
+          <div class="terminal-window">
+            <div class="terminal-bar">
+              <div class="t-dot red"></div>
+              <div class="t-dot yellow"></div>
+              <div class="t-dot green"></div>
+              <span class="t-title">node chat.js</span>
+            </div>
+            <div class="terminal-screen">
+              <div><span class="t-prompt">$</span> <span class="t-cmd">node chat.js</span></div>
+              <div><span class="t-out">───────────────────</span></div>
+              <div><span class="t-ev">event:join</span> <span class="t-out">→</span></div>
+              <div><span class="t-ok">✓ أحمد انضم</span></div>
+              <br>
+              <div><span class="t-ev">event:join</span> <span class="t-out">→</span></div>
+              <div><span class="t-ok">✓ سارة انضمت</span></div>
+              <br>
+              <div><span class="t-ev">event:message</span> <span class="t-out">→</span></div>
+              <div><span class="t-info">[أحمد]: هلا!</span></div>
+              <br>
+              <div><span class="t-ev">event:message</span> <span class="t-out">→</span></div>
+              <div><span class="t-info">[سارة]: أهلاً!</span></div>
+              <br>
+              <div><span class="t-ev">event:leave</span> <span class="t-out">→</span></div>
+              <div><span class="t-warn">✗ أحمد غادر</span></div>
+              <div><span class="t-out">───────────────────</span></div>
+              <div><span class="t-prompt">$</span> <span class="t-cursor"></span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EXERCISES -->
+  <div class="section" id="exercises">
+    <h2 class="section-title"><span class="num">📝</span> التمارين العملية</h2>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 1: EventEmitter أساسي</div>
+      <p>أنشئ EventEmitter يستمع لحدث <code>'order'</code>. كل مرة يُطلق الحدث مع اسم المنتج وسعره، يطبع رسالة "✓ طلب جديد: [المنتج] — [السعر] ريال". أطلق الحدث 3 مرات بمنتجات مختلفة.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box"><pre>const { EventEmitter } = require('events');
+const shop = new EventEmitter();
+
+shop.on('order', (product, price) => {
+  console.log(`✓ طلب جديد: ${product} — ${price} ريال`);
+});
+
+shop.emit('order', 'قهوة', 15);
+shop.emit('order', 'تشيز كيك', 25);
+shop.emit('order', 'عصير', 12);</pre></div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 2: once</div>
+      <p>أنشئ EventEmitter يستمع لحدث <code>'init'</code> مرة واحدة فقط بـ <code>once</code>، وحدث <code>'request'</code> كل مرة بـ <code>on</code>. أطلق كلا الحدثين 3 مرات وراقب الفرق.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box"><pre>const { EventEmitter } = require('events');
+const srv = new EventEmitter();
+
+srv.once('init', () => console.log('✓ تهيئة (مرة واحدة)'));
+srv.on('request', (n) => console.log(`طلب #${n}`));
+
+for (let i = 1; i <= 3; i++) {
+  srv.emit('init');     // يطبع مرة واحدة فقط
+  srv.emit('request', i); // يطبع 3 مرات
+}
+// النتيجة:
+// ✓ تهيئة (مرة واحدة)
+// طلب #1  طلب #2  طلب #3</pre></div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 3: قراءة بـ Stream</div>
+      <p>أنشئ ملف نصي كبير (يمكن ملؤه بـ <code>fs.writeFileSync</code> بنص مكرر). ثم اقرأه بـ <code>createReadStream</code> وعدّ عدد الـ chunks التي وصلت.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box"><pre>const fs = require('fs');
+
+// إنشاء ملف اختباري
+const big = 'سطر بيانات اختبارية كثيرة جداً! '.repeat(5000);
+fs.writeFileSync('test.txt', big, 'utf8');
+
+// قراءة بـ Stream
+let chunks = 0;
+const rs = fs.createReadStream('test.txt', { highWaterMark: 1024 });
+
+rs.on('data', () => chunks++);
+rs.on('end',  () => console.log(`وصلنا ${chunks} chunk`));</pre></div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 4: نسخ بـ pipe</div>
+      <p>اكتب سكريبت ينسخ ملفاً من مسار لآخر باستخدام <code>createReadStream</code> + <code>pipe</code> + <code>createWriteStream</code>، ويطبع "✓ تم النسخ" بعد الانتهاء.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box"><pre>const fs = require('fs');
+
+const src  = fs.createReadStream('source.txt');
+const dest = fs.createWriteStream('copy.txt');
+
+src.pipe(dest);
+dest.on('finish', () => console.log('✓ تم النسخ'));</pre></div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 5: كلاس Logger بالأحداث</div>
+      <p>أنشئ كلاس <code>Logger</code> يُورّث EventEmitter. يحتوي على دالة <code>log(level, message)</code> تُطلق حدث <code>'log'</code>. سجّل مستمعاً يطبع الرسائل ملوّنة: INFO أزرق، WARN أصفر، ERROR أحمر (استخدم رموز الأحرف مثل ✅⚠️❌).</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box"><pre>const { EventEmitter } = require('events');
+
+class Logger extends EventEmitter {
+  log(level, message) {
+    this.emit('log', { level, message, time: new Date() });
+  }
+}
+
+const logger = new Logger();
+
+const icons = { INFO: '✅', WARN: '⚠️', ERROR: '❌' };
+
+logger.on('log', ({ level, message, time }) => {
+  const icon = icons[level] || '📝';
+  console.log(`${icon} [${level}] ${time.toLocaleTimeString()} — ${message}`);
+});
+
+logger.log('INFO',  'الخادم بدأ');
+logger.log('WARN',  'الذاكرة عالية');
+logger.log('ERROR', 'فشل الاتصال بقاعدة البيانات');</pre></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="quiz-container" id="quiz">
+    <div class="quiz-intro"><p>اختبر فهمك للأحداث والتدفقات!</p></div>
+    <div class="quiz-type-tabs">
+      <button class="qt-tab active" onclick="switchQuiz(this,'tf')">✓✗ صح وخطأ</button>
+      <button class="qt-tab" onclick="switchQuiz(this,'mc')">🔘 اختيار من متعدد</button>
+    </div>
+
+    <div class="quiz-section active" id="quiz-tf">
+      <div class="quiz-question" data-correct="false">
+        <span class="q-num">1</span><span class="q-text">حدث 'error' في EventEmitter يمكن تجاهله بأمان بدون مستمع.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">2</span><span class="q-text">Streams تُعالج البيانات قطعة قطعة مما يُقلّل استخدام الذاكرة بشكل كبير.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="false">
+        <span class="q-num">3</span><span class="q-text">once() يستمع للحدث بشكل دائم مثل on() تماماً.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">4</span><span class="q-text">الـ Response في Express هو Writable Stream — يمكن استخدام pipe() لإرسال ملفات.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">5</span><span class="q-text">http.Server في Node.js يُورّث EventEmitter داخلياً.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <button class="quiz-submit" onclick="submitQuiz('tf')">عرض النتيجة 🎯</button>
+      <div class="quiz-result" id="result-tf"><div class="result-score" id="score-tf">0/5</div><div class="result-label">إجابات صحيحة</div><div class="result-message" id="msg-tf"></div><button class="retry-btn" onclick="retryQuiz('tf')">🔄 حاول تاني</button></div>
+    </div>
+
+    <div class="quiz-section" id="quiz-mc">
+      <div class="quiz-question" data-correct="1">
+        <span class="q-num">1</span><span class="q-text">ما الحدث الذي يُطلقه Readable Stream عند وصول قطعة بيانات؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">'chunk'</button>
+          <button class="q-opt" onclick="answerMC(this,1)">'data'</button>
+          <button class="q-opt" onclick="answerMC(this,2)">'read'</button>
+          <button class="q-opt" onclick="answerMC(this,3)">'stream'</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="2">
+        <span class="q-num">2</span><span class="q-text">ما نوع Stream الذي يُعدّل البيانات أثناء مرورها (مثل الضغط)؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">Readable</button>
+          <button class="q-opt" onclick="answerMC(this,1)">Writable</button>
+          <button class="q-opt" onclick="answerMC(this,2)">Transform</button>
+          <button class="q-opt" onclick="answerMC(this,3)">Duplex</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="3">
+        <span class="q-num">3</span><span class="q-text">ما الحدث الذي يُطلقه Writable Stream عند اكتمال الكتابة؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">'done'</button>
+          <button class="q-opt" onclick="answerMC(this,1)">'end'</button>
+          <button class="q-opt" onclick="answerMC(this,2)">'close'</button>
+          <button class="q-opt" onclick="answerMC(this,3)">'finish'</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="0">
+        <span class="q-num">4</span><span class="q-text">ما الطريقة الصحيحة للاستماع لحدث مرة واحدة فقط؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">emitter.once('event', fn)</button>
+          <button class="q-opt" onclick="answerMC(this,1)">emitter.on('event', fn, {once: true})</button>
+          <button class="q-opt" onclick="answerMC(this,2)">emitter.one('event', fn)</button>
+          <button class="q-opt" onclick="answerMC(this,3)">emitter.on('event', fn).destroy()</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="2">
+        <span class="q-num">5</span><span class="q-text">أي ميزة تجعل Streams أفضل من readFile لخدمة ملفات كبيرة؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">أسرع في الكتابة</button>
+          <button class="q-opt" onclick="answerMC(this,1)">تدعم التشفير</button>
+          <button class="q-opt" onclick="answerMC(this,2)">تُقلّل استخدام الذاكرة وترسل البيانات فورياً</button>
+          <button class="q-opt" onclick="answerMC(this,3)">أسهل في الكتابة</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <button class="quiz-submit" onclick="submitQuiz('mc')">عرض النتيجة 🎯</button>
+      <div class="quiz-result" id="result-mc"><div class="result-score" id="score-mc">0/5</div><div class="result-label">إجابات صحيحة</div><div class="result-message" id="msg-mc"></div><button class="retry-btn" onclick="retryQuiz('mc')">🔄 حاول تاني</button></div>
+    </div>
+  </div>
+
+  <div class="lesson-nav">
+    <a href="./lesson-03.html" class="nav-btn"><span>⬅️</span><span>الدرس السابق</span></a>
+    <button class="nav-btn complete-btn" id="completeBtn" onclick="markComplete(this)" style="background:#7c3aed; border-color:#7c3aed;"><span>✅</span><span>علّم كمكتمل</span></button>
+    <a href="./lesson-05.html" class="nav-btn"><span>الدرس التالي</span><span>➡️</span></a>
+  </div>
+
+  <div class="notebook-footer">
+    <h3>🎉 قلب Node.js واضح الآن!</h3>
+    <p>EventEmitter و Streams هما أساس كل شيء في Node.js — من http.Server لـ Express لـ Socket.io. ⚡<br><strong>الدرس التالي: HTTP Server من الصفر بدون Framework 🌐</strong></p>
+  </div>
+</div>
+
+<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">⬆️</button>
+<div class="toast" id="toast"></div>
+<script src="../../js/data/courses.js"></script>
+<script src="../../js/progress.js"></script>
+<script>
+const COURSE_ID='backend', LESSON_ID=4, TOTAL=32;
+function toggleSolution(b){const s=b.nextElementSibling;s.classList.toggle('show');b.textContent=s.classList.contains('show')?'إخفاء الحل ▲':'عرض الحل ▼';}
+function copyCode(b){const p=b.closest('.code-box').querySelector('pre');navigator.clipboard.writeText(p.innerText).then(()=>{b.classList.add('copied');b.textContent='✓ تم النسخ';setTimeout(()=>{b.classList.remove('copied');b.textContent='📋 نسخ';},2000);});}
+function switchQuiz(b,t){document.querySelectorAll('.qt-tab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.quiz-section').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.getElementById('quiz-'+t).classList.add('active');}
+const answers={tf:{},mc:{}};
+function answerTF(b,v){const q=b.closest('.quiz-question'),i=Array.from(q.parentNode.querySelectorAll('.quiz-question')).indexOf(q);q.querySelectorAll('.q-opt').forEach(o=>o.classList.remove('selected'));b.classList.add('selected');answers.tf[i]=v;}
+function answerMC(b,i){const q=b.closest('.quiz-question'),qi=Array.from(q.parentNode.querySelectorAll('.quiz-question')).indexOf(q);q.querySelectorAll('.q-opt').forEach(o=>o.classList.remove('selected'));b.classList.add('selected');answers.mc[qi]=i;}
+function submitQuiz(type){const sec=document.getElementById('quiz-'+type),qs=sec.querySelectorAll('.quiz-question');let c=0;qs.forEach((q,i)=>{const ca=type==='tf'?(q.dataset.correct==='true'):parseInt(q.dataset.correct),ua=answers[type][i],fb=q.querySelector('.q-feedback'),opts=q.querySelectorAll('.q-opt');opts.forEach(o=>{o.classList.remove('selected');o.disabled=true;});if(ua===undefined){fb.className='q-feedback wrong show';fb.textContent='⚠️ ما اخترتش إجابة!';return;}if(ua===ca){c++;fb.className='q-feedback correct show';fb.textContent='✓ إجابة صحيحة!';if(type==='tf')opts[ca?0:1].classList.add('correct');else opts[ca].classList.add('correct');}else{fb.className='q-feedback wrong show';if(type==='tf'){opts[ca?0:1].classList.add('correct');opts[ua?0:1].classList.add('wrong');fb.textContent='✗ خطأ.';}else{opts[ca].classList.add('correct');opts[ua].classList.add('wrong');fb.textContent='✗ الإجابة بالأخضر.';}}});const r=document.getElementById('result-'+type);document.getElementById('score-'+type).textContent=c+'/'+qs.length;const m=document.getElementById('msg-'+type);if(c===qs.length){m.textContent='🏆 ممتاز 100%!';m.className='result-message excellent';}else if(c>=3){m.textContent='👍 جيد!';m.className='result-message good';}else{m.textContent='📚 راجع الدرس.';m.className='result-message try-again';}r.classList.add('show');r.scrollIntoView({behavior:'smooth',block:'center'});}
+function retryQuiz(type){const sec=document.getElementById('quiz-'+type);sec.querySelectorAll('.q-opt').forEach(o=>{o.classList.remove('selected','correct','wrong');o.disabled=false;});sec.querySelectorAll('.q-feedback').forEach(f=>{f.classList.remove('show','correct','wrong');f.textContent='';});document.getElementById('result-'+type).classList.remove('show');answers[type]={};}
+function markComplete(btn){const done=Progress.toggleLessonComplete(COURSE_ID,LESSON_ID);btn.classList.toggle('completed',done);btn.querySelector('span:last-child').textContent=done?'مكتمل! ⭐':'علّم كمكتمل';showToast(done?'🎉 أكملت الدرس الرابع!':'تم إلغاء الإكمال');}
+if(Progress.isLessonComplete(COURSE_ID,LESSON_ID)){const b=document.getElementById('completeBtn');b.classList.add('completed');b.querySelector('span:last-child').textContent='مكتمل! ⭐';}
+(function(){const p=Progress.getCourseProgress(COURSE_ID,TOTAL);document.getElementById('progFill').style.width=p+'%';document.getElementById('progText').textContent=p+'%';})();
+function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
+window.addEventListener('scroll',()=>{document.getElementById('scrollTop').classList.toggle('show',window.scrollY>300);});
+document.querySelectorAll('.toc-card a').forEach(l=>{l.addEventListener('click',e=>{e.preventDefault();const t=document.querySelector(l.getAttribute('href'));if(t)t.scrollIntoView({behavior:'smooth',block:'start'});});});
+</script>
+</body>
+</html>

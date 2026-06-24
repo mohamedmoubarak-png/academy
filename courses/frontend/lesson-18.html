@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-V2NCKVL16D"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-V2NCKVL16D');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>المصفوفات Arrays — دفتر البرمجة</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=Cairo:wght@300;400;500;600;700;900&family=Caveat:wght@400;700&family=Fira+Code:wght@400;500;600&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../css/shared.css">
+<link rel="stylesheet" href="../../css/notebook.css">
+<style>
+body { padding: 20px 10px; }
+.mini-console {
+  background: #1e293b; border-radius: 10px; padding: 14px 16px;
+  margin: 10px 0; font-family: 'Fira Code', monospace; font-size: .88rem; direction: ltr;
+}
+.mc-line { margin: 3px 0; }
+.mc-in  { color: #94a3b8; }
+.mc-in::before  { content: '> '; color: #7c3aed; }
+.mc-out { color: #4ade80; }
+.mc-out::before { content: '← '; color: #4ade80; }
+
+/* array visual */
+.arr-visual {
+  display: flex; gap: 0; margin: 14px 0; direction: ltr; flex-wrap: wrap;
+}
+.arr-cell {
+  border: 2px solid var(--ink-blue);
+  padding: 10px 16px; text-align: center;
+  font-family: 'Fira Code', monospace; font-size: .88rem;
+  background: white; position: relative;
+}
+.arr-cell:not(:first-child) { border-left: none; }
+.arr-idx {
+  position: absolute; top: -18px; left: 0; right: 0;
+  font-family: 'Caveat', cursive; font-size: .85rem;
+  color: var(--ink-red); text-align: center;
+}
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="crumbs">
+    <a href="../../index.html">🏠 الرئيسية</a>
+    <span class="sep">/</span>
+    <a href="./index.html">🌐 الفرونت إند</a>
+    <span class="sep">/</span>
+    <span class="current">⚡ الدرس 18: المصفوفات</span>
+  </div>
+  <div class="progress-mini">
+    <div class="progress-bar-mini"><div class="progress-fill-mini" id="progFill"></div></div>
+    <span id="progText">0%</span>
+  </div>
+</div>
+
+<div class="notebook">
+
+  <div class="notebook-header">
+    <div class="lesson-tag">⚡ الدرس الثامن عشر</div>
+    <h1><span class="sparkle">✦</span> المصفوفات — Arrays <span class="sparkle">✦</span></h1>
+    <div class="lesson-meta">
+      <span>⏱️ 45 دقيقة</span>
+      <span>📊 مبتدئ-متوسط</span>
+      <span>🎯 5 تمارين + اختبار</span>
+    </div>
+  </div>
+
+  <div class="toc-card">
+    <h2>📑 فهرس الدرس</h2>
+    <ol>
+      <li><a href="#s1">ما هي المصفوفة؟</a></li>
+      <li><a href="#s2">إنشاء المصفوفات والوصول للعناصر</a></li>
+      <li><a href="#s3">إضافة وحذف العناصر</a></li>
+      <li><a href="#s4">البحث والفحص</a></li>
+      <li><a href="#s5">map, filter, reduce</a></li>
+      <li><a href="#s6">sort و reverse</a></li>
+      <li><a href="#s7">Spread و Destructuring</a></li>
+      <li><a href="#s8">محرر الكود الحي</a></li>
+      <li><a href="#exercises">التمارين</a></li>
+      <li><a href="#quiz">اختبر فهمك</a></li>
+    </ol>
+  </div>
+
+  <!-- S1 -->
+  <div class="section" id="s1">
+    <h2 class="section-title"><span class="num">.1</span> ما هي المصفوفة؟ <span class="en">What is an Array?</span></h2>
+    <div class="content">
+      <p>المصفوفة هي <strong>قائمة مرتبة من القيم</strong> محفوظة في متغير واحد.</p>
+      <div class="analogy">
+        <div class="analogy-title">🚌 تخيل حافلة مدرسية:</div>
+        <p>الحافلة = المصفوفة. كل مقعد = عنصر. رقم المقعد = الـ index. المقاعد مرقّمة من 0 مش من 1!</p>
+      </div>
+
+      <div style="margin-top: 20px;">
+        <div class="arr-visual">
+          <div class="arr-cell"><span class="arr-idx">0</span>'تفاح'</div>
+          <div class="arr-cell"><span class="arr-idx">1</span>'موز'</div>
+          <div class="arr-cell"><span class="arr-idx">2</span>'برتقال'</div>
+          <div class="arr-cell"><span class="arr-idx">3</span>'عنب'</div>
+        </div>
+      </div>
+
+      <div class="code-box" style="margin-top:20px;">
+<div class="code-header"><span>📋 إنشاء مصفوفة</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-name">const</span> <span class="attr">fruits</span> = [<span class="attr-val">'تفاح'</span>, <span class="attr-val">'موز'</span>, <span class="attr-val">'برتقال'</span>];
+
+<span class="comment">// مصفوفة أرقام</span>
+<span class="tag-name">const</span> <span class="attr">scores</span> = [<span class="attr-val">85</span>, <span class="attr-val">92</span>, <span class="attr-val">78</span>, <span class="attr-val">96</span>];
+
+<span class="comment">// مصفوفة مختلطة (أي نوع)</span>
+<span class="tag-name">const</span> <span class="attr">mixed</span>  = [<span class="attr-val">'أحمد'</span>, <span class="attr-val">25</span>, <span class="attr-val">true</span>, <span class="attr-val">null</span>];
+
+<span class="comment">// مصفوفة فارغة</span>
+<span class="tag-name">const</span> <span class="attr">empty</span>  = [];</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- S2 -->
+  <div class="section" id="s2">
+    <h2 class="section-title"><span class="num">.2</span> الوصول للعناصر <span class="en">Accessing Elements</span></h2>
+    <div class="content">
+      <div class="code-box">
+<div class="code-header"><span>🎯 الـ Index</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-name">const</span> <span class="attr">colors</span> = [<span class="attr-val">'أحمر'</span>, <span class="attr-val">'أخضر'</span>, <span class="attr-val">'أزرق'</span>];
+
+<span class="attr">colors</span>[<span class="attr-val">0</span>]  <span class="comment">// 'أحمر'  ← أول عنصر</span>
+<span class="attr">colors</span>[<span class="attr-val">1</span>]  <span class="comment">// 'أخضر'</span>
+<span class="attr">colors</span>[<span class="attr-val">2</span>]  <span class="comment">// 'أزرق'  ← آخر عنصر</span>
+<span class="attr">colors</span>[<span class="attr-val">3</span>]  <span class="comment">// undefined (خارج النطاق)</span>
+
+<span class="comment">// آخر عنصر دائماً</span>
+<span class="attr">colors</span>[<span class="attr">colors</span>.<span class="attr">length</span> - <span class="attr-val">1</span>]  <span class="comment">// 'أزرق'</span>
+<span class="attr">colors</span>.<span class="tag-name">at</span>(-<span class="attr-val">1</span>)               <span class="comment">// 'أزرق' (at() الحديث)</span>
+
+<span class="comment">// تعديل عنصر</span>
+<span class="attr">colors</span>[<span class="attr-val">0</span>] = <span class="attr-val">'برتقالي'</span>;
+<span class="comment">// colors = ['برتقالي', 'أخضر', 'أزرق']</span></pre>
+      </div>
+
+      <div class="sub-header">خصائص مهمة:</div>
+      <div class="code-box blue">
+<div class="code-header"><span>📏 length</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-name">const</span> <span class="attr">arr</span> = [<span class="attr-val">10</span>, <span class="attr-val">20</span>, <span class="attr-val">30</span>, <span class="attr-val">40</span>];
+
+<span class="attr">arr</span>.<span class="attr">length</span>   <span class="comment">// 4 — عدد العناصر</span>
+
+<span class="comment">// المصفوفات const قابلة للتعديل (المحتوى، ليس المتغير)</span>
+<span class="tag-name">const</span> <span class="attr">list</span> = [<span class="attr-val">1</span>, <span class="attr-val">2</span>];
+<span class="attr">list</span>.<span class="tag-name">push</span>(<span class="attr-val">3</span>);  <span class="comment">// ✅ مسموح</span>
+<span class="comment">// list = [4,5] ← ❌ خطأ (إعادة تعيين const)</span></pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- S3 -->
+  <div class="section" id="s3">
+    <h2 class="section-title"><span class="num">.3</span> إضافة وحذف العناصر <span class="en">Add & Remove</span></h2>
+    <div class="content">
+      <div class="code-box">
+<div class="code-header"><span>➕➖ push, pop, shift, unshift</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-name">const</span> <span class="attr">arr</span> = [<span class="attr-val">'ب'</span>, <span class="attr-val">'ج'</span>];
+
+<span class="comment">// إضافة من النهاية</span>
+<span class="attr">arr</span>.<span class="tag-name">push</span>(<span class="attr-val">'د'</span>);      <span class="comment">// ['ب','ج','د']</span>
+<span class="attr">arr</span>.<span class="tag-name">push</span>(<span class="attr-val">'هـ'</span>,<span class="attr-val">'و'</span>); <span class="comment">// ['ب','ج','د','هـ','و']</span>
+
+<span class="comment">// حذف من النهاية</span>
+<span class="attr">arr</span>.<span class="tag-name">pop</span>();         <span class="comment">// يحذف 'و' ويعيده</span>
+
+<span class="comment">// إضافة من البداية</span>
+<span class="attr">arr</span>.<span class="tag-name">unshift</span>(<span class="attr-val">'أ'</span>);  <span class="comment">// ['أ','ب','ج','د','هـ']</span>
+
+<span class="comment">// حذف من البداية</span>
+<span class="attr">arr</span>.<span class="tag-name">shift</span>();        <span class="comment">// يحذف 'أ' ويعيده</span></pre>
+      </div>
+
+      <div class="sub-header">splice — إضافة/حذف في أي مكان:</div>
+      <div class="code-box green">
+<div class="code-header"><span>✂️ splice</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-name">const</span> <span class="attr">nums</span> = [<span class="attr-val">1</span>, <span class="attr-val">2</span>, <span class="attr-val">3</span>, <span class="attr-val">4</span>, <span class="attr-val">5</span>];
+
+<span class="comment">// splice(index, deleteCount, ...items)</span>
+<span class="attr">nums</span>.<span class="tag-name">splice</span>(<span class="attr-val">2</span>, <span class="attr-val">1</span>);         <span class="comment">// يحذف عنصر واحد من index 2</span>
+<span class="comment">// [1, 2, 4, 5]</span>
+
+<span class="attr">nums</span>.<span class="tag-name">splice</span>(<span class="attr-val">1</span>, <span class="attr-val">0</span>, <span class="attr-val">10</span>, <span class="attr-val">20</span>); <span class="comment">// يضيف بدون حذف</span>
+<span class="comment">// [1, 10, 20, 2, 4, 5]</span></pre>
+      </div>
+
+      <table class="cool-table">
+        <thead><tr><th>الدالة</th><th>الوظيفة</th><th>تعيد</th></tr></thead>
+        <tbody>
+          <tr><td><code>push(x)</code></td><td>إضافة من النهاية</td><td>الطول الجديد</td></tr>
+          <tr><td><code>pop()</code></td><td>حذف من النهاية</td><td>العنصر المحذوف</td></tr>
+          <tr><td><code>unshift(x)</code></td><td>إضافة من البداية</td><td>الطول الجديد</td></tr>
+          <tr><td><code>shift()</code></td><td>حذف من البداية</td><td>العنصر المحذوف</td></tr>
+          <tr><td><code>splice(i,n)</code></td><td>حذف/إضافة في أي مكان</td><td>العناصر المحذوفة</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- S4 -->
+  <div class="section" id="s4">
+    <h2 class="section-title"><span class="num">.4</span> البحث والفحص <span class="en">Search & Check</span></h2>
+    <div class="content">
+      <div class="code-box">
+<div class="code-header"><span>🔍 دوال البحث</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-name">const</span> <span class="attr">nums</span> = [<span class="attr-val">10</span>, <span class="attr-val">20</span>, <span class="attr-val">30</span>, <span class="attr-val">20</span>, <span class="attr-val">40</span>];
+
+<span class="comment">// هل موجود؟</span>
+<span class="attr">nums</span>.<span class="tag-name">includes</span>(<span class="attr-val">20</span>)      <span class="comment">// true</span>
+<span class="attr">nums</span>.<span class="tag-name">includes</span>(<span class="attr-val">99</span>)      <span class="comment">// false</span>
+
+<span class="comment">// أول index للعنصر</span>
+<span class="attr">nums</span>.<span class="tag-name">indexOf</span>(<span class="attr-val">20</span>)       <span class="comment">// 1</span>
+<span class="attr">nums</span>.<span class="tag-name">lastIndexOf</span>(<span class="attr-val">20</span>)   <span class="comment">// 3 (آخر تكرار)</span>
+<span class="attr">nums</span>.<span class="tag-name">indexOf</span>(<span class="attr-val">99</span>)       <span class="comment">// -1 (غير موجود)</span>
+
+<span class="comment">// بحث بشرط</span>
+<span class="attr">nums</span>.<span class="tag-name">find</span>(<span class="attr">n</span> => <span class="attr">n</span> > <span class="attr-val">25</span>)      <span class="comment">// 30 (أول عنصر يحقق الشرط)</span>
+<span class="attr">nums</span>.<span class="tag-name">findIndex</span>(<span class="attr">n</span> => <span class="attr">n</span> > <span class="attr-val">25</span>) <span class="comment">// 2 (index أول عنصر)</span>
+
+<span class="comment">// هل كل العناصر تحقق الشرط؟</span>
+<span class="attr">nums</span>.<span class="tag-name">every</span>(<span class="attr">n</span> => <span class="attr">n</span> > <span class="attr-val">0</span>)   <span class="comment">// true</span>
+<span class="attr">nums</span>.<span class="tag-name">some</span>(<span class="attr">n</span> => <span class="attr">n</span> > <span class="attr-val">35</span>)   <span class="comment">// true (40 موجود)</span></pre>
+      </div>
+
+      <div class="mini-console">
+        <div class="mc-line mc-in">[1,2,3,4].includes(3)</div>
+        <div class="mc-line mc-out">true</div>
+        <div class="mc-line mc-in">[5,12,8,3].find(n => n > 10)</div>
+        <div class="mc-line mc-out">12</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- S5 -->
+  <div class="section" id="s5">
+    <h2 class="section-title"><span class="num">.5</span> map, filter, reduce <span class="en">Functional Methods</span></h2>
+    <div class="content">
+      <p>أقوى ثلاث دوال في المصفوفات — تُنتج مصفوفة/قيمة جديدة بدون تعديل الأصلية:</p>
+
+      <div class="code-box">
+<div class="code-header"><span>🗺️ map — حوّل كل عنصر</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-name">const</span> <span class="attr">prices</span>  = [<span class="attr-val">100</span>, <span class="attr-val">200</span>, <span class="attr-val">150</span>];
+<span class="tag-name">const</span> <span class="attr">withTax</span> = <span class="attr">prices</span>.<span class="tag-name">map</span>(<span class="attr">p</span> => <span class="attr">p</span> * <span class="attr-val">1.14</span>);
+<span class="comment">// [114, 228, 171]</span>
+
+<span class="tag-name">const</span> <span class="attr">names</span> = [<span class="attr-val">'ahmed'</span>, <span class="attr-val">'sara'</span>];
+<span class="tag-name">const</span> <span class="attr">upper</span> = <span class="attr">names</span>.<span class="tag-name">map</span>(<span class="attr">n</span> => <span class="attr">n</span>.<span class="tag-name">toUpperCase</span>());
+<span class="comment">// ['AHMED', 'SARA']</span></pre>
+      </div>
+
+      <div class="code-box blue">
+<div class="code-header"><span>🔽 filter — استخرج بشرط</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-name">const</span> <span class="attr">scores</span>  = [<span class="attr-val">45</span>, <span class="attr-val">78</span>, <span class="attr-val">32</span>, <span class="attr-val">91</span>, <span class="attr-val">55</span>];
+<span class="tag-name">const</span> <span class="attr">passing</span> = <span class="attr">scores</span>.<span class="tag-name">filter</span>(<span class="attr">s</span> => <span class="attr">s</span> >= <span class="attr-val">50</span>);
+<span class="comment">// [78, 91, 55]</span>
+
+<span class="tag-name">const</span> <span class="attr">words</span> = [<span class="attr-val">'تفاح'</span>, <span class="attr-val">'أ'</span>, <span class="attr-val">'برتقال'</span>, <span class="attr-val">'موز'</span>];
+<span class="tag-name">const</span> <span class="attr">long</span>  = <span class="attr">words</span>.<span class="tag-name">filter</span>(<span class="attr">w</span> => <span class="attr">w</span>.<span class="attr">length</span> > <span class="attr-val">3</span>);
+<span class="comment">// ['برتقال']</span></pre>
+      </div>
+
+      <div class="code-box green">
+<div class="code-header"><span>🔢 reduce — اجمع لقيمة واحدة</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-name">const</span> <span class="attr">nums</span> = [<span class="attr-val">1</span>, <span class="attr-val">2</span>, <span class="attr-val">3</span>, <span class="attr-val">4</span>, <span class="attr-val">5</span>];
+
+<span class="comment">// مجموع</span>
+<span class="tag-name">const</span> <span class="attr">total</span> = <span class="attr">nums</span>.<span class="tag-name">reduce</span>((<span class="attr">acc</span>, <span class="attr">n</span>) => <span class="attr">acc</span> + <span class="attr">n</span>, <span class="attr-val">0</span>);
+<span class="comment">// 15</span>
+
+<span class="comment">// ضرب الكل</span>
+<span class="tag-name">const</span> <span class="attr">product</span> = <span class="attr">nums</span>.<span class="tag-name">reduce</span>((<span class="attr">acc</span>, <span class="attr">n</span>) => <span class="attr">acc</span> * <span class="attr">n</span>, <span class="attr-val">1</span>);
+<span class="comment">// 120</span></pre>
+      </div>
+
+      <div class="tip-box"><strong>الفرق الجوهري:</strong> <em>map</em> تعيد مصفوفة بنفس الطول. <em>filter</em> تعيد مصفوفة أصغر أو مساوية. <em>reduce</em> تعيد قيمة واحدة.</div>
+    </div>
+  </div>
+
+  <!-- S6 -->
+  <div class="section" id="s6">
+    <h2 class="section-title"><span class="num">.6</span> sort و reverse <span class="en">Sort & Reverse</span></h2>
+    <div class="content">
+      <div class="code-box">
+<div class="code-header"><span>🔀 ترتيب وعكس</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-name">const</span> <span class="attr">fruits</span> = [<span class="attr-val">'موز'</span>, <span class="attr-val">'تفاح'</span>, <span class="attr-val">'عنب'</span>];
+<span class="attr">fruits</span>.<span class="tag-name">sort</span>();     <span class="comment">// ['تفاح','عنب','موز'] (أبجدياً)</span>
+<span class="attr">fruits</span>.<span class="tag-name">reverse</span>(); <span class="comment">// ['موز','عنب','تفاح'] (عكس)</span>
+
+<span class="comment">// تحذير: sort للأرقام يحتاج دالة مقارنة!</span>
+<span class="tag-name">const</span> <span class="attr">nums</span> = [<span class="attr-val">10</span>, <span class="attr-val">2</span>, <span class="attr-val">100</span>, <span class="attr-val">30</span>];
+<span class="attr">nums</span>.<span class="tag-name">sort</span>();            <span class="comment">// [10, 100, 2, 30] ← خطأ!</span>
+<span class="attr">nums</span>.<span class="tag-name">sort</span>((<span class="attr">a</span>,<span class="attr">b</span>) => <span class="attr">a</span> - <span class="attr">b</span>); <span class="comment">// [2, 10, 30, 100] ← صح (تصاعدي)</span>
+<span class="attr">nums</span>.<span class="tag-name">sort</span>((<span class="attr">a</span>,<span class="attr">b</span>) => <span class="attr">b</span> - <span class="attr">a</span>); <span class="comment">// [100, 30, 10, 2]  (تنازلي)</span></pre>
+      </div>
+
+      <div class="warning-box"><strong>sort يعدّل المصفوفة الأصلية!</strong> لو تريد الحفاظ عليها: <em>[...nums].sort(...)</em></div>
+
+      <div class="sub-header">دوال أخرى مفيدة:</div>
+      <div class="code-box blue">
+<div class="code-header"><span>🛠️ slice, join, concat, flat</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-name">const</span> <span class="attr">arr</span> = [<span class="attr-val">1</span>,<span class="attr-val">2</span>,<span class="attr-val">3</span>,<span class="attr-val">4</span>,<span class="attr-val">5</span>];
+
+<span class="attr">arr</span>.<span class="tag-name">slice</span>(<span class="attr-val">1</span>, <span class="attr-val">3</span>)          <span class="comment">// [2,3] — نسخة جزئية (لا يعدّل الأصل)</span>
+[<span class="attr-val">'أ'</span>,<span class="attr-val">'ب'</span>,<span class="attr-val">'ج'</span>].<span class="tag-name">join</span>(<span class="attr-val">'-'</span>)  <span class="comment">// "أ-ب-ج" — دمج لنص</span>
+[<span class="attr-val">1</span>,<span class="attr-val">2</span>].<span class="tag-name">concat</span>([<span class="attr-val">3</span>,<span class="attr-val">4</span>])      <span class="comment">// [1,2,3,4] — دمج مصفوفتين</span>
+[[<span class="attr-val">1</span>,<span class="attr-val">2</span>],[<span class="attr-val">3</span>,<span class="attr-val">4</span>]].<span class="tag-name">flat</span>()    <span class="comment">// [1,2,3,4] — تسطيح</span></pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- S7 -->
+  <div class="section" id="s7">
+    <h2 class="section-title"><span class="num">.7</span> Spread و Destructuring <span class="en">Modern Syntax</span></h2>
+    <div class="content">
+      <div class="code-box">
+<div class="code-header"><span>📦 Spread Operator ...</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-name">const</span> <span class="attr">a</span> = [<span class="attr-val">1</span>, <span class="attr-val">2</span>, <span class="attr-val">3</span>];
+<span class="tag-name">const</span> <span class="attr">b</span> = [<span class="attr-val">4</span>, <span class="attr-val">5</span>];
+
+<span class="comment">// نسخ مصفوفة</span>
+<span class="tag-name">const</span> <span class="attr">copy</span>    = [...<span class="attr">a</span>];          <span class="comment">// [1,2,3]</span>
+
+<span class="comment">// دمج مصفوفتين</span>
+<span class="tag-name">const</span> <span class="attr">merged</span>  = [...<span class="attr">a</span>, ...<span class="attr">b</span>];    <span class="comment">// [1,2,3,4,5]</span>
+
+<span class="comment">// إضافة عناصر جديدة</span>
+<span class="tag-name">const</span> <span class="attr">withNew</span> = [<span class="attr-val">0</span>, ...<span class="attr">a</span>, <span class="attr-val">4</span>];   <span class="comment">// [0,1,2,3,4]</span></pre>
+      </div>
+
+      <div class="code-box green">
+<div class="code-header"><span>🎁 Destructuring</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-name">const</span> [<span class="attr">first</span>, <span class="attr">second</span>, <span class="attr">third</span>] = [<span class="attr-val">'أحمد'</span>, <span class="attr-val">'سارة'</span>, <span class="attr-val">'محمد'</span>];
+<span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr">first</span>);   <span class="comment">// 'أحمد'</span>
+<span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr">second</span>);  <span class="comment">// 'سارة'</span>
+
+<span class="comment">// تخطي عناصر</span>
+<span class="tag-name">const</span> [<span class="attr">a</span>, , <span class="attr">c</span>] = [<span class="attr-val">1</span>, <span class="attr-val">2</span>, <span class="attr-val">3</span>];
+<span class="comment">// a=1, c=3 (تخطينا 2)</span>
+
+<span class="comment">// باقي العناصر</span>
+<span class="tag-name">const</span> [<span class="attr">head</span>, ...<span class="attr">tail</span>] = [<span class="attr-val">10</span>, <span class="attr-val">20</span>, <span class="attr-val">30</span>, <span class="attr-val">40</span>];
+<span class="comment">// head=10, tail=[20,30,40]</span></pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- S8 -->
+  <div class="section" id="s8">
+    <h2 class="section-title"><span class="num">.8</span> محرر الكود الحي <span class="en">Live Editor</span></h2>
+    <div class="content"><p>جرب المصفوفات بنفسك:</p></div>
+    <div class="try-it">
+      <div class="try-it-header">
+        <span>⚡ جرب Arrays</span>
+        <div class="try-it-controls">
+          <button class="try-btn" onclick="runCode(this)">▶️ تشغيل</button>
+          <button class="try-btn" onclick="resetCode(this)">🔄 إعادة</button>
+        </div>
+      </div>
+      <div class="try-it-body">
+        <textarea class="try-it-editor" spellcheck="false" data-default='<!DOCTYPE html>
+<html><head><meta charset="UTF-8"></head>
+<body style="font-family:Arial;padding:20px;direction:rtl;">
+  <h2>📋 تجارب المصفوفات</h2>
+  <div id="out" style="background:#1e293b;color:#4ade80;padding:16px;border-radius:10px;font-family:monospace;white-space:pre-line;line-height:1.8;"></div>
+<script>
+  const p = s => document.getElementById("out").textContent += s + "\n";
+
+  const students = [
+    { name: "أحمد", score: 85 },
+    { name: "سارة", score: 92 },
+    { name: "محمد", score: 67 },
+    { name: "نور",  score: 78 },
+  ];
+
+  // أسماء الناجحين (>= 70)
+  const passing = students
+    .filter(s => s.score >= 70)
+    .map(s => s.name);
+  p("الناجحون: " + passing.join(", "));
+
+  // المتوسط
+  const avg = students.reduce((sum, s) => sum + s.score, 0) / students.length;
+  p("المتوسط: " + avg);
+
+  // الترتيب تنازلياً
+  const sorted = [...students].sort((a, b) => b.score - a.score);
+  p("\nترتيب حسب الدرجات:");
+  sorted.forEach((s, i) => p(`${i+1}. ${s.name} — ${s.score}`));
+</script>
+</body></html>'><!DOCTYPE html>
+<html><head><meta charset="UTF-8"></head>
+<body style="font-family:Arial;padding:20px;direction:rtl;">
+  <h2>📋 تجارب المصفوفات</h2>
+  <div id="out" style="background:#1e293b;color:#4ade80;padding:16px;border-radius:10px;font-family:monospace;white-space:pre-line;line-height:1.8;"></div>
+<script>
+  const p = s => document.getElementById("out").textContent += s + "\n";
+
+  const students = [
+    { name: "أحمد", score: 85 },
+    { name: "سارة", score: 92 },
+    { name: "محمد", score: 67 },
+    { name: "نور",  score: 78 },
+  ];
+
+  const passing = students.filter(s => s.score >= 70).map(s => s.name);
+  p("الناجحون: " + passing.join(", "));
+
+  const avg = students.reduce((sum, s) => sum + s.score, 0) / students.length;
+  p("المتوسط: " + avg);
+
+  const sorted = [...students].sort((a, b) => b.score - a.score);
+  p("\nترتيب حسب الدرجات:");
+  sorted.forEach((s, i) => p(`${i+1}. ${s.name} — ${s.score}`));
+</script>
+</body></html></textarea>
+        <div class="try-it-preview"><iframe srcdoc="" sandbox="allow-scripts allow-same-origin allow-modals allow-popups allow-forms" title="معاينة الكود"></iframe></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EXERCISES -->
+  <div class="section" id="exercises">
+    <h2 class="section-title"><span class="num">📝</span> التمارين العملية <span class="en">Exercises</span></h2>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 1: إضافة وحذف</div>
+      <p>لديك مصفوفة <em>['ب','ج','د']</em>. أضف 'أ' في البداية، و'هـ' في النهاية، ثم احذف العنصر الأخير.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre><span class="tag-name">const</span> <span class="attr">arr</span> = [<span class="attr-val">'ب'</span>, <span class="attr-val">'ج'</span>, <span class="attr-val">'د'</span>];
+<span class="attr">arr</span>.<span class="tag-name">unshift</span>(<span class="attr-val">'أ'</span>);
+<span class="attr">arr</span>.<span class="tag-name">push</span>(<span class="attr-val">'هـ'</span>);
+<span class="attr">arr</span>.<span class="tag-name">pop</span>();
+<span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr">arr</span>);  <span class="comment">// ['أ','ب','ج','د']</span></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 2: map و filter معاً</div>
+      <p>من المصفوفة <em>[1,2,3,4,5,6,7,8,9,10]</em>، استخرج الأعداد الزوجية فقط ثم ضاعف كل منها.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre><span class="tag-name">const</span> <span class="attr">result</span> = [<span class="attr-val">1</span>,<span class="attr-val">2</span>,<span class="attr-val">3</span>,<span class="attr-val">4</span>,<span class="attr-val">5</span>,<span class="attr-val">6</span>,<span class="attr-val">7</span>,<span class="attr-val">8</span>,<span class="attr-val">9</span>,<span class="attr-val">10</span>]
+  .<span class="tag-name">filter</span>(<span class="attr">n</span> => <span class="attr">n</span> % <span class="attr-val">2</span> === <span class="attr-val">0</span>)
+  .<span class="tag-name">map</span>(<span class="attr">n</span> => <span class="attr">n</span> * <span class="attr-val">2</span>);
+<span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr">result</span>);  <span class="comment">// [4,8,12,16,20]</span></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 3: reduce لإيجاد المجموع</div>
+      <p>استخدم reduce لحساب مجموع المصفوفة <em>[5, 10, 15, 20, 25]</em>.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre><span class="tag-name">const</span> <span class="attr">total</span> = [<span class="attr-val">5</span>,<span class="attr-val">10</span>,<span class="attr-val">15</span>,<span class="attr-val">20</span>,<span class="attr-val">25</span>].<span class="tag-name">reduce</span>((<span class="attr">acc</span>,<span class="attr">n</span>) => <span class="attr">acc</span>+<span class="attr">n</span>, <span class="attr-val">0</span>);
+<span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr">total</span>);  <span class="comment">// 75</span></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 4: Destructuring</div>
+      <p>بدون استخدام index، استخرج أول ثلاثة عناصر من <em>['أحمد','سارة','محمد','نور']</em> في متغيرات منفصلة.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre><span class="tag-name">const</span> [<span class="attr">first</span>, <span class="attr">second</span>, <span class="attr">third</span>] = [<span class="attr-val">'أحمد'</span>,<span class="attr-val">'سارة'</span>,<span class="attr-val">'محمد'</span>,<span class="attr-val">'نور'</span>];
+<span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr">first</span>, <span class="attr">second</span>, <span class="attr">third</span>);
+<span class="comment">// أحمد سارة محمد</span></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 5: ترتيب تنازلي</div>
+      <p>رتّب المصفوفة <em>[64, 12, 99, 3, 47]</em> تنازلياً بدون تعديل الأصلية.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre><span class="tag-name">const</span> <span class="attr">original</span> = [<span class="attr-val">64</span>,<span class="attr-val">12</span>,<span class="attr-val">99</span>,<span class="attr-val">3</span>,<span class="attr-val">47</span>];
+<span class="tag-name">const</span> <span class="attr">sorted</span>   = [...<span class="attr">original</span>].<span class="tag-name">sort</span>((<span class="attr">a</span>,<span class="attr">b</span>) => <span class="attr">b</span>-<span class="attr">a</span>);
+<span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr">sorted</span>);   <span class="comment">// [99,64,47,12,3]</span>
+<span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr">original</span>); <span class="comment">// [64,12,99,3,47] ← لم تتغير</span></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="quiz-container" id="quiz">
+    <div class="quiz-intro"><p>اختبر فهمك للمصفوفات!</p></div>
+    <div class="quiz-type-tabs">
+      <button class="qt-tab active" onclick="switchQuiz(this,'tf')">✓✗ صح وخطأ</button>
+      <button class="qt-tab" onclick="switchQuiz(this,'mc')">🔘 اختيار من متعدد</button>
+    </div>
+
+    <div class="quiz-section active" id="quiz-tf">
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">1</span><span class="q-text">أول عنصر في المصفوفة له index = 0.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="false">
+        <span class="q-num">2</span><span class="q-text">map تعدّل المصفوفة الأصلية مباشرة.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">3</span><span class="q-text">filter تعيد مصفوفة جديدة تحتوي فقط على العناصر التي تحقق الشرط.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">4</span><span class="q-text">[...arr] ينشئ نسخة من المصفوفة بدون تعديل الأصل.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="false">
+        <span class="q-num">5</span><span class="q-text">sort() للأرقام يرتبها ترتيباً رقمياً صحيحاً تلقائياً.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <button class="quiz-submit" onclick="submitQuiz('tf')">عرض النتيجة 🎯</button>
+      <div class="quiz-result" id="result-tf"><div class="result-score" id="score-tf">0/5</div><div class="result-label">إجابات صحيحة</div><div class="result-message" id="msg-tf"></div><button class="retry-btn" onclick="retryQuiz('tf')">🔄 حاول تاني</button></div>
+    </div>
+
+    <div class="quiz-section" id="quiz-mc">
+      <div class="quiz-question" data-correct="2">
+        <span class="q-num">1</span><span class="q-text">أي دالة تضيف عنصراً في نهاية المصفوفة؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">shift()</button>
+          <button class="q-opt" onclick="answerMC(this,1)">unshift()</button>
+          <button class="q-opt" onclick="answerMC(this,2)">push()</button>
+          <button class="q-opt" onclick="answerMC(this,3)">add()</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="1">
+        <span class="q-num">2</span><span class="q-text">ما ناتج: [1,2,3].map(n => n*2)؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">6</button>
+          <button class="q-opt" onclick="answerMC(this,1)">[2,4,6]</button>
+          <button class="q-opt" onclick="answerMC(this,2)">[1,2,3]</button>
+          <button class="q-opt" onclick="answerMC(this,3)">undefined</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="3">
+        <span class="q-num">3</span><span class="q-text">ما ناتج: [1,2,3,4].filter(n => n > 2)؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">[1,2]</button>
+          <button class="q-opt" onclick="answerMC(this,1)">true</button>
+          <button class="q-opt" onclick="answerMC(this,2)">[2,3,4]</button>
+          <button class="q-opt" onclick="answerMC(this,3)">[3,4]</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="0">
+        <span class="q-num">4</span><span class="q-text">ما الفرق بين pop() و shift()؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">pop يحذف من النهاية، shift من البداية</button>
+          <button class="q-opt" onclick="answerMC(this,1)">نفس الشيء</button>
+          <button class="q-opt" onclick="answerMC(this,2)">pop يضيف، shift يحذف</button>
+          <button class="q-opt" onclick="answerMC(this,3)">shift يحذف من النهاية، pop من البداية</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="2">
+        <span class="q-num">5</span><span class="q-text">ما ناتج: [1,2,3].reduce((acc,n) => acc+n, 0)؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">[1,2,3]</button>
+          <button class="q-opt" onclick="answerMC(this,1)">0</button>
+          <button class="q-opt" onclick="answerMC(this,2)">6</button>
+          <button class="q-opt" onclick="answerMC(this,3)">undefined</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <button class="quiz-submit" onclick="submitQuiz('mc')">عرض النتيجة 🎯</button>
+      <div class="quiz-result" id="result-mc"><div class="result-score" id="score-mc">0/5</div><div class="result-label">إجابات صحيحة</div><div class="result-message" id="msg-mc"></div><button class="retry-btn" onclick="retryQuiz('mc')">🔄 حاول تاني</button></div>
+    </div>
+  </div>
+
+  <div class="lesson-nav">
+    <a href="./lesson-17.html" class="nav-btn"><span>⬅️</span><span>الدرس السابق</span></a>
+    <button class="nav-btn complete-btn" id="completeBtn" onclick="markComplete(this)"><span>✅</span><span>علّم كمكتمل</span></button>
+    <a href="./lesson-19.html" class="nav-btn"><span>الدرس التالي</span><span>➡️</span></a>
+  </div>
+
+  <div class="notebook-footer">
+    <h3>🎉 أتقنت المصفوفات!</h3>
+    <p>map, filter, reduce — أسلحة كل مبرمج محترف ❤️<br><strong>الدرس التالي: الكائنات (Objects) 🗂️</strong></p>
+  </div>
+</div>
+
+<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">⬆️</button>
+<div class="toast" id="toast"></div>
+<script src="../../js/data/courses.js"></script>
+<script src="../../js/progress.js"></script>
+<script src="../../js/lesson-editor.js"></script>
+<script>
+const COURSE_ID='frontend',LESSON_ID=18,TOTAL=32;
+function toggleSolution(b){const s=b.nextElementSibling;s.classList.toggle('show');b.textContent=s.classList.contains('show')?'إخفاء الحل ▲':'عرض الحل ▼';}
+function copyCode(b){const p=b.closest('.code-box').querySelector('pre');navigator.clipboard.writeText(p.innerText).then(()=>{b.classList.add('copied');b.textContent='✓ تم النسخ';setTimeout(()=>{b.classList.remove('copied');b.textContent='📋 نسخ';},2000);});}
+function runCode(b){const t=b.closest('.try-it');t.querySelector('iframe').srcdoc=t.querySelector('.try-it-editor').value;}
+function resetCode(b){const t=b.closest('.try-it'),e=t.querySelector('.try-it-editor');e.value=e.dataset.default;t.querySelector('iframe').srcdoc=e.value;}
+window.addEventListener('load',()=>{document.querySelectorAll('.try-it').forEach(t=>{const e=t.querySelector('.try-it-editor');t.querySelector('iframe').srcdoc=e.value;});});
+function switchQuiz(b,t){document.querySelectorAll('.qt-tab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.quiz-section').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.getElementById('quiz-'+t).classList.add('active');}
+const answers={tf:{},mc:{}};
+function answerTF(b,v){const q=b.closest('.quiz-question'),i=Array.from(q.parentNode.querySelectorAll('.quiz-question')).indexOf(q);q.querySelectorAll('.q-opt').forEach(o=>o.classList.remove('selected'));b.classList.add('selected');answers.tf[i]=v;}
+function answerMC(b,i){const q=b.closest('.quiz-question'),qi=Array.from(q.parentNode.querySelectorAll('.quiz-question')).indexOf(q);q.querySelectorAll('.q-opt').forEach(o=>o.classList.remove('selected'));b.classList.add('selected');answers.mc[qi]=i;}
+function submitQuiz(type){const sec=document.getElementById('quiz-'+type),qs=sec.querySelectorAll('.quiz-question');let c=0;qs.forEach((q,i)=>{const ca=type==='tf'?(q.dataset.correct==='true'):parseInt(q.dataset.correct),ua=answers[type][i],fb=q.querySelector('.q-feedback'),opts=q.querySelectorAll('.q-opt');opts.forEach(o=>{o.classList.remove('selected');o.disabled=true;});if(ua===undefined){fb.className='q-feedback wrong show';fb.textContent='⚠️ ما اخترتش إجابة!';return;}if(ua===ca){c++;fb.className='q-feedback correct show';fb.textContent='✓ إجابة صحيحة!';if(type==='tf')opts[ca?0:1].classList.add('correct');else opts[ca].classList.add('correct');}else{fb.className='q-feedback wrong show';if(type==='tf'){opts[ca?0:1].classList.add('correct');opts[ua?0:1].classList.add('wrong');fb.textContent='✗ خطأ.';}else{opts[ca].classList.add('correct');opts[ua].classList.add('wrong');fb.textContent='✗ الإجابة بالأخضر.';}}});const r=document.getElementById('result-'+type);document.getElementById('score-'+type).textContent=c+'/'+qs.length;const m=document.getElementById('msg-'+type);if(c===qs.length){m.textContent='🏆 ممتاز 100%!';m.className='result-message excellent';}else if(c>=3){m.textContent='👍 جيد!';m.className='result-message good';}else{m.textContent='📚 راجع الدرس.';m.className='result-message try-again';}r.classList.add('show');r.scrollIntoView({behavior:'smooth',block:'center'});}
+function retryQuiz(type){const sec=document.getElementById('quiz-'+type);sec.querySelectorAll('.q-opt').forEach(o=>{o.classList.remove('selected','correct','wrong');o.disabled=false;});sec.querySelectorAll('.q-feedback').forEach(f=>{f.classList.remove('show','correct','wrong');f.textContent='';});document.getElementById('result-'+type).classList.remove('show');answers[type]={};}
+function markComplete(btn){const done=Progress.toggleLessonComplete(COURSE_ID,LESSON_ID);btn.classList.toggle('completed',done);btn.querySelector('span:last-child').textContent=done?'مكتمل! ⭐':'علّم كمكتمل';showToast(done?'🎉 أكملت درس المصفوفات!':'تم إلغاء الإكمال');}
+if(Progress.isLessonComplete(COURSE_ID,LESSON_ID)){const b=document.getElementById('completeBtn');b.classList.add('completed');b.querySelector('span:last-child').textContent='مكتمل! ⭐';}
+(function(){const p=Progress.getCourseProgress(COURSE_ID,TOTAL);document.getElementById('progFill').style.width=p+'%';document.getElementById('progText').textContent=p+'%';})();
+function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
+window.addEventListener('scroll',()=>{document.getElementById('scrollTop').classList.toggle('show',window.scrollY>300);});
+document.querySelectorAll('.toc-card a').forEach(l=>{l.addEventListener('click',e=>{e.preventDefault();const t=document.querySelector(l.getAttribute('href'));if(t)t.scrollIntoView({behavior:'smooth',block:'start'});});});
+</script>
+</body>
+</html>

@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-V2NCKVL16D"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-V2NCKVL16D');
+</script>
+<meta charset="UTF-8">
+<title>توليد أيقونات PWA — دفتر البرمجة</title>
+<style>
+  body { font-family: Arial; padding: 30px; background: #f8fafc; direction: rtl; }
+  h2 { color: #1e3a8a; margin-bottom: 20px; }
+  .grid { display: flex; gap: 30px; flex-wrap: wrap; margin: 20px 0; }
+  .item { text-align: center; }
+  canvas { border-radius: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.15); display: block; margin: 0 auto 10px; }
+  button {
+    display: block; margin: 8px auto; padding: 10px 24px;
+    background: #1e3a8a; color: white; border: none;
+    border-radius: 8px; font-size: 1rem; cursor: pointer;
+    font-family: Arial;
+  }
+  button:hover { background: #2563eb; }
+  .note { background: #fef3c7; border: 2px solid #f59e0b; border-radius: 10px; padding: 14px 18px; margin: 20px 0; line-height: 1.8; }
+  code { background: #e2e8f0; padding: 2px 8px; border-radius: 4px; font-family: monospace; }
+</style>
+</head>
+<body>
+<h2>🎨 توليد أيقونات PWA — دفتر البرمجة</h2>
+
+<div class="note">
+  <strong>📌 الخطوات:</strong><br>
+  1. اضغط "تحميل" لكل أيقونة<br>
+  2. احفظ الملفات في مجلد <code>icons/</code> داخل مجلد <code>academy/</code> (استبدل القديمة)<br>
+  3. سمّ الملفات: <code>icon-192.png</code> و <code>icon-512.png</code>
+</div>
+
+<div class="grid">
+  <div class="item">
+    <canvas id="c192" width="192" height="192"></canvas>
+    <div style="margin-bottom:6px;font-weight:700;color:#1e3a8a;">192 × 192</div>
+    <button onclick="download('c192','icon-192.png')">⬇️ تحميل icon-192.png</button>
+  </div>
+  <div class="item">
+    <canvas id="c512" width="512" height="512"></canvas>
+    <div style="margin-bottom:6px;font-weight:700;color:#1e3a8a;">512 × 512</div>
+    <button onclick="download('c512','icon-512.png')">⬇️ تحميل icon-512.png</button>
+  </div>
+</div>
+
+<script>
+function roundRect(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.arcTo(x + w, y, x + w, y + h, r);
+  ctx.arcTo(x + w, y + h, x, y + h, r);
+  ctx.arcTo(x, y + h, x, y, r);
+  ctx.arcTo(x, y, x + w, y, r);
+  ctx.closePath();
+}
+
+function drawIcon(canvas) {
+  const s = canvas.width;
+  const ctx = canvas.getContext('2d');
+
+  // خلفية متدرّجة أزرق → بنفسجي
+  const bg = ctx.createLinearGradient(0, 0, s, s);
+  bg.addColorStop(0, '#1e3a8a');
+  bg.addColorStop(0.55, '#4338ca');
+  bg.addColorStop(1, '#7c3aed');
+  roundRect(ctx, 0, 0, s, s, s * 0.219);
+  ctx.fillStyle = bg;
+  ctx.fill();
+
+  // توهّج علوي خفيف
+  const glow = ctx.createRadialGradient(s * 0.3, s * 0.2, 0, s * 0.3, s * 0.2, s * 0.8);
+  glow.addColorStop(0, 'rgba(255,255,255,0.20)');
+  glow.addColorStop(1, 'rgba(255,255,255,0)');
+  roundRect(ctx, 0, 0, s, s, s * 0.219);
+  ctx.fillStyle = glow;
+  ctx.fill();
+
+  // أبعاد ورقة الكشكول
+  const px = s * 0.203, py = s * 0.152, pw = s * 0.594, ph = s * 0.695, pr = s * 0.043;
+
+  // ورقة الكشكول مع ظل
+  ctx.save();
+  ctx.shadowColor = 'rgba(11,20,55,0.35)';
+  ctx.shadowBlur = s * 0.03;
+  ctx.shadowOffsetY = s * 0.02;
+  roundRect(ctx, px, py, pw, ph, pr);
+  ctx.fillStyle = '#fffef9';
+  ctx.fill();
+  ctx.restore();
+
+  // خط الهامش الأحمر
+  ctx.strokeStyle = '#f4a8a8';
+  ctx.lineWidth = s * 0.01;
+  ctx.globalAlpha = 0.85;
+  ctx.beginPath();
+  ctx.moveTo(s * 0.309, py + s * 0.035);
+  ctx.lineTo(s * 0.309, py + ph - s * 0.035);
+  ctx.stroke();
+  ctx.globalAlpha = 1;
+
+  // ثقوب التجليد
+  ctx.fillStyle = bg;
+  [0.202, 0.5, 0.798].forEach(f => {
+    ctx.beginPath();
+    ctx.arc(px, py + ph * f, s * 0.027, 0, Math.PI * 2);
+    ctx.fill();
+  });
+
+  // رمز </> بتدرّج
+  const codeGrad = ctx.createLinearGradient(s * 0.35, s * 0.3, s * 0.65, s * 0.5);
+  codeGrad.addColorStop(0, '#2563eb');
+  codeGrad.addColorStop(1, '#7c3aed');
+  ctx.font = `900 ${s * 0.22}px 'Courier New', monospace`;
+  ctx.fillStyle = codeGrad;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText('</>', s * 0.52, s * 0.40);
+
+  // خطوط الكشكول
+  ctx.strokeStyle = '#cfe0f0';
+  ctx.lineWidth = s * 0.014;
+  ctx.lineCap = 'round';
+  const lines = [[0.363, 0.754, 0.586], [0.363, 0.754, 0.652], [0.363, 0.664, 0.719]];
+  lines.forEach(([x1, x2, y]) => {
+    ctx.beginPath();
+    ctx.moveTo(s * x1, s * y);
+    ctx.lineTo(s * x2, s * y);
+    ctx.stroke();
+  });
+
+  // اسم التطبيق
+  ctx.font = `900 ${s * 0.072}px Arial`;
+  ctx.fillStyle = '#1e3a8a';
+  ctx.fillText('دفتر البرمجة', s * 0.5, s * 0.80);
+}
+
+['c192', 'c512'].forEach(id => drawIcon(document.getElementById(id)));
+
+function download(canvasId, filename) {
+  const a = document.createElement('a');
+  a.download = filename;
+  a.href = document.getElementById(canvasId).toDataURL('image/png');
+  a.click();
+}
+</script>
+</body>
+</html>

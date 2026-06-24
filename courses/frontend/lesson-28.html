@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-V2NCKVL16D"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-V2NCKVL16D');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>أدوات المطور DevTools — دفتر البرمجة</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=Cairo:wght@300;400;500;600;700;900&family=Caveat:wght@400;700&family=Fira+Code:wght@400;500;600&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../css/shared.css">
+<link rel="stylesheet" href="../../css/notebook.css">
+<style>
+body { padding: 20px 10px; }
+
+/* devtools mock */
+.devtools-mock {
+  background: #1e293b; border-radius: 10px; overflow: hidden;
+  border: 1px solid #334155; margin: 14px 0;
+}
+.dt-tabs {
+  display: flex; background: #0f172a; border-bottom: 1px solid #334155;
+  overflow-x: auto; gap: 2px; padding: 4px 8px 0;
+}
+.dt-tab {
+  padding: 6px 14px; font-size: .8rem; color: #94a3b8;
+  font-family: 'Cairo', sans-serif; cursor: default;
+  border-radius: 4px 4px 0 0; white-space: nowrap;
+}
+.dt-tab.active { background: #1e293b; color: #e2e8f0; }
+.dt-body { padding: 14px 16px; font-family: 'Fira Code', monospace; font-size: .82rem; direction: ltr; }
+.dt-el   { color: #60a5fa; }
+.dt-attr { color: #fbbf24; }
+.dt-val  { color: #4ade80; }
+.dt-txt  { color: #e2e8f0; }
+.dt-indent { padding-right: 20px; display: block; }
+.dt-log  { color: #94a3b8; }
+.dt-log.info  { color: #60a5fa; }
+.dt-log.warn  { color: #fbbf24; background: #1c1a0a; padding: 2px 4px; }
+.dt-log.error { color: #f87171; background: #1c0a0a; padding: 2px 4px; }
+.dt-log-line { margin: 3px 0; line-height: 1.6; }
+
+/* shortcut key */
+.kbd {
+  display: inline-block; background: #334155; color: #e2e8f0;
+  border: 1px solid #475569; border-radius: 4px;
+  padding: 1px 7px; font-family: 'Fira Code', monospace;
+  font-size: .8rem; margin: 0 2px;
+}
+
+/* panel card */
+.panel-card {
+  border: 1px solid #e2e8f0; border-radius: 10px;
+  padding: 14px 16px; margin: 10px 0;
+  background: #f8fafc;
+}
+.panel-card h4 { margin: 0 0 6px; color: var(--ink-blue); font-size: .95rem; }
+.panel-card p  { margin: 0; font-size: .88rem; color: #475569; }
+.panel-icon { font-size: 1.4rem; float: right; margin-left: 10px; }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="crumbs">
+    <a href="../../index.html">🏠 الرئيسية</a>
+    <span class="sep">/</span>
+    <a href="./index.html">🌐 الفرونت إند</a>
+    <span class="sep">/</span>
+    <span class="current">🔍 الدرس 28: أدوات المطور</span>
+  </div>
+  <div class="progress-mini">
+    <div class="progress-bar-mini"><div class="progress-fill-mini" id="progFill"></div></div>
+    <span id="progText">0%</span>
+  </div>
+</div>
+
+<div class="notebook">
+
+  <div class="notebook-header">
+    <div class="lesson-tag">🔍 الدرس الثامن والعشرون</div>
+    <h1><span class="sparkle">✦</span> أدوات المطور — DevTools <span class="sparkle">✦</span></h1>
+    <div class="lesson-meta">
+      <span>⏱️ 40 دقيقة</span>
+      <span>📊 مبتدئ-متوسط</span>
+      <span>🎯 5 تمارين + اختبار</span>
+    </div>
+  </div>
+
+  <div class="toc-card">
+    <h2>📑 فهرس الدرس</h2>
+    <ol>
+      <li><a href="#s1">ما هي DevTools وكيف تفتحها؟</a></li>
+      <li><a href="#s2">لوحة Elements: فحص HTML/CSS</a></li>
+      <li><a href="#s3">لوحة Console: JS التفاعلي</a></li>
+      <li><a href="#s4">لوحة Sources والـ Debugger</a></li>
+      <li><a href="#s5">لوحة Network: مراقبة الطلبات</a></li>
+      <li><a href="#s6">لوحة Performance والذاكرة</a></li>
+      <li><a href="#s7">أدوات إضافية مفيدة</a></li>
+      <li><a href="#s8">محرر الكود الحي</a></li>
+      <li><a href="#exercises">التمارين</a></li>
+      <li><a href="#quiz">اختبر فهمك</a></li>
+    </ol>
+  </div>
+
+  <!-- S1 -->
+  <div class="section" id="s1">
+    <h2 class="section-title"><span class="num">.1</span> ما هي DevTools؟ <span class="en">Browser DevTools</span></h2>
+    <div class="content">
+      <p><strong>DevTools</strong> هي مجموعة أدوات مدمجة في المتصفح تتيح لك فحص وتعديل وتصحيح المواقع مباشرة.</p>
+
+      <div class="analogy">
+        <div class="analogy-title">🔬 تخيلها مجهراً للمواقع:</div>
+        <p>كل موقع تزوره يمكنك فتح "غطاء المحرك" ورؤية كل شيء بداخله — HTML، CSS، JS، الشبكة، الأداء. وتقدر تعدّل وتجرب بدون أي خطر على الموقع الأصلي!</p>
+      </div>
+
+      <div class="sub-header">كيف تفتحها؟</div>
+      <table class="cool-table">
+        <thead><tr><th>الطريقة</th><th>Chrome / Edge</th><th>Firefox</th></tr></thead>
+        <tbody>
+          <tr><td>اختصار لوحة المفاتيح</td><td><span class="kbd">F12</span></td><td><span class="kbd">F12</span></td></tr>
+          <tr><td>اختصار آخر</td><td><span class="kbd">Ctrl</span>+<span class="kbd">Shift</span>+<span class="kbd">I</span></td><td><span class="kbd">Ctrl</span>+<span class="kbd">Shift</span>+<span class="kbd">I</span></td></tr>
+          <tr><td>بالنقر اليمين</td><td colspan="2">نقر يمين على أي عنصر → "Inspect" / "فحص"</td></tr>
+          <tr><td>Console مباشرة</td><td colspan="2"><span class="kbd">Ctrl</span>+<span class="kbd">Shift</span>+<span class="kbd">J</span></td></tr>
+        </tbody>
+      </table>
+
+      <div class="devtools-mock" style="margin-top:16px;">
+        <div class="dt-tabs">
+          <div class="dt-tab active">Elements</div>
+          <div class="dt-tab">Console</div>
+          <div class="dt-tab">Sources</div>
+          <div class="dt-tab">Network</div>
+          <div class="dt-tab">Performance</div>
+          <div class="dt-tab">Application</div>
+        </div>
+        <div class="dt-body" style="color:#94a3b8; padding: 10px 16px; font-size:.8rem;">
+          ← اختر أي لوحة للبدء
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- S2 -->
+  <div class="section" id="s2">
+    <h2 class="section-title"><span class="num">.2</span> لوحة Elements <span class="en">Inspect HTML/CSS</span></h2>
+    <div class="content">
+      <p>الأكثر استخداماً. تعرض شجرة HTML وتتيح تعديل CSS في الوقت الفعلي.</p>
+
+      <div class="devtools-mock">
+        <div class="dt-tabs">
+          <div class="dt-tab active">Elements</div>
+          <div class="dt-tab">Styles</div>
+          <div class="dt-tab">Computed</div>
+        </div>
+        <div class="dt-body">
+          <div class="dt-txt">&lt;<span class="dt-el">body</span>&gt;</div>
+          <span class="dt-indent">
+            &lt;<span class="dt-el">header</span> <span class="dt-attr">class</span>=<span class="dt-val">"navbar"</span>&gt;
+          </span>
+          <span class="dt-indent" style="padding-right:40px;">
+            &lt;<span class="dt-el">h1</span>&gt;<span class="dt-txt">أكاديمية البرمجة</span>&lt;/<span class="dt-el">h1</span>&gt;
+          </span>
+          <span class="dt-indent">
+            &lt;/<span class="dt-el">header</span>&gt;
+          </span>
+          <div class="dt-txt" style="margin-top:8px; color:#fbbf24;">
+            .navbar { background: #1e3a8a; padding: 16px; }
+          </div>
+        </div>
+      </div>
+
+      <div class="sub-header" style="margin-top:16px;">ما تقدر تفعله في Elements:</div>
+      <ul>
+        <li><strong>فحص عنصر:</strong> انقر يمين → Inspect لتحديده مباشرة</li>
+        <li><strong>تعديل HTML:</strong> دبل-كليك على أي نص أو وسم لتعديله</li>
+        <li><strong>تجربة CSS:</strong> في قسم Styles، أضف أو عدّل خصائص مباشرة</li>
+        <li><strong>Box Model:</strong> قسم Computed يعرض المسافات والحجم بدقة</li>
+        <li><strong>تعطيل CSS:</strong> تيك بجانب كل خاصية لتفعيل/تعطيل</li>
+      </ul>
+
+      <div class="tip-box"><strong>نصيحة ذهبية:</strong> عند تصميم CSS، عدّل في DevTools أولاً حتى تحصل على النتيجة المثالية، ثم انقل التعديلات لملفاتك. أسرع بكثير من إعادة رفع الصفحة كل مرة!</div>
+    </div>
+  </div>
+
+  <!-- S3 -->
+  <div class="section" id="s3">
+    <h2 class="section-title"><span class="num">.3</span> لوحة Console <span class="en">JS Console</span></h2>
+    <div class="content">
+      <p>محطة التحكم في JavaScript — اكتب أي كود وشوف النتيجة فوراً.</p>
+
+      <div class="devtools-mock">
+        <div class="dt-tabs"><div class="dt-tab active">Console</div></div>
+        <div class="dt-body">
+          <div class="dt-log-line dt-log info">ℹ️ صفحة محملة بنجاح</div>
+          <div class="dt-log-line dt-log warn">⚠️ Warning: تصميم غير متجاوب على الجوال</div>
+          <div class="dt-log-line dt-log error">❌ TypeError: Cannot read property 'id' of undefined</div>
+          <div class="dt-log-line" style="color:#94a3b8; margin-top:8px;">&gt; document.title</div>
+          <div class="dt-log-line" style="color:#4ade80;">&lt; "أكاديمية البرمجة"</div>
+          <div class="dt-log-line" style="color:#94a3b8;">&gt; 2 + 2</div>
+          <div class="dt-log-line" style="color:#4ade80;">&lt; 4</div>
+        </div>
+      </div>
+
+      <div class="sub-header" style="margin-top:16px;">دوال console المفيدة:</div>
+      <div class="code-box">
+<div class="code-header"><span>🖥️ console API</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">// الأشهر: طباعة أي شيء</span>
+console.log(<span class="attr-val">'مرحبا'</span>, { name: <span class="attr-val">'أحمد'</span>, age: 25 });
+
+<span class="comment">// تحذير (أصفر)</span>
+console.warn(<span class="attr-val">'هذه الدالة قديمة'</span>);
+
+<span class="comment">// خطأ (أحمر)</span>
+console.error(<span class="attr-val">'فشل تحميل البيانات'</span>);
+
+<span class="comment">// جدول جميل للمصفوفات والكائنات</span>
+console.table([{ name: <span class="attr-val">'أحمد'</span>, score: 90 }, { name: <span class="attr-val">'سارة'</span>, score: 85 }]);
+
+<span class="comment">// قياس الوقت</span>
+console.time(<span class="attr-val">'عملية'</span>);
+<span class="comment">// ... كودك هنا ...</span>
+console.timeEnd(<span class="attr-val">'عملية'</span>);  <span class="comment">// عملية: 12.3ms</span>
+
+<span class="comment">// تجميع السجلات</span>
+console.group(<span class="attr-val">'بيانات المستخدم'</span>);
+console.log(<span class="attr-val">'الاسم: أحمد'</span>);
+console.log(<span class="attr-val">'العمر: 25'</span>);
+console.groupEnd();</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- S4 -->
+  <div class="section" id="s4">
+    <h2 class="section-title"><span class="num">.4</span> Sources والـ Debugger <span class="en">Debugging</span></h2>
+    <div class="content">
+      <p>أداة تتبع الأخطاء — تتيح إيقاف الكود في أي نقطة ومراقبة المتغيرات.</p>
+
+      <div class="code-box">
+<div class="code-header"><span>🐛 Breakpoints والـ Debugger</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-name">function</span> <span class="attr">calculateTotal</span>(<span class="attr">items</span>) {
+  <span class="tag-name">let</span> <span class="attr">total</span> = <span class="attr-val">0</span>;
+
+  <span class="comment">// ↓ هذا السطر يوقف المتصفح هنا</span>
+  <span class="tag-name">debugger</span>;
+
+  <span class="attr">items</span>.<span class="tag-name">forEach</span>(<span class="attr">item</span> => {
+    <span class="attr">total</span> += <span class="attr">item</span>.<span class="attr">price</span>;
+  });
+
+  <span class="tag-name">return</span> <span class="attr">total</span>;
+}</pre>
+      </div>
+
+      <div class="sub-header">أدوات التنقل في الـ Debugger:</div>
+      <table class="cool-table">
+        <thead><tr><th>الزر</th><th>الاختصار</th><th>الوظيفة</th></tr></thead>
+        <tbody>
+          <tr><td>▶️ Resume</td><td><span class="kbd">F8</span></td><td>استمر حتى Breakpoint التالي</td></tr>
+          <tr><td>⤵️ Step Over</td><td><span class="kbd">F10</span></td><td>نفّذ السطر الحالي</td></tr>
+          <tr><td>⬇️ Step Into</td><td><span class="kbd">F11</span></td><td>ادخل داخل الدالة</td></tr>
+          <tr><td>⬆️ Step Out</td><td><span class="kbd">Shift+F11</span></td><td>اخرج من الدالة الحالية</td></tr>
+        </tbody>
+      </table>
+
+      <div class="tip-box"><strong>Breakpoint بدون كود:</strong> في لوحة Sources، انقر على رقم السطر مباشرة لإضافة Breakpoint بدون تعديل الكود. أفضل من <code>debugger</code>!</div>
+    </div>
+  </div>
+
+  <!-- S5 -->
+  <div class="section" id="s5">
+    <h2 class="section-title"><span class="num">.5</span> لوحة Network <span class="en">Network Monitor</span></h2>
+    <div class="content">
+      <p>ترصد كل طلب HTTP يقوم به موقعك — ملفات، صور، APIs، كل شيء.</p>
+
+      <div class="devtools-mock">
+        <div class="dt-tabs"><div class="dt-tab active">Network</div></div>
+        <div class="dt-body">
+          <div style="display:grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap:4px; color:#94a3b8; font-size:.78rem; border-bottom:1px solid #334155; padding-bottom:6px; margin-bottom:6px;">
+            <span>Name</span><span>Status</span><span>Type</span><span>Time</span>
+          </div>
+          <div style="display:grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap:4px; font-size:.78rem; line-height:2;">
+            <span style="color:#60a5fa;">index.html</span><span style="color:#4ade80;">200</span><span>document</span><span>45ms</span>
+            <span style="color:#60a5fa;">style.css</span><span style="color:#4ade80;">200</span><span>stylesheet</span><span>12ms</span>
+            <span style="color:#60a5fa;">api/users</span><span style="color:#4ade80;">200</span><span>fetch</span><span>320ms</span>
+            <span style="color:#60a5fa;">logo.png</span><span style="color:#4ade80;">304</span><span>image</span><span>8ms</span>
+            <span style="color:#f87171;">api/data</span><span style="color:#f87171;">404</span><span>fetch</span><span>89ms</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="sub-header" style="margin-top:16px;">ما تراقبه في Network:</div>
+      <ul>
+        <li><strong>Status Codes:</strong> 200 نجاح، 404 غير موجود، 500 خطأ سيرفر</li>
+        <li><strong>Response:</strong> شوف البيانات الراجعة من الـ API</li>
+        <li><strong>Headers:</strong> معلومات الطلب والاستجابة</li>
+        <li><strong>Timing:</strong> كم أخذ كل طلب — تحديد ما هو بطيء</li>
+        <li><strong>Throttling:</strong> محاكاة اتصال بطيء (3G) لاختبار تجربة الجوال</li>
+      </ul>
+
+      <div class="warning-box"><strong>XHR و Fetch فيلتر:</strong> عند تعامل مع APIs، فيلتر Fetch/XHR في Network يعرض فقط الطلبات البرمجية. أنظف بكثير!</div>
+    </div>
+  </div>
+
+  <!-- S6 -->
+  <div class="section" id="s6">
+    <h2 class="section-title"><span class="num">.6</span> Performance والذاكرة <span class="en">Performance</span></h2>
+    <div class="content">
+      <div class="code-box">
+<div class="code-header"><span>⚡ قياس الأداء في Console</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">// قياس وقت تنفيذ كود</span>
+console.time(<span class="attr-val">'حساب'</span>);
+
+<span class="tag-name">const</span> <span class="attr">arr</span> = Array.<span class="tag-name">from</span>({ length: <span class="attr-val">1000000</span> }, (_, i) => i);
+<span class="tag-name">const</span> <span class="attr">sum</span> = <span class="attr">arr</span>.<span class="tag-name">reduce</span>((<span class="attr">a</span>, <span class="attr">b</span>) => <span class="attr">a</span> + <span class="attr">b</span>, <span class="attr-val">0</span>);
+
+console.timeEnd(<span class="attr-val">'حساب'</span>);
+<span class="comment">// حساب: 23.4ms</span>
+
+<span class="comment">// قياس دقيق جداً</span>
+<span class="tag-name">const</span> <span class="attr">start</span> = performance.<span class="tag-name">now</span>();
+<span class="comment">// ... كودك ...</span>
+<span class="tag-name">const</span> <span class="attr">end</span> = performance.<span class="tag-name">now</span>();
+console.log(<span class="attr-val">`استغرق: ${end - start}ms`</span>);</pre>
+      </div>
+
+      <div class="sub-header" style="margin-top:16px;">لوحة Lighthouse (Performance Audit):</div>
+      <div class="panel-card">
+        <span class="panel-icon">🏆</span>
+        <h4>Lighthouse</h4>
+        <p>يحلل موقعك ويعطيك درجة من 100 في: الأداء، إمكانية الوصول، SEO، وأفضل الممارسات. اضغط "Analyze page load" وانتظر التقرير.</p>
+      </div>
+      <div class="panel-card">
+        <span class="panel-icon">💾</span>
+        <h4>Application Tab</h4>
+        <p>يعرض localStorage, sessionStorage, Cookies, Cache. مفيد لفحص البيانات المخزنة وحذفها.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- S7 -->
+  <div class="section" id="s7">
+    <h2 class="section-title"><span class="num">.7</span> أدوات إضافية مفيدة <span class="en">Extra Tools</span></h2>
+    <div class="content">
+      <div class="sub-header">وضع الجوال (Device Mode):</div>
+      <div class="code-box">
+<div class="code-header"><span>📱 اختصارات مهمة</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">// فتح DevTools</span>
+F12  أو  Ctrl+Shift+I
+
+<span class="comment">// وضع الجوال (Device Toolbar)</span>
+Ctrl+Shift+M
+
+<span class="comment">// فتح Console مباشرة</span>
+Ctrl+Shift+J
+
+<span class="comment">// البحث في كل الملفات</span>
+Ctrl+Shift+F
+
+<span class="comment">// الانتقال لملف معين</span>
+Ctrl+P  (في Sources)</pre>
+      </div>
+
+      <div class="sub-header" style="margin-top:16px;">نصائح احترافية:</div>
+      <ul>
+        <li><strong>$0</strong> في Console = آخر عنصر حددته في Elements</li>
+        <li><strong>$(selector)</strong> = <code>document.querySelector()</code> مختصرة</li>
+        <li><strong>copy(object)</strong> = ينسخ الكائن للـ clipboard</li>
+        <li><strong>monitorEvents(el)</strong> = يراقب كل أحداث عنصر معين</li>
+        <li><strong>Local Overrides:</strong> تعديل ملفات الموقع محلياً بشكل دائم</li>
+      </ul>
+
+      <div class="code-box blue">
+<div class="code-header"><span>🔮 Console Shortcuts</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">// في Console مباشرة:</span>
+
+$(<span class="attr-val">'h1'</span>)          <span class="comment">// أول h1 في الصفحة</span>
+$$(<span class="attr-val">'p'</span>)          <span class="comment">// كل الفقرات (مصفوفة)</span>
+$0             <span class="comment">// آخر عنصر محدد في Elements</span>
+copy($0)       <span class="comment">// نسخ العنصر للـ clipboard</span>
+clear()        <span class="comment">// مسح الـ console</span>
+keys({a:1,b:2}) <span class="comment">// ['a','b']</span></pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- S8 -->
+  <div class="section" id="s8">
+    <h2 class="section-title"><span class="num">.8</span> محرر الكود الحي <span class="en">Live Editor</span></h2>
+    <div class="content"><p>جرّب تقنيات الـ Console والـ Debugging:</p></div>
+    <div class="try-it">
+      <div class="try-it-header">
+        <span>🔍 تقنيات الـ Console</span>
+        <div class="try-it-controls">
+          <button class="try-btn" onclick="runCode(this)">▶️ تشغيل</button>
+          <button class="try-btn" onclick="resetCode(this)">🔄 إعادة</button>
+        </div>
+      </div>
+      <div class="try-it-body">
+        <textarea class="try-it-editor" spellcheck="false" data-default='<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+<style>
+  body { font-family: Arial; padding: 20px; background: #0f172a; direction: rtl; }
+  h2   { color: #7c3aed; }
+  .log-box { background: #1e293b; padding: 14px; border-radius: 10px; font-family: monospace;
+             font-size: .85rem; line-height: 1.8; }
+  .log { color: #e2e8f0; }
+  .log.info  { color: #60a5fa; }
+  .log.warn  { color: #fbbf24; }
+  .log.error { color: #f87171; }
+  .log.ok    { color: #4ade80; }
+  table { border-collapse: collapse; width: 100%; margin-top: 10px; }
+  th, td { border: 1px solid #334155; padding: 6px 12px; text-align: right; color: #e2e8f0; }
+  th { background: #1e3a8a; }
+</style>
+</head>
+<body>
+<h2>🔍 مثال DevTools</h2>
+<div class="log-box" id="out"></div>
+<div id="table-out"></div>
+<script>
+  const log = (msg, type="log") =>
+    document.getElementById("out").innerHTML +=
+      `<div class="log ${type}">${msg}</div>`;
+
+  // console.log عادي
+  log("مرحبا من الـ Console! 👋");
+
+  // قياس الوقت
+  const t0 = performance.now();
+  let sum = 0;
+  for (let i = 0; i < 1000000; i++) sum += i;
+  const t1 = performance.now();
+  log(`✅ مجموع مليون رقم = ${sum.toLocaleString()}`, "ok");
+  log(`⏱️ الوقت: ${(t1-t0).toFixed(2)}ms`, "info");
+
+  // warning & error
+  log("⚠️ تحذير: هذا مثال فقط", "warn");
+  log("❌ خطأ وهمي للتوضيح", "error");
+
+  // console.table
+  const students = [
+    { الاسم: "أحمد", الدرجة: 92, الحالة: "ناجح" },
+    { الاسم: "سارة", الدرجة: 87, الحالة: "ناجح" },
+    { الاسم: "محمد", الدرجة: 45, الحالة: "راسب" },
+  ];
+  const tbl = document.getElementById("table-out");
+  tbl.innerHTML = `<table><tr>${Object.keys(students[0]).map(k=>`<th>${k}</th>`).join("")}</tr>
+    ${students.map(s=>`<tr>${Object.values(s).map(v=>`<td>${v}</td>`).join("")}</tr>`).join("")}
+  </table>`;
+<\/script>
+</body></html>'><!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+<style>
+  body { font-family: Arial; padding: 20px; background: #0f172a; direction: rtl; }
+  h2   { color: #7c3aed; }
+  .log-box { background: #1e293b; padding: 14px; border-radius: 10px; font-family: monospace;
+             font-size: .85rem; line-height: 1.8; }
+  .log { color: #e2e8f0; }
+  .log.info  { color: #60a5fa; }
+  .log.warn  { color: #fbbf24; }
+  .log.error { color: #f87171; }
+  .log.ok    { color: #4ade80; }
+  table { border-collapse: collapse; width: 100%; margin-top: 10px; }
+  th, td { border: 1px solid #334155; padding: 6px 12px; text-align: right; color: #e2e8f0; }
+  th { background: #1e3a8a; }
+</style>
+</head>
+<body>
+<h2>🔍 مثال DevTools</h2>
+<div class="log-box" id="out"></div>
+<div id="table-out"></div>
+<script>
+  const log = (msg, type="log") =>
+    document.getElementById("out").innerHTML +=
+      `<div class="log ${type}">${msg}</div>`;
+  const t0 = performance.now();
+  let sum = 0;
+  for (let i = 0; i < 1000000; i++) sum += i;
+  const t1 = performance.now();
+  log("مرحبا من الـ Console! 👋");
+  log(`✅ مجموع مليون رقم = ${sum.toLocaleString()}`, "ok");
+  log(`⏱️ الوقت: ${(t1-t0).toFixed(2)}ms`, "info");
+  log("⚠️ تحذير: هذا مثال فقط", "warn");
+  log("❌ خطأ وهمي للتوضيح", "error");
+  const students = [
+    { الاسم: "أحمد", الدرجة: 92, الحالة: "ناجح" },
+    { الاسم: "سارة", الدرجة: 87, الحالة: "ناجح" },
+    { الاسم: "محمد", الدرجة: 45, الحالة: "راسب" },
+  ];
+  const tbl = document.getElementById("table-out");
+  tbl.innerHTML = `<table><tr>${Object.keys(students[0]).map(k=>`<th>${k}</th>`).join("")}</tr>
+    ${students.map(s=>`<tr>${Object.values(s).map(v=>`<td>${v}</td>`).join("")}</tr>`).join("")}
+  </table>`;
+<\/script>
+</body></html></textarea>
+        <div class="try-it-preview"><iframe srcdoc="" sandbox="allow-scripts allow-same-origin allow-modals allow-popups allow-forms" title="معاينة الكود"></iframe></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EXERCISES -->
+  <div class="section" id="exercises">
+    <h2 class="section-title"><span class="num">📝</span> التمارين العملية <span class="en">Exercises</span></h2>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 1: فتح DevTools</div>
+      <p>ما هي ثلاث طرق لفتح DevTools في Chrome؟</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <p>1. الضغط على <strong>F12</strong><br>
+        2. <strong>Ctrl+Shift+I</strong><br>
+        3. نقر يمين على أي عنصر في الصفحة → <strong>Inspect</strong></p>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 2: console.table</div>
+      <p>اكتب كوداً يستخدم <em>console.table</em> لعرض مصفوفة من 3 طلاب لكل منهم اسم ودرجة.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre><span class="tag-name">const</span> <span class="attr">students</span> = [
+  { <span class="attr">name</span>: <span class="attr-val">'أحمد'</span>,  <span class="attr">score</span>: <span class="attr-val">92</span> },
+  { <span class="attr">name</span>: <span class="attr-val">'سارة'</span>,  <span class="attr">score</span>: <span class="attr-val">88</span> },
+  { <span class="attr">name</span>: <span class="attr-val">'محمد'</span>,  <span class="attr">score</span>: <span class="attr-val">75</span> },
+];
+console.<span class="tag-name">table</span>(<span class="attr">students</span>);</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 3: قياس الوقت</div>
+      <p>اكتب كوداً يقيس وقت تنفيذ حلقة تضرب الأرقام من 1 إلى 1000.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre>console.<span class="tag-name">time</span>(<span class="attr-val">'الضرب'</span>);
+<span class="tag-name">let</span> <span class="attr">result</span> = <span class="attr-val">1</span>;
+<span class="tag-name">for</span> (<span class="tag-name">let</span> <span class="attr">i</span> = <span class="attr-val">1</span>; <span class="attr">i</span> <= <span class="attr-val">1000</span>; <span class="attr">i</span>++) {
+  <span class="attr">result</span> *= <span class="attr">i</span>;
+}
+console.<span class="tag-name">timeEnd</span>(<span class="attr-val">'الضرب'</span>);</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 4: Debugger</div>
+      <p>أضف <em>debugger</em> لهذه الدالة لتوقفها عند حساب الـ total:</p>
+      <div class="code-box"><pre><span class="tag-name">function</span> <span class="attr">getTotal</span>(<span class="attr">prices</span>) {
+  <span class="tag-name">return</span> <span class="attr">prices</span>.<span class="tag-name">reduce</span>((<span class="attr">a</span>, <span class="attr">b</span>) => <span class="attr">a</span> + <span class="attr">b</span>, <span class="attr-val">0</span>);
+}</pre></div>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre><span class="tag-name">function</span> <span class="attr">getTotal</span>(<span class="attr">prices</span>) {
+  <span class="tag-name">debugger</span>;  <span class="comment">← يوقف التنفيذ هنا</span>
+  <span class="tag-name">return</span> <span class="attr">prices</span>.<span class="tag-name">reduce</span>((<span class="attr">a</span>, <span class="attr">b</span>) => <span class="attr">a</span> + <span class="attr">b</span>, <span class="attr-val">0</span>);
+}</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 5: اختصارات DevTools</div>
+      <p>ما الاختصار لـ: (أ) تبديل وضع الجوال، (ب) البحث في كل الملفات، (ج) فتح Console مباشرة؟</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <p>(أ) وضع الجوال: <strong>Ctrl+Shift+M</strong><br>
+        (ب) البحث في الملفات: <strong>Ctrl+Shift+F</strong><br>
+        (ج) فتح Console: <strong>Ctrl+Shift+J</strong></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="quiz-container" id="quiz">
+    <div class="quiz-intro"><p>اختبر فهمك لـ DevTools!</p></div>
+    <div class="quiz-type-tabs">
+      <button class="qt-tab active" onclick="switchQuiz(this,'tf')">✓✗ صح وخطأ</button>
+      <button class="qt-tab" onclick="switchQuiz(this,'mc')">🔘 اختيار من متعدد</button>
+    </div>
+
+    <div class="quiz-section active" id="quiz-tf">
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">1</span><span class="q-text">لوحة Network تعرض كل الطلبات HTTP التي يقوم بها الموقع.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="false">
+        <span class="q-num">2</span><span class="q-text">تعديل CSS في DevTools يغيّر الملف الأصلي بشكل دائم.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">3</span><span class="q-text">debugger; في الكود يوقف التنفيذ عند تلك النقطة إذا كانت DevTools مفتوحة.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">4</span><span class="q-text">console.table() يعرض المصفوفات والكائنات في شكل جدول منظم.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="false">
+        <span class="q-num">5</span><span class="q-text">$0 في Console يعيد أول عنصر في الصفحة.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <button class="quiz-submit" onclick="submitQuiz('tf')">عرض النتيجة 🎯</button>
+      <div class="quiz-result" id="result-tf"><div class="result-score" id="score-tf">0/5</div><div class="result-label">إجابات صحيحة</div><div class="result-message" id="msg-tf"></div><button class="retry-btn" onclick="retryQuiz('tf')">🔄 حاول تاني</button></div>
+    </div>
+
+    <div class="quiz-section" id="quiz-mc">
+      <div class="quiz-question" data-correct="0">
+        <span class="q-num">1</span><span class="q-text">في أي لوحة تفحص وتعدّل HTML و CSS؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">Elements</button>
+          <button class="q-opt" onclick="answerMC(this,1)">Console</button>
+          <button class="q-opt" onclick="answerMC(this,2)">Network</button>
+          <button class="q-opt" onclick="answerMC(this,3)">Sources</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="2">
+        <span class="q-num">2</span><span class="q-text">ما اختصار تبديل وضع الجوال في Chrome DevTools؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">Ctrl+Shift+I</button>
+          <button class="q-opt" onclick="answerMC(this,1)">F12</button>
+          <button class="q-opt" onclick="answerMC(this,2)">Ctrl+Shift+M</button>
+          <button class="q-opt" onclick="answerMC(this,3)">Ctrl+Shift+J</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="1">
+        <span class="q-num">3</span><span class="q-text">ما وظيفة Lighthouse في DevTools؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">إيقاف الكود للتصحيح</button>
+          <button class="q-opt" onclick="answerMC(this,1)">تحليل أداء الموقع وإعطاء درجة</button>
+          <button class="q-opt" onclick="answerMC(this,2)">عرض طلبات HTTP</button>
+          <button class="q-opt" onclick="answerMC(this,3)">تعديل HTML مباشرة</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="3">
+        <span class="q-num">4</span><span class="q-text">ما ناتج $('h1') في Console؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">كل عناصر h1</button>
+          <button class="q-opt" onclick="answerMC(this,1)">نص h1</button>
+          <button class="q-opt" onclick="answerMC(this,2)">خطأ</button>
+          <button class="q-opt" onclick="answerMC(this,3)">أول عنصر h1 في الصفحة</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="0">
+        <span class="q-num">5</span><span class="q-text">كود الحالة 404 في Network يعني:</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">الصفحة أو المورد غير موجود</button>
+          <button class="q-opt" onclick="answerMC(this,1)">نجاح الطلب</button>
+          <button class="q-opt" onclick="answerMC(this,2)">خطأ في السيرفر</button>
+          <button class="q-opt" onclick="answerMC(this,3)">المورد محمّل من الكاش</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <button class="quiz-submit" onclick="submitQuiz('mc')">عرض النتيجة 🎯</button>
+      <div class="quiz-result" id="result-mc"><div class="result-score" id="score-mc">0/5</div><div class="result-label">إجابات صحيحة</div><div class="result-message" id="msg-mc"></div><button class="retry-btn" onclick="retryQuiz('mc')">🔄 حاول تاني</button></div>
+    </div>
+  </div>
+
+  <div class="lesson-nav">
+    <a href="./lesson-27.html" class="nav-btn"><span>⬅️</span><span>الدرس السابق</span></a>
+    <button class="nav-btn complete-btn" id="completeBtn" onclick="markComplete(this)"><span>✅</span><span>علّم كمكتمل</span></button>
+    <a href="./lesson-29.html" class="nav-btn"><span>الدرس التالي</span><span>➡️</span></a>
+  </div>
+
+  <div class="notebook-footer">
+    <h3>🎉 أتقنت DevTools!</h3>
+    <p>الآن عندك عيون خارقة لرؤية ما يجري داخل أي موقع ❤️<br><strong>الدرس التالي: النشر على الإنترنت (Deployment) 🚀</strong></p>
+  </div>
+</div>
+
+<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">⬆️</button>
+<div class="toast" id="toast"></div>
+<script src="../../js/data/courses.js"></script>
+<script src="../../js/progress.js"></script>
+<script src="../../js/lesson-editor.js"></script>
+<script>
+const COURSE_ID='frontend',LESSON_ID=28,TOTAL=32;
+function toggleSolution(b){const s=b.nextElementSibling;s.classList.toggle('show');b.textContent=s.classList.contains('show')?'إخفاء الحل ▲':'عرض الحل ▼';}
+function copyCode(b){const p=b.closest('.code-box').querySelector('pre');navigator.clipboard.writeText(p.innerText).then(()=>{b.classList.add('copied');b.textContent='✓ تم النسخ';setTimeout(()=>{b.classList.remove('copied');b.textContent='📋 نسخ';},2000);});}
+function runCode(b){const t=b.closest('.try-it');t.querySelector('iframe').srcdoc=t.querySelector('.try-it-editor').value;}
+function resetCode(b){const t=b.closest('.try-it'),e=t.querySelector('.try-it-editor');e.value=e.dataset.default;t.querySelector('iframe').srcdoc=e.value;}
+window.addEventListener('load',()=>{document.querySelectorAll('.try-it').forEach(t=>{const e=t.querySelector('.try-it-editor');t.querySelector('iframe').srcdoc=e.value;});});
+function switchQuiz(b,t){document.querySelectorAll('.qt-tab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.quiz-section').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.getElementById('quiz-'+t).classList.add('active');}
+const answers={tf:{},mc:{}};
+function answerTF(b,v){const q=b.closest('.quiz-question'),i=Array.from(q.parentNode.querySelectorAll('.quiz-question')).indexOf(q);q.querySelectorAll('.q-opt').forEach(o=>o.classList.remove('selected'));b.classList.add('selected');answers.tf[i]=v;}
+function answerMC(b,i){const q=b.closest('.quiz-question'),qi=Array.from(q.parentNode.querySelectorAll('.quiz-question')).indexOf(q);q.querySelectorAll('.q-opt').forEach(o=>o.classList.remove('selected'));b.classList.add('selected');answers.mc[qi]=i;}
+function submitQuiz(type){const sec=document.getElementById('quiz-'+type),qs=sec.querySelectorAll('.quiz-question');let c=0;qs.forEach((q,i)=>{const ca=type==='tf'?(q.dataset.correct==='true'):parseInt(q.dataset.correct),ua=answers[type][i],fb=q.querySelector('.q-feedback'),opts=q.querySelectorAll('.q-opt');opts.forEach(o=>{o.classList.remove('selected');o.disabled=true;});if(ua===undefined){fb.className='q-feedback wrong show';fb.textContent='⚠️ ما اخترتش إجابة!';return;}if(ua===ca){c++;fb.className='q-feedback correct show';fb.textContent='✓ إجابة صحيحة!';if(type==='tf')opts[ca?0:1].classList.add('correct');else opts[ca].classList.add('correct');}else{fb.className='q-feedback wrong show';if(type==='tf'){opts[ca?0:1].classList.add('correct');opts[ua?0:1].classList.add('wrong');fb.textContent='✗ خطأ.';}else{opts[ca].classList.add('correct');opts[ua].classList.add('wrong');fb.textContent='✗ الإجابة بالأخضر.';}}});const r=document.getElementById('result-'+type);document.getElementById('score-'+type).textContent=c+'/'+qs.length;const m=document.getElementById('msg-'+type);if(c===qs.length){m.textContent='🏆 ممتاز 100%!';m.className='result-message excellent';}else if(c>=3){m.textContent='👍 جيد!';m.className='result-message good';}else{m.textContent='📚 راجع الدرس.';m.className='result-message try-again';}r.classList.add('show');r.scrollIntoView({behavior:'smooth',block:'center'});}
+function retryQuiz(type){const sec=document.getElementById('quiz-'+type);sec.querySelectorAll('.q-opt').forEach(o=>{o.classList.remove('selected','correct','wrong');o.disabled=false;});sec.querySelectorAll('.q-feedback').forEach(f=>{f.classList.remove('show','correct','wrong');f.textContent='';});document.getElementById('result-'+type).classList.remove('show');answers[type]={};}
+function markComplete(btn){const done=Progress.toggleLessonComplete(COURSE_ID,LESSON_ID);btn.classList.toggle('completed',done);btn.querySelector('span:last-child').textContent=done?'مكتمل! ⭐':'علّم كمكتمل';showToast(done?'🎉 أكملت درس DevTools!':'تم إلغاء الإكمال');}
+if(Progress.isLessonComplete(COURSE_ID,LESSON_ID)){const b=document.getElementById('completeBtn');b.classList.add('completed');b.querySelector('span:last-child').textContent='مكتمل! ⭐';}
+(function(){const p=Progress.getCourseProgress(COURSE_ID,TOTAL);document.getElementById('progFill').style.width=p+'%';document.getElementById('progText').textContent=p+'%';})();
+function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
+window.addEventListener('scroll',()=>{document.getElementById('scrollTop').classList.toggle('show',window.scrollY>300);});
+document.querySelectorAll('.toc-card a').forEach(l=>{l.addEventListener('click',e=>{e.preventDefault();const t=document.querySelector(l.getAttribute('href'));if(t)t.scrollIntoView({behavior:'smooth',block:'start'});});});
+</script>
+</body>
+</html>

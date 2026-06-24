@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-V2NCKVL16D"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-V2NCKVL16D');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>مشروع: تطبيق الطقس Weather App — دفتر البرمجة</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=Cairo:wght@300;400;500;600;700;900&family=Caveat:wght@400;700&family=Fira+Code:wght@400;500;600&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../css/shared.css">
+<link rel="stylesheet" href="../../css/notebook.css">
+<style>
+body { padding: 20px 10px; }
+
+.project-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: linear-gradient(135deg, #0ea5e9, #7c3aed);
+  color: white; padding: 6px 16px; border-radius: 999px;
+  font-weight: 700; font-size: .9rem; margin-bottom: 8px;
+}
+
+.feature-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px; margin: 14px 0;
+}
+.feature-item {
+  background: #f8fafc; border: 1px solid #e2e8f0;
+  border-radius: 10px; padding: 14px;
+  display: flex; align-items: flex-start; gap: 10px;
+}
+.fi-icon  { font-size: 1.4rem; flex-shrink: 0; }
+.fi-title { font-weight: 600; font-size: .9rem; }
+.fi-desc  { font-size: .82rem; color: #64748b; }
+
+.build-phase {
+  border-right: 3px solid #0ea5e9;
+  padding-right: 16px; margin: 20px 0;
+}
+.build-phase-title {
+  font-weight: 700; color: #0369a1;
+  font-size: 1rem; margin-bottom: 10px;
+  display: flex; align-items: center; gap: 8px;
+}
+.phase-num {
+  background: #0ea5e9; color: white;
+  width: 26px; height: 26px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: .82rem; font-weight: 700; flex-shrink: 0;
+}
+
+/* api flow */
+.api-flow {
+  display: flex; align-items: center; gap: 0;
+  margin: 14px 0; overflow-x: auto; direction: ltr;
+}
+.af-box {
+  background: white; border: 2px solid #0ea5e9;
+  border-radius: 8px; padding: 10px 14px; font-size: .82rem;
+  text-align: center; min-width: 100px; white-space: nowrap;
+}
+.af-arrow { color: #0ea5e9; font-size: 1.3rem; padding: 0 6px; }
+.af-sub { font-family: 'Caveat', cursive; color: #dc2626; font-size: .8rem; display: block; }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="crumbs">
+    <a href="../../index.html">🏠 الرئيسية</a>
+    <span class="sep">/</span>
+    <a href="./index.html">🌐 الفرونت إند</a>
+    <span class="sep">/</span>
+    <span class="current">🌤️ الدرس 31: مشروع Weather App</span>
+  </div>
+  <div class="progress-mini">
+    <div class="progress-bar-mini"><div class="progress-fill-mini" id="progFill"></div></div>
+    <span id="progText">0%</span>
+  </div>
+</div>
+
+<div class="notebook">
+
+  <div class="notebook-header">
+    <div class="lesson-tag">🌤️ الدرس الحادي والثلاثون</div>
+    <h1><span class="sparkle">✦</span> مشروع: تطبيق الطقس <span class="sparkle">✦</span></h1>
+    <div class="lesson-meta">
+      <span>⏱️ 60 دقيقة</span>
+      <span>📊 متوسط-متقدم</span>
+      <span>🎯 مشروع API كامل</span>
+    </div>
+  </div>
+
+  <div class="toc-card">
+    <h2>📑 فهرس الدرس</h2>
+    <ol>
+      <li><a href="#s1">نظرة عامة ومميزات التطبيق</a></li>
+      <li><a href="#s2">كيف تعمل Weather APIs</a></li>
+      <li><a href="#s3">الحصول على API Key</a></li>
+      <li><a href="#s4">بناء HTML وCSS</a></li>
+      <li><a href="#s5">جلب بيانات الطقس بـ Fetch</a></li>
+      <li><a href="#s6">معالجة الأخطاء والتحميل</a></li>
+      <li><a href="#s7">عرض التوقعات المستقبلية</a></li>
+      <li><a href="#s8">التطبيق الكامل — جرّبه الآن</a></li>
+      <li><a href="#exercises">تحديات إضافية</a></li>
+      <li><a href="#quiz">اختبر فهمك</a></li>
+    </ol>
+  </div>
+
+  <!-- S1 -->
+  <div class="section" id="s1">
+    <h2 class="section-title"><span class="num">.1</span> نظرة عامة <span class="en">Overview</span></h2>
+    <div class="content">
+      <div class="project-badge">🌤️ مشروع API حقيقي</div>
+      <p style="margin-top:10px;">سنبني تطبيق طقس يتصل بـ API حقيقي ويعرض بيانات مدن العالم.</p>
+
+      <div class="feature-grid">
+        <div class="feature-item">
+          <span class="fi-icon">🔍</span>
+          <div><div class="fi-title">بحث بالمدينة</div><div class="fi-desc">ابحث عن أي مدينة في العالم</div></div>
+        </div>
+        <div class="feature-item">
+          <span class="fi-icon">🌡️</span>
+          <div><div class="fi-title">الحرارة الحالية</div><div class="fi-desc">درجة الحرارة بمئوية وفهرنهايت</div></div>
+        </div>
+        <div class="feature-item">
+          <span class="fi-icon">💧</span>
+          <div><div class="fi-title">الرطوبة والرياح</div><div class="fi-desc">بيانات جوية كاملة</div></div>
+        </div>
+        <div class="feature-item">
+          <span class="fi-icon">📅</span>
+          <div><div class="fi-title">توقعات 5 أيام</div><div class="fi-desc">توقعات الطقس للأيام القادمة</div></div>
+        </div>
+        <div class="feature-item">
+          <span class="fi-icon">⏳</span>
+          <div><div class="fi-title">Loading State</div><div class="fi-desc">مؤشر تحميل أثناء جلب البيانات</div></div>
+        </div>
+        <div class="feature-item">
+          <span class="fi-icon">❌</span>
+          <div><div class="fi-title">معالجة الأخطاء</div><div class="fi-desc">رسائل واضحة عند الخطأ</div></div>
+        </div>
+      </div>
+
+      <div class="tip-box"><strong>المهارات المستخدمة:</strong> Fetch API، Async/Await، JSON Parsing، Error Handling، DOM Manipulation، CSS Animations.</div>
+    </div>
+  </div>
+
+  <!-- S2 -->
+  <div class="section" id="s2">
+    <h2 class="section-title"><span class="num">.2</span> كيف تعمل APIs <span class="en">How APIs Work</span></h2>
+    <div class="content">
+      <div class="api-flow">
+        <div class="af-box">كودك<span class="af-sub">fetch(url)</span></div>
+        <span class="af-arrow">→</span>
+        <div class="af-box">Internet<span class="af-sub">HTTP Request</span></div>
+        <span class="af-arrow">→</span>
+        <div class="af-box">API Server<span class="af-sub">openweathermap</span></div>
+        <span class="af-arrow">→</span>
+        <div class="af-box">JSON Data<span class="af-sub">Response</span></div>
+        <span class="af-arrow">→</span>
+        <div class="af-box">عرضها<span class="af-sub">DOM Update</span></div>
+      </div>
+
+      <div class="code-box" style="margin-top:16px;">
+<div class="code-header"><span>📦 مثال استجابة API الطقس</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre>{
+  <span class="attr">"name"</span>: <span class="attr-val">"Riyadh"</span>,
+  <span class="attr">"main"</span>: {
+    <span class="attr">"temp"</span>:     <span class="attr-val">38.5</span>,       <span class="comment">// درجة الحرارة كلفن</span>
+    <span class="attr">"humidity"</span>: <span class="attr-val">15</span>,         <span class="comment">// نسبة الرطوبة</span>
+    <span class="attr">"feels_like"</span>: <span class="attr-val">42.1</span>    <span class="comment">// الإحساس الحقيقي</span>
+  },
+  <span class="attr">"weather"</span>: [{
+    <span class="attr">"description"</span>: <span class="attr-val">"clear sky"</span>,
+    <span class="attr">"icon"</span>: <span class="attr-val">"01d"</span>
+  }],
+  <span class="attr">"wind"</span>: { <span class="attr">"speed"</span>: <span class="attr-val">3.5</span> },
+  <span class="attr">"sys"</span>:  { <span class="attr">"country"</span>: <span class="attr-val">"SA"</span> }
+}</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- S3 -->
+  <div class="section" id="s3">
+    <h2 class="section-title"><span class="num">.3</span> الحصول على API Key <span class="en">API Key Setup</span></h2>
+    <div class="content">
+      <div class="deploy-steps" style="counter-reset:step;">
+        <div style="display:flex;gap:14px;margin:14px 0;align-items:flex-start;">
+          <div style="background:var(--ink-blue);color:white;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.9rem;flex-shrink:0;margin-top:2px;">1</div>
+          <div><strong>سجّل على openweathermap.org</strong><br><span style="font-size:.88rem;color:#475569;">حساب مجاني — يكفي للمشاريع الشخصية</span></div>
+        </div>
+        <div style="display:flex;gap:14px;margin:14px 0;align-items:flex-start;">
+          <div style="background:var(--ink-blue);color:white;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.9rem;flex-shrink:0;margin-top:2px;">2</div>
+          <div><strong>API Keys → Create key</strong><br><span style="font-size:.88rem;color:#475569;">أعطه أي اسم (مثل: my-weather-app)</span></div>
+        </div>
+        <div style="display:flex;gap:14px;margin:14px 0;align-items:flex-start;">
+          <div style="background:var(--ink-blue);color:white;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.9rem;flex-shrink:0;margin-top:2px;">3</div>
+          <div><strong>انسخ المفتاح وضعه في .env</strong><br><span style="font-size:.88rem;color:#475569;">VITE_WEATHER_KEY=abc123...</span></div>
+        </div>
+        <div style="display:flex;gap:14px;margin:14px 0;align-items:flex-start;">
+          <div style="background:var(--ink-blue);color:white;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.9rem;flex-shrink:0;margin-top:2px;">4</div>
+          <div><strong>انتظر 10-15 دقيقة</strong><br><span style="font-size:.88rem;color:#475569;">المفتاح الجديد يحتاج وقتاً لينشط</span></div>
+        </div>
+      </div>
+
+      <div class="code-box">
+<div class="code-header"><span>🔗 رابط API</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">// الطقس الحالي</span>
+https://api.openweathermap.org/data/2.5/weather
+  ?q=<span class="attr-val">Riyadh</span>
+  &appid=<span class="attr-val">YOUR_API_KEY</span>
+  &units=<span class="attr-val">metric</span>     <span class="comment">← مئوي</span>
+  &lang=<span class="attr-val">ar</span>          <span class="comment">← عربي</span>
+
+<span class="comment">// توقعات 5 أيام</span>
+https://api.openweathermap.org/data/2.5/forecast
+  ?q=<span class="attr-val">Riyadh</span>&appid=<span class="attr-val">YOUR_KEY</span>&units=<span class="attr-val">metric</span>&lang=<span class="attr-val">ar</span></pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- S4 -->
+  <div class="section" id="s4">
+    <h2 class="section-title"><span class="num">.4</span> HTML و CSS <span class="en">Structure & Style</span></h2>
+    <div class="content">
+      <div class="code-box">
+<div class="code-header"><span>🏗️ هيكل التطبيق</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre>&lt;<span class="tag-name">div</span> <span class="attr">class</span>=<span class="attr-val">"weather-app"</span>&gt;
+  <span class="comment">&lt;!-- البحث --&gt;</span>
+  &lt;<span class="tag-name">div</span> <span class="attr">class</span>=<span class="attr-val">"search-box"</span>&gt;
+    &lt;<span class="tag-name">input</span> <span class="attr">id</span>=<span class="attr-val">"cityInput"</span> <span class="attr">placeholder</span>=<span class="attr-val">"ابحث عن مدينة..."</span>&gt;
+    &lt;<span class="tag-name">button</span> <span class="attr">id</span>=<span class="attr-val">"searchBtn"</span>&gt;🔍&lt;/<span class="tag-name">button</span>&gt;
+  &lt;/<span class="tag-name">div</span>&gt;
+
+  <span class="comment">&lt;!-- حالة التحميل --&gt;</span>
+  &lt;<span class="tag-name">div</span> <span class="attr">id</span>=<span class="attr-val">"loading"</span> <span class="attr">class</span>=<span class="attr-val">"hidden"</span>&gt;⏳ جارٍ التحميل...&lt;/<span class="tag-name">div</span>&gt;
+
+  <span class="comment">&lt;!-- بطاقة الطقس --&gt;</span>
+  &lt;<span class="tag-name">div</span> <span class="attr">id</span>=<span class="attr-val">"weatherCard"</span> <span class="attr">class</span>=<span class="attr-val">"hidden"</span>&gt;
+    &lt;<span class="tag-name">div</span> <span class="attr">class</span>=<span class="attr-val">"city-name"</span>&gt;&lt;/<span class="tag-name">div</span>&gt;
+    &lt;<span class="tag-name">div</span> <span class="attr">class</span>=<span class="attr-val">"temp"</span>&gt;&lt;/<span class="tag-name">div</span>&gt;
+    &lt;<span class="tag-name">div</span> <span class="attr">class</span>=<span class="attr-val">"details"</span>&gt;&lt;/<span class="tag-name">div</span>&gt;
+  &lt;/<span class="tag-name">div</span>&gt;
+
+  <span class="comment">&lt;!-- الخطأ --&gt;</span>
+  &lt;<span class="tag-name">div</span> <span class="attr">id</span>=<span class="attr-val">"errorMsg"</span> <span class="attr">class</span>=<span class="attr-val">"hidden error"</span>&gt;&lt;/<span class="tag-name">div</span>&gt;
+&lt;/<span class="tag-name">div</span>&gt;</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- S5 -->
+  <div class="section" id="s5">
+    <h2 class="section-title"><span class="num">.5</span> جلب بيانات الطقس <span class="en">Fetching Data</span></h2>
+    <div class="content">
+      <div class="build-phase">
+        <div class="build-phase-title"><span class="phase-num">1</span> دالة جلب الطقس</div>
+        <div class="code-box">
+<div class="code-header"><span>🌐 getWeather</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-name">async function</span> <span class="attr">getWeather</span>(<span class="attr">city</span>) {
+  <span class="tag-name">const</span> <span class="attr">KEY</span> = <span class="attr-val">'YOUR_API_KEY'</span>;
+  <span class="tag-name">const</span> <span class="attr">url</span> = `https://api.openweathermap.org/data/2.5/weather?q=${<span class="attr">city</span>}&appid=${<span class="attr">KEY</span>}&units=metric&lang=ar`;
+
+  showLoading();
+
+  <span class="tag-name">try</span> {
+    <span class="tag-name">const</span> <span class="attr">res</span>  = <span class="tag-name">await</span> fetch(<span class="attr">url</span>);
+
+    <span class="comment">// المدينة غير موجودة</span>
+    <span class="tag-name">if</span> (!<span class="attr">res</span>.ok) <span class="tag-name">throw new</span> Error(<span class="attr-val">'مدينة غير موجودة'</span>);
+
+    <span class="tag-name">const</span> <span class="attr">data</span> = <span class="tag-name">await</span> <span class="attr">res</span>.<span class="tag-name">json</span>();
+    <span class="tag-name">displayWeather</span>(<span class="attr">data</span>);
+
+  } <span class="tag-name">catch</span> (<span class="attr">err</span>) {
+    showError(<span class="attr">err</span>.message);
+  }
+}</pre>
+        </div>
+      </div>
+
+      <div class="build-phase">
+        <div class="build-phase-title"><span class="phase-num">2</span> عرض بيانات الطقس</div>
+        <div class="code-box">
+<div class="code-header"><span>🖥️ displayWeather</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-name">function</span> <span class="attr">displayWeather</span>(<span class="attr">data</span>) {
+  <span class="tag-name">const</span> { <span class="attr">name</span>, <span class="attr">main</span>, <span class="attr">weather</span>, <span class="attr">wind</span>, <span class="attr">sys</span> } = <span class="attr">data</span>;
+
+  card.innerHTML = `
+    &lt;div class="city-name"&gt;
+      ${<span class="attr">name</span>}, ${<span class="attr">sys</span>.<span class="attr">country</span>}
+    &lt;/div&gt;
+    &lt;div class="weather-icon"&gt;
+      &lt;img src="https://openweathermap.org/img/wn/${<span class="attr">weather</span>[0].<span class="attr">icon</span>}@2x.png"&gt;
+    &lt;/div&gt;
+    &lt;div class="temp"&gt;${Math.round(<span class="attr">main</span>.<span class="attr">temp</span>)}°C&lt;/div&gt;
+    &lt;div class="desc"&gt;${<span class="attr">weather</span>[0].<span class="attr">description</span>}&lt;/div&gt;
+    &lt;div class="details"&gt;
+      💧 ${<span class="attr">main</span>.<span class="attr">humidity</span>}%
+      💨 ${<span class="attr">wind</span>.<span class="attr">speed</span>} م/ث
+      🌡️ يبدو ${Math.round(<span class="attr">main</span>.<span class="attr">feels_like</span>)}°
+    &lt;/div&gt;
+  `;
+  showCard();
+}</pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- S6 -->
+  <div class="section" id="s6">
+    <h2 class="section-title"><span class="num">.6</span> معالجة الأخطاء والتحميل <span class="en">Error Handling</span></h2>
+    <div class="content">
+      <div class="code-box">
+<div class="code-header"><span>⚠️ حالات التطبيق</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-name">const</span> <span class="attr">loading</span> = document.<span class="tag-name">getElementById</span>(<span class="attr-val">'loading'</span>);
+<span class="tag-name">const</span> <span class="attr">card</span>    = document.<span class="tag-name">getElementById</span>(<span class="attr-val">'weatherCard'</span>);
+<span class="tag-name">const</span> <span class="attr">errBox</span>  = document.<span class="tag-name">getElementById</span>(<span class="attr-val">'errorMsg'</span>);
+
+<span class="tag-name">function</span> <span class="attr">showLoading</span>() {
+  loading.classList.<span class="tag-name">remove</span>(<span class="attr-val">'hidden'</span>);
+  card.classList.<span class="tag-name">add</span>(<span class="attr-val">'hidden'</span>);
+  errBox.classList.<span class="tag-name">add</span>(<span class="attr-val">'hidden'</span>);
+}
+
+<span class="tag-name">function</span> <span class="attr">showCard</span>() {
+  loading.classList.<span class="tag-name">add</span>(<span class="attr-val">'hidden'</span>);
+  card.classList.<span class="tag-name">remove</span>(<span class="attr-val">'hidden'</span>);
+}
+
+<span class="tag-name">function</span> <span class="attr">showError</span>(<span class="attr">msg</span>) {
+  loading.classList.<span class="tag-name">add</span>(<span class="attr-val">'hidden'</span>);
+  errBox.classList.<span class="tag-name">remove</span>(<span class="attr-val">'hidden'</span>);
+  errBox.textContent = `❌ ${<span class="attr">msg</span>}`;
+}</pre>
+      </div>
+
+      <div class="warning-box"><strong>أخطاء شائعة في Fetch:</strong><br>
+      • <code>401</code> — API Key خاطئ أو غير نشط بعد<br>
+      • <code>404</code> — اسم المدينة غير موجود<br>
+      • <code>Network Error</code> — لا يوجد اتصال بالإنترنت</div>
+    </div>
+  </div>
+
+  <!-- S7 -->
+  <div class="section" id="s7">
+    <h2 class="section-title"><span class="num">.7</span> التوقعات المستقبلية <span class="en">5-Day Forecast</span></h2>
+    <div class="content">
+      <div class="code-box">
+<div class="code-header"><span>📅 جلب توقعات 5 أيام</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-name">async function</span> <span class="attr">getForecast</span>(<span class="attr">city</span>) {
+  <span class="tag-name">const</span> <span class="attr">url</span> = `https://api.openweathermap.org/data/2.5/forecast?q=${<span class="attr">city</span>}&appid=${<span class="attr">KEY</span>}&units=metric&lang=ar&cnt=5`;
+  <span class="tag-name">const</span> <span class="attr">res</span>  = <span class="tag-name">await</span> fetch(<span class="attr">url</span>);
+  <span class="tag-name">const</span> <span class="attr">data</span> = <span class="tag-name">await</span> <span class="attr">res</span>.<span class="tag-name">json</span>();
+
+  <span class="comment">// كل 3 ساعات — خذ قراءة يومية واحدة</span>
+  <span class="tag-name">const</span> <span class="attr">daily</span> = <span class="attr">data</span>.<span class="attr">list</span>.<span class="tag-name">filter</span>((_, i) => i % <span class="attr-val">8</span> === <span class="attr-val">0</span>);
+
+  forecastEl.innerHTML = <span class="attr">daily</span>.<span class="tag-name">map</span>(<span class="attr">d</span> => `
+    &lt;div class="forecast-day"&gt;
+      &lt;div&gt;${<span class="tag-name">new</span> Date(<span class="attr">d</span>.<span class="attr">dt_txt</span>).<span class="tag-name">toLocaleDateString</span>(<span class="attr-val">'ar'</span>,{weekday:<span class="attr-val">'short'</span>})}&lt;/div&gt;
+      &lt;img src="https://openweathermap.org/img/wn/${<span class="attr">d</span>.<span class="attr">weather</span>[0].<span class="attr">icon</span>}.png"&gt;
+      &lt;div&gt;${Math.round(<span class="attr">d</span>.<span class="attr">main</span>.<span class="attr">temp</span>)}°&lt;/div&gt;
+    &lt;/div&gt;
+  `).<span class="tag-name">join</span>(<span class="attr-val">''</span>);
+}</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- S8: LIVE APP -->
+  <div class="section" id="s8">
+    <h2 class="section-title"><span class="num">.8</span> التطبيق الكامل <span class="en">Full App</span></h2>
+    <div class="content"><p>تطبيق طقس كامل بدون API Key (يستخدم بيانات محاكاة):</p></div>
+    <div class="try-it">
+      <div class="try-it-header">
+        <span>🌤️ Weather App — بيانات محاكاة</span>
+        <div class="try-it-controls">
+          <button class="try-btn" onclick="runCode(this)">▶️ تشغيل</button>
+          <button class="try-btn" onclick="resetCode(this)">🔄 إعادة</button>
+        </div>
+      </div>
+      <div class="try-it-body">
+        <textarea class="try-it-editor" spellcheck="false" data-default='<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>🌤️ تطبيق الطقس</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: "Segoe UI", Arial, sans-serif;
+    background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 50%, #0ea5e9 100%);
+    min-height: 100vh; padding: 20px 16px; direction: rtl;
+  }
+  .app { max-width: 420px; margin: 0 auto; }
+  h1 { color: white; text-align: center; margin-bottom: 20px; font-size: 1.5rem; }
+
+  /* Search */
+  .search-box { display: flex; gap: 8px; margin-bottom: 16px; }
+  .search-box input {
+    flex: 1; padding: 12px 16px; border: none; border-radius: 12px;
+    font-size: 1rem; direction: rtl; outline: none;
+    background: rgba(255,255,255,.15); color: white;
+    backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,.2);
+  }
+  .search-box input::placeholder { color: rgba(255,255,255,.6); }
+  .search-box button {
+    padding: 12px 18px; background: white; color: #1e3a8a;
+    border: none; border-radius: 12px; font-size: 1.1rem;
+    cursor: pointer; font-weight: 700; transition: transform .1s;
+  }
+  .search-box button:active { transform: scale(.95); }
+
+  /* Quick cities */
+  .quick-cities { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+  .city-chip {
+    background: rgba(255,255,255,.15); color: white; border: 1px solid rgba(255,255,255,.3);
+    padding: 5px 12px; border-radius: 999px; font-size: .82rem;
+    cursor: pointer; transition: background .2s;
+  }
+  .city-chip:hover { background: rgba(255,255,255,.3); }
+
+  /* Weather Card */
+  .weather-card {
+    background: rgba(255,255,255,.12); backdrop-filter: blur(20px);
+    border: 1px solid rgba(255,255,255,.2); border-radius: 20px;
+    padding: 28px 24px; color: white; text-align: center;
+    animation: fadeUp .4s ease;
+  }
+  @keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:none} }
+
+  .city-name { font-size: 1.4rem; font-weight: 700; margin-bottom: 4px; }
+  .date-line  { font-size: .85rem; opacity: .75; margin-bottom: 16px; }
+  .weather-icon { font-size: 5rem; margin: 10px 0; line-height: 1; }
+  .temp-main { font-size: 4rem; font-weight: 700; margin: 8px 0; }
+  .temp-main span { font-size: 1.5rem; opacity: .7; }
+  .description { font-size: 1.1rem; opacity: .85; margin-bottom: 20px; }
+
+  .details-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;
+    border-top: 1px solid rgba(255,255,255,.2); padding-top: 16px;
+  }
+  .detail-item { text-align: center; }
+  .detail-val  { font-size: 1.1rem; font-weight: 700; }
+  .detail-lbl  { font-size: .75rem; opacity: .7; margin-top: 2px; }
+
+  /* Forecast */
+  .forecast { display: flex; gap: 8px; margin-top: 16px; overflow-x: auto; padding-bottom: 4px; }
+  .forecast-day {
+    background: rgba(255,255,255,.1); border-radius: 12px;
+    padding: 12px; text-align: center; color: white; min-width: 72px;
+    border: 1px solid rgba(255,255,255,.15); flex-shrink: 0;
+  }
+  .forecast-day .f-day  { font-size: .78rem; opacity: .75; margin-bottom: 6px; }
+  .forecast-day .f-icon { font-size: 1.6rem; }
+  .forecast-day .f-temp { font-size: .9rem; font-weight: 700; margin-top: 6px; }
+
+  /* Loading & Error */
+  .loading {
+    background: rgba(255,255,255,.1); border-radius: 16px;
+    padding: 30px; text-align: center; color: white; font-size: 1.1rem;
+    animation: pulse 1.5s infinite;
+  }
+  @keyframes pulse { 0%,100%{opacity:.6} 50%{opacity:1} }
+  .error-box {
+    background: rgba(239,68,68,.2); border: 1px solid rgba(239,68,68,.4);
+    color: #fca5a5; padding: 16px; border-radius: 12px; text-align: center;
+    animation: fadeUp .3s ease;
+  }
+  .hidden { display: none; }
+</style>
+</head>
+<body>
+<div class="app">
+  <h1>🌤️ تطبيق الطقس</h1>
+
+  <div class="search-box">
+    <input id="cityInput" type="text" placeholder="ابحث عن مدينة...">
+    <button onclick="search()">🔍</button>
+  </div>
+
+  <div class="quick-cities">
+    <span class="city-chip" onclick="loadCity(this)">الرياض</span>
+    <span class="city-chip" onclick="loadCity(this)">دبي</span>
+    <span class="city-chip" onclick="loadCity(this)">القاهرة</span>
+    <span class="city-chip" onclick="loadCity(this)">لندن</span>
+    <span class="city-chip" onclick="loadCity(this)">طوكيو</span>
+  </div>
+
+  <div id="loading" class="loading hidden">⏳ جارٍ تحميل بيانات الطقس...</div>
+  <div id="errorBox" class="error-box hidden"></div>
+  <div id="weatherCard" class="weather-card hidden"></div>
+  <div id="forecast" class="forecast hidden"></div>
+</div>
+
+<script>
+  // بيانات محاكاة (في المشروع الحقيقي تأتي من API)
+  const mockData = {
+    "الرياض":  { temp: 38, feels: 42, desc: "صافٍ", icon: "☀️", humidity: 12, wind: 3.5, country: "SA", forecast: [{d:"غد",i:"⛅",t:36},{d:"الأحد",i:"☀️",t:39},{d:"الإثنين",i:"☀️",t:41},{d:"الثلاثاء",i:"🌤️",t:37},{d:"الأربعاء",i:"☀️",t:35}] },
+    "دبي":    { temp: 35, feels: 40, desc: "مشمس", icon: "☀️", humidity: 55, wind: 4.2, country: "AE", forecast: [{d:"غد",i:"☀️",t:34},{d:"الأحد",i:"⛅",t:33},{d:"الإثنين",i:"🌤️",t:36},{d:"الثلاثاء",i:"☀️",t:37},{d:"الأربعاء",i:"⛅",t:35}] },
+    "القاهرة": { temp: 29, feels: 31, desc: "غائم جزئياً", icon: "⛅", humidity: 45, wind: 5.1, country: "EG", forecast: [{d:"غد",i:"🌤️",t:28},{d:"الأحد",i:"☀️",t:30},{d:"الإثنين",i:"⛅",t:27},{d:"الثلاثاء",i:"🌦️",t:25},{d:"الأربعاء",i:"☀️",t:29}] },
+    "لندن":   { temp: 14, feels: 12, desc: "ممطر خفيف", icon: "🌧️", humidity: 82, wind: 7.8, country: "GB", forecast: [{d:"غد",i:"🌦️",t:13},{d:"الأحد",i:"⛅",t:15},{d:"الإثنين",i:"☁️",t:12},{d:"الثلاثاء",i:"🌧️",t:11},{d:"الأربعاء",i:"🌤️",t:16}] },
+    "طوكيو":  { temp: 22, feels: 23, desc: "غائم", icon: "☁️", humidity: 70, wind: 6.0, country: "JP", forecast: [{d:"غد",i:"🌤️",t:24},{d:"الأحد",i:"☀️",t:26},{d:"الإثنين",i:"⛅",t:23},{d:"الثلاثاء",i:"🌦️",t:20},{d:"الأربعاء",i:"☁️",t:21}] },
+  };
+
+  function search() {
+    const city = document.getElementById("cityInput").value.trim();
+    if (!city) return;
+    showLoading();
+    setTimeout(() => {
+      const data = mockData[city] || mockData[Object.keys(mockData).find(k=>k.includes(city))];
+      if (data) showWeather(city, data);
+      else showError(`❌ لم نجد مدينة "${city}". جرّب: الرياض، دبي، القاهرة، لندن، طوكيو`);
+    }, 800);
+  }
+
+  function loadCity(el) {
+    document.getElementById("cityInput").value = el.textContent;
+    search();
+  }
+
+  function showLoading() {
+    document.getElementById("loading").classList.remove("hidden");
+    document.getElementById("weatherCard").classList.add("hidden");
+    document.getElementById("forecast").classList.add("hidden");
+    document.getElementById("errorBox").classList.add("hidden");
+  }
+
+  function showError(msg) {
+    document.getElementById("loading").classList.add("hidden");
+    const e = document.getElementById("errorBox");
+    e.textContent = msg;
+    e.classList.remove("hidden");
+  }
+
+  function showWeather(city, d) {
+    document.getElementById("loading").classList.add("hidden");
+    const card = document.getElementById("weatherCard");
+    const now  = new Date().toLocaleDateString("ar-SA", {weekday:"long", day:"numeric", month:"long"});
+    card.innerHTML = `
+      <div class="city-name">${city}، ${d.country}</div>
+      <div class="date-line">${now}</div>
+      <div class="weather-icon">${d.icon}</div>
+      <div class="temp-main">${d.temp}<span>°C</span></div>
+      <div class="description">${d.desc}</div>
+      <div class="details-grid">
+        <div class="detail-item"><div class="detail-val">💧 ${d.humidity}%</div><div class="detail-lbl">الرطوبة</div></div>
+        <div class="detail-item"><div class="detail-val">💨 ${d.wind}</div><div class="detail-lbl">الرياح م/ث</div></div>
+        <div class="detail-item"><div class="detail-val">🌡️ ${d.feels}°</div><div class="detail-lbl">الإحساس</div></div>
+      </div>
+    `;
+    card.classList.remove("hidden");
+
+    const fc = document.getElementById("forecast");
+    fc.innerHTML = d.forecast.map(f => `
+      <div class="forecast-day">
+        <div class="f-day">${f.d}</div>
+        <div class="f-icon">${f.i}</div>
+        <div class="f-temp">${f.t}°</div>
+      </div>
+    `).join("");
+    fc.classList.remove("hidden");
+  }
+
+  document.getElementById("cityInput").addEventListener("keydown", e => {
+    if (e.key === "Enter") search();
+  });
+
+  // ابدأ بالرياض
+  loadCity({textContent: "الرياض"});
+<\/script>
+</body></html>'><!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>🌤️ تطبيق الطقس</title>
+<style>
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:"Segoe UI",Arial,sans-serif; background:linear-gradient(135deg,#0f172a,#1e3a8a,#0ea5e9); min-height:100vh; padding:20px 16px; direction:rtl; }
+  .app { max-width:420px; margin:0 auto; }
+  h1 { color:white; text-align:center; margin-bottom:20px; font-size:1.5rem; }
+  .search-box { display:flex; gap:8px; margin-bottom:16px; }
+  .search-box input { flex:1; padding:12px 16px; border:none; border-radius:12px; font-size:1rem; direction:rtl; outline:none; background:rgba(255,255,255,.15); color:white; border:1px solid rgba(255,255,255,.2); }
+  .search-box input::placeholder { color:rgba(255,255,255,.6); }
+  .search-box button { padding:12px 18px; background:white; color:#1e3a8a; border:none; border-radius:12px; font-size:1.1rem; cursor:pointer; font-weight:700; }
+  .quick-cities { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:16px; }
+  .city-chip { background:rgba(255,255,255,.15); color:white; border:1px solid rgba(255,255,255,.3); padding:5px 12px; border-radius:999px; font-size:.82rem; cursor:pointer; }
+  .weather-card { background:rgba(255,255,255,.12); backdrop-filter:blur(20px); border:1px solid rgba(255,255,255,.2); border-radius:20px; padding:28px 24px; color:white; text-align:center; animation:fadeUp .4s ease; }
+  @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+  .city-name{font-size:1.4rem;font-weight:700;margin-bottom:4px}.date-line{font-size:.85rem;opacity:.75;margin-bottom:16px}.weather-icon{font-size:5rem;margin:10px 0;line-height:1}.temp-main{font-size:4rem;font-weight:700;margin:8px 0}.temp-main span{font-size:1.5rem;opacity:.7}.description{font-size:1.1rem;opacity:.85;margin-bottom:20px}
+  .details-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;border-top:1px solid rgba(255,255,255,.2);padding-top:16px}.detail-item{text-align:center}.detail-val{font-size:1.1rem;font-weight:700}.detail-lbl{font-size:.75rem;opacity:.7;margin-top:2px}
+  .forecast{display:flex;gap:8px;margin-top:16px;overflow-x:auto;padding-bottom:4px}.forecast-day{background:rgba(255,255,255,.1);border-radius:12px;padding:12px;text-align:center;color:white;min-width:72px;border:1px solid rgba(255,255,255,.15);flex-shrink:0}.f-day{font-size:.78rem;opacity:.75;margin-bottom:6px}.f-icon{font-size:1.6rem}.f-temp{font-size:.9rem;font-weight:700;margin-top:6px}
+  .loading{background:rgba(255,255,255,.1);border-radius:16px;padding:30px;text-align:center;color:white;font-size:1.1rem;animation:pulse 1.5s infinite}@keyframes pulse{0%,100%{opacity:.6}50%{opacity:1}}
+  .error-box{background:rgba(239,68,68,.2);border:1px solid rgba(239,68,68,.4);color:#fca5a5;padding:16px;border-radius:12px;text-align:center}
+  .hidden{display:none}
+</style>
+</head>
+<body>
+<div class="app">
+  <h1>🌤️ تطبيق الطقس</h1>
+  <div class="search-box"><input id="cityInput" type="text" placeholder="ابحث عن مدينة..."><button onclick="search()">🔍</button></div>
+  <div class="quick-cities"><span class="city-chip" onclick="loadCity(this)">الرياض</span><span class="city-chip" onclick="loadCity(this)">دبي</span><span class="city-chip" onclick="loadCity(this)">القاهرة</span><span class="city-chip" onclick="loadCity(this)">لندن</span><span class="city-chip" onclick="loadCity(this)">طوكيو</span></div>
+  <div id="loading" class="loading hidden">⏳ جارٍ تحميل بيانات الطقس...</div>
+  <div id="errorBox" class="error-box hidden"></div>
+  <div id="weatherCard" class="weather-card hidden"></div>
+  <div id="forecast" class="forecast hidden"></div>
+</div>
+<script>
+  const mockData={"الرياض":{temp:38,feels:42,desc:"صافٍ",icon:"☀️",humidity:12,wind:3.5,country:"SA",forecast:[{d:"غد",i:"⛅",t:36},{d:"الأحد",i:"☀️",t:39},{d:"الإثنين",i:"☀️",t:41},{d:"الثلاثاء",i:"🌤️",t:37},{d:"الأربعاء",i:"☀️",t:35}]},"دبي":{temp:35,feels:40,desc:"مشمس",icon:"☀️",humidity:55,wind:4.2,country:"AE",forecast:[{d:"غد",i:"☀️",t:34},{d:"الأحد",i:"⛅",t:33},{d:"الإثنين",i:"🌤️",t:36},{d:"الثلاثاء",i:"☀️",t:37},{d:"الأربعاء",i:"⛅",t:35}]},"القاهرة":{temp:29,feels:31,desc:"غائم جزئياً",icon:"⛅",humidity:45,wind:5.1,country:"EG",forecast:[{d:"غد",i:"🌤️",t:28},{d:"الأحد",i:"☀️",t:30},{d:"الإثنين",i:"⛅",t:27},{d:"الثلاثاء",i:"🌦️",t:25},{d:"الأربعاء",i:"☀️",t:29}]},"لندن":{temp:14,feels:12,desc:"ممطر خفيف",icon:"🌧️",humidity:82,wind:7.8,country:"GB",forecast:[{d:"غد",i:"🌦️",t:13},{d:"الأحد",i:"⛅",t:15},{d:"الإثنين",i:"☁️",t:12},{d:"الثلاثاء",i:"🌧️",t:11},{d:"الأربعاء",i:"🌤️",t:16}]},"طوكيو":{temp:22,feels:23,desc:"غائم",icon:"☁️",humidity:70,wind:6.0,country:"JP",forecast:[{d:"غد",i:"🌤️",t:24},{d:"الأحد",i:"☀️",t:26},{d:"الإثنين",i:"⛅",t:23},{d:"الثلاثاء",i:"🌦️",t:20},{d:"الأربعاء",i:"☁️",t:21}]}};
+  function search(){const city=document.getElementById("cityInput").value.trim();if(!city)return;showLoading();setTimeout(()=>{const data=mockData[city]||mockData[Object.keys(mockData).find(k=>k.includes(city))];if(data)showWeather(city,data);else showError(`❌ لم نجد "${city}". جرّب: الرياض، دبي، القاهرة، لندن، طوكيو`);},800);}
+  function loadCity(el){document.getElementById("cityInput").value=el.textContent;search();}
+  function showLoading(){document.getElementById("loading").classList.remove("hidden");document.getElementById("weatherCard").classList.add("hidden");document.getElementById("forecast").classList.add("hidden");document.getElementById("errorBox").classList.add("hidden");}
+  function showError(msg){document.getElementById("loading").classList.add("hidden");const e=document.getElementById("errorBox");e.textContent=msg;e.classList.remove("hidden");}
+  function showWeather(city,d){document.getElementById("loading").classList.add("hidden");const card=document.getElementById("weatherCard"),now=new Date().toLocaleDateString("ar-SA",{weekday:"long",day:"numeric",month:"long"});card.innerHTML=`<div class="city-name">${city}، ${d.country}</div><div class="date-line">${now}</div><div class="weather-icon">${d.icon}</div><div class="temp-main">${d.temp}<span>°C</span></div><div class="description">${d.desc}</div><div class="details-grid"><div class="detail-item"><div class="detail-val">💧 ${d.humidity}%</div><div class="detail-lbl">الرطوبة</div></div><div class="detail-item"><div class="detail-val">💨 ${d.wind}</div><div class="detail-lbl">الرياح م/ث</div></div><div class="detail-item"><div class="detail-val">🌡️ ${d.feels}°</div><div class="detail-lbl">الإحساس</div></div></div>`;card.classList.remove("hidden");const fc=document.getElementById("forecast");fc.innerHTML=d.forecast.map(f=>`<div class="forecast-day"><div class="f-day">${f.d}</div><div class="f-icon">${f.i}</div><div class="f-temp">${f.t}°</div></div>`).join("");fc.classList.remove("hidden");}
+  document.getElementById("cityInput").addEventListener("keydown",e=>{if(e.key==="Enter")search();});
+  loadCity({textContent:"الرياض"});
+<\/script>
+</body></html></textarea>
+        <div class="try-it-preview"><iframe srcdoc="" sandbox="allow-scripts allow-same-origin allow-modals allow-popups allow-forms" title="معاينة الكود"></iframe></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EXERCISES -->
+  <div class="section" id="exercises">
+    <h2 class="section-title"><span class="num">📝</span> تحديات إضافية <span class="en">Challenges</span></h2>
+
+    <div class="exercise">
+      <div class="exercise-title">تحدي 1: API حقيقي</div>
+      <p>احصل على مفتاح مجاني من openweathermap.org واستبدل البيانات المحاكاة ببيانات حقيقية.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الفكرة ▼</button>
+      <div class="solution">
+        <span class="solution-label">الفكرة:</span>
+        <div class="code-box">
+<pre><span class="tag-name">const</span> <span class="attr">KEY</span> = <span class="attr-val">'your_real_api_key'</span>;
+<span class="tag-name">const</span> <span class="attr">url</span> = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${KEY}&units=metric&lang=ar`;
+<span class="tag-name">const</span> <span class="attr">res</span>  = <span class="tag-name">await</span> fetch(<span class="attr">url</span>);
+<span class="tag-name">const</span> <span class="attr">data</span> = <span class="tag-name">await</span> <span class="attr">res</span>.<span class="tag-name">json</span>();</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تحدي 2: تبديل الوحدات</div>
+      <p>أضف زراً للتبديل بين المئوية (°C) والفهرنهايت (°F).</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الفكرة ▼</button>
+      <div class="solution">
+        <span class="solution-label">الفكرة:</span>
+        <div class="code-box">
+<pre><span class="comment">// تحويل من مئوي لفهرنهايت</span>
+<span class="tag-name">const</span> <span class="attr">toF</span> = (<span class="attr">c</span>) => (c * 9/5 + 32).<span class="tag-name">toFixed</span>(1);
+<span class="tag-name">const</span> <span class="attr">toC</span> = (<span class="attr">f</span>) => ((f - 32) * 5/9).<span class="tag-name">toFixed</span>(1);</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تحدي 3: الموقع الجغرافي</div>
+      <p>أضف زر "موقعي الحالي" يستخدم <em>navigator.geolocation</em> لعرض طقس المستخدم تلقائياً.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الفكرة ▼</button>
+      <div class="solution">
+        <span class="solution-label">الفكرة:</span>
+        <div class="code-box">
+<pre>navigator.geolocation.<span class="tag-name">getCurrentPosition</span>(<span class="attr">pos</span> => {
+  <span class="tag-name">const</span> { latitude, longitude } = <span class="attr">pos</span>.coords;
+  <span class="comment">// استخدم API بـ lat/lon بدل اسم المدينة</span>
+  <span class="tag-name">const</span> <span class="attr">url</span> = `...?lat=${latitude}&lon=${longitude}&...`;
+});</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تحدي 4: آخر عمليات البحث</div>
+      <p>احفظ آخر 5 مدن بحث في localStorage وأظهرها كاقتراحات سريعة.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الفكرة ▼</button>
+      <div class="solution">
+        <span class="solution-label">الفكرة:</span>
+        <div class="code-box">
+<pre><span class="tag-name">const</span> <span class="attr">history</span> = JSON.<span class="tag-name">parse</span>(localStorage.<span class="tag-name">getItem</span>(<span class="attr-val">'search-history'</span>) || <span class="attr-val">'[]'</span>);
+<span class="comment">// بعد كل بحث ناجح:</span>
+<span class="tag-name">const</span> <span class="attr">updated</span> = [city, ...<span class="attr">history</span>.<span class="tag-name">filter</span>(c => c !== city)].<span class="tag-name">slice</span>(0, 5);
+localStorage.<span class="tag-name">setItem</span>(<span class="attr-val">'search-history'</span>, JSON.<span class="tag-name">stringify</span>(<span class="attr">updated</span>));</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تحدي 5: خلفية ديناميكية</div>
+      <p>غيّر خلفية التطبيق تلقائياً حسب حالة الطقس (مشمس = صفراء، ممطر = زرقاء رمادية...).</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الفكرة ▼</button>
+      <div class="solution">
+        <span class="solution-label">الفكرة:</span>
+        <div class="code-box">
+<pre><span class="tag-name">const</span> <span class="attr">bgMap</span> = {
+  <span class="attr-val">'clear'</span>:  <span class="attr-val">'linear-gradient(#f97316, #fbbf24)'</span>,
+  <span class="attr-val">'clouds'</span>: <span class="attr-val">'linear-gradient(#475569, #94a3b8)'</span>,
+  <span class="attr-val">'rain'</span>:   <span class="attr-val">'linear-gradient(#1e3a8a, #475569)'</span>,
+};
+<span class="tag-name">const</span> <span class="attr">main</span> = data.weather[0].main.toLowerCase();
+document.body.style.background = <span class="attr">bgMap</span>[<span class="attr">main</span>] || <span class="attr">bgMap</span>.clouds;</pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="quiz-container" id="quiz">
+    <div class="quiz-intro"><p>اختبر فهمك لمشروع Weather App!</p></div>
+    <div class="quiz-type-tabs">
+      <button class="qt-tab active" onclick="switchQuiz(this,'tf')">✓✗ صح وخطأ</button>
+      <button class="qt-tab" onclick="switchQuiz(this,'mc')">🔘 اختيار من متعدد</button>
+    </div>
+
+    <div class="quiz-section active" id="quiz-tf">
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">1</span><span class="q-text">يجب استخدام async/await مع fetch لأن طلبات الشبكة غير متزامنة.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="false">
+        <span class="q-num">2</span><span class="q-text">fetch() يُرجع الـ JSON مباشرة بدون الحاجة لـ .json().</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">3</span><span class="q-text">API Key يجب تخزينه في .env وعدم رفعه لـ GitHub.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">4</span><span class="q-text">try/catch ضروري مع fetch لمعالجة أخطاء الشبكة والـ API.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="false">
+        <span class="q-num">5</span><span class="q-text">res.ok تكون true دائماً بغض النظر عن كود الحالة HTTP.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <button class="quiz-submit" onclick="submitQuiz('tf')">عرض النتيجة 🎯</button>
+      <div class="quiz-result" id="result-tf"><div class="result-score" id="score-tf">0/5</div><div class="result-label">إجابات صحيحة</div><div class="result-message" id="msg-tf"></div><button class="retry-btn" onclick="retryQuiz('tf')">🔄 حاول تاني</button></div>
+    </div>
+
+    <div class="quiz-section" id="quiz-mc">
+      <div class="quiz-question" data-correct="1">
+        <span class="q-num">1</span><span class="q-text">ما الخطوة بعد fetch(url) لقراءة الـ JSON؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">res.text()</button>
+          <button class="q-opt" onclick="answerMC(this,1)">await res.json()</button>
+          <button class="q-opt" onclick="answerMC(this,2)">JSON.parse(res)</button>
+          <button class="q-opt" onclick="answerMC(this,3)">res.data()</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="2">
+        <span class="q-num">2</span><span class="q-text">ما معنى units=metric في رابط OpenWeather API؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">قياس كلفن</button>
+          <button class="q-opt" onclick="answerMC(this,1)">قياس فهرنهايت</button>
+          <button class="q-opt" onclick="answerMC(this,2)">قياس مئوي</button>
+          <button class="q-opt" onclick="answerMC(this,3)">لا يغير شيئاً</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="0">
+        <span class="q-num">3</span><span class="q-text">متى تكون res.ok = false في fetch؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">عندما يكون كود الاستجابة 4xx أو 5xx</button>
+          <button class="q-opt" onclick="answerMC(this,1)">دائماً عند الخطأ</button>
+          <button class="q-opt" onclick="answerMC(this,2)">عند انتهاء المهلة فقط</button>
+          <button class="q-opt" onclick="answerMC(this,3)">لا تكون false أبداً</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="3">
+        <span class="q-num">4</span><span class="q-text">أي event يسمح بالبحث عند الضغط على Enter؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">onclick</button>
+          <button class="q-opt" onclick="answerMC(this,1)">onchange</button>
+          <button class="q-opt" onclick="answerMC(this,2)">oninput</button>
+          <button class="q-opt" onclick="answerMC(this,3)">keydown مع فحص e.key === 'Enter'</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="2">
+        <span class="q-num">5</span><span class="q-text">لعرض حالة تحميل أثناء جلب البيانات:</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">استخدم setTimeout فقط</button>
+          <button class="q-opt" onclick="answerMC(this,1)">لا حاجة لحالة التحميل</button>
+          <button class="q-opt" onclick="answerMC(this,2)">أظهر عنصر Loading قبل fetch واخفِه بعد انتهائه</button>
+          <button class="q-opt" onclick="answerMC(this,3)">استخدم alert()</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <button class="quiz-submit" onclick="submitQuiz('mc')">عرض النتيجة 🎯</button>
+      <div class="quiz-result" id="result-mc"><div class="result-score" id="score-mc">0/5</div><div class="result-label">إجابات صحيحة</div><div class="result-message" id="msg-mc"></div><button class="retry-btn" onclick="retryQuiz('mc')">🔄 حاول تاني</button></div>
+    </div>
+  </div>
+
+  <div class="lesson-nav">
+    <a href="./lesson-30.html" class="nav-btn"><span>⬅️</span><span>الدرس السابق</span></a>
+    <button class="nav-btn complete-btn" id="completeBtn" onclick="markComplete(this)"><span>✅</span><span>علّم كمكتمل</span></button>
+    <a href="./lesson-32.html" class="nav-btn"><span>الدرس التالي</span><span>➡️</span></a>
+  </div>
+
+  <div class="notebook-footer">
+    <h3>🎉 أنجزت تطبيق الطقس!</h3>
+    <p>الآن تقدر تتصل بأي API في العالم 🌍❤️<br><strong>الدرس التالي: مشروع موقع Portfolio الكامل 🎨</strong></p>
+  </div>
+</div>
+
+<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">⬆️</button>
+<div class="toast" id="toast"></div>
+<script src="../../js/data/courses.js"></script>
+<script src="../../js/progress.js"></script>
+<script src="../../js/lesson-editor.js"></script>
+<script>
+const COURSE_ID='frontend',LESSON_ID=31,TOTAL=32;
+function toggleSolution(b){const s=b.nextElementSibling;s.classList.toggle('show');b.textContent=s.classList.contains('show')?'إخفاء الفكرة ▲':'عرض الفكرة ▼';}
+function copyCode(b){const p=b.closest('.code-box').querySelector('pre');navigator.clipboard.writeText(p.innerText).then(()=>{b.classList.add('copied');b.textContent='✓ تم النسخ';setTimeout(()=>{b.classList.remove('copied');b.textContent='📋 نسخ';},2000);});}
+function runCode(b){const t=b.closest('.try-it');t.querySelector('iframe').srcdoc=t.querySelector('.try-it-editor').value;}
+function resetCode(b){const t=b.closest('.try-it'),e=t.querySelector('.try-it-editor');e.value=e.dataset.default;t.querySelector('iframe').srcdoc=e.value;}
+window.addEventListener('load',()=>{document.querySelectorAll('.try-it').forEach(t=>{const e=t.querySelector('.try-it-editor');t.querySelector('iframe').srcdoc=e.value;});});
+function switchQuiz(b,t){document.querySelectorAll('.qt-tab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.quiz-section').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.getElementById('quiz-'+t).classList.add('active');}
+const answers={tf:{},mc:{}};
+function answerTF(b,v){const q=b.closest('.quiz-question'),i=Array.from(q.parentNode.querySelectorAll('.quiz-question')).indexOf(q);q.querySelectorAll('.q-opt').forEach(o=>o.classList.remove('selected'));b.classList.add('selected');answers.tf[i]=v;}
+function answerMC(b,i){const q=b.closest('.quiz-question'),qi=Array.from(q.parentNode.querySelectorAll('.quiz-question')).indexOf(q);q.querySelectorAll('.q-opt').forEach(o=>o.classList.remove('selected'));b.classList.add('selected');answers.mc[qi]=i;}
+function submitQuiz(type){const sec=document.getElementById('quiz-'+type),qs=sec.querySelectorAll('.quiz-question');let c=0;qs.forEach((q,i)=>{const ca=type==='tf'?(q.dataset.correct==='true'):parseInt(q.dataset.correct),ua=answers[type][i],fb=q.querySelector('.q-feedback'),opts=q.querySelectorAll('.q-opt');opts.forEach(o=>{o.classList.remove('selected');o.disabled=true;});if(ua===undefined){fb.className='q-feedback wrong show';fb.textContent='⚠️ ما اخترتش إجابة!';return;}if(ua===ca){c++;fb.className='q-feedback correct show';fb.textContent='✓ إجابة صحيحة!';if(type==='tf')opts[ca?0:1].classList.add('correct');else opts[ca].classList.add('correct');}else{fb.className='q-feedback wrong show';if(type==='tf'){opts[ca?0:1].classList.add('correct');opts[ua?0:1].classList.add('wrong');fb.textContent='✗ خطأ.';}else{opts[ca].classList.add('correct');opts[ua].classList.add('wrong');fb.textContent='✗ الإجابة بالأخضر.';}}});const r=document.getElementById('result-'+type);document.getElementById('score-'+type).textContent=c+'/'+qs.length;const m=document.getElementById('msg-'+type);if(c===qs.length){m.textContent='🏆 ممتاز 100%!';m.className='result-message excellent';}else if(c>=3){m.textContent='👍 جيد!';m.className='result-message good';}else{m.textContent='📚 راجع الدرس.';m.className='result-message try-again';}r.classList.add('show');r.scrollIntoView({behavior:'smooth',block:'center'});}
+function retryQuiz(type){const sec=document.getElementById('quiz-'+type);sec.querySelectorAll('.q-opt').forEach(o=>{o.classList.remove('selected','correct','wrong');o.disabled=false;});sec.querySelectorAll('.q-feedback').forEach(f=>{f.classList.remove('show','correct','wrong');f.textContent='';});document.getElementById('result-'+type).classList.remove('show');answers[type]={};}
+function markComplete(btn){const done=Progress.toggleLessonComplete(COURSE_ID,LESSON_ID);btn.classList.toggle('completed',done);btn.querySelector('span:last-child').textContent=done?'مكتمل! ⭐':'علّم كمكتمل';showToast(done?'🎉 أنجزت تطبيق الطقس!':'تم إلغاء الإكمال');}
+if(Progress.isLessonComplete(COURSE_ID,LESSON_ID)){const b=document.getElementById('completeBtn');b.classList.add('completed');b.querySelector('span:last-child').textContent='مكتمل! ⭐';}
+(function(){const p=Progress.getCourseProgress(COURSE_ID,TOTAL);document.getElementById('progFill').style.width=p+'%';document.getElementById('progText').textContent=p+'%';})();
+function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
+window.addEventListener('scroll',()=>{document.getElementById('scrollTop').classList.toggle('show',window.scrollY>300);});
+document.querySelectorAll('.toc-card a').forEach(l=>{l.addEventListener('click',e=>{e.preventDefault();const t=document.querySelector(l.getAttribute('href'));if(t)t.scrollIntoView({behavior:'smooth',block:'start'});});});
+</script>
+</body>
+</html>

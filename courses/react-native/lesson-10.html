@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-V2NCKVL16D"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-V2NCKVL16D');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Buttons, TouchableOpacity, Pressable — دفتر البرمجة</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=Cairo:wght@300;400;500;600;700;900&family=Caveat:wght@400;700&family=Fira+Code:wght@400;500;600&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../css/shared.css">
+<link rel="stylesheet" href="../../css/notebook.css">
+<style>
+body { padding: 20px 10px; }
+
+/* button showcase */
+.btn-showcase {
+  display: flex; gap: 10px; flex-wrap: wrap;
+  margin: 14px 0; align-items: center;
+}
+.demo-btn {
+  padding: 10px 18px; border-radius: 10px;
+  font-family: 'Cairo', sans-serif; font-size: .82rem;
+  font-weight: 700; border: none; cursor: pointer;
+  display: inline-flex; align-items: center; gap: 6px;
+}
+.btn-primary  { background: #0ea5e9; color: white; }
+.btn-outline  { background: transparent; color: #0ea5e9; border: 2px solid #0ea5e9; }
+.btn-ghost    { background: transparent; color: #64748b; }
+.btn-danger   { background: #f43f5e; color: white; }
+.btn-success  { background: #16a34a; color: white; }
+.btn-pill     { background: #7c3aed; color: white; border-radius: 999px; }
+.btn-icon     { background: #f0f9ff; color: #0ea5e9; border: 1.5px solid #bae6fd; padding: 10px; border-radius: 10px; }
+.btn-disabled { background: #e2e8f0; color: #94a3b8; cursor: not-allowed; }
+
+/* comparison table */
+.comp-table {
+  width: 100%; border-collapse: collapse; font-size: .83rem; margin: 14px 0;
+}
+.comp-table th {
+  background: #1e293b; color: white;
+  padding: 10px 14px; text-align: right;
+}
+.comp-table td { padding: 9px 14px; border-bottom: 1px solid var(--border); }
+.comp-table tr:last-child td { border: none; }
+.comp-table tr:nth-child(even) td { background: #f8fafc; }
+.comp-table .check { color: #16a34a; font-weight: 700; }
+.comp-table .cross { color: #dc2626; }
+
+/* press state demo */
+.press-demo {
+  display: flex; gap: 12px; margin: 14px 0; flex-wrap: wrap;
+}
+.press-card {
+  flex: 1; min-width: 130px;
+  background: #f8fafc; border: 1.5px solid var(--border);
+  border-radius: 12px; padding: 14px; text-align: center;
+}
+.press-card-title { font-weight: 700; font-size: .85rem; margin-bottom: 8px; color: #0f172a; }
+.press-card-states { display: flex; flex-direction: column; gap: 4px; }
+.state-item {
+  background: #1e293b; border-radius: 6px; padding: 4px 8px;
+  font-family: 'Fira Code', monospace; font-size: .68rem; color: #94a3b8;
+  text-align: right; display: flex; justify-content: space-between;
+}
+.state-item .state-val { color: #4ade80; }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="crumbs">
+    <a href="../../index.html">🏠 الرئيسية</a>
+    <span class="sep">/</span>
+    <a href="./index.html">📱 React Native</a>
+    <span class="sep">/</span>
+    <span class="current">👆 الدرس 10: Buttons & Pressable</span>
+  </div>
+  <div class="progress-mini">
+    <div class="progress-bar-mini"><div class="progress-fill-mini" id="progFill"></div></div>
+    <span id="progText">0%</span>
+  </div>
+</div>
+
+<div class="notebook">
+
+  <div class="notebook-header">
+    <div class="lesson-tag">👆 الدرس العاشر</div>
+    <h1><span class="sparkle">✦</span> Buttons, TouchableOpacity, Pressable <span class="sparkle">✦</span></h1>
+    <div class="lesson-meta">
+      <span>⏱️ 40 دقيقة</span>
+      <span>📊 متوسط</span>
+      <span>🎯 5 تمارين + اختبار</span>
+    </div>
+  </div>
+
+  <div class="toc-card">
+    <h2>📑 فهرس الدرس</h2>
+    <ol>
+      <li><a href="#s1">أنواع الأزرار في React Native</a></li>
+      <li><a href="#s2">Button — الزر البسيط</a></li>
+      <li><a href="#s3">TouchableOpacity — الأشيع</a></li>
+      <li><a href="#s4">TouchableHighlight و TouchableWithoutFeedback</a></li>
+      <li><a href="#s5">Pressable — الأحدث والأقوى</a></li>
+      <li><a href="#s6">بناء مكوّن زر قابل لإعادة الاستخدام</a></li>
+      <li><a href="#s7">أنماط الأزرار الشائعة</a></li>
+      <li><a href="#s8">معاينة حية</a></li>
+      <li><a href="#exercises">التمارين</a></li>
+      <li><a href="#quiz">اختبر فهمك</a></li>
+    </ol>
+  </div>
+
+  <!-- S1 -->
+  <div class="section" id="s1">
+    <h2 class="section-title"><span class="num">.1</span> أنواع الأزرار في RN <span class="en">Button Types</span></h2>
+    <div class="content">
+      <p>في RN لا يوجد عنصر <code>&lt;button&gt;</code> واحد كـ HTML — بدلاً منه عندك 4 خيارات، كل منها لموقف مختلف:</p>
+
+      <table class="comp-table">
+        <thead><tr><th>المكوّن</th><th>الاستخدام</th><th>التخصيص</th><th>الحداثة</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><code>Button</code></td>
+            <td>نماذج أولية سريعة</td>
+            <td class="cross">محدود جداً</td>
+            <td>قديم</td>
+          </tr>
+          <tr>
+            <td><code>TouchableOpacity</code></td>
+            <td>الاستخدام اليومي (90%)</td>
+            <td class="check">مرن جداً</td>
+            <td>شائع</td>
+          </tr>
+          <tr>
+            <td><code>TouchableHighlight</code></td>
+            <td>تأثير تظليل عند الضغط</td>
+            <td class="check">متوسط</td>
+            <td>أقل شيوعاً</td>
+          </tr>
+          <tr>
+            <td><code>Pressable</code></td>
+            <td>تحكم كامل في حالات الضغط</td>
+            <td class="check">الأكثر مرونة</td>
+            <td>⭐ الأحدث</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="btn-showcase">
+        <button class="demo-btn btn-primary">Primary</button>
+        <button class="demo-btn btn-outline">Outline</button>
+        <button class="demo-btn btn-ghost">Ghost</button>
+        <button class="demo-btn btn-danger">Danger</button>
+        <button class="demo-btn btn-pill">Pill</button>
+        <button class="demo-btn btn-icon">🔔</button>
+        <button class="demo-btn btn-disabled" disabled>Disabled</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- S2 -->
+  <div class="section" id="s2">
+    <h2 class="section-title"><span class="num">.2</span> Button — الزر البسيط <span class="en">Button Component</span></h2>
+    <div class="content">
+      <p>مكوّن <code>Button</code> المدمج بسيط لكن محدود — مفيد فقط للاختبار السريع:</p>
+
+      <div class="code-box">
+<div class="code-header"><span>🔘 Button البسيط</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-name">import</span> { Button, View } <span class="tag-name">from</span> <span class="attr-val">'react-native'</span>;
+
+&lt;<span class="attr">Button</span>
+  title=<span class="attr-val">"اضغط هنا"</span>
+  onPress={() => alert(<span class="attr-val">'مرحباً!'</span>)}
+  color=<span class="attr-val">"#0ea5e9"</span>      <span class="comment">// لون الزر</span>
+  disabled={<span class="attr-val">false</span>}    <span class="comment">// تعطيل الزر</span>
+/&gt;
+
+<span class="comment">// ❌ لا يمكن تخصيص: الحجم، الشكل، الخط، الأيقونة...</span>
+<span class="comment">// ✅ مناسب فقط للاختبار السريع</span></pre>
+      </div>
+
+      <div class="warning-box"><strong>تجنّب Button في الإنتاج</strong> — يظهر بشكل مختلف كلياً على iOS وAndroid، ولا يمكن تنسيقه. استخدم TouchableOpacity أو Pressable دائماً.</div>
+    </div>
+  </div>
+
+  <!-- S3 -->
+  <div class="section" id="s3">
+    <h2 class="section-title"><span class="num">.3</span> TouchableOpacity — الأشيع <span class="en">TouchableOpacity</span></h2>
+    <div class="content">
+      <p>هو المكوّن الأساسي لبناء الأزرار — يُلف أي محتوى ويُضيف تأثير تلاشٍ عند الضغط:</p>
+
+      <div class="code-box">
+<div class="code-header"><span>👆 TouchableOpacity — الاستخدامات</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-name">import</span> { TouchableOpacity, Text, View, Image } <span class="tag-name">from</span> <span class="attr-val">'react-native'</span>;
+
+<span class="comment">// 1. زر نصي بسيط</span>
+&lt;<span class="attr">TouchableOpacity</span>
+  style={styles.btn}
+  onPress={() => console.log(<span class="attr-val">'ضُغط'</span>)}
+  activeOpacity={<span class="attr-val">0.7</span>}   <span class="comment">// درجة الشفافية عند الضغط (0-1)</span>
+&gt;
+  &lt;<span class="attr">Text</span> style={styles.btnText}&gt;إرسال&lt;/<span class="attr">Text</span>&gt;
+&lt;/<span class="attr">TouchableOpacity</span>&gt;
+
+<span class="comment">// 2. زر بأيقونة</span>
+&lt;<span class="attr">TouchableOpacity</span> style={styles.iconBtn} onPress={handleSearch}&gt;
+  &lt;<span class="attr">Text</span>&gt;🔍&lt;/<span class="attr">Text</span>&gt;
+  &lt;<span class="attr">Text</span> style={styles.iconBtnText}&gt;بحث&lt;/<span class="attr">Text</span>&gt;
+&lt;/<span class="attr">TouchableOpacity</span>&gt;
+
+<span class="comment">// 3. بطاقة قابلة للضغط</span>
+&lt;<span class="attr">TouchableOpacity</span>
+  style={styles.card}
+  onPress={() => navigation.navigate(<span class="attr-val">'Details'</span>, { id })}
+  onLongPress={() => showOptions()}
+  delayLongPress={<span class="attr-val">500</span>}   <span class="comment">// ms قبل تفعيل onLongPress</span>
+&gt;
+  &lt;<span class="attr">Image</span> source={img} style={styles.cardImg} /&gt;
+  &lt;<span class="attr">Text</span> style={styles.cardTitle}&gt;{title}&lt;/<span class="attr">Text</span>&gt;
+&lt;/<span class="attr">TouchableOpacity</span>&gt;
+
+<span class="comment">// 4. زر معطّل</span>
+&lt;<span class="attr">TouchableOpacity</span>
+  style={[styles.btn, loading && styles.btnDisabled]}
+  onPress={handleSubmit}
+  disabled={loading}
+&gt;
+  &lt;<span class="attr">Text</span>&gt;{loading ? <span class="attr-val">'جاري الإرسال...'</span> : <span class="attr-val">'إرسال'</span>}&lt;/<span class="attr">Text</span>&gt;
+&lt;/<span class="attr">TouchableOpacity</span>&gt;</pre>
+      </div>
+
+      <div class="code-box blue">
+<div class="code-header"><span>🎨 أنماط زر احترافية</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-name">const</span> <span class="attr">styles</span> = StyleSheet.create({
+  btn: {
+    backgroundColor: <span class="attr-val">'#0ea5e9'</span>,
+    paddingVertical: <span class="attr-val">14</span>,
+    paddingHorizontal: <span class="attr-val">24</span>,
+    borderRadius: <span class="attr-val">12</span>,
+    alignItems: <span class="attr-val">'center'</span>,
+    flexDirection: <span class="attr-val">'row'</span>,
+    justifyContent: <span class="attr-val">'center'</span>,
+    gap: <span class="attr-val">8</span>,
+  },
+  btnText: {
+    color: <span class="attr-val">'white'</span>,
+    fontSize: <span class="attr-val">16</span>,
+    fontWeight: <span class="attr-val">'700'</span>,
+  },
+  btnDisabled: {
+    backgroundColor: <span class="attr-val">'#94a3b8'</span>,
+    opacity: <span class="attr-val">0.6</span>,
+  },
+});</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- S4 -->
+  <div class="section" id="s4">
+    <h2 class="section-title"><span class="num">.4</span> TouchableHighlight و TouchableWithoutFeedback <span class="en">Other Touchables</span></h2>
+    <div class="content">
+
+      <div class="code-box">
+<div class="code-header"><span>💡 TouchableHighlight — تغيير اللون</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-name">import</span> { TouchableHighlight } <span class="tag-name">from</span> <span class="attr-val">'react-native'</span>;
+
+<span class="comment">// يُغيّر لون الخلفية عند الضغط بدل التلاشي</span>
+&lt;<span class="attr">TouchableHighlight</span>
+  style={styles.btn}
+  onPress={handlePress}
+  underlayColor=<span class="attr-val">"#0284c7"</span>   <span class="comment">// لون الخلفية عند الضغط</span>
+  activeOpacity={<span class="attr-val">0.9</span>}
+&gt;
+  &lt;<span class="attr">Text</span> style={styles.btnText}&gt;اضغط&lt;/<span class="attr">Text</span>&gt;
+&lt;/<span class="attr">TouchableHighlight</span>&gt;
+
+<span class="comment">// ⚠️ يجب أن يحتوي على عنصر واحد فقط مباشرة</span>
+<span class="comment">// ✅ يناسب قوائم List Items</span></pre>
+      </div>
+
+      <div class="code-box">
+<div class="code-header"><span>🚫 TouchableWithoutFeedback — بدون تأثير</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-name">import</span> { TouchableWithoutFeedback, Keyboard } <span class="tag-name">from</span> <span class="attr-val">'react-native'</span>;
+
+<span class="comment">// بدون أي تأثير بصري — للضغط على المساحة الفارغة</span>
+&lt;<span class="attr">TouchableWithoutFeedback</span> onPress={Keyboard.dismiss}&gt;
+  &lt;<span class="attr">View</span> style={{ flex: <span class="attr-val">1</span> }}&gt;
+    <span class="comment">{/* المحتوى */}</span>
+  &lt;/<span class="attr">View</span>&gt;
+&lt;/<span class="attr">TouchableWithoutFeedback</span>&gt;
+
+<span class="comment">// ⚠️ يجب أن يحتوي على عنصر واحد</span>
+<span class="comment">// ✅ مثالي لإغلاق الكيبورد أو Modal عند الضغط خارجه</span></pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- S5 -->
+  <div class="section" id="s5">
+    <h2 class="section-title"><span class="num">.5</span> Pressable — الأحدث والأقوى <span class="en">Pressable</span></h2>
+    <div class="content">
+      <p>أُضيف في RN 0.63 — يُعطيك تحكماً كاملاً في كل حالات الضغط:</p>
+
+      <div class="press-demo">
+        <div class="press-card">
+          <div class="press-card-title">TouchableOpacity</div>
+          <div class="press-card-states">
+            <div class="state-item"><span>pressed</span><span class="state-val">opacity: 0.7</span></div>
+            <div class="state-item"><span>onPress</span><span class="state-val">✓</span></div>
+            <div class="state-item"><span>onLongPress</span><span class="state-val">✓</span></div>
+            <div class="state-item"><span>hover state</span><span class="state-val">✗</span></div>
+          </div>
+        </div>
+        <div class="press-card">
+          <div class="press-card-title">Pressable ⭐</div>
+          <div class="press-card-states">
+            <div class="state-item"><span>pressed</span><span class="state-val">كامل التحكم</span></div>
+            <div class="state-item"><span>onPress</span><span class="state-val">✓</span></div>
+            <div class="state-item"><span>onLongPress</span><span class="state-val">✓</span></div>
+            <div class="state-item"><span>onPressIn/Out</span><span class="state-val">✓</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="code-box">
+<div class="code-header"><span>⭐ Pressable — القوة الكاملة</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-name">import</span> { Pressable, Text } <span class="tag-name">from</span> <span class="attr-val">'react-native'</span>;
+
+<span class="comment">// الطريقة الأساسية — style كـ function</span>
+&lt;<span class="attr">Pressable</span>
+  style={({ pressed }) => [
+    styles.btn,
+    pressed && styles.btnPressed,
+  ]}
+  onPress={() => console.log(<span class="attr-val">'ضُغط!'</span>)}
+  onPressIn={() => console.log(<span class="attr-val">'بدأ الضغط'</span>)}
+  onPressOut={() => console.log(<span class="attr-val">'انتهى الضغط'</span>)}
+  onLongPress={() => console.log(<span class="attr-val">'ضغط طويل'</span>)}
+&gt;
+  {({ pressed }) => (
+    &lt;<span class="attr">Text</span> style={[styles.text, pressed && styles.textPressed]}&gt;
+      {pressed ? <span class="attr-val">'🔥 مضغوط!'</span> : <span class="attr-val">'اضغط هنا'</span>}
+    &lt;/<span class="attr">Text</span>&gt;
+  )}
+&lt;/<span class="attr">Pressable</span>&gt;
+
+<span class="comment">// الأنماط</span>
+<span class="tag-name">const</span> <span class="attr">styles</span> = StyleSheet.create({
+  btn: {
+    backgroundColor: <span class="attr-val">'#0ea5e9'</span>,
+    padding: <span class="attr-val">14</span>, borderRadius: <span class="attr-val">12</span>,
+    alignItems: <span class="attr-val">'center'</span>,
+  },
+  btnPressed: {
+    backgroundColor: <span class="attr-val">'#0284c7'</span>,   <span class="comment">// أغمق عند الضغط</span>
+    transform: [{ scale: <span class="attr-val">0.97</span> }],    <span class="comment">// يصغر قليلاً</span>
+  },
+  text:        { color: <span class="attr-val">'white'</span>, fontWeight: <span class="attr-val">'700'</span> },
+  textPressed: { opacity: <span class="attr-val">0.8</span> },
+});</pre>
+      </div>
+
+      <div class="tip-box"><strong>متى تستخدم Pressable بدل TouchableOpacity؟</strong> عندما تحتاج تغيير نمط أو محتوى المكوّن بحسب حالة الضغط. مثلاً: الزر يصغر عند الضغط، أو النص يتغير، أو اللون يتحول.</div>
+    </div>
+  </div>
+
+  <!-- S6 -->
+  <div class="section" id="s6">
+    <h2 class="section-title"><span class="num">.6</span> مكوّن زر قابل لإعادة الاستخدام <span class="en">Reusable Button</span></h2>
+    <div class="content">
+      <p>بدل كتابة نمط زر جديد في كل شاشة — ابنِ مكوّن <code>AppButton</code> مرة واحدة واستخدمه في كل مكان:</p>
+
+      <div class="code-box">
+<div class="code-header"><span>🏗️ AppButton — مكوّن قابل لإعادة الاستخدام</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">// components/AppButton.js</span>
+<span class="tag-name">import</span> { Pressable, Text, StyleSheet, ActivityIndicator } <span class="tag-name">from</span> <span class="attr-val">'react-native'</span>;
+
+<span class="tag-name">export function</span> <span class="attr">AppButton</span>({
+  title,
+  onPress,
+  variant = <span class="attr-val">'primary'</span>,  <span class="comment">// 'primary' | 'outline' | 'ghost' | 'danger'</span>
+  size = <span class="attr-val">'md'</span>,         <span class="comment">// 'sm' | 'md' | 'lg'</span>
+  loading = <span class="attr-val">false</span>,
+  disabled = <span class="attr-val">false</span>,
+  icon,
+  fullWidth = <span class="attr-val">false</span>,
+}) {
+  <span class="tag-name">return</span> (
+    &lt;<span class="attr">Pressable</span>
+      style={({ pressed }) => [
+        s.base,
+        s[variant],
+        s[`size_${size}`],
+        fullWidth && s.fullWidth,
+        (disabled || loading) && s.disabled,
+        pressed && !disabled && s.pressed,
+      ]}
+      onPress={onPress}
+      disabled={disabled || loading}
+    &gt;
+      {({ pressed }) => (
+        &lt;&gt;
+          {loading && (
+            &lt;<span class="attr">ActivityIndicator</span>
+              size=<span class="attr-val">"small"</span>
+              color={variant === <span class="attr-val">'primary'</span> ? <span class="attr-val">'white'</span> : <span class="attr-val">'#0ea5e9'</span>}
+            /&gt;
+          )}
+          {icon && !loading && &lt;<span class="attr">Text</span>&gt;{icon}&lt;/<span class="attr">Text</span>&gt;}
+          &lt;<span class="attr">Text</span> style={[s.text, s[`text_${variant}`]]}&gt;
+            {loading ? <span class="attr-val">'جاري...'</span> : title}
+          &lt;/<span class="attr">Text</span>&gt;
+        &lt;/&gt;
+      )}
+    &lt;/<span class="attr">Pressable</span>&gt;
+  );
+}
+
+<span class="tag-name">const</span> s = StyleSheet.create({
+  base: {
+    flexDirection: <span class="attr-val">'row'</span>, alignItems: <span class="attr-val">'center'</span>,
+    justifyContent: <span class="attr-val">'center'</span>, gap: <span class="attr-val">8</span>,
+    borderRadius: <span class="attr-val">12</span>,
+  },
+  <span class="comment">// Variants</span>
+  primary: { backgroundColor: <span class="attr-val">'#0ea5e9'</span> },
+  outline:  { backgroundColor: <span class="attr-val">'transparent'</span>, borderWidth: <span class="attr-val">2</span>, borderColor: <span class="attr-val">'#0ea5e9'</span> },
+  ghost:    { backgroundColor: <span class="attr-val">'transparent'</span> },
+  danger:   { backgroundColor: <span class="attr-val">'#f43f5e'</span> },
+  <span class="comment">// Sizes</span>
+  size_sm: { paddingVertical: <span class="attr-val">8</span>,  paddingHorizontal: <span class="attr-val">14</span> },
+  size_md: { paddingVertical: <span class="attr-val">12</span>, paddingHorizontal: <span class="attr-val">20</span> },
+  size_lg: { paddingVertical: <span class="attr-val">16</span>, paddingHorizontal: <span class="attr-val">28</span> },
+  <span class="comment">// States</span>
+  disabled: { opacity: <span class="attr-val">0.5</span> },
+  pressed:  { transform: [{ scale: <span class="attr-val">0.97</span> }] },
+  fullWidth: { width: <span class="attr-val">'100%'</span> },
+  <span class="comment">// Text</span>
+  text:          { fontWeight: <span class="attr-val">'700'</span>, fontSize: <span class="attr-val">15</span> },
+  text_primary:  { color: <span class="attr-val">'white'</span> },
+  text_outline:  { color: <span class="attr-val">'#0ea5e9'</span> },
+  text_ghost:    { color: <span class="attr-val">'#64748b'</span> },
+  text_danger:   { color: <span class="attr-val">'white'</span> },
+});</pre>
+      </div>
+
+      <div class="code-box blue">
+<div class="code-header"><span>🚀 استخدام AppButton</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-name">import</span> { AppButton } <span class="tag-name">from</span> <span class="attr-val">'./components/AppButton'</span>;
+
+<span class="comment">// أزرار مختلفة</span>
+&lt;<span class="attr">AppButton</span> title=<span class="attr-val">"إرسال"</span> onPress={submit} /&gt;
+&lt;<span class="attr">AppButton</span> title=<span class="attr-val">"إلغاء"</span> variant=<span class="attr-val">"outline"</span> onPress={cancel} /&gt;
+&lt;<span class="attr">AppButton</span> title=<span class="attr-val">"حذف"</span>  variant=<span class="attr-val">"danger"</span>  onPress={remove} /&gt;
+&lt;<span class="attr">AppButton</span> title=<span class="attr-val">"كبير"</span>  size=<span class="attr-val">"lg"</span> fullWidth onPress={...} /&gt;
+&lt;<span class="attr">AppButton</span> title=<span class="attr-val">"إرسال"</span> loading={isLoading}   onPress={...} /&gt;
+&lt;<span class="attr">AppButton</span> title=<span class="attr-val">"إضافة"</span> icon=<span class="attr-val">"➕"</span>            onPress={...} /&gt;</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- S7 -->
+  <div class="section" id="s7">
+    <h2 class="section-title"><span class="num">.7</span> أنماط الأزرار الشائعة <span class="en">Common Patterns</span></h2>
+    <div class="content">
+
+      <div class="code-box">
+<div class="code-header"><span>🎨 أنماط تصميم الأزرار</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-name">const</span> <span class="attr">styles</span> = StyleSheet.create({
+
+  <span class="comment">// 1. زر ممتلئ (Filled)</span>
+  filled: {
+    backgroundColor: <span class="attr-val">'#0ea5e9'</span>, borderRadius: <span class="attr-val">12</span>,
+    padding: <span class="attr-val">14</span>, alignItems: <span class="attr-val">'center'</span>,
+  },
+
+  <span class="comment">// 2. زر محدود (Outlined)</span>
+  outlined: {
+    borderWidth: <span class="attr-val">2</span>, borderColor: <span class="attr-val">'#0ea5e9'</span>,
+    borderRadius: <span class="attr-val">12</span>, padding: <span class="attr-val">14</span>, alignItems: <span class="attr-val">'center'</span>,
+  },
+
+  <span class="comment">// 3. زر شفاف (Text/Ghost)</span>
+  ghost: {
+    padding: <span class="attr-val">14</span>, alignItems: <span class="attr-val">'center'</span>,
+    <span class="comment">// بدون خلفية أو حد</span>
+  },
+
+  <span class="comment">// 4. زر مستدير (FAB)</span>
+  fab: {
+    width: <span class="attr-val">56</span>, height: <span class="attr-val">56</span>, borderRadius: <span class="attr-val">28</span>,
+    backgroundColor: <span class="attr-val">'#0ea5e9'</span>,
+    alignItems: <span class="attr-val">'center'</span>, justifyContent: <span class="attr-val">'center'</span>,
+    position: <span class="attr-val">'absolute'</span>, bottom: <span class="attr-val">24</span>, right: <span class="attr-val">24</span>,
+    elevation: <span class="attr-val">8</span>,
+  },
+
+  <span class="comment">// 5. زر أيقونة نصية (Icon + Text)</span>
+  iconBtn: {
+    flexDirection: <span class="attr-val">'row'</span>, alignItems: <span class="attr-val">'center'</span>,
+    gap: <span class="attr-val">8</span>, padding: <span class="attr-val">12</span>, borderRadius: <span class="attr-val">10</span>,
+    backgroundColor: <span class="attr-val">'#f0f9ff'</span>,
+  },
+});</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- S8 — Live Preview -->
+  <div class="section" id="s8">
+    <h2 class="section-title"><span class="num">.8</span> معاينة حية <span class="en">Live Preview</span></h2>
+    <div class="content"><p>مجموعة أزرار بأنماط مختلفة وحالات ضغط حقيقية:</p></div>
+
+    <div class="live-preview">
+      <div class="lp-header">
+        <span>📱 معاينة — Button Gallery</span>
+        <span class="lp-tag">TouchableOpacity + Pressable</span>
+      </div>
+      <div class="lp-body">
+        <div class="lp-code">
+<pre><span class="c">// زر Primary</span>
+<span class="p">&lt;</span><span class="t">TouchableOpacity</span>
+  style={s.btn}
+  activeOpacity={<span class="n">0.8</span>}
+<span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="t">Text</span> style={s.btnText}<span class="p">&gt;</span>
+    إرسال الطلب
+  <span class="p">&lt;/</span><span class="t">Text</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="t">TouchableOpacity</span><span class="p">&gt;</span>
+
+<span class="c">// زر Pressable مع تأثير</span>
+<span class="p">&lt;</span><span class="t">Pressable</span>
+  style={({ pressed }) => [
+    s.pressBtn,
+    pressed && s.pressBtnActive,
+  ]}
+<span class="p">&gt;</span>
+  {({ pressed }) => (
+    <span class="p">&lt;</span><span class="t">Text</span> style={s.pressText}<span class="p">&gt;</span>
+      {pressed
+        ? <span class="s">'🔥 مضغوط!'</span>
+        : <span class="s">'اضغط هنا'</span>}
+    <span class="p">&lt;/</span><span class="t">Text</span><span class="p">&gt;</span>
+  )}
+<span class="p">&lt;/</span><span class="t">Pressable</span><span class="p">&gt;</span>
+
+<span class="c">// زر Loading</span>
+<span class="p">&lt;</span><span class="t">TouchableOpacity</span>
+  disabled={true}
+  style={[s.btn, s.btnDisabled]}
+<span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="t">ActivityIndicator</span> color=<span class="s">"white"</span> <span class="p">/&gt;</span>
+  <span class="p">&lt;</span><span class="t">Text</span> style={s.btnText}<span class="p">&gt;</span>جاري...<span class="p">&lt;/</span><span class="t">Text</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="t">TouchableOpacity</span><span class="p">&gt;</span></pre>
+        </div>
+        <div class="lp-phone-wrap">
+          <div class="lp-phone">
+            <div class="lp-phone-bar"></div>
+            <div class="lp-phone-screen" style="gap:10px; justify-content:center; padding:16px;">
+              <!-- Primary -->
+              <div style="background:#0ea5e9; border-radius:12px; padding:12px; text-align:center;">
+                <span style="color:white; font-weight:700; font-size:.82rem; font-family:'Cairo',sans-serif;">إرسال الطلب</span>
+              </div>
+              <!-- Outline -->
+              <div style="border:2px solid #0ea5e9; border-radius:12px; padding:12px; text-align:center;">
+                <span style="color:#0ea5e9; font-weight:700; font-size:.82rem; font-family:'Cairo',sans-serif;">إلغاء</span>
+              </div>
+              <!-- Danger -->
+              <div style="background:#f43f5e; border-radius:12px; padding:12px; text-align:center;">
+                <span style="color:white; font-weight:700; font-size:.82rem; font-family:'Cairo',sans-serif;">حذف الحساب</span>
+              </div>
+              <!-- Icon + Text -->
+              <div style="background:#f0f9ff; border:1.5px solid #bae6fd; border-radius:10px; padding:10px; display:flex; align-items:center; justify-content:center; gap:6px;">
+                <span style="font-size:.9rem;">🔍</span>
+                <span style="color:#0369a1; font-weight:700; font-size:.78rem; font-family:'Cairo',sans-serif;">بحث</span>
+              </div>
+              <!-- Disabled -->
+              <div style="background:#e2e8f0; border-radius:12px; padding:12px; text-align:center;">
+                <span style="color:#94a3b8; font-weight:700; font-size:.82rem; font-family:'Cairo',sans-serif;">معطّل</span>
+              </div>
+              <!-- FAB -->
+              <div style="display:flex; justify-content:flex-end;">
+                <div style="width:46px; height:46px; border-radius:23px; background:#0ea5e9; display:flex; align-items:center; justify-content:center; box-shadow:0 6px 16px rgba(14,165,233,.4);">
+                  <span style="color:white; font-size:1.2rem;">＋</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EXERCISES -->
+  <div class="section" id="exercises">
+    <h2 class="section-title"><span class="num">📝</span> التمارين العملية <span class="en">Exercises</span></h2>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 1: اختيار المكوّن</div>
+      <p>أي مكوّن تستخدم لكل حالة؟<br>
+      أ) بطاقة منتج قابلة للضغط مع تأثير fade<br>
+      ب) إغلاق لوحة المفاتيح عند الضغط خارج حقل النص<br>
+      ج) زر يتغير نصه ولونه أثناء الضغط فعلاً</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <p>أ) <code>TouchableOpacity</code> — تأثير fade الافتراضي<br>
+        ب) <code>TouchableWithoutFeedback</code> — بدون أي تأثير بصري<br>
+        ج) <code>Pressable</code> — التحكم الكامل في حالة الضغط</p>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 2: زر Outlined</div>
+      <p>اكتب TouchableOpacity بنمط Outlined — حد أزرق 2px، لون خلفية شفاف، نص أزرق "تعرّف أكثر".</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box"><pre>&lt;<span class="attr">TouchableOpacity</span>
+  style={styles.outlineBtn}
+  onPress={handleLearnMore}
+  activeOpacity={<span class="attr-val">0.7</span>}
+&gt;
+  &lt;<span class="attr">Text</span> style={styles.outlineBtnText}&gt;تعرّف أكثر&lt;/<span class="attr">Text</span>&gt;
+&lt;/<span class="attr">TouchableOpacity</span>&gt;
+
+outlineBtn: {
+  borderWidth: <span class="attr-val">2</span>,
+  borderColor: <span class="attr-val">'#0ea5e9'</span>,
+  borderRadius: <span class="attr-val">10</span>,
+  padding: <span class="attr-val">12</span>,
+  alignItems: <span class="attr-val">'center'</span>,
+  backgroundColor: <span class="attr-val">'transparent'</span>,
+},
+outlineBtnText: { color: <span class="attr-val">'#0ea5e9'</span>, fontWeight: <span class="attr-val">'700'</span>, fontSize: <span class="attr-val">15</span> },</pre></div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 3: زر Loading</div>
+      <p>اكتب زراً يُظهر <code>ActivityIndicator</code> و"جاري الإرسال..." عند <code>loading = true</code>، ونص "إرسال" عادياً.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box"><pre><span class="tag-name">import</span> { ActivityIndicator } <span class="tag-name">from</span> <span class="attr-val">'react-native'</span>;
+
+<span class="tag-name">function</span> <span class="attr">SubmitBtn</span>({ loading, onPress }) {
+  <span class="tag-name">return</span> (
+    &lt;<span class="attr">TouchableOpacity</span>
+      style={[styles.btn, loading && { opacity: <span class="attr-val">0.7</span> }]}
+      onPress={onPress}
+      disabled={loading}
+    &gt;
+      {loading && (
+        &lt;<span class="attr">ActivityIndicator</span> color=<span class="attr-val">"white"</span> size=<span class="attr-val">"small"</span> /&gt;
+      )}
+      &lt;<span class="attr">Text</span> style={styles.btnText}&gt;
+        {loading ? <span class="attr-val">'جاري الإرسال...'</span> : <span class="attr-val">'إرسال'</span>}
+      &lt;/<span class="attr">Text</span>&gt;
+    &lt;/<span class="attr">TouchableOpacity</span>&gt;
+  );
+}</pre></div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 4: Pressable مع تأثير</div>
+      <p>اكتب Pressable يُقلّص حجمه إلى 95% عند الضغط ويعود للحجم الطبيعي عند الرفع.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box"><pre>&lt;<span class="attr">Pressable</span>
+  style={({ pressed }) => ({
+    backgroundColor: <span class="attr-val">'#0ea5e9'</span>,
+    padding: <span class="attr-val">14</span>,
+    borderRadius: <span class="attr-val">12</span>,
+    alignItems: <span class="attr-val">'center'</span>,
+    transform: [{ scale: pressed ? <span class="attr-val">0.95</span> : <span class="attr-val">1</span> }],
+  })}
+  onPress={handlePress}
+&gt;
+  &lt;<span class="attr">Text</span> style={{ color: <span class="attr-val">'white'</span>, fontWeight: <span class="attr-val">'700'</span> }}&gt;
+    اضغط
+  &lt;/<span class="attr">Text</span>&gt;
+&lt;/<span class="attr">Pressable</span>&gt;</pre></div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 5: زر FAB</div>
+      <p>اكتب زر FAB (Floating Action Button) دائري بحجم 56×56، في الزاوية السفلية اليمينية، مع أيقونة ➕.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box"><pre>&lt;<span class="attr">TouchableOpacity</span>
+  style={styles.fab}
+  onPress={handleAdd}
+  activeOpacity={<span class="attr-val">0.85</span>}
+&gt;
+  &lt;<span class="attr">Text</span> style={{ color: <span class="attr-val">'white'</span>, fontSize: <span class="attr-val">28</span>, lineHeight: <span class="attr-val">30</span> }}&gt;＋&lt;/<span class="attr">Text</span>&gt;
+&lt;/<span class="attr">TouchableOpacity</span>&gt;
+
+fab: {
+  position: <span class="attr-val">'absolute'</span>,
+  bottom: <span class="attr-val">24</span>, right: <span class="attr-val">24</span>,
+  width: <span class="attr-val">56</span>, height: <span class="attr-val">56</span>,
+  borderRadius: <span class="attr-val">28</span>,
+  backgroundColor: <span class="attr-val">'#0ea5e9'</span>,
+  alignItems: <span class="attr-val">'center'</span>,
+  justifyContent: <span class="attr-val">'center'</span>,
+  elevation: <span class="attr-val">8</span>,
+  shadowColor: <span class="attr-val">'#0ea5e9'</span>,
+  shadowOffset: { width: <span class="attr-val">0</span>, height: <span class="attr-val">6</span> },
+  shadowOpacity: <span class="attr-val">0.4</span>,
+  shadowRadius: <span class="attr-val">10</span>,
+},</pre></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="quiz-container" id="quiz">
+    <div class="quiz-intro"><p>اختبر فهمك للأزرار في React Native!</p></div>
+    <div class="quiz-type-tabs">
+      <button class="qt-tab active" onclick="switchQuiz(this,'tf')">✓✗ صح وخطأ</button>
+      <button class="qt-tab" onclick="switchQuiz(this,'mc')">🔘 اختيار من متعدد</button>
+    </div>
+
+    <div class="quiz-section active" id="quiz-tf">
+      <div class="quiz-question" data-correct="false">
+        <span class="q-num">1</span><span class="q-text">مكوّن Button المدمج في RN مرن ويمكن تخصيصه بسهولة.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">2</span><span class="q-text">Pressable يقبل style كـ function تأخذ حالة pressed.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">3</span><span class="q-text">activeOpacity في TouchableOpacity تتحكم في درجة شفافية الزر عند الضغط.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="false">
+        <span class="q-num">4</span><span class="q-text">TouchableWithoutFeedback يعطي تأثير تلاشٍ افتراضياً عند الضغط.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">5</span><span class="q-text">disabled={true} في TouchableOpacity يمنع تفعيل onPress.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <button class="quiz-submit" onclick="submitQuiz('tf')">عرض النتيجة 🎯</button>
+      <div class="quiz-result" id="result-tf"><div class="result-score" id="score-tf">0/5</div><div class="result-label">إجابات صحيحة</div><div class="result-message" id="msg-tf"></div><button class="retry-btn" onclick="retryQuiz('tf')">🔄 حاول تاني</button></div>
+    </div>
+
+    <div class="quiz-section" id="quiz-mc">
+      <div class="quiz-question" data-correct="2">
+        <span class="q-num">1</span><span class="q-text">ما المكوّن الأنسب لإغلاق لوحة المفاتيح عند الضغط خارج حقل الإدخال؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">TouchableOpacity</button>
+          <button class="q-opt" onclick="answerMC(this,1)">Pressable</button>
+          <button class="q-opt" onclick="answerMC(this,2)">TouchableWithoutFeedback</button>
+          <button class="q-opt" onclick="answerMC(this,3)">Button</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="1">
+        <span class="q-num">2</span><span class="q-text">ما الحدث الذي يُطلق في Pressable لحظة لمس الشاشة (قبل الرفع)؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">onPress</button>
+          <button class="q-opt" onclick="answerMC(this,1)">onPressIn</button>
+          <button class="q-opt" onclick="answerMC(this,2)">onTouchStart</button>
+          <button class="q-opt" onclick="answerMC(this,3)">onDown</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="3">
+        <span class="q-num">3</span><span class="q-text">ما خاصية TouchableHighlight التي تحدد لون الخلفية عند الضغط؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">pressColor</button>
+          <button class="q-opt" onclick="answerMC(this,1)">activeColor</button>
+          <button class="q-opt" onclick="answerMC(this,2)">highlightColor</button>
+          <button class="q-opt" onclick="answerMC(this,3)">underlayColor</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="0">
+        <span class="q-num">4</span><span class="q-text">ما أفضل مكوّن لبناء بطاقة منتج تنقل لشاشة التفاصيل عند الضغط؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">TouchableOpacity</button>
+          <button class="q-opt" onclick="answerMC(this,1)">Button</button>
+          <button class="q-opt" onclick="answerMC(this,2)">View مع onClick</button>
+          <button class="q-opt" onclick="answerMC(this,3)">Text مع onPress</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="2">
+        <span class="q-num">5</span><span class="q-text">كيف تُعطّل زراً وتجعله شبه شفاف في نفس الوقت؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">disabled={true} فقط</button>
+          <button class="q-opt" onclick="answerMC(this,1)">opacity: 0 على الزر</button>
+          <button class="q-opt" onclick="answerMC(this,2)">disabled={true} + style={{ opacity: 0.5 }}</button>
+          <button class="q-opt" onclick="answerMC(this,3)">pointerEvents='none'</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <button class="quiz-submit" onclick="submitQuiz('mc')">عرض النتيجة 🎯</button>
+      <div class="quiz-result" id="result-mc"><div class="result-score" id="score-mc">0/5</div><div class="result-label">إجابات صحيحة</div><div class="result-message" id="msg-mc"></div><button class="retry-btn" onclick="retryQuiz('mc')">🔄 حاول تاني</button></div>
+    </div>
+  </div>
+
+  <div class="lesson-nav">
+    <a href="./lesson-09.html" class="nav-btn"><span>⬅️</span><span>الدرس السابق</span></a>
+    <button class="nav-btn complete-btn" id="completeBtn" onclick="markComplete(this)"><span>✅</span><span>علّم كمكتمل</span></button>
+    <a href="./lesson-11.html" class="nav-btn"><span>الدرس التالي</span><span>➡️</span></a>
+  </div>
+
+  <div class="notebook-footer">
+    <h3>🎉 أزرارك باتت احترافية!</h3>
+    <p>TouchableOpacity للبساطة، Pressable للتحكم الكامل — اختر المناسب لكل موقف. 👆<br><strong>الدرس التالي: TextInput وإدخال البيانات ⌨️</strong></p>
+  </div>
+</div>
+
+<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">⬆️</button>
+<div class="toast" id="toast"></div>
+<script src="../../js/data/courses.js"></script>
+<script src="../../js/progress.js"></script>
+<script>
+const COURSE_ID='react-native', LESSON_ID=10, TOTAL=28;
+function toggleSolution(b){const s=b.nextElementSibling;s.classList.toggle('show');b.textContent=s.classList.contains('show')?'إخفاء الحل ▲':'عرض الحل ▼';}
+function copyCode(b){const p=b.closest('.code-box').querySelector('pre');navigator.clipboard.writeText(p.innerText).then(()=>{b.classList.add('copied');b.textContent='✓ تم النسخ';setTimeout(()=>{b.classList.remove('copied');b.textContent='📋 نسخ';},2000);});}
+function switchQuiz(b,t){document.querySelectorAll('.qt-tab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.quiz-section').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.getElementById('quiz-'+t).classList.add('active');}
+const answers={tf:{},mc:{}};
+function answerTF(b,v){const q=b.closest('.quiz-question'),i=Array.from(q.parentNode.querySelectorAll('.quiz-question')).indexOf(q);q.querySelectorAll('.q-opt').forEach(o=>o.classList.remove('selected'));b.classList.add('selected');answers.tf[i]=v;}
+function answerMC(b,i){const q=b.closest('.quiz-question'),qi=Array.from(q.parentNode.querySelectorAll('.quiz-question')).indexOf(q);q.querySelectorAll('.q-opt').forEach(o=>o.classList.remove('selected'));b.classList.add('selected');answers.mc[qi]=i;}
+function submitQuiz(type){const sec=document.getElementById('quiz-'+type),qs=sec.querySelectorAll('.quiz-question');let c=0;qs.forEach((q,i)=>{const ca=type==='tf'?(q.dataset.correct==='true'):parseInt(q.dataset.correct),ua=answers[type][i],fb=q.querySelector('.q-feedback'),opts=q.querySelectorAll('.q-opt');opts.forEach(o=>{o.classList.remove('selected');o.disabled=true;});if(ua===undefined){fb.className='q-feedback wrong show';fb.textContent='⚠️ ما اخترتش إجابة!';return;}if(ua===ca){c++;fb.className='q-feedback correct show';fb.textContent='✓ إجابة صحيحة!';if(type==='tf')opts[ca?0:1].classList.add('correct');else opts[ca].classList.add('correct');}else{fb.className='q-feedback wrong show';if(type==='tf'){opts[ca?0:1].classList.add('correct');opts[ua?0:1].classList.add('wrong');fb.textContent='✗ خطأ.';}else{opts[ca].classList.add('correct');opts[ua].classList.add('wrong');fb.textContent='✗ الإجابة بالأخضر.';}}});const r=document.getElementById('result-'+type);document.getElementById('score-'+type).textContent=c+'/'+qs.length;const m=document.getElementById('msg-'+type);if(c===qs.length){m.textContent='🏆 ممتاز 100%!';m.className='result-message excellent';}else if(c>=3){m.textContent='👍 جيد!';m.className='result-message good';}else{m.textContent='📚 راجع الدرس.';m.className='result-message try-again';}r.classList.add('show');r.scrollIntoView({behavior:'smooth',block:'center'});}
+function retryQuiz(type){const sec=document.getElementById('quiz-'+type);sec.querySelectorAll('.q-opt').forEach(o=>{o.classList.remove('selected','correct','wrong');o.disabled=false;});sec.querySelectorAll('.q-feedback').forEach(f=>{f.classList.remove('show','correct','wrong');f.textContent='';});document.getElementById('result-'+type).classList.remove('show');answers[type]={};}
+function markComplete(btn){const done=Progress.toggleLessonComplete(COURSE_ID,LESSON_ID);btn.classList.toggle('completed',done);btn.querySelector('span:last-child').textContent=done?'مكتمل! ⭐':'علّم كمكتمل';showToast(done?'🎉 أكملت درس الأزرار!':'تم إلغاء الإكمال');}
+if(Progress.isLessonComplete(COURSE_ID,LESSON_ID)){const b=document.getElementById('completeBtn');b.classList.add('completed');b.querySelector('span:last-child').textContent='مكتمل! ⭐';}
+(function(){const p=Progress.getCourseProgress(COURSE_ID,TOTAL);document.getElementById('progFill').style.width=p+'%';document.getElementById('progText').textContent=p+'%';})();
+function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
+window.addEventListener('scroll',()=>{document.getElementById('scrollTop').classList.toggle('show',window.scrollY>300);});
+document.querySelectorAll('.toc-card a').forEach(l=>{l.addEventListener('click',e=>{e.preventDefault();const t=document.querySelector(l.getAttribute('href'));if(t)t.scrollIntoView({behavior:'smooth',block:'start'});});});
+</script>
+</body>
+</html>

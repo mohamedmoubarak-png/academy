@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-V2NCKVL16D"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-V2NCKVL16D');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Node.js + npm + أول سكريبت — دفتر البرمجة</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=Cairo:wght@300;400;500;600;700;900&family=Caveat:wght@400;700&family=Fira+Code:wght@400;500;600&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../css/shared.css">
+<link rel="stylesheet" href="../../css/notebook.css">
+<style>
+body { padding: 20px 10px; }
+
+/* install steps */
+.install-steps { display: flex; flex-direction: column; gap: 12px; margin: 16px 0; }
+.install-step { display: flex; gap: 14px; align-items: flex-start; background: white; border-radius: 12px; padding: 14px 16px; border: 1.5px solid var(--border); }
+.step-num { background: #7c3aed; color: white; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'Fira Code', monospace; font-size: .85rem; font-weight: 700; flex-shrink: 0; }
+.step-content { flex: 1; }
+.step-title { font-family: 'Aref Ruqaa', serif; font-weight: 700; color: #1e293b; margin-bottom: 4px; }
+.step-detail { font-size: .83rem; color: #64748b; }
+
+/* node vs browser */
+.nb-compare { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 14px 0; }
+.nb-col { background: white; border-radius: 12px; padding: 14px; border: 1.5px solid var(--border); }
+.nb-col.browser { border-color: #0ea5e9; background: #f0f9ff; }
+.nb-col.node    { border-color: #7c3aed; background: #faf5ff; }
+.nb-title { font-family: 'Aref Ruqaa', serif; font-weight: 700; font-size: 1rem; margin-bottom: 8px; }
+.nb-title.browser { color: #0369a1; }
+.nb-title.node    { color: #7c3aed; }
+.nb-item { font-family: 'Fira Code', monospace; font-size: .76rem; color: #475569; padding: 3px 0; border-bottom: 1px dashed #e2e8f0; }
+.nb-item:last-child { border: none; }
+.nb-item .check { color: #16a34a; font-weight: 700; }
+
+/* modules grid */
+.modules-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; margin: 14px 0; }
+.module-card { background: white; border-radius: 10px; padding: 12px 14px; border: 1.5px solid var(--border); }
+.module-name { font-family: 'Fira Code', monospace; font-size: .82rem; font-weight: 700; color: #7c3aed; margin-bottom: 4px; }
+.module-desc { font-size: .76rem; color: #64748b; }
+
+/* package json */
+.pkg-box { background: #0f172a; border-radius: 12px; padding: 18px; margin: 14px 0; font-family: 'Fira Code', monospace; font-size: .79rem; line-height: 1.8; direction: ltr; }
+.pkg-key   { color: #7dd3fc; }
+.pkg-str   { color: #86efac; }
+.pkg-num   { color: #fcd34d; }
+.pkg-bool  { color: #f9a8d4; }
+.pkg-annot { color: #94a3b8; font-style: italic; }
+
+/* comparison deps */
+.deps-table { width: 100%; border-collapse: collapse; font-size: .82rem; margin: 14px 0; }
+.deps-table th { background: #1e293b; color: white; padding: 10px 14px; text-align: right; }
+.deps-table td { padding: 9px 14px; border-bottom: 1px solid var(--border); }
+.deps-table tr:last-child td { border: none; }
+.deps-table tr:nth-child(even) td { background: #f8fafc; }
+.deps-table code { font-size: .78rem; }
+
+/* event loop */
+.ev-loop { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 8px; margin: 16px 0; }
+.ev-box { padding: 10px 16px; border-radius: 10px; font-family: 'Fira Code', monospace; font-size: .79rem; text-align: center; border: 2px solid; }
+.ev-box.call-stack { border-color: #7c3aed; background: #faf5ff; color: #7c3aed; }
+.ev-box.web-api   { border-color: #0ea5e9; background: #f0f9ff; color: #0369a1; }
+.ev-box.callback  { border-color: #16a34a; background: #f0fdf4; color: #15803d; }
+.ev-box.event-q   { border-color: #ea580c; background: #fff7ed; color: #c2410c; }
+.ev-arrow { font-size: 1.3rem; color: #94a3b8; }
+
+/* terminal preview */
+.lp-terminal { background: #0f172a; padding: 20px; display: flex; align-items: flex-start; justify-content: center; }
+.terminal-window { width: 100%; max-width: 310px; border: 2px solid #334155; border-radius: 10px; overflow: hidden; box-shadow: 0 12px 32px rgba(0,0,0,.6); }
+.terminal-bar { background: #334155; padding: 8px 12px; display: flex; align-items: center; gap: 6px; }
+.t-dot { width: 10px; height: 10px; border-radius: 50%; }
+.t-dot.red { background: #f87171; }
+.t-dot.yellow { background: #fbbf24; }
+.t-dot.green { background: #4ade80; }
+.t-title { font-family: 'Fira Code', monospace; font-size: .68rem; color: #94a3b8; margin-right: auto; }
+.terminal-screen { padding: 14px; font-family: 'Fira Code', monospace; font-size: .74rem; line-height: 1.85; color: #e2e8f0; background: #0f172a; min-height: 200px; direction: ltr; text-align: left; }
+.t-prompt { color: #4ade80; }
+.t-cmd { color: #e2e8f0; }
+.t-out { color: #94a3b8; }
+.t-ok { color: #4ade80; font-weight: 600; }
+.t-info { color: #60a5fa; }
+.t-warn { color: #fbbf24; }
+.t-url { color: #fbbf24; }
+.t-ver { color: #c084fc; }
+.t-cursor { display: inline-block; width: 8px; height: 13px; background: #4ade80; animation: blink 1s step-end infinite; vertical-align: middle; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+@media (max-width:500px) { .nb-compare { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="crumbs">
+    <a href="../../index.html">🏠 الرئيسية</a>
+    <span class="sep">/</span>
+    <a href="./index.html">⚙️ الباك إند</a>
+    <span class="sep">/</span>
+    <span class="current">🟢 الدرس 2: Node.js + npm + أول سكريبت</span>
+  </div>
+  <div class="progress-mini">
+    <div class="progress-bar-mini"><div class="progress-fill-mini" id="progFill"></div></div>
+    <span id="progText">0%</span>
+  </div>
+</div>
+
+<div class="notebook">
+
+  <div class="notebook-header">
+    <div class="lesson-tag" style="border-color:#7c3aed; color:#7c3aed;">🟢 الدرس الثاني</div>
+    <h1><span class="sparkle">✦</span> Node.js + npm + أول سكريبت <span class="sparkle">✦</span></h1>
+    <div class="lesson-meta">
+      <span>⏱️ 40 دقيقة</span>
+      <span>📊 مبتدئ</span>
+      <span>🎯 عملي 100%</span>
+    </div>
+  </div>
+
+  <div class="toc-card">
+    <h2>📑 فهرس الدرس</h2>
+    <ol>
+      <li><a href="#s1">ما هو Node.js؟</a></li>
+      <li><a href="#s2">تثبيت Node.js</a></li>
+      <li><a href="#s3">أول سكريبت — Hello World</a></li>
+      <li><a href="#s4">Node.js vs المتصفح</a></li>
+      <li><a href="#s5">نظام الوحدات (Modules)</a></li>
+      <li><a href="#s6">npm و package.json</a></li>
+      <li><a href="#s7">تثبيت الحزم</a></li>
+      <li><a href="#s8">nodemon — التطوير السريع</a></li>
+      <li><a href="#s9">تجربة حية في الطرفية</a></li>
+      <li><a href="#exercises">التمارين</a></li>
+      <li><a href="#quiz">اختبر فهمك</a></li>
+    </ol>
+  </div>
+
+  <!-- S1 -->
+  <div class="section" id="s1">
+    <h2 class="section-title"><span class="num">.1</span> ما هو Node.js؟ <span class="en">What is Node.js?</span></h2>
+    <div class="content">
+      <p><strong>Node.js</strong> هو بيئة تشغيل JavaScript <em>خارج المتصفح</em> — يعمل مباشرة على نظام التشغيل.</p>
+
+      <div class="analogy" style="background:linear-gradient(135deg,#fdf4ff,#ede9fe);border:2px solid #a78bfa;border-radius:12px;padding:16px 20px;margin:14px 0;position:relative;">
+        <div style="position:absolute;top:-14px;right:18px;background:var(--paper);padding:0 8px;font-size:1.4rem;">💡</div>
+        <div style="font-family:'Aref Ruqaa',serif;color:#6d28d9;font-weight:700;margin-bottom:8px;">القصة الكاملة</div>
+        <p style="font-size:.93rem;color:#4c1d95;">في البداية JavaScript كانت حبيسة المتصفح فقط. ثم في 2009 أخذ Ryan Dahl محرك <strong>V8</strong> (من Chrome) وبنى حوله Node.js — فأصبح بإمكان JS أن تقرأ الملفات، تُنشئ خوادم، وتتحدث مع قواعد البيانات.</p>
+      </div>
+
+      <p>مميزات Node.js الأساسية:</p>
+      <ul>
+        <li><strong>Single-threaded + Event Loop:</strong> لا يُجمّد عند انتظار I/O — يُكمل ما يستطيع ثم يعود</li>
+        <li><strong>Non-blocking I/O:</strong> قراءة الملف/قاعدة البيانات لا تُوقف تنفيذ الكود الآخر</li>
+        <li><strong>npm Ecosystem:</strong> أكبر مستودع حزم برمجية في العالم (+2 مليون حزمة)</li>
+        <li><strong>نفس اللغة:</strong> JavaScript للفرونت والباك — مطور واحد يُنجز المشروع كاملاً</li>
+      </ul>
+
+      <div class="ev-loop">
+        <div class="ev-box call-stack">Call Stack<br><small>الكود يُنفَّذ هنا</small></div>
+        <div class="ev-arrow">→</div>
+        <div class="ev-box web-api">Node APIs<br><small>fs, http, timer</small></div>
+        <div class="ev-arrow">→</div>
+        <div class="ev-box event-q">Callback Queue<br><small>ينتظر هنا</small></div>
+        <div class="ev-arrow">↗</div>
+        <div class="ev-box callback">Event Loop<br><small>يُراقب ويُحوّل</small></div>
+      </div>
+
+      <div class="tip-box"><strong>التشبيه:</strong> Event Loop مثل نادل المطعم — لا ينتظر الطبخ يُكمل يكتب طلبات جديدة، وعندما يجهز الطعام يُخبره الطاهي.</div>
+    </div>
+  </div>
+
+  <!-- S2 -->
+  <div class="section" id="s2">
+    <h2 class="section-title"><span class="num">.2</span> تثبيت Node.js <span class="en">Installation</span></h2>
+    <div class="content">
+      <div class="install-steps">
+        <div class="install-step">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <div class="step-title">حمّل Node.js</div>
+            <div class="step-detail">اذهب لـ <code>nodejs.org</code> واختر نسخة <strong>LTS</strong> (المستقرة) — ليس Current</div>
+          </div>
+        </div>
+        <div class="install-step">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <div class="step-title">شغّل المثبّت</div>
+            <div class="step-detail">اتبع الخطوات واقبل الإعدادات الافتراضية — npm يُثبَّت معه تلقائياً</div>
+          </div>
+        </div>
+        <div class="install-step">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <div class="step-title">تحقق من التثبيت</div>
+            <div class="step-detail">افتح الطرفية (Terminal) واكتب الأوامر التالية:</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="code-box">
+<div class="code-header"><span>🖥️ التحقق من التثبيت</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment"># تحقق من Node.js</span>
+node -v
+<span class="comment"># → v20.x.x  (أو أحدث)</span>
+
+<span class="comment"># تحقق من npm</span>
+npm -v
+<span class="comment"># → 10.x.x</span>
+
+<span class="comment"># فتح REPL التفاعلي (مثل console في Chrome)</span>
+node
+<span class="comment"># ← اكتب JS مباشرة!</span>
+> 2 + 2
+4
+> .exit   ← للخروج</pre>
+      </div>
+
+      <div class="note-box"><strong>LTS vs Current:</strong> LTS = Long Term Support = مستقرة مدعومة 3 سنوات. استخدمها دائماً في المشاريع. Current تحتوي تجريبيات قد تتغير.</div>
+    </div>
+  </div>
+
+  <!-- S3 -->
+  <div class="section" id="s3">
+    <h2 class="section-title"><span class="num">.3</span> أول سكريبت — Hello World <span class="en">First Script</span></h2>
+    <div class="content">
+
+      <div class="code-box">
+<div class="code-header"><span>📄 app.js — أول سكريبت</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">// app.js</span>
+console.log(<span class="attr-val">'مرحباً يا Node.js! 🚀'</span>);
+console.log(<span class="attr-val">'الإصدار:'</span>, process.version);
+console.log(<span class="attr-val">'المنصة:'</span>, process.platform);
+console.log(<span class="attr-val">'مجلد العمل:'</span>, process.cwd());
+
+<span class="comment">// معلومات النظام</span>
+<span class="tag-name">const</span> os = require(<span class="attr-val">'os'</span>);
+console.log(<span class="attr-val">'الذاكرة المتاحة:'</span>, Math.round(os.freemem() / 1024 / 1024) + <span class="attr-val">' MB'</span>);
+console.log(<span class="attr-val">'المعالج:'</span>, os.cpus()[0].model);</pre>
+      </div>
+
+      <div class="code-box blue">
+<div class="code-header"><span>▶️ تشغيل السكريبت</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment"># في الطرفية</span>
+node app.js
+
+<span class="comment"># النتيجة:</span>
+مرحباً يا Node.js! 🚀
+الإصدار: v20.11.0
+المنصة: linux (أو win32 على Windows)
+مجلد العمل: /home/user/myproject
+الذاكرة المتاحة: 4096 MB
+المعالج: Intel Core i7-...</pre>
+      </div>
+
+      <div class="tip-box">لتشغيل سكريبت: <strong>node اسم_الملف.js</strong> — بدون npm، بدون Babel، بدون أي إعداد!</div>
+    </div>
+  </div>
+
+  <!-- S4 -->
+  <div class="section" id="s4">
+    <h2 class="section-title"><span class="num">.4</span> Node.js vs المتصفح <span class="en">Node vs Browser</span></h2>
+    <div class="content">
+      <p>JS هي نفسها — لكن البيئة مختلفة. ما يتوفر في المتصفح ليس بالضرورة في Node وبالعكس:</p>
+
+      <div class="nb-compare">
+        <div class="nb-col browser">
+          <div class="nb-title browser">🌐 المتصفح</div>
+          <div class="nb-item"><span class="check">✓</span> window, document, DOM</div>
+          <div class="nb-item"><span class="check">✓</span> localStorage, sessionStorage</div>
+          <div class="nb-item"><span class="check">✓</span> fetch (Fetch API)</div>
+          <div class="nb-item"><span class="check">✓</span> alert, confirm</div>
+          <div class="nb-item">✗ قراءة ملفات النظام</div>
+          <div class="nb-item">✗ __dirname, __filename</div>
+          <div class="nb-item">✗ أوامر نظام التشغيل</div>
+        </div>
+        <div class="nb-col node">
+          <div class="nb-title node">🟢 Node.js</div>
+          <div class="nb-item"><span class="check">✓</span> require / module.exports</div>
+          <div class="nb-item"><span class="check">✓</span> __dirname, __filename</div>
+          <div class="nb-item"><span class="check">✓</span> fs (قراءة الملفات)</div>
+          <div class="nb-item"><span class="check">✓</span> process, os, path</div>
+          <div class="nb-item"><span class="check">✓</span> http (إنشاء خوادم)</div>
+          <div class="nb-item">✗ window, document, DOM</div>
+          <div class="nb-item">✗ alert, localStorage</div>
+        </div>
+      </div>
+
+      <div class="code-box">
+<div class="code-header"><span>🌐 متغيرات Node.js العالمية</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">// __dirname: مسار المجلد الحالي</span>
+console.log(__dirname);
+<span class="comment">// → /home/user/myproject</span>
+
+<span class="comment">// __filename: مسار الملف الحالي</span>
+console.log(__filename);
+<span class="comment">// → /home/user/myproject/app.js</span>
+
+<span class="comment">// process: معلومات البيئة</span>
+process.env.NODE_ENV;    <span class="comment">// 'development' أو 'production'</span>
+process.argv;            <span class="comment">// معاملات سطر الأوامر</span>
+process.exit(0);         <span class="comment">// إنهاء السكريبت</span></pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- S5 -->
+  <div class="section" id="s5">
+    <h2 class="section-title"><span class="num">.5</span> نظام الوحدات (Modules) <span class="en">Module System</span></h2>
+    <div class="content">
+      <p>Node.js يُقسّم الكود إلى وحدات قابلة للاستيراد — كل ملف وحدة مستقلة:</p>
+
+      <div class="code-box">
+<div class="code-header"><span>📦 CommonJS — النظام الافتراضي في Node</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">// ── math.js ──────────────────────────</span>
+<span class="tag-name">function</span> add(a, b) { <span class="tag-name">return</span> a + b; }
+<span class="tag-name">function</span> multiply(a, b) { <span class="tag-name">return</span> a * b; }
+
+module.exports = { add, multiply };
+
+<span class="comment">// ── app.js ────────────────────────────</span>
+<span class="tag-name">const</span> { add, multiply } = require(<span class="attr-val">'./math'</span>);
+console.log(add(5, 3));      <span class="comment">// 8</span>
+console.log(multiply(5, 3)); <span class="comment">// 15</span></pre>
+      </div>
+
+      <div class="code-box blue">
+<div class="code-header"><span>🔷 ESM — النظام الحديث (في package.json أضف "type": "module")</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">// ── math.mjs ──────────────────────────</span>
+<span class="tag-name">export</span> <span class="tag-name">function</span> add(a, b) { <span class="tag-name">return</span> a + b; }
+<span class="tag-name">export</span> <span class="tag-name">const</span> PI = 3.14159;
+
+<span class="comment">// ── app.mjs ───────────────────────────</span>
+<span class="tag-name">import</span> { add, PI } <span class="tag-name">from</span> <span class="attr-val">'./math.mjs'</span>;
+console.log(add(1, PI)); <span class="comment">// 4.14159</span></pre>
+      </div>
+
+      <p style="margin-top:16px;">الوحدات المدمجة (Built-in) — تأتي مع Node.js بدون تثبيت:</p>
+
+      <div class="modules-grid">
+        <div class="module-card">
+          <div class="module-name">fs</div>
+          <div class="module-desc">قراءة وكتابة الملفات</div>
+        </div>
+        <div class="module-card">
+          <div class="module-name">path</div>
+          <div class="module-desc">التعامل مع مسارات الملفات</div>
+        </div>
+        <div class="module-card">
+          <div class="module-name">http</div>
+          <div class="module-desc">إنشاء خوادم HTTP</div>
+        </div>
+        <div class="module-card">
+          <div class="module-name">os</div>
+          <div class="module-desc">معلومات نظام التشغيل</div>
+        </div>
+        <div class="module-card">
+          <div class="module-name">crypto</div>
+          <div class="module-desc">تشفير وهاش</div>
+        </div>
+        <div class="module-card">
+          <div class="module-name">events</div>
+          <div class="module-desc">نظام الأحداث (EventEmitter)</div>
+        </div>
+        <div class="module-card">
+          <div class="module-name">url</div>
+          <div class="module-desc">تحليل الروابط</div>
+        </div>
+        <div class="module-card">
+          <div class="module-name">stream</div>
+          <div class="module-desc">تدفقات البيانات الكبيرة</div>
+        </div>
+      </div>
+
+      <div class="code-box">
+<div class="code-header"><span>📂 مثال: وحدة fs</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-name">const</span> fs = require(<span class="attr-val">'fs'</span>);
+<span class="tag-name">const</span> path = require(<span class="attr-val">'path'</span>);
+
+<span class="comment">// قراءة ملف (async)</span>
+fs.readFile(<span class="attr-val">'hello.txt'</span>, <span class="attr-val">'utf8'</span>, (err, data) => {
+  <span class="tag-name">if</span> (err) <span class="tag-name">return</span> console.error(err);
+  console.log(data);
+});
+
+<span class="comment">// كتابة ملف</span>
+fs.writeFileSync(<span class="attr-val">'output.txt'</span>, <span class="attr-val">'مرحباً يا Node!'</span>);
+
+<span class="comment">// path.join — آمن على كل الأنظمة</span>
+<span class="tag-name">const</span> fullPath = path.join(__dirname, <span class="attr-val">'data'</span>, <span class="attr-val">'users.json'</span>);
+console.log(fullPath); <span class="comment">// /project/data/users.json</span></pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- S6 -->
+  <div class="section" id="s6">
+    <h2 class="section-title"><span class="num">.6</span> npm و package.json <span class="en">npm & package.json</span></h2>
+    <div class="content">
+      <p><strong>npm</strong> (Node Package Manager) هو مدير الحزم لـ Node.js. <code>package.json</code> هو "بطاقة هوية" مشروعك:</p>
+
+      <div class="code-box">
+<div class="code-header"><span>🚀 إنشاء مشروع جديد</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment"># أنشئ مجلداً وافتح الطرفية فيه</span>
+mkdir my-backend
+cd my-backend
+
+<span class="comment"># ابدأ مشروع npm (يُنشئ package.json)</span>
+npm init -y
+<span class="comment"># ↑ -y تعني "نعم لكل الأسئلة" — يُنشئ package.json فوراً</span></pre>
+      </div>
+
+      <p style="margin-top:14px;">الـ <code>package.json</code> الناتج:</p>
+
+      <div class="pkg-box">
+        <span class="pkg-key">{</span><br>
+        &nbsp;&nbsp;<span class="pkg-key">"name"</span>: <span class="pkg-str">"my-backend"</span>,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="pkg-annot">← اسم المشروع</span><br>
+        &nbsp;&nbsp;<span class="pkg-key">"version"</span>: <span class="pkg-str">"1.0.0"</span>,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="pkg-annot">← إصدار المشروع</span><br>
+        &nbsp;&nbsp;<span class="pkg-key">"description"</span>: <span class="pkg-str">""</span>,<br>
+        &nbsp;&nbsp;<span class="pkg-key">"main"</span>: <span class="pkg-str">"index.js"</span>,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="pkg-annot">← نقطة الدخول</span><br>
+        &nbsp;&nbsp;<span class="pkg-key">"scripts"</span>: {<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="pkg-key">"start"</span>: <span class="pkg-str">"node index.js"</span>,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="pkg-annot">← npm start</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="pkg-key">"dev"</span>: <span class="pkg-str">"nodemon index.js"</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="pkg-annot">← npm run dev</span><br>
+        &nbsp;&nbsp;},<br>
+        &nbsp;&nbsp;<span class="pkg-key">"dependencies"</span>: {<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="pkg-key">"express"</span>: <span class="pkg-str">"^4.18.2"</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="pkg-annot">← حزم الإنتاج</span><br>
+        &nbsp;&nbsp;},<br>
+        &nbsp;&nbsp;<span class="pkg-key">"devDependencies"</span>: {<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="pkg-key">"nodemon"</span>: <span class="pkg-str">"^3.0.2"</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="pkg-annot">← حزم التطوير فقط</span><br>
+        &nbsp;&nbsp;},<br>
+        &nbsp;&nbsp;<span class="pkg-key">"author"</span>: <span class="pkg-str">""</span>,<br>
+        &nbsp;&nbsp;<span class="pkg-key">"license"</span>: <span class="pkg-str">"ISC"</span><br>
+        <span class="pkg-key">}</span>
+      </div>
+
+      <div class="tip-box"><strong>npm scripts:</strong> أوامر مختصرة — بدل كتابة <code>node index.js</code> كل مرة، اكتب <code>npm start</code>. يمكن تعريف أي أمر تحت أي اسم تريده.</div>
+    </div>
+  </div>
+
+  <!-- S7 -->
+  <div class="section" id="s7">
+    <h2 class="section-title"><span class="num">.7</span> تثبيت الحزم <span class="en">Installing Packages</span></h2>
+    <div class="content">
+
+      <div class="code-box">
+<div class="code-header"><span>📦 أوامر npm الأساسية</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment"># تثبيت حزمة (تُضاف لـ dependencies)</span>
+npm install express
+npm install express mongoose   <span class="comment">← عدة حزم دفعة واحدة</span>
+
+<span class="comment"># تثبيت حزمة للتطوير فقط (devDependencies)</span>
+npm install nodemon --save-dev
+
+<span class="comment"># تثبيت حزمة عالمياً (في كل مكان)</span>
+npm install -g nodemon
+
+<span class="comment"># تثبيت كل حزم المشروع (بعد clone من git)</span>
+npm install
+
+<span class="comment"># حذف حزمة</span>
+npm uninstall axios
+
+<span class="comment"># تحديث كل الحزم</span>
+npm update
+
+<span class="comment"># عرض الحزم المثبّتة</span>
+npm list</pre>
+      </div>
+
+      <table class="deps-table">
+        <thead><tr><th>الفرق</th><th>dependencies</th><th>devDependencies</th></tr></thead>
+        <tbody>
+          <tr><td>يُستخدم في؟</td><td>الإنتاج + التطوير</td><td>التطوير فقط</td></tr>
+          <tr><td>أمثلة</td><td><code>express, mongoose, bcrypt</code></td><td><code>nodemon, jest, eslint</code></td></tr>
+          <tr><td>أمر التثبيت</td><td><code>npm install &lt;pkg&gt;</code></td><td><code>npm install &lt;pkg&gt; -D</code></td></tr>
+          <tr><td>يُثبَّت على Server؟</td><td>نعم دائماً</td><td>لا (في الإنتاج)</td></tr>
+        </tbody>
+      </table>
+
+      <div class="info-box">
+        <strong>node_modules و .gitignore:</strong><br>
+        مجلد <code>node_modules</code> يمكن أن يصل لمئات الـ MB — أضفه دائماً لـ <code>.gitignore</code> ولا ترفعه لـ git. يكفي رفع <code>package.json</code> وأي شخص يُنفّذ <code>npm install</code> ليحصل على كل الحزم.
+      </div>
+
+      <div class="code-box">
+<div class="code-header"><span>📄 .gitignore — أساسي لكل مشروع Node</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre>node_modules/
+.env
+dist/
+*.log</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- S8 -->
+  <div class="section" id="s8">
+    <h2 class="section-title"><span class="num">.8</span> nodemon — التطوير السريع <span class="en">nodemon</span></h2>
+    <div class="content">
+      <p>المشكلة: كل مرة تُعدّل الكود يجب إيقاف الخادم وإعادة تشغيله. الحل: <strong>nodemon</strong> يراقب التغييرات ويُعيد التشغيل تلقائياً.</p>
+
+      <div class="code-box">
+<div class="code-header"><span>⚡ إعداد nodemon</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment"># تثبيت nodemon كـ devDependency</span>
+npm install nodemon --save-dev
+
+<span class="comment"># في package.json أضف script:</span>
+{
+  "scripts": {
+    "start": "node index.js",
+    "dev":   "nodemon index.js"
+  }
+}
+
+<span class="comment"># الآن شغّل المشروع بـ:</span>
+npm run dev
+<span class="comment"># → يُعيد التشغيل تلقائياً عند أي تعديل!</span>
+
+<span class="comment"># أو مباشرة بدون تثبيت عالمي:</span>
+npx nodemon index.js</pre>
+      </div>
+
+      <div class="code-box blue">
+<div class="code-header"><span>⚙️ إعداد nodemon.json (اختياري)</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre>{
+  "watch": ["src/"],       <span class="comment">// راقب مجلد src فقط</span>
+  "ext": "js,json",        <span class="comment">// امتدادات تُفعّل الإعادة</span>
+  "ignore": ["*.test.js"], <span class="comment">// تجاهل ملفات الاختبار</span>
+  "delay": "1000"          <span class="comment">// انتظر 1s قبل الإعادة</span>
+}</pre>
+      </div>
+
+      <div class="tip-box">في Deployment (الإنتاج) لا تستخدم nodemon — استخدم <strong>PM2</strong> الذي يُديرالعمليات ويُعيد تشغيلها عند الأعطال.</div>
+    </div>
+  </div>
+
+  <!-- S9 — Live Preview -->
+  <div class="section" id="s9">
+    <h2 class="section-title"><span class="num">.9</span> تجربة حية في الطرفية <span class="en">Live Terminal Demo</span></h2>
+    <div class="content"><p>هذا ما تبدو عليه جلسة عمل Node.js كاملة — من إنشاء المشروع لتشغيله:</p></div>
+
+    <div class="live-preview">
+      <div class="lp-header">
+        <span>🟢 جلسة Node.js — من الصفر للتشغيل</span>
+        <span class="lp-tag">Terminal</span>
+      </div>
+      <div class="lp-body">
+        <div class="lp-code">
+<pre><span class="c">// index.js</span>
+<span class="t">const</span> http = require(<span class="s">'http'</span>);
+
+<span class="t">const</span> server = http.createServer(
+  (req, res) => {
+    res.writeHead(
+      <span class="n">200</span>,
+      { <span class="s">'Content-Type'</span>: <span class="s">'text/plain'</span> }
+    );
+    res.end(<span class="s">'مرحباً من Node.js! 🚀'</span>);
+  }
+);
+
+server.listen(<span class="n">3000</span>, () => {
+  console.log(
+    <span class="s">'✓ Server on port 3000'</span>
+  );
+});
+
+<span class="c">// package.json</span>
+{
+  <span class="a">"name"</span>: <span class="s">"my-server"</span>,
+  <span class="a">"scripts"</span>: {
+    <span class="a">"dev"</span>: <span class="s">"nodemon index.js"</span>
+  },
+  <span class="a">"devDependencies"</span>: {
+    <span class="a">"nodemon"</span>: <span class="s">"^3.0.2"</span>
+  }
+}</pre>
+        </div>
+        <div class="lp-terminal">
+          <div class="terminal-window">
+            <div class="terminal-bar">
+              <div class="t-dot red"></div>
+              <div class="t-dot yellow"></div>
+              <div class="t-dot green"></div>
+              <span class="t-title">bash — my-server</span>
+            </div>
+            <div class="terminal-screen">
+              <div><span class="t-prompt">$</span> <span class="t-cmd">mkdir my-server && cd $_</span></div>
+              <div><span class="t-prompt">$</span> <span class="t-cmd">npm init -y</span></div>
+              <div><span class="t-out">Wrote to package.json</span></div>
+              <br>
+              <div><span class="t-prompt">$</span> <span class="t-cmd">npm install nodemon -D</span></div>
+              <div><span class="t-out">added 29 packages in 2s</span></div>
+              <br>
+              <div><span class="t-prompt">$</span> <span class="t-cmd">npm run dev</span></div>
+              <div><span class="t-warn">[nodemon] starting</span></div>
+              <div><span class="t-ok">✓ Server on port 3000</span></div>
+              <div class="t-out">──────────────────</div>
+              <div><span class="t-info">GET</span> <span class="t-cmd"> /</span> <span class="t-ok">200</span></div>
+              <div class="t-out">  content: مرحباً من Node.js!</div>
+              <div class="t-out">──────────────────</div>
+              <div><span class="t-warn">[nodemon] restarting</span></div>
+              <div><span class="t-out">  file changed: index.js</span></div>
+              <div><span class="t-ok">✓ Server on port 3000</span></div>
+              <div><span class="t-prompt">$</span> <span class="t-cursor"></span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EXERCISES -->
+  <div class="section" id="exercises">
+    <h2 class="section-title"><span class="num">📝</span> التمارين العملية <span class="en">Exercises</span></h2>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 1: أول سكريبت</div>
+      <p>أنشئ ملف <code>info.js</code> يطبع:<br>
+      أ) اسمك مع التحية<br>
+      ب) إصدار Node.js المستخدم<br>
+      ج) اسم المجلد الحالي (اسم فقط، بدون المسار الكامل)</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box"><pre>const path = require('path');
+
+console.log('مرحباً! أنا أحمد 👋');
+console.log('Node:', process.version);
+console.log('المجلد:', path.basename(__dirname));</pre></div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 2: وحدة مخصصة</div>
+      <p>أنشئ ملف <code>calculator.js</code> يُصدّر الدوال: <code>add</code>، <code>subtract</code>، <code>multiply</code>، <code>divide</code>. ثم استخدمها في <code>app.js</code> وتحقق من عمل كل دالة.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box"><pre>// calculator.js
+function add(a, b) { return a + b; }
+function subtract(a, b) { return a - b; }
+function multiply(a, b) { return a * b; }
+function divide(a, b) {
+  if (b === 0) throw new Error('القسمة على صفر!');
+  return a / b;
+}
+module.exports = { add, subtract, multiply, divide };
+
+// app.js
+const calc = require('./calculator');
+console.log(calc.add(10, 5));       // 15
+console.log(calc.subtract(10, 5));  // 5
+console.log(calc.multiply(10, 5));  // 50
+console.log(calc.divide(10, 5));    // 2</pre></div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 3: قراءة ملف</div>
+      <p>أنشئ ملف <code>names.txt</code> يحتوي على أسماء (كل اسم في سطر). ثم اكتب <code>read.js</code> يقرأ الملف ويطبع عدد الأسماء وكل اسم بشكل منفصل.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box"><pre>// read.js
+const fs = require('fs');
+
+const content = fs.readFileSync('names.txt', 'utf8');
+const names = content.trim().split('\n');
+
+console.log('عدد الأسماء:', names.length);
+names.forEach((name, i) => {
+  console.log(`${i + 1}. ${name}`);
+});</pre></div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 4: package.json</div>
+      <p>ماذا تضيف لـ <code>package.json</code> لجعل الأمر <code>npm start</code> يُشغّل <code>server.js</code>، و<code>npm run dev</code> يُشغّله بـ nodemon؟</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box"><pre>"scripts": {
+  "start": "node server.js",
+  "dev":   "nodemon server.js"
+}</pre></div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 5: أول HTTP Server</div>
+      <p>أنشئ <code>server.js</code> بوحدة <code>http</code> المدمجة يُعيد:<br>
+      - على المسار <code>/</code>: رد نصي "الصفحة الرئيسية"<br>
+      - على المسار <code>/about</code>: رد نصي "صفحة عنا"<br>
+      - على أي مسار آخر: كود 404 ورسالة "الصفحة غير موجودة"</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box"><pre>const http = require('http');
+
+const server = http.createServer((req, res) => {
+  res.setHeader('Content-Type', 'text/plain; charset=utf-8');
+
+  if (req.url === '/') {
+    res.writeHead(200);
+    res.end('الصفحة الرئيسية 🏠');
+  } else if (req.url === '/about') {
+    res.writeHead(200);
+    res.end('صفحة عنا ℹ️');
+  } else {
+    res.writeHead(404);
+    res.end('الصفحة غير موجودة 404');
+  }
+});
+
+server.listen(3000, () => {
+  console.log('✓ Server on http://localhost:3000');
+});</pre></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="quiz-container" id="quiz">
+    <div class="quiz-intro"><p>اختبر فهمك لـ Node.js و npm!</p></div>
+    <div class="quiz-type-tabs">
+      <button class="qt-tab active" onclick="switchQuiz(this,'tf')">✓✗ صح وخطأ</button>
+      <button class="qt-tab" onclick="switchQuiz(this,'mc')">🔘 اختيار من متعدد</button>
+    </div>
+
+    <div class="quiz-section active" id="quiz-tf">
+      <div class="quiz-question" data-correct="false">
+        <span class="q-num">1</span><span class="q-text">Node.js يعمل داخل المتصفح مثل JavaScript العادية في المواقع.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">2</span><span class="q-text">npm تعني Node Package Manager وتأتي مع Node.js تلقائياً.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">3</span><span class="q-text">يجب إضافة مجلد node_modules إلى .gitignore وعدم رفعه لـ git.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="false">
+        <span class="q-num">4</span><span class="q-text">nodemon تُستخدم في بيئة الإنتاج (Production) لإدارة الخوادم.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">5</span><span class="q-text">يمكن استخدام وحدة http المدمجة في Node.js لإنشاء خادم بدون أي حزم خارجية.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <button class="quiz-submit" onclick="submitQuiz('tf')">عرض النتيجة 🎯</button>
+      <div class="quiz-result" id="result-tf"><div class="result-score" id="score-tf">0/5</div><div class="result-label">إجابات صحيحة</div><div class="result-message" id="msg-tf"></div><button class="retry-btn" onclick="retryQuiz('tf')">🔄 حاول تاني</button></div>
+    </div>
+
+    <div class="quiz-section" id="quiz-mc">
+      <div class="quiz-question" data-correct="1">
+        <span class="q-num">1</span><span class="q-text">ما الأمر الصحيح لتشغيل ملف Node.js اسمه app.js؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">npm app.js</button>
+          <button class="q-opt" onclick="answerMC(this,1)">node app.js</button>
+          <button class="q-opt" onclick="answerMC(this,2)">run app.js</button>
+          <button class="q-opt" onclick="answerMC(this,3)">execute app.js</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="2">
+        <span class="q-num">2</span><span class="q-text">ما الأمر الذي يُنشئ ملف package.json في المشروع بالإعدادات الافتراضية؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">npm create</button>
+          <button class="q-opt" onclick="answerMC(this,1)">npm start</button>
+          <button class="q-opt" onclick="answerMC(this,2)">npm init -y</button>
+          <button class="q-opt" onclick="answerMC(this,3)">npm new -y</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="3">
+        <span class="q-num">3</span><span class="q-text">أي وحدة من وحدات Node.js المدمجة تستخدم لقراءة وكتابة الملفات؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">path</button>
+          <button class="q-opt" onclick="answerMC(this,1)">http</button>
+          <button class="q-opt" onclick="answerMC(this,2)">os</button>
+          <button class="q-opt" onclick="answerMC(this,3)">fs</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="0">
+        <span class="q-num">4</span><span class="q-text">كيف تُثبّت حزمة كـ devDependency؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">npm install nodemon --save-dev</button>
+          <button class="q-opt" onclick="answerMC(this,1)">npm install nodemon --production</button>
+          <button class="q-opt" onclick="answerMC(this,2)">npm install nodemon --dev-only</button>
+          <button class="q-opt" onclick="answerMC(this,3)">npm install nodemon --global</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="1">
+        <span class="q-num">5</span><span class="q-text">ما الفرق الرئيسي بين require() وimport في Node.js؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">لا فرق — مترادفان تماماً</button>
+          <button class="q-opt" onclick="answerMC(this,1)">require هو CommonJS (قديم)، import هو ESM (حديث)</button>
+          <button class="q-opt" onclick="answerMC(this,2)">require أسرع دائماً من import</button>
+          <button class="q-opt" onclick="answerMC(this,3)">import يعمل فقط في المتصفح</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <button class="quiz-submit" onclick="submitQuiz('mc')">عرض النتيجة 🎯</button>
+      <div class="quiz-result" id="result-mc"><div class="result-score" id="score-mc">0/5</div><div class="result-label">إجابات صحيحة</div><div class="result-message" id="msg-mc"></div><button class="retry-btn" onclick="retryQuiz('mc')">🔄 حاول تاني</button></div>
+    </div>
+  </div>
+
+  <div class="lesson-nav">
+    <a href="./lesson-01.html" class="nav-btn"><span>⬅️</span><span>الدرس السابق</span></a>
+    <button class="nav-btn complete-btn" id="completeBtn" onclick="markComplete(this)" style="background:#7c3aed; border-color:#7c3aed;"><span>✅</span><span>علّم كمكتمل</span></button>
+    <a href="./lesson-03.html" class="nav-btn"><span>الدرس التالي</span><span>➡️</span></a>
+  </div>
+
+  <div class="notebook-footer">
+    <h3>🎉 Node.js جاهز عندك!</h3>
+    <p>الآن تعرف تُشغّل JS على السيرفر، تتعامل مع الوحدات، وتُدير الحزم. 🟢<br><strong>الدرس التالي: أسينكرونية Node.js — Callbacks, Promises, Async/Await ⚡</strong></p>
+  </div>
+</div>
+
+<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">⬆️</button>
+<div class="toast" id="toast"></div>
+<script src="../../js/data/courses.js"></script>
+<script src="../../js/progress.js"></script>
+<script>
+const COURSE_ID='backend', LESSON_ID=2, TOTAL=32;
+function toggleSolution(b){const s=b.nextElementSibling;s.classList.toggle('show');b.textContent=s.classList.contains('show')?'إخفاء الحل ▲':'عرض الحل ▼';}
+function copyCode(b){const p=b.closest('.code-box').querySelector('pre');navigator.clipboard.writeText(p.innerText).then(()=>{b.classList.add('copied');b.textContent='✓ تم النسخ';setTimeout(()=>{b.classList.remove('copied');b.textContent='📋 نسخ';},2000);});}
+function switchQuiz(b,t){document.querySelectorAll('.qt-tab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.quiz-section').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.getElementById('quiz-'+t).classList.add('active');}
+const answers={tf:{},mc:{}};
+function answerTF(b,v){const q=b.closest('.quiz-question'),i=Array.from(q.parentNode.querySelectorAll('.quiz-question')).indexOf(q);q.querySelectorAll('.q-opt').forEach(o=>o.classList.remove('selected'));b.classList.add('selected');answers.tf[i]=v;}
+function answerMC(b,i){const q=b.closest('.quiz-question'),qi=Array.from(q.parentNode.querySelectorAll('.quiz-question')).indexOf(q);q.querySelectorAll('.q-opt').forEach(o=>o.classList.remove('selected'));b.classList.add('selected');answers.mc[qi]=i;}
+function submitQuiz(type){const sec=document.getElementById('quiz-'+type),qs=sec.querySelectorAll('.quiz-question');let c=0;qs.forEach((q,i)=>{const ca=type==='tf'?(q.dataset.correct==='true'):parseInt(q.dataset.correct),ua=answers[type][i],fb=q.querySelector('.q-feedback'),opts=q.querySelectorAll('.q-opt');opts.forEach(o=>{o.classList.remove('selected');o.disabled=true;});if(ua===undefined){fb.className='q-feedback wrong show';fb.textContent='⚠️ ما اخترتش إجابة!';return;}if(ua===ca){c++;fb.className='q-feedback correct show';fb.textContent='✓ إجابة صحيحة!';if(type==='tf')opts[ca?0:1].classList.add('correct');else opts[ca].classList.add('correct');}else{fb.className='q-feedback wrong show';if(type==='tf'){opts[ca?0:1].classList.add('correct');opts[ua?0:1].classList.add('wrong');fb.textContent='✗ خطأ.';}else{opts[ca].classList.add('correct');opts[ua].classList.add('wrong');fb.textContent='✗ الإجابة بالأخضر.';}}});const r=document.getElementById('result-'+type);document.getElementById('score-'+type).textContent=c+'/'+qs.length;const m=document.getElementById('msg-'+type);if(c===qs.length){m.textContent='🏆 ممتاز 100%!';m.className='result-message excellent';}else if(c>=3){m.textContent='👍 جيد!';m.className='result-message good';}else{m.textContent='📚 راجع الدرس.';m.className='result-message try-again';}r.classList.add('show');r.scrollIntoView({behavior:'smooth',block:'center'});}
+function retryQuiz(type){const sec=document.getElementById('quiz-'+type);sec.querySelectorAll('.q-opt').forEach(o=>{o.classList.remove('selected','correct','wrong');o.disabled=false;});sec.querySelectorAll('.q-feedback').forEach(f=>{f.classList.remove('show','correct','wrong');f.textContent='';});document.getElementById('result-'+type).classList.remove('show');answers[type]={};}
+function markComplete(btn){const done=Progress.toggleLessonComplete(COURSE_ID,LESSON_ID);btn.classList.toggle('completed',done);btn.querySelector('span:last-child').textContent=done?'مكتمل! ⭐':'علّم كمكتمل';showToast(done?'🎉 أكملت الدرس الثاني!':'تم إلغاء الإكمال');}
+if(Progress.isLessonComplete(COURSE_ID,LESSON_ID)){const b=document.getElementById('completeBtn');b.classList.add('completed');b.querySelector('span:last-child').textContent='مكتمل! ⭐';}
+(function(){const p=Progress.getCourseProgress(COURSE_ID,TOTAL);document.getElementById('progFill').style.width=p+'%';document.getElementById('progText').textContent=p+'%';})();
+function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
+window.addEventListener('scroll',()=>{document.getElementById('scrollTop').classList.toggle('show',window.scrollY>300);});
+document.querySelectorAll('.toc-card a').forEach(l=>{l.addEventListener('click',e=>{e.preventDefault();const t=document.querySelector(l.getAttribute('href'));if(t)t.scrollIntoView({behavior:'smooth',block:'start'});});});
+</script>
+</body>
+</html>

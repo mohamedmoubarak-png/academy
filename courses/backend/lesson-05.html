@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-V2NCKVL16D"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-V2NCKVL16D');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HTTP Server من الصفر — دفتر البرمجة</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=Cairo:wght@300;400;500;600;700;900&family=Caveat:wght@400;700&family=Fira+Code:wght@400;500;600&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../css/shared.css">
+<link rel="stylesheet" href="../../css/notebook.css">
+<style>
+body { padding: 20px 10px; }
+
+/* terminal */
+.lp-terminal { background: #0f172a; padding: 20px; display: flex; align-items: flex-start; justify-content: center; }
+.terminal-window { width: 100%; max-width: 320px; border: 2px solid #334155; border-radius: 10px; overflow: hidden; box-shadow: 0 12px 32px rgba(0,0,0,.6); }
+.terminal-bar { background: #334155; padding: 8px 12px; display: flex; align-items: center; gap: 6px; }
+.t-dot { width: 10px; height: 10px; border-radius: 50%; }
+.t-dot.red { background: #f87171; }
+.t-dot.yellow { background: #fbbf24; }
+.t-dot.green { background: #4ade80; }
+.t-title { font-family: 'Fira Code', monospace; font-size: .68rem; color: #94a3b8; margin-right: auto; }
+.terminal-screen { padding: 14px; font-family: 'Fira Code', monospace; font-size: .76rem; line-height: 1.9; color: #e2e8f0; background: #0f172a; min-height: 200px; direction: ltr; text-align: left; }
+.t-prompt { color: #4ade80; }
+.t-cmd { color: #e2e8f0; }
+.t-out { color: #94a3b8; }
+.t-ok { color: #4ade80; font-weight: 600; }
+.t-info { color: #60a5fa; }
+.t-url { color: #fbbf24; }
+.t-err { color: #f87171; }
+.t-cursor { display: inline-block; width: 8px; height: 14px; background: #4ade80; animation: blink 1s step-end infinite; vertical-align: middle; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+/* req/res anatomy */
+.anatomy-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 14px 0; }
+@media (max-width: 600px) { .anatomy-grid { grid-template-columns: 1fr; } }
+.anatomy-card { background: white; border-radius: 12px; padding: 16px; border: 2px solid var(--border); }
+.anatomy-card.req-card { border-color: #7c3aed; }
+.anatomy-card.res-card { border-color: #0ea5e9; }
+.anatomy-title { font-family: 'Aref Ruqaa', serif; font-size: 1rem; font-weight: 700; margin-bottom: 10px; }
+.anatomy-card.req-card .anatomy-title { color: #7c3aed; }
+.anatomy-card.res-card .anatomy-title { color: #0ea5e9; }
+.anatomy-prop { display: flex; align-items: flex-start; gap: 8px; padding: 6px 0; border-bottom: 1px solid #f1f5f9; font-size: .82rem; }
+.anatomy-prop:last-child { border: none; }
+.prop-name { font-family: 'Fira Code', monospace; font-weight: 700; color: #1e293b; min-width: 90px; flex-shrink: 0; }
+.prop-desc { color: #64748b; line-height: 1.4; }
+
+/* routing visual */
+.route-visual { background: #f8fafc; border-radius: 12px; padding: 16px; margin: 14px 0; border: 1.5px solid var(--border); }
+.route-row { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid #e2e8f0; flex-wrap: wrap; }
+.route-row:last-child { border: none; }
+.route-method { font-family: 'Fira Code', monospace; font-size: .78rem; font-weight: 700; padding: 3px 10px; border-radius: 6px; }
+.rm-get  { background: #dcfce7; color: #15803d; }
+.rm-post { background: #dbeafe; color: #1e40af; }
+.rm-err  { background: #fee2e2; color: #991b1b; }
+.route-path { font-family: 'Fira Code', monospace; font-size: .82rem; color: #7c3aed; flex: 1; min-width: 100px; }
+.route-arrow { color: #94a3b8; flex-shrink: 0; }
+.route-resp { font-size: .78rem; color: #64748b; }
+
+/* comparison table */
+.comp-table { width: 100%; border-collapse: collapse; font-size: .83rem; margin: 14px 0; }
+.comp-table th { background: #1e293b; color: white; padding: 10px 14px; text-align: right; }
+.comp-table td { padding: 9px 14px; border-bottom: 1px solid var(--border); }
+.comp-table tr:last-child td { border: none; }
+.comp-table tr:nth-child(even) td { background: #f8fafc; }
+.comp-table .good { color: #16a34a; font-weight: 700; }
+.comp-table .bad  { color: #dc2626; }
+.table-scroll { overflow-x: auto; }
+
+/* mobile lp-body */
+@media (max-width: 700px) {
+  .lp-body { flex-direction: column; }
+  .lp-code { border-radius: 0; }
+  .terminal-window { max-width: 100%; }
+}
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="crumbs">
+    <a href="../../index.html">🏠 الرئيسية</a>
+    <span class="sep">/</span>
+    <a href="./index.html">⚙️ الباك إند</a>
+    <span class="sep">/</span>
+    <span class="current">🌐 الدرس 5: HTTP Server من الصفر</span>
+  </div>
+  <div class="progress-mini">
+    <div class="progress-bar-mini"><div class="progress-fill-mini" id="progFill"></div></div>
+    <span id="progText">0%</span>
+  </div>
+</div>
+
+<div class="notebook">
+
+  <div class="notebook-header">
+    <div class="lesson-tag" style="border-color:#7c3aed; color:#7c3aed;">🌐 الدرس الخامس</div>
+    <h1><span class="sparkle">✦</span> HTTP Server من الصفر بدون Framework <span class="sparkle">✦</span></h1>
+    <div class="lesson-meta">
+      <span>⏱️ 40 دقيقة</span>
+      <span>📊 متوسط</span>
+      <span>🎯 فهم أعماق الخوادم</span>
+    </div>
+  </div>
+
+  <div class="toc-card">
+    <h2>📑 فهرس الدرس</h2>
+    <ol>
+      <li><a href="#s1">الـ HTTP Module في Node.js</a></li>
+      <li><a href="#s2">http.createServer() — إنشاء الخادم</a></li>
+      <li><a href="#s3">كائن الطلب (req)</a></li>
+      <li><a href="#s4">كائن الاستجابة (res)</a></li>
+      <li><a href="#s5">Routing يدوي بـ if/else</a></li>
+      <li><a href="#s6">إعادة JSON</a></li>
+      <li><a href="#s7">قراءة Body من POST</a></li>
+      <li><a href="#s8">الخادم الكامل + HTTP خام vs Express</a></li>
+      <li><a href="#exercises">التمارين</a></li>
+      <li><a href="#quiz">اختبر فهمك</a></li>
+    </ol>
+  </div>
+
+  <!-- S1 -->
+  <div class="section" id="s1">
+    <h2 class="section-title"><span class="num">.1</span> الـ HTTP Module في Node.js <span class="en">Built-in HTTP</span></h2>
+    <div class="content">
+      <p>Node.js تأتي مع وحدة <code>http</code> مدمجة — لا تحتاج <code>npm install</code> لأي شيء. بهذه الوحدة تستطيع بناء خادم ويب كامل من الصفر وتفهم كيف تعمل الأطر (Frameworks) مثل Express من الداخل.</p>
+
+      <div class="analogy" style="background:linear-gradient(135deg,#ede9fe,#ddd6fe);border:2px solid #7c3aed;border-radius:12px;padding:16px 20px;margin:14px 0;position:relative;">
+        <div style="position:absolute;top:-14px;right:18px;background:var(--paper);padding:0 8px;font-size:1.4rem;">🔩</div>
+        <div style="font-family:'Aref Ruqaa',serif;color:#4c1d95;font-weight:700;margin-bottom:8px;">لماذا نتعلم HTTP الخام قبل Express؟</div>
+        <p style="font-size:.95rem;color:#5b21b6;margin:0;">مثل تعلم قيادة السيارة يدوياً قبل الأوتوماتيكي — ستفهم كل ما يحدث خلف الكواليس، وستعرف لماذا نحتاج Express، وستتمكن من إصلاح المشكلات بعمق.</p>
+      </div>
+
+      <div class="code-box">
+<div class="code-header"><span>📦 استيراد وحدة http</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">// CommonJS — الطريقة الافتراضية في Node.js</span>
+const http = require('http');
+
+<span class="comment">// لا تحتاج npm install — مدمجة 100%</span>
+<span class="comment">// مثلها: fs, path, crypto, os, events...</span></pre>
+      </div>
+
+      <div class="tip-box"><strong>الوحدات المدمجة في Node.js:</strong> إلى جانب <code>http</code>، لديك <code>fs</code> (ملفات)، <code>path</code> (مسارات)، <code>crypto</code> (تشفير)، <code>os</code> (نظام التشغيل)، <code>events</code> (أحداث) — كلها جاهزة فوراً.</div>
+    </div>
+  </div>
+
+  <!-- S2 -->
+  <div class="section" id="s2">
+    <h2 class="section-title"><span class="num">.2</span> http.createServer() — إنشاء الخادم <span class="en">Create Server</span></h2>
+    <div class="content">
+      <p>دالة <code>http.createServer()</code> تُنشئ خادماً جديداً. تأخذ <strong>callback</strong> يُستدعى تلقائياً مع كل طلب HTTP يصل للخادم:</p>
+
+      <div class="code-box">
+<div class="code-header"><span>🖥️ أول خادم HTTP</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre>const http = require('http');
+
+<span class="comment">// الـ callback يُستدعى مع كل طلب واصل</span>
+const server = http.createServer((req, res) => {
+  <span class="comment">// req = IncomingMessage   (ماذا أراد العميل؟)</span>
+  <span class="comment">// res = ServerResponse    (ماذا نرد؟)</span>
+
+  res.writeHead(200, { 'Content-Type': 'text/plain; charset=utf-8' });
+  res.end('مرحباً بالعالم! 🌍');
+});
+
+<span class="comment">// ابدأ الاستماع على port 3000</span>
+server.listen(3000, () => {
+  console.log('✅ الخادم يعمل على http://localhost:3000');
+});</pre>
+      </div>
+
+      <div class="code-box">
+<div class="code-header"><span>▶️ تشغيل الخادم</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre>node server.js
+<span class="comment"># → ✅ الخادم يعمل على http://localhost:3000</span>
+
+<span class="comment"># اختبر في المتصفح أو بـ curl:</span>
+curl http://localhost:3000
+<span class="comment"># → مرحباً بالعالم! 🌍</span></pre>
+      </div>
+
+      <div class="info-box"><strong>Port 3000 في التطوير:</strong> الـ Port هو "رقم الباب". المتصفح يستخدم 80 (HTTP) أو 443 (HTTPS) تلقائياً. في التطوير نستخدم 3000 أو 4000 أو 8000 لأنها متاحة بدون صلاحيات مدير النظام.</div>
+    </div>
+  </div>
+
+  <!-- S3 -->
+  <div class="section" id="s3">
+    <h2 class="section-title"><span class="num">.3</span> كائن الطلب req <span class="en">Request Object</span></h2>
+    <div class="content">
+      <p>كائن <code>req</code> يحتوي على كل معلومات الطلب القادم من العميل:</p>
+
+      <div class="anatomy-grid">
+        <div class="anatomy-card req-card">
+          <div class="anatomy-title">📥 req — الطلب</div>
+          <div class="anatomy-prop">
+            <span class="prop-name">req.method</span>
+            <span class="prop-desc">GET, POST, PUT, DELETE…</span>
+          </div>
+          <div class="anatomy-prop">
+            <span class="prop-name">req.url</span>
+            <span class="prop-desc">المسار الكامل: /api/users?page=2</span>
+          </div>
+          <div class="anatomy-prop">
+            <span class="prop-name">req.headers</span>
+            <span class="prop-desc">object بكل الـ headers المُرسلة</span>
+          </div>
+          <div class="anatomy-prop">
+            <span class="prop-name">حدث data</span>
+            <span class="prop-desc">chunks من الـ body القادمة</span>
+          </div>
+          <div class="anatomy-prop">
+            <span class="prop-name">حدث end</span>
+            <span class="prop-desc">انتهاء إرسال الـ body</span>
+          </div>
+        </div>
+        <div class="anatomy-card res-card">
+          <div class="anatomy-title">📤 res — الاستجابة</div>
+          <div class="anatomy-prop">
+            <span class="prop-name">res.writeHead()</span>
+            <span class="prop-desc">status code + headers معاً</span>
+          </div>
+          <div class="anatomy-prop">
+            <span class="prop-name">res.setHeader()</span>
+            <span class="prop-desc">ضبط header واحد</span>
+          </div>
+          <div class="anatomy-prop">
+            <span class="prop-name">res.statusCode</span>
+            <span class="prop-desc">تعيين كود الحالة مباشرة</span>
+          </div>
+          <div class="anatomy-prop">
+            <span class="prop-name">res.write()</span>
+            <span class="prop-desc">إرسال جزء من الـ body</span>
+          </div>
+          <div class="anatomy-prop">
+            <span class="prop-name">res.end()</span>
+            <span class="prop-desc">إنهاء الاستجابة (مطلوب دائماً)</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="code-box">
+<div class="code-header"><span>🔍 فحص معلومات الطلب</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre>const server = http.createServer((req, res) => {
+  console.log('Method :', req.method);
+  <span class="comment">// → GET</span>
+
+  console.log('URL    :', req.url);
+  <span class="comment">// → /api/users?page=2&sort=name</span>
+
+  console.log('Host   :', req.headers['host']);
+  <span class="comment">// → localhost:3000</span>
+
+  console.log('Accept :', req.headers['accept']);
+  <span class="comment">// → application/json</span>
+
+  res.end('OK');
+});</pre>
+      </div>
+
+      <div class="note-box"><strong>تحليل الـ URL:</strong> <code>req.url</code> يُعيد المسار كاملاً مع الـ query string. لتقسيمه: <code>new URL(req.url, 'http://localhost')</code> تُعطيك <code>.pathname</code> و <code>.searchParams</code> بشكل نظيف.</div>
+    </div>
+  </div>
+
+  <!-- S4 -->
+  <div class="section" id="s4">
+    <h2 class="section-title"><span class="num">.4</span> كائن الاستجابة res <span class="en">Response Object</span></h2>
+    <div class="content">
+      <p>كائن <code>res</code> هو أداتك للرد على الطلب. الترتيب مهم جداً — Headers قبل Body دائماً:</p>
+
+      <div class="code-box">
+<div class="code-header"><span>📤 الترتيب الصحيح للاستجابة</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">// الخطوة 1 — حدّد الكود والـ Headers (أولاً)</span>
+res.writeHead(200, {
+  'Content-Type': 'application/json',
+  'Access-Control-Allow-Origin': '*'
+});
+
+<span class="comment">// الخطوة 2 — اكتب البيانات (اختياري)</span>
+res.write('{"users":[');
+res.write('{"id":1}');
+res.write(']}');
+
+<span class="comment">// الخطوة 3 — أنهِ الاستجابة (مطلوب!)</span>
+res.end();
+
+<span class="comment">// ─── الأكثر شيوعاً: كل شيء في end() ───</span>
+res.writeHead(200, { 'Content-Type': 'application/json' });
+res.end(JSON.stringify({ status: 'ok' }));</pre>
+      </div>
+
+      <div style="background:#fef2f2;border:1.5px solid #fca5a5;border-radius:10px;padding:12px 16px;margin:14px 0;">
+        <strong>⚠️ قاعدة لا تُكسر:</strong> استدعِ <code>res.end()</code> في <em>كل</em> مسار بدون استثناء. إذا نسيته، سيظل الطلب معلقاً — المتصفح ينتظر حتى timeout والخادم يستهلك موارد للاتصال الميت.
+      </div>
+
+      <div class="code-box">
+<div class="code-header"><span>🚦 أمثلة متنوعة على الاستجابات</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">// نص عادي</span>
+res.writeHead(200, { 'Content-Type': 'text/plain; charset=utf-8' });
+res.end('مرحباً!');
+
+<span class="comment">// HTML</span>
+res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+res.end('&lt;h1 dir="rtl"&gt;مرحباً!&lt;/h1&gt;');
+
+<span class="comment">// JSON 200</span>
+res.writeHead(200, { 'Content-Type': 'application/json' });
+res.end(JSON.stringify({ success: true, data: [] }));
+
+<span class="comment">// خطأ 404</span>
+res.writeHead(404, { 'Content-Type': 'application/json' });
+res.end(JSON.stringify({ error: 'غير موجود' }));</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- S5 -->
+  <div class="section" id="s5">
+    <h2 class="section-title"><span class="num">.5</span> Routing يدوي بـ if/else <span class="en">Manual Routing</span></h2>
+    <div class="content">
+      <p>بدون Framework، كل الـ routing يصير يدوياً — نتحقق من <code>req.method</code> و <code>req.url</code> في كل طلب:</p>
+
+      <div class="route-visual">
+        <div class="route-row">
+          <span class="route-method rm-get">GET</span>
+          <span class="route-path">/</span>
+          <span class="route-arrow">→</span>
+          <span class="route-resp">الصفحة الرئيسية</span>
+        </div>
+        <div class="route-row">
+          <span class="route-method rm-get">GET</span>
+          <span class="route-path">/api/users</span>
+          <span class="route-arrow">→</span>
+          <span class="route-resp">قائمة المستخدمين JSON</span>
+        </div>
+        <div class="route-row">
+          <span class="route-method rm-post">POST</span>
+          <span class="route-path">/api/users</span>
+          <span class="route-arrow">→</span>
+          <span class="route-resp">إنشاء مستخدم 201</span>
+        </div>
+        <div class="route-row">
+          <span class="route-method rm-err">404</span>
+          <span class="route-path">أي مسار آخر</span>
+          <span class="route-arrow">→</span>
+          <span class="route-resp">رسالة خطأ JSON</span>
+        </div>
+      </div>
+
+      <div class="code-box">
+<div class="code-header"><span>🗺️ Routing يدوي كامل</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre>const server = http.createServer((req, res) => {
+  const { method, url } = req;
+
+  <span class="comment">// ─── الصفحة الرئيسية ───</span>
+  if (method === 'GET' && url === '/') {
+    res.writeHead(200, { 'Content-Type': 'text/plain; charset=utf-8' });
+    return res.end('مرحباً! الخادم يعمل 🟢');
+  }
+
+  <span class="comment">// ─── قائمة المستخدمين ───</span>
+  if (method === 'GET' && url === '/api/users') {
+    const users = [{ id: 1, name: 'أحمد' }, { id: 2, name: 'سارة' }];
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    return res.end(JSON.stringify({ data: users, count: users.length }));
+  }
+
+  <span class="comment">// ─── إنشاء مستخدم ───</span>
+  if (method === 'POST' && url === '/api/users') {
+    <span class="comment">// سنقرأ الـ body في القسم القادم...</span>
+    res.writeHead(201, { 'Content-Type': 'application/json' });
+    return res.end(JSON.stringify({ message: 'تم إنشاء المستخدم' }));
+  }
+
+  <span class="comment">// ─── 404 ─── (يُنفَّذ إذا لم يتطابق أي if)</span>
+  res.writeHead(404, { 'Content-Type': 'application/json' });
+  res.end(JSON.stringify({ error: `المسار ${url} غير موجود` }));
+});</pre>
+      </div>
+
+      <div class="info-box"><strong>لماذا <code>return res.end()</code> وليس <code>res.end()</code> فقط؟</strong> الـ <code>return</code> يوقف تنفيذ بقية الدالة. بدونه ستنفذ جميع الـ if blocks وصولاً للـ 404، وتحاول الرد مرتين — مما يُسبب خطأ <em>"Cannot set headers after they are sent"</em>.</div>
+    </div>
+  </div>
+
+  <!-- S6 -->
+  <div class="section" id="s6">
+    <h2 class="section-title"><span class="num">.6</span> إعادة JSON <span class="en">JSON Responses</span></h2>
+    <div class="content">
+      <p>إعادة JSON هو القلب النابض لأي API. تحتاج دائماً ضبط <code>Content-Type</code> الصحيح وتحويل الكائن بـ <code>JSON.stringify()</code>:</p>
+
+      <div class="code-box">
+<div class="code-header"><span>📦 دوال مساعدة — Helper Functions</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">// دالة موحّدة لإعادة JSON ← تُجنّب التكرار</span>
+function sendJSON(res, statusCode, data) {
+  res.writeHead(statusCode, {
+    'Content-Type': 'application/json',
+    'Access-Control-Allow-Origin': '*',
+  });
+  res.end(JSON.stringify(data));
+}
+
+<span class="comment">// دالة خاصة للأخطاء</span>
+function sendError(res, statusCode, message) {
+  sendJSON(res, statusCode, {
+    success: false,
+    error: message,
+    code: statusCode,
+  });
+}
+
+<span class="comment">// الاستخدام:</span>
+sendJSON(res, 200, { data: users, count: 2 });
+sendJSON(res, 201, { message: 'تم الإنشاء', id: 42 });
+sendError(res, 404, 'المستخدم غير موجود');
+sendError(res, 400, 'بيانات غير صالحة');</pre>
+      </div>
+
+      <div class="code-box blue">
+<div class="code-header"><span>🏗️ الخادم مع Helper Functions</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre>const http = require('http');
+
+function sendJSON(res, code, data) {
+  res.writeHead(code, { 'Content-Type': 'application/json' });
+  res.end(JSON.stringify(data));
+}
+
+const users = [
+  { id: 1, name: 'أحمد', email: 'ahmed@mail.com' },
+  { id: 2, name: 'سارة', email: 'sara@mail.com' },
+];
+
+const server = http.createServer((req, res) => {
+  const { method, url } = req;
+
+  if (method === 'GET' && url === '/api/users') {
+    return sendJSON(res, 200, { data: users, count: users.length });
+  }
+
+  if (method === 'GET' && url === '/api/health') {
+    return sendJSON(res, 200, {
+      status: 'ok',
+      uptime: Math.floor(process.uptime()),
+    });
+  }
+
+  sendJSON(res, 404, { error: 'Not Found', path: url });
+});
+
+server.listen(3000, () => console.log('🟢 Server on port 3000'));</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- S7 -->
+  <div class="section" id="s7">
+    <h2 class="section-title"><span class="num">.7</span> قراءة Body من POST <span class="en">Reading POST Body</span></h2>
+    <div class="content">
+      <p>الـ body في Node.js يصل كـ <strong>stream</strong> — يتدفق كـ chunks (أجزاء). نجمعها عبر حدثي <code>data</code> و <code>end</code>:</p>
+
+      <div class="code-box">
+<div class="code-header"><span>📥 دالة readBody — تقرأ الـ body كاملاً</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">// نُغلّف القراءة في Promise لنستخدم await</span>
+function readBody(req) {
+  return new Promise((resolve, reject) => {
+    let body = '';
+
+    req.on('data', chunk => {
+      body += chunk.toString();  <span class="comment">// اجمع الـ chunks</span>
+    });
+
+    req.on('end', () => {
+      try {
+        resolve(JSON.parse(body));  <span class="comment">// حوّل لـ object</span>
+      } catch {
+        reject(new Error('JSON غير صالح'));
+      }
+    });
+
+    req.on('error', reject);
+  });
+}</pre>
+      </div>
+
+      <div class="code-box">
+<div class="code-header"><span>🏗️ POST route يقرأ البيانات</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">// لاحظ: async لاستخدام await</span>
+const server = http.createServer(async (req, res) => {
+  const { method, url } = req;
+
+  if (method === 'POST' && url === '/api/users') {
+    try {
+      const body = await readBody(req);
+      <span class="comment">// body = { name: 'أحمد', email: 'ahmed@mail.com' }</span>
+
+      <span class="comment">// التحقق من البيانات</span>
+      if (!body.name || !body.email) {
+        return sendJSON(res, 400, { error: 'الاسم والبريد مطلوبان' });
+      }
+
+      <span class="comment">// محاكاة حفظ في قاعدة البيانات</span>
+      const newUser = { id: Date.now(), ...body, createdAt: new Date() };
+      sendJSON(res, 201, { message: 'تم إنشاء المستخدم', data: newUser });
+
+    } catch (err) {
+      sendJSON(res, 400, { error: 'JSON غير صالح' });
+    }
+  }
+});
+
+<span class="comment">// اختبار بـ curl:</span>
+<span class="comment">// curl -X POST http://localhost:3000/api/users \</span>
+<span class="comment">//      -H "Content-Type: application/json" \</span>
+<span class="comment">//      -d '{"name":"أحمد","email":"ahmed@mail.com"}'</span></pre>
+      </div>
+
+      <div class="tip-box"><strong>لماذا Stream وليس مباشرة؟</strong> الـ body يمكن أن يكون ضخماً جداً (ملف، صور). الـ stream يُرسله أجزاءً حتى لا يملأ الذاكرة دفعة واحدة — هذا ما يجعل Node.js سريعاً مع الملفات الكبيرة.</div>
+    </div>
+  </div>
+
+  <!-- S8 — Live Preview -->
+  <div class="section" id="s8">
+    <h2 class="section-title"><span class="num">.8</span> الخادم الكامل + مقارنة HTTP vs Express <span class="en">Full Server + Comparison</span></h2>
+    <div class="content">
+      <p>هذا الخادم الكامل يجمع كل ما تعلمناه — انظر كيف يعمل في الـ terminal:</p>
+    </div>
+
+    <div class="live-preview">
+      <div class="lp-header">
+        <span>⚙️ HTTP Server كامل — Node.js خام</span>
+        <span class="lp-tag">server.js</span>
+      </div>
+      <div class="lp-body">
+        <div class="lp-code">
+<pre><span class="c">// server.js — HTTP خام بدون Framework</span>
+<span class="k">const</span> http = <span class="t">require</span>(<span class="s">'http'</span>);
+
+<span class="k">function</span> <span class="t">sendJSON</span>(res, code, data) {
+  res.<span class="t">writeHead</span>(code, {
+    <span class="s">'Content-Type'</span>:<span class="s">'application/json'</span>
+  });
+  res.<span class="t">end</span>(<span class="t">JSON</span>.<span class="t">stringify</span>(data));
+}
+
+<span class="k">function</span> <span class="t">readBody</span>(req) {
+  <span class="k">return new</span> <span class="t">Promise</span>((ok, fail) => {
+    <span class="k">let</span> b = <span class="s">''</span>;
+    req.<span class="t">on</span>(<span class="s">'data'</span>, c => b += c);
+    req.<span class="t">on</span>(<span class="s">'end'</span>, () => {
+      <span class="k">try</span> { ok(<span class="t">JSON</span>.<span class="t">parse</span>(b)); }
+      <span class="k">catch</span> { fail(<span class="k">new</span> Error()); }
+    });
+  });
+}
+
+<span class="k">const</span> users = [
+  { id:<span class="n">1</span>, name:<span class="s">'أحمد'</span> },
+  { id:<span class="n">2</span>, name:<span class="s">'سارة'</span> },
+];
+
+<span class="k">const</span> server = http.<span class="t">createServer</span>(
+  <span class="k">async</span> (req, res) => {
+  <span class="k">const</span> { method, url } = req;
+
+  <span class="k">if</span>(method===<span class="s">'GET'</span>&&url===<span class="s">'/'</span>)
+    <span class="k">return</span> <span class="t">sendJSON</span>(res,<span class="n">200</span>,
+      {msg:<span class="s">'الرئيسية'</span>});
+
+  <span class="k">if</span>(method===<span class="s">'GET'</span>&&
+     url===<span class="s">'/api/users'</span>)
+    <span class="k">return</span> <span class="t">sendJSON</span>(res,<span class="n">200</span>,
+      {data:users});
+
+  <span class="k">if</span>(method===<span class="s">'POST'</span>&&
+     url===<span class="s">'/api/users'</span>){
+    <span class="k">const</span> b=<span class="k">await</span> <span class="t">readBody</span>(req);
+    users.<span class="t">push</span>({id:<span class="t">Date</span>.<span class="t">now</span>(),...b});
+    <span class="k">return</span> <span class="t">sendJSON</span>(res,<span class="n">201</span>,
+      {message:<span class="s">'تم'</span>,data:b});
+  }
+
+  <span class="t">sendJSON</span>(res,<span class="n">404</span>,
+    {error:<span class="s">'Not Found'</span>});
+});
+
+server.<span class="t">listen</span>(<span class="n">3000</span>,()=>
+  console.<span class="t">log</span>(<span class="s">'🟢 يعمل :3000'</span>));</pre>
+        </div>
+        <div class="lp-terminal">
+          <div class="terminal-window">
+            <div class="terminal-bar">
+              <div class="t-dot red"></div>
+              <div class="t-dot yellow"></div>
+              <div class="t-dot green"></div>
+              <span class="t-title">node server.js</span>
+            </div>
+            <div class="terminal-screen">
+              <div><span class="t-prompt">$</span> <span class="t-cmd">node server.js</span></div>
+              <div><span class="t-ok">🟢 يعمل على :3000</span></div>
+              <div><span class="t-out">────────────────────</span></div>
+              <div><span class="t-info">GET</span>&nbsp; <span class="t-url">/</span></div>
+              <div><span class="t-ok">&nbsp; 200</span> <span class="t-out">{msg:'الرئيسية'}</span></div>
+              <div><span class="t-out">────────────────────</span></div>
+              <div><span class="t-info">GET</span>&nbsp; <span class="t-url">/api/users</span></div>
+              <div><span class="t-ok">&nbsp; 200</span> <span class="t-out">{data:[...]}</span></div>
+              <div><span class="t-out">────────────────────</span></div>
+              <div><span class="t-info">POST</span> <span class="t-url">/api/users</span></div>
+              <div><span class="t-out">&nbsp; body:{name:'محمد'}</span></div>
+              <div><span class="t-ok">&nbsp; 201</span> <span class="t-out">{message:'تم'}</span></div>
+              <div><span class="t-out">────────────────────</span></div>
+              <div><span class="t-info">GET</span>&nbsp; <span class="t-url">/unknown</span></div>
+              <div><span class="t-err">&nbsp; 404</span> <span class="t-out">{error:'Not Found'}</span></div>
+              <div><span class="t-out">────────────────────</span></div>
+              <div><span class="t-prompt">$</span> <span class="t-cursor"></span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="content" style="margin-top:18px;">
+      <p><strong>الخادم يعمل — لكن لاحظ حجم الكود. هذا ما يحله Express:</strong></p>
+      <div class="table-scroll">
+        <table class="comp-table">
+          <thead><tr><th>التحدي</th><th>HTTP خام</th><th>مع Express (الدرس القادم)</th></tr></thead>
+          <tbody>
+            <tr><td>Routing</td><td class="bad">if/else لكل route</td><td class="good">app.get('/path', fn)</td></tr>
+            <tr><td>قراءة Body</td><td class="bad">readBody() — 15 سطر</td><td class="good">req.body مباشرة</td></tr>
+            <tr><td>Headers JSON</td><td class="bad">تُكررها في كل route</td><td class="good">middleware مرة واحدة</td></tr>
+            <tr><td>Params ديناميكية</td><td class="bad">/users/42 → يدوي</td><td class="good">req.params.id مباشرة</td></tr>
+            <tr><td>تنظيم الكود</td><td class="bad">ملف واحد ضخم</td><td class="good">Router منفصل لكل module</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="tip-box"><strong>الخلاصة:</strong> HTTP خام ممتاز لفهم الأساس — وأنت الآن تفهمه! Express ليس سحراً، هو فقط يُخفي هذا الكود المتكرر ويجعل الـ routing أنيقاً. الدرس القادم: نُعيد بناء هذا الخادم بـ Express في نصف الكود.</div>
+    </div>
+  </div>
+
+  <!-- EXERCISES -->
+  <div class="section" id="exercises">
+    <h2 class="section-title"><span class="num">📝</span> التمارين العملية <span class="en">Exercises</span></h2>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 1: خادم متعدد المسارات</div>
+      <p>أنشئ خادم HTTP يرد على ثلاثة مسارات:<br>
+      • <code>GET /</code> → JSON: <code>{ page: "home" }</code><br>
+      • <code>GET /about</code> → JSON: <code>{ page: "about", version: "1.0" }</code><br>
+      • أي مسار آخر → 404 + JSON: <code>{ error: "Not Found" }</code></p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box"><pre>const http = require('http');
+
+const server = http.createServer((req, res) => {
+  const { method, url } = req;
+  res.setHeader('Content-Type', 'application/json');
+
+  if (method === 'GET' && url === '/') {
+    res.writeHead(200);
+    return res.end(JSON.stringify({ page: 'home' }));
+  }
+  if (method === 'GET' && url === '/about') {
+    res.writeHead(200);
+    return res.end(JSON.stringify({ page: 'about', version: '1.0' }));
+  }
+  res.writeHead(404);
+  res.end(JSON.stringify({ error: 'Not Found' }));
+});
+
+server.listen(3000, () => console.log('🟢 يعمل'));</pre></div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 2: Health Check Endpoint</div>
+      <p>أضف <code>GET /api/health</code> يُعيد:<br>
+      <code>{ status: "ok", uptime: &lt;ثواني&gt;, timestamp: &lt;ISO date&gt; }</code><br>
+      استخدم <code>process.uptime()</code> و <code>new Date().toISOString()</code>.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box"><pre>if (method === 'GET' && url === '/api/health') {
+  return sendJSON(res, 200, {
+    status: 'ok',
+    uptime: Math.floor(process.uptime()),
+    timestamp: new Date().toISOString(),
+  });
+}</pre></div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 3: لماذا res.end() مطلوب؟</div>
+      <p>اشرح بكلماتك: لماذا يجب استدعاء <code>res.end()</code> في كل مسار؟ وما الذي يحدث للمستخدم إذا نسيناه؟</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الإجابة:</span>
+        <p><code>res.end()</code> يُخبر Node.js بأن الاستجابة اكتملت ويُغلق الاتصال. بدونه:<br>
+        • الاتصال يظل مفتوحاً إلى الأبد<br>
+        • المتصفح ينتظر حتى timeout (30-60 ثانية عادةً)<br>
+        • يظهر للمستخدم دوّامة تحميل لا تنتهي<br>
+        • الخادم يستهلك موارد لكل اتصال معلق</p>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 4: دالة sendError موحّدة</div>
+      <p>اكتب <code>sendError(res, code, message)</code> ترد بـ JSON:<br>
+      <code>{ success: false, error: &lt;message&gt;, code: &lt;statusCode&gt; }</code><br>
+      ثم استخدمها في مسار الـ 404 وفي حالة خطأ POST.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box"><pre>function sendError(res, code, message) {
+  res.writeHead(code, { 'Content-Type': 'application/json' });
+  res.end(JSON.stringify({ success: false, error: message, code }));
+}
+
+<span class="comment">// الاستخدام:</span>
+sendError(res, 404, 'المسار غير موجود');
+sendError(res, 400, 'بيانات غير صالحة');
+sendError(res, 500, 'خطأ داخلي في الخادم');</pre></div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 5: POST /api/echo</div>
+      <p>أنشئ <code>POST /api/echo</code> يستقبل أي JSON ويُعيده كما هو مع إضافة:<br>
+      <code>receivedAt</code>: التاريخ والوقت الحاليين بصيغة ISO.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box"><pre>if (method === 'POST' && url === '/api/echo') {
+  try {
+    const body = await readBody(req);
+    sendJSON(res, 200, {
+      ...body,
+      receivedAt: new Date().toISOString(),
+    });
+  } catch {
+    sendError(res, 400, 'JSON غير صالح');
+  }
+}</pre></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="quiz-container" id="quiz">
+    <div class="quiz-intro"><p>اختبر فهمك لـ HTTP Server في Node.js!</p></div>
+    <div class="quiz-type-tabs">
+      <button class="qt-tab active" onclick="switchQuiz(this,'tf')">✓✗ صح وخطأ</button>
+      <button class="qt-tab" onclick="switchQuiz(this,'mc')">🔘 اختيار من متعدد</button>
+    </div>
+
+    <div class="quiz-section active" id="quiz-tf">
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">1</span><span class="q-text">وحدة <code>http</code> في Node.js مدمجة ولا تحتاج <code>npm install</code>.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="false">
+        <span class="q-num">2</span><span class="q-text"><code>http.createServer()</code> وحده يبدأ الاستماع للطلبات بدون استدعاء <code>.listen()</code>.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="false">
+        <span class="q-num">3</span><span class="q-text">يمكن استدعاء <code>res.setHeader()</code> بعد <code>res.write()</code> بشكل طبيعي.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">4</span><span class="q-text"><code>req.url</code> يحتوي على المسار الكامل مع الـ query string مثل <code>/api/users?page=2</code>.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">5</span><span class="q-text">إذا لم تستدعِ <code>res.end()</code>، سيظل الاتصال مفتوحاً والمستخدم سينتظر حتى timeout.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <button class="quiz-submit" onclick="submitQuiz('tf')">عرض النتيجة 🎯</button>
+      <div class="quiz-result" id="result-tf"><div class="result-score" id="score-tf">0/5</div><div class="result-label">إجابات صحيحة</div><div class="result-message" id="msg-tf"></div><button class="retry-btn" onclick="retryQuiz('tf')">🔄 حاول تاني</button></div>
+    </div>
+
+    <div class="quiz-section" id="quiz-mc">
+      <div class="quiz-question" data-correct="1">
+        <span class="q-num">1</span><span class="q-text">ما الدالة الصحيحة لتعيين status code وHeaders في آنٍ واحد؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">res.send(200, {})</button>
+          <button class="q-opt" onclick="answerMC(this,1)">res.writeHead(200, {})</button>
+          <button class="q-opt" onclick="answerMC(this,2)">res.setStatus(200, {})</button>
+          <button class="q-opt" onclick="answerMC(this,3)">res.header(200, {})</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="2">
+        <span class="q-num">2</span><span class="q-text">كيف تقرأ الـ body من طلب POST في HTTP خام؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">req.body مباشرة</button>
+          <button class="q-opt" onclick="answerMC(this,1)">req.json()</button>
+          <button class="q-opt" onclick="answerMC(this,2)">من خلال أحداث data وend على req</button>
+          <button class="q-opt" onclick="answerMC(this,3)">req.read()</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="1">
+        <span class="q-num">3</span><span class="q-text">ما الـ Content-Type الصحيح لإرسال JSON response؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">text/json</button>
+          <button class="q-opt" onclick="answerMC(this,1)">application/json</button>
+          <button class="q-opt" onclick="answerMC(this,2)">json/application</button>
+          <button class="q-opt" onclick="answerMC(this,3)">data/json</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="2">
+        <span class="q-num">4</span><span class="q-text">ماذا يحتوي <code>req.url</code> عند زيارة <code>/api/users?page=2</code>؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">/api/users فقط</button>
+          <button class="q-opt" onclick="answerMC(this,1)">page=2 فقط</button>
+          <button class="q-opt" onclick="answerMC(this,2)">/api/users?page=2 كاملاً</button>
+          <button class="q-opt" onclick="answerMC(this,3)">undefined</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="1">
+        <span class="q-num">5</span><span class="q-text">ما المشكلة الرئيسية في routing بـ if/else للمشاريع الكبيرة؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">أبطأ من Express</button>
+          <button class="q-opt" onclick="answerMC(this,1)">يصبح معقداً وصعب القراءة مع كثرة المسارات</button>
+          <button class="q-opt" onclick="answerMC(this,2)">لا يدعم POST method</button>
+          <button class="q-opt" onclick="answerMC(this,3)">لا يعمل مع JSON</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <button class="quiz-submit" onclick="submitQuiz('mc')">عرض النتيجة 🎯</button>
+      <div class="quiz-result" id="result-mc"><div class="result-score" id="score-mc">0/5</div><div class="result-label">إجابات صحيحة</div><div class="result-message" id="msg-mc"></div><button class="retry-btn" onclick="retryQuiz('mc')">🔄 حاول تاني</button></div>
+    </div>
+  </div>
+
+  <div class="lesson-nav">
+    <a href="./lesson-04.html" class="nav-btn"><span>⬅️</span><span>الدرس السابق</span></a>
+    <button class="nav-btn complete-btn" id="completeBtn" onclick="markComplete(this)" style="background:#7c3aed; border-color:#7c3aed;"><span>✅</span><span>علّم كمكتمل</span></button>
+    <a href="./lesson-06.html" class="nav-btn"><span>الدرس التالي</span><span>➡️</span></a>
+  </div>
+
+  <div class="notebook-footer">
+    <h3>🎉 أنت الآن تفهم HTTP من الداخل!</h3>
+    <p>بنيت خادماً كاملاً من الصفر — هذا ما تفعله كل الـ Frameworks خلف الكواليس. ⚙️<br><strong>الدرس التالي: نبني نفس الخادم بـ Express في نصف الكود 🚂</strong></p>
+  </div>
+</div>
+
+<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">⬆️</button>
+<div class="toast" id="toast"></div>
+<script src="../../js/data/courses.js"></script>
+<script src="../../js/progress.js"></script>
+<script>
+const COURSE_ID='backend', LESSON_ID=5, TOTAL=32;
+function toggleSolution(b){const s=b.nextElementSibling;s.classList.toggle('show');b.textContent=s.classList.contains('show')?'إخفاء الحل ▲':'عرض الحل ▼';}
+function copyCode(b){const p=b.closest('.code-box').querySelector('pre');navigator.clipboard.writeText(p.innerText).then(()=>{b.classList.add('copied');b.textContent='✓ تم النسخ';setTimeout(()=>{b.classList.remove('copied');b.textContent='📋 نسخ';},2000);});}
+function switchQuiz(b,t){document.querySelectorAll('.qt-tab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.quiz-section').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.getElementById('quiz-'+t).classList.add('active');}
+const answers={tf:{},mc:{}};
+function answerTF(b,v){const q=b.closest('.quiz-question'),i=Array.from(q.parentNode.querySelectorAll('.quiz-question')).indexOf(q);q.querySelectorAll('.q-opt').forEach(o=>o.classList.remove('selected'));b.classList.add('selected');answers.tf[i]=v;}
+function answerMC(b,i){const q=b.closest('.quiz-question'),qi=Array.from(q.parentNode.querySelectorAll('.quiz-question')).indexOf(q);q.querySelectorAll('.q-opt').forEach(o=>o.classList.remove('selected'));b.classList.add('selected');answers.mc[qi]=i;}
+function submitQuiz(type){const sec=document.getElementById('quiz-'+type),qs=sec.querySelectorAll('.quiz-question');let c=0;qs.forEach((q,i)=>{const ca=type==='tf'?(q.dataset.correct==='true'):parseInt(q.dataset.correct),ua=answers[type][i],fb=q.querySelector('.q-feedback'),opts=q.querySelectorAll('.q-opt');opts.forEach(o=>{o.classList.remove('selected');o.disabled=true;});if(ua===undefined){fb.className='q-feedback wrong show';fb.textContent='⚠️ ما اخترتش إجابة!';return;}if(ua===ca){c++;fb.className='q-feedback correct show';fb.textContent='✓ إجابة صحيحة!';if(type==='tf')opts[ca?0:1].classList.add('correct');else opts[ca].classList.add('correct');}else{fb.className='q-feedback wrong show';if(type==='tf'){opts[ca?0:1].classList.add('correct');opts[ua?0:1].classList.add('wrong');fb.textContent='✗ خطأ.';}else{opts[ca].classList.add('correct');opts[ua].classList.add('wrong');fb.textContent='✗ الإجابة بالأخضر.';}}});const r=document.getElementById('result-'+type);document.getElementById('score-'+type).textContent=c+'/'+qs.length;const m=document.getElementById('msg-'+type);if(c===qs.length){m.textContent='🏆 ممتاز 100%!';m.className='result-message excellent';}else if(c>=3){m.textContent='👍 جيد!';m.className='result-message good';}else{m.textContent='📚 راجع الدرس.';m.className='result-message try-again';}r.classList.add('show');r.scrollIntoView({behavior:'smooth',block:'center'});}
+function retryQuiz(type){const sec=document.getElementById('quiz-'+type);sec.querySelectorAll('.q-opt').forEach(o=>{o.classList.remove('selected','correct','wrong');o.disabled=false;});sec.querySelectorAll('.q-feedback').forEach(f=>{f.classList.remove('show','correct','wrong');f.textContent='';});document.getElementById('result-'+type).classList.remove('show');answers[type]={};}
+function markComplete(btn){const done=Progress.toggleLessonComplete(COURSE_ID,LESSON_ID);btn.classList.toggle('completed',done);btn.querySelector('span:last-child').textContent=done?'مكتمل! ⭐':'علّم كمكتمل';showToast(done?'🎉 أكملت الدرس الخامس!':'تم إلغاء الإكمال');}
+if(Progress.isLessonComplete(COURSE_ID,LESSON_ID)){const b=document.getElementById('completeBtn');b.classList.add('completed');b.querySelector('span:last-child').textContent='مكتمل! ⭐';}
+(function(){const p=Progress.getCourseProgress(COURSE_ID,TOTAL);document.getElementById('progFill').style.width=p+'%';document.getElementById('progText').textContent=p+'%';})();
+function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
+window.addEventListener('scroll',()=>{document.getElementById('scrollTop').classList.toggle('show',window.scrollY>300);});
+document.querySelectorAll('.toc-card a').forEach(l=>{l.addEventListener('click',e=>{e.preventDefault();const t=document.querySelector(l.getAttribute('href'));if(t)t.scrollIntoView({behavior:'smooth',block:'start'});});});
+</script>
+</body>
+</html>

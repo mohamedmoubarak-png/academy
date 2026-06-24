@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-V2NCKVL16D"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-V2NCKVL16D');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>كيف يعمل الإنترنت + مقدمة الباك إند — دفتر البرمجة</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=Cairo:wght@300;400;500;600;700;900&family=Caveat:wght@400;700&family=Fira+Code:wght@400;500;600&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../css/shared.css">
+<link rel="stylesheet" href="../../css/notebook.css">
+<style>
+body { padding: 20px 10px; }
+
+/* diagram: client-server */
+.cs-diagram {
+  display: flex; align-items: center; justify-content: center;
+  gap: 0; margin: 18px 0; flex-wrap: wrap;
+}
+.cs-box {
+  background: white; border-radius: 14px; padding: 18px 22px;
+  text-align: center; border: 2px solid var(--border);
+  box-shadow: 0 4px 14px rgba(0,0,0,.07); min-width: 120px;
+}
+.cs-box.client { border-color: #7c3aed; background: #faf5ff; }
+.cs-box.server { border-color: #0ea5e9; background: #f0f9ff; }
+.cs-box.db     { border-color: #16a34a; background: #f0fdf4; }
+.cs-icon { font-size: 2rem; margin-bottom: 6px; }
+.cs-label { font-family: 'Aref Ruqaa', serif; font-size: 1rem; font-weight: 700; }
+.cs-sub   { font-family: 'Fira Code', monospace; font-size: .68rem; color: #94a3b8; margin-top: 3px; }
+
+.cs-arrow {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 4px; padding: 0 10px;
+}
+.cs-arrow-line {
+  width: 70px; height: 2px; background: linear-gradient(90deg, #7c3aed, #0ea5e9);
+  position: relative;
+}
+.cs-arrow-line::after {
+  content: ''; position: absolute; left: -1px; top: -5px;
+  border: 6px solid transparent; border-right-color: #0ea5e9;
+}
+.cs-arrow-label { font-family: 'Caveat', cursive; font-size: .85rem; color: #7c3aed; font-weight: 700; }
+.cs-arrow-back { font-family: 'Caveat', cursive; font-size: .82rem; color: #0ea5e9; }
+
+/* http methods */
+.http-methods { display: flex; gap: 8px; flex-wrap: wrap; margin: 14px 0; }
+.http-badge {
+  padding: 6px 14px; border-radius: 8px; font-family: 'Fira Code', monospace;
+  font-size: .82rem; font-weight: 700;
+}
+.http-get    { background: #dcfce7; color: #15803d; border: 1.5px solid #86efac; }
+.http-post   { background: #dbeafe; color: #1e40af; border: 1.5px solid #93c5fd; }
+.http-put    { background: #fef9c3; color: #92400e; border: 1.5px solid #fde047; }
+.http-patch  { background: #ffedd5; color: #9a3412; border: 1.5px solid #fdba74; }
+.http-delete { background: #fee2e2; color: #991b1b; border: 1.5px solid #fca5a5; }
+
+/* status codes */
+.status-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 10px; margin: 14px 0; }
+.status-card { background: white; border-radius: 10px; padding: 12px 14px; border: 1.5px solid var(--border); }
+.status-code { font-family: 'Fira Code', monospace; font-size: 1.1rem; font-weight: 700; }
+.status-card.s2xx .status-code { color: #16a34a; }
+.status-card.s3xx .status-code { color: #0369a1; }
+.status-card.s4xx .status-code { color: #ea580c; }
+.status-card.s5xx .status-code { color: #dc2626; }
+.status-desc { font-size: .78rem; color: #64748b; margin-top: 4px; }
+
+/* tech stack grid */
+.stack-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 12px; margin: 14px 0; }
+.stack-card { background: white; border-radius: 12px; padding: 14px; border: 1.5px solid var(--border); text-align: center; }
+.stack-icon { font-size: 1.8rem; margin-bottom: 6px; }
+.stack-name { font-family: 'Fira Code', monospace; font-size: .82rem; font-weight: 700; color: #7c3aed; }
+.stack-role { font-size: .74rem; color: #64748b; margin-top: 4px; }
+
+/* comparison table */
+.comp-table { width: 100%; border-collapse: collapse; font-size: .83rem; margin: 14px 0; }
+.comp-table th { background: #1e293b; color: white; padding: 10px 14px; text-align: right; }
+.comp-table td { padding: 9px 14px; border-bottom: 1px solid var(--border); }
+.comp-table tr:last-child td { border: none; }
+.comp-table tr:nth-child(even) td { background: #f8fafc; }
+.comp-table .check { color: #16a34a; font-weight: 700; }
+
+/* terminal preview */
+.lp-terminal { background: #0f172a; padding: 20px; display: flex; align-items: flex-start; justify-content: center; }
+.terminal-window { width: 100%; max-width: 300px; border: 2px solid #334155; border-radius: 10px; overflow: hidden; box-shadow: 0 12px 32px rgba(0,0,0,.6); }
+.terminal-bar { background: #334155; padding: 8px 12px; display: flex; align-items: center; gap: 6px; }
+.t-dot { width: 10px; height: 10px; border-radius: 50%; }
+.t-dot.red { background: #f87171; }
+.t-dot.yellow { background: #fbbf24; }
+.t-dot.green { background: #4ade80; }
+.t-title { font-family: 'Fira Code', monospace; font-size: .68rem; color: #94a3b8; margin-right: auto; }
+.terminal-screen { padding: 14px; font-family: 'Fira Code', monospace; font-size: .76rem; line-height: 1.8; color: #e2e8f0; background: #0f172a; min-height: 180px; direction: ltr; text-align: left; }
+.t-prompt { color: #4ade80; }
+.t-cmd { color: #e2e8f0; }
+.t-out { color: #94a3b8; }
+.t-ok { color: #4ade80; font-weight: 600; }
+.t-info { color: #60a5fa; }
+.t-url { color: #fbbf24; }
+.t-cursor { display: inline-block; width: 8px; height: 14px; background: #4ade80; animation: blink 1s step-end infinite; vertical-align: middle; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="crumbs">
+    <a href="../../index.html">🏠 الرئيسية</a>
+    <span class="sep">/</span>
+    <a href="./index.html">⚙️ الباك إند</a>
+    <span class="sep">/</span>
+    <span class="current">🌐 الدرس 1: كيف يعمل الإنترنت</span>
+  </div>
+  <div class="progress-mini">
+    <div class="progress-bar-mini"><div class="progress-fill-mini" id="progFill"></div></div>
+    <span id="progText">0%</span>
+  </div>
+</div>
+
+<div class="notebook">
+
+  <div class="notebook-header">
+    <div class="lesson-tag" style="border-color:#7c3aed; color:#7c3aed;">🌐 الدرس الأول</div>
+    <h1><span class="sparkle">✦</span> كيف يعمل الإنترنت + مقدمة الباك إند <span class="sparkle">✦</span></h1>
+    <div class="lesson-meta">
+      <span>⏱️ 35 دقيقة</span>
+      <span>📊 مبتدئ</span>
+      <span>🎯 أساس كل شيء</span>
+    </div>
+  </div>
+
+  <div class="toc-card">
+    <h2>📑 فهرس الدرس</h2>
+    <ol>
+      <li><a href="#s1">كيف يعمل الإنترنت؟</a></li>
+      <li><a href="#s2">Client vs Server</a></li>
+      <li><a href="#s3">HTTP — لغة الويب</a></li>
+      <li><a href="#s4">أساليب HTTP وأكواد الاستجابة</a></li>
+      <li><a href="#s5">الفرونت إند vs الباك إند</a></li>
+      <li><a href="#s6">ماذا يبني مطور الباك إند؟</a></li>
+      <li><a href="#s7">التقنيات التي سنتعلمها</a></li>
+      <li><a href="#s8">رحلة الطلب كاملة</a></li>
+      <li><a href="#exercises">التمارين</a></li>
+      <li><a href="#quiz">اختبر فهمك</a></li>
+    </ol>
+  </div>
+
+  <!-- S1 -->
+  <div class="section" id="s1">
+    <h2 class="section-title"><span class="num">.1</span> كيف يعمل الإنترنت؟ <span class="en">How Internet Works</span></h2>
+    <div class="content">
+      <p>عندما تفتح أي موقع مثل <code>google.com</code> — ماذا يحدث خلف الكواليس؟</p>
+
+      <div class="analogy" style="background:linear-gradient(135deg,#fef3c7,#fde68a);border:2px solid #f59e0b;border-radius:12px;padding:16px 20px;margin:14px 0;position:relative;">
+        <div style="position:absolute;top:-14px;right:18px;background:var(--paper);padding:0 8px;font-size:1.4rem;">🤔</div>
+        <div style="font-family:'Aref Ruqaa',serif;color:#92400e;font-weight:700;margin-bottom:8px;">تشبيه المطعم</div>
+        <p style="font-size:.95rem;color:#78350f;">الإنترنت مثل مطعم — أنت <strong>الزبون (Client)</strong> تطلب طبقاً من <strong>النادل</strong> الذي يذهب للـ <strong>مطبخ (Server)</strong> ويُعيد لك الطعام. أنت لا ترى المطبخ — هذا هو الباك إند.</p>
+      </div>
+
+      <p>الخطوات الفعلية عند كتابة <code>google.com</code>:</p>
+      <ul>
+        <li>المتصفح يبحث عن عنوان IP لـ <code>google.com</code> عبر نظام <strong>DNS</strong></li>
+        <li>يُرسل <strong>طلب HTTP</strong> لخادم Google</li>
+        <li>الخادم يُعالج الطلب ويُرجع <strong>استجابة HTML</strong></li>
+        <li>المتصفح يُحوّل الـ HTML لصفحة مرئية</li>
+      </ul>
+
+      <div class="cs-diagram">
+        <div class="cs-box client">
+          <div class="cs-icon">💻</div>
+          <div class="cs-label">Client</div>
+          <div class="cs-sub">المتصفح / التطبيق</div>
+        </div>
+        <div class="cs-arrow">
+          <div class="cs-arrow-label">← طلب (Request)</div>
+          <div class="cs-arrow-line"></div>
+          <div class="cs-arrow-back">استجابة (Response) →</div>
+        </div>
+        <div class="cs-box server">
+          <div class="cs-icon">🖥️</div>
+          <div class="cs-label">Server</div>
+          <div class="cs-sub">الخادم / الباك إند</div>
+        </div>
+        <div class="cs-arrow">
+          <div class="cs-arrow-label">← استعلام</div>
+          <div class="cs-arrow-line" style="background:linear-gradient(90deg,#0ea5e9,#16a34a)"></div>
+          <div class="cs-arrow-back">بيانات →</div>
+        </div>
+        <div class="cs-box db">
+          <div class="cs-icon">🗄️</div>
+          <div class="cs-label">Database</div>
+          <div class="cs-sub">قاعدة البيانات</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- S2 -->
+  <div class="section" id="s2">
+    <h2 class="section-title"><span class="num">.2</span> Client vs Server <span class="en">Client-Server Model</span></h2>
+    <div class="content">
+
+      <table class="comp-table">
+        <thead><tr><th>الجانب</th><th>Client (العميل)</th><th>Server (الخادم)</th></tr></thead>
+        <tbody>
+          <tr><td>من هو؟</td><td>المتصفح / التطبيق</td><td>حاسب يستقبل الطلبات</td></tr>
+          <tr><td>يعمل أين؟</td><td>جهاز المستخدم</td><td>مركز بيانات / سحابة</td></tr>
+          <tr><td>يرى الكود؟</td><td class="check">نعم (HTML, CSS, JS)</td><td>لا — مخفي تماماً</td></tr>
+          <tr><td>يبدأ التواصل؟</td><td class="check">دائماً هو يبدأ</td><td>ينتظر ويستجيب</td></tr>
+          <tr><td>يصل للـ DB؟</td><td>لا (مباشرة)</td><td class="check">نعم</td></tr>
+          <tr><td>أمثلة</td><td>Chrome, Safari, React Native App</td><td>Node.js, Python, Java</td></tr>
+        </tbody>
+      </table>
+
+      <div class="info-box">الخادم يمكنه أن يكون <strong>Client</strong> في نفس الوقت! مثلاً: خادمك يُرسل طلباً لخدمة الدفع (Stripe) — فهو عميل بالنسبة لـ Stripe وخادم بالنسبة لتطبيقك.</div>
+    </div>
+  </div>
+
+  <!-- S3 -->
+  <div class="section" id="s3">
+    <h2 class="section-title"><span class="num">.3</span> HTTP — لغة الويب <span class="en">HTTP Protocol</span></h2>
+    <div class="content">
+      <p><strong>HTTP</strong> (HyperText Transfer Protocol) هي اللغة التي يتحدث بها Client وServer — كل طلب واستجابة تتبع هذا البروتوكول.</p>
+
+      <div class="code-box">
+<div class="code-header"><span>🌐 هيكل طلب HTTP (Request)</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">// ما يُرسله المتصفح للخادم</span>
+GET /api/users/42 HTTP/1.1
+Host: api.example.com
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9...
+Content-Type: application/json
+Accept: application/json
+
+<span class="comment">// ↑ السطر الأول: الطريقة + المسار + الإصدار</span>
+<span class="comment">// ↑ Headers: معلومات إضافية</span>
+<span class="comment">// Body (اختياري): في POST/PUT تُرسل البيانات هنا</span></pre>
+      </div>
+
+      <div class="code-box blue">
+<div class="code-header"><span>📨 هيكل استجابة HTTP (Response)</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">// ما يُعيده الخادم</span>
+HTTP/1.1 200 OK
+Content-Type: application/json
+X-Request-Id: 8f3a2b91
+
+{
+  "id": 42,
+  "name": "أحمد محمد",
+  "email": "ahmed@example.com"
+}
+
+<span class="comment">// ↑ السطر الأول: الإصدار + كود الحالة</span>
+<span class="comment">// ↑ Headers: نوع المحتوى ومعلومات الخادم</span>
+<span class="comment">// ↑ Body: البيانات المُعادة (عادةً JSON)</span></pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- S4 -->
+  <div class="section" id="s4">
+    <h2 class="section-title"><span class="num">.4</span> أساليب HTTP وأكواد الاستجابة <span class="en">Methods & Status Codes</span></h2>
+    <div class="content">
+      <p>كل طلب HTTP له <strong>طريقة (Method)</strong> تُخبر الخادم بنوع العملية المطلوبة:</p>
+
+      <div class="http-methods">
+        <span class="http-badge http-get">GET — اقرأ</span>
+        <span class="http-badge http-post">POST — أنشئ</span>
+        <span class="http-badge http-put">PUT — استبدل</span>
+        <span class="http-badge http-patch">PATCH — عدّل جزئياً</span>
+        <span class="http-badge http-delete">DELETE — احذف</span>
+      </div>
+
+      <div class="code-box">
+<div class="code-header"><span>🗂️ HTTP Methods في REST API</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">// مثال: API إدارة المستخدمين</span>
+
+GET    /api/users        <span class="comment">→ جلب قائمة المستخدمين</span>
+GET    /api/users/42     <span class="comment">→ جلب مستخدم محدد</span>
+POST   /api/users        <span class="comment">→ إنشاء مستخدم جديد</span>
+PUT    /api/users/42     <span class="comment">→ تحديث المستخدم كاملاً</span>
+PATCH  /api/users/42     <span class="comment">→ تحديث حقل واحد فقط</span>
+DELETE /api/users/42     <span class="comment">→ حذف المستخدم</span></pre>
+      </div>
+
+      <p style="margin-top:16px;">وأكواد الاستجابة تُخبرك بنتيجة الطلب:</p>
+
+      <div class="status-grid">
+        <div class="status-card s2xx">
+          <div class="status-code">200 OK</div>
+          <div class="status-desc">نجاح — جلب/تحديث</div>
+        </div>
+        <div class="status-card s2xx">
+          <div class="status-code">201 Created</div>
+          <div class="status-desc">تم إنشاء مورد جديد</div>
+        </div>
+        <div class="status-card s2xx">
+          <div class="status-code">204 No Content</div>
+          <div class="status-desc">نجاح بدون بيانات (حذف)</div>
+        </div>
+        <div class="status-card s3xx">
+          <div class="status-code">301 Redirect</div>
+          <div class="status-desc">تحويل دائم لرابط آخر</div>
+        </div>
+        <div class="status-card s4xx">
+          <div class="status-code">400 Bad Request</div>
+          <div class="status-desc">خطأ في بيانات الطلب</div>
+        </div>
+        <div class="status-card s4xx">
+          <div class="status-code">401 Unauthorized</div>
+          <div class="status-desc">غير مُصادق عليه</div>
+        </div>
+        <div class="status-card s4xx">
+          <div class="status-code">403 Forbidden</div>
+          <div class="status-desc">مُصادق لكن غير مُخوّل</div>
+        </div>
+        <div class="status-card s4xx">
+          <div class="status-code">404 Not Found</div>
+          <div class="status-desc">المورد غير موجود</div>
+        </div>
+        <div class="status-card s5xx">
+          <div class="status-code">500 Server Error</div>
+          <div class="status-desc">خطأ داخلي في الخادم</div>
+        </div>
+      </div>
+
+      <div class="tip-box"><strong>قاعدة سهلة:</strong> 2xx = نجاح ✅ | 3xx = تحويل 🔀 | 4xx = خطأ من العميل ❌ | 5xx = خطأ من الخادم 💥</div>
+    </div>
+  </div>
+
+  <!-- S5 -->
+  <div class="section" id="s5">
+    <h2 class="section-title"><span class="num">.5</span> الفرونت إند vs الباك إند <span class="en">Frontend vs Backend</span></h2>
+    <div class="content">
+
+      <table class="comp-table">
+        <thead><tr><th>الجانب</th><th>🎨 الفرونت إند</th><th>⚙️ الباك إند</th></tr></thead>
+        <tbody>
+          <tr><td>التعريف</td><td>ما يراه ويتفاعل معه المستخدم</td><td>المنطق والبيانات خلف الكواليس</td></tr>
+          <tr><td>يعمل أين؟</td><td>المتصفح / الجهاز</td><td>خادم في السحابة</td></tr>
+          <tr><td>اللغات</td><td>HTML, CSS, JS, React, Flutter</td><td>Node.js, Python, Java, Go</td></tr>
+          <tr><td>يتعامل مع؟</td><td>واجهة المستخدم، الأنيميشن</td><td>قواعد البيانات، الأمان، المنطق</td></tr>
+          <tr><td>المخرج</td><td>صفحات، تطبيقات</td><td>APIs تُخدم أي Client</td></tr>
+          <tr><td>مثال يومي</td><td>شكل وتفاعل موقع أمازون</td><td>سلة التسوق، المدفوعات، المخزون</td></tr>
+        </tbody>
+      </table>
+
+      <div class="note-box">الباك إند الواحد يخدم أي عدد من الـ Clients — موقع ويب، تطبيق iOS، تطبيق Android، Alexa — كلها تتصل بنفس الـ API!</div>
+    </div>
+  </div>
+
+  <!-- S6 -->
+  <div class="section" id="s6">
+    <h2 class="section-title"><span class="num">.6</span> ماذا يبني مطور الباك إند؟ <span class="en">What Backend Devs Build</span></h2>
+    <div class="content">
+      <p>مطور الباك إند مسؤول عن كل ما لا تراه في التطبيق — وهو الأكثر تأثيراً على الأمان والأداء:</p>
+
+      <div class="stack-grid">
+        <div class="stack-card">
+          <div class="stack-icon">🔌</div>
+          <div class="stack-name">REST API</div>
+          <div class="stack-role">نقاط تواصل للفرونت إند</div>
+        </div>
+        <div class="stack-card">
+          <div class="stack-icon">🗄️</div>
+          <div class="stack-name">Database</div>
+          <div class="stack-role">تخزين واسترجاع البيانات</div>
+        </div>
+        <div class="stack-card">
+          <div class="stack-icon">🔐</div>
+          <div class="stack-name">Auth & Security</div>
+          <div class="stack-role">تسجيل دخول، صلاحيات</div>
+        </div>
+        <div class="stack-card">
+          <div class="stack-icon">📧</div>
+          <div class="stack-name">Emails & Notifications</div>
+          <div class="stack-role">إرسال البريد والإشعارات</div>
+        </div>
+        <div class="stack-card">
+          <div class="stack-icon">📁</div>
+          <div class="stack-name">File Storage</div>
+          <div class="stack-role">رفع الصور والملفات</div>
+        </div>
+        <div class="stack-card">
+          <div class="stack-icon">💳</div>
+          <div class="stack-name">Payments</div>
+          <div class="stack-role">تكامل بوابات الدفع</div>
+        </div>
+        <div class="stack-card">
+          <div class="stack-icon">🔄</div>
+          <div class="stack-name">Real-time</div>
+          <div class="stack-role">WebSockets / الإشعارات الفورية</div>
+        </div>
+        <div class="stack-card">
+          <div class="stack-icon">📊</div>
+          <div class="stack-name">Analytics & Logs</div>
+          <div class="stack-role">تتبع الأداء والأخطاء</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- S7 -->
+  <div class="section" id="s7">
+    <h2 class="section-title"><span class="num">.7</span> التقنيات التي سنتعلمها <span class="en">Our Tech Stack</span></h2>
+    <div class="content">
+
+      <div class="code-box" style="background:#0f172a; border-color:#334155; color:#e2e8f0; direction:ltr; font-size:.85rem;">
+<div class="code-header" style="color:#94a3b8; direction:rtl;"><span>🗺️ خارطة المسار</span></div>
+<pre style="color:#e2e8f0;">
+<span style="color:#fbbf24;">المرحلة 1</span> — <span style="color:#4ade80;">Node.js</span>        الأساس + أوامر + وحدات + HTTP خام
+<span style="color:#fbbf24;">المرحلة 2</span> — <span style="color:#f472b6;">Express.js</span>     Routing + Middleware + REST API + CRUD
+<span style="color:#fbbf24;">المرحلة 3</span> — <span style="color:#60a5fa;">PostgreSQL</span>     SQL + Joins + Prisma ORM
+<span style="color:#fbbf24;">المرحلة 4</span> — <span style="color:#4ade80;">MongoDB</span>        NoSQL + Mongoose + Schema
+<span style="color:#fbbf24;">المرحلة 5</span> — <span style="color:#f87171;">Security</span>      bcrypt + JWT + Roles + CORS
+<span style="color:#fbbf24;">المرحلة 6</span> — <span style="color:#fb923c;">Advanced</span>      Upload + WebSockets + Deploy + Projects
+</pre>
+      </div>
+
+      <div class="tip-box"><strong>لماذا Node.js؟</strong> لأنك تعرف JavaScript — فبدل تعلم لغة جديدة تُركّز على مفاهيم الباك إند. كما أن Node.js من أسرع البيئات وأكثرها شيوعاً في السوق.</div>
+    </div>
+  </div>
+
+  <!-- S8 — Live Preview -->
+  <div class="section" id="s8">
+    <h2 class="section-title"><span class="num">.8</span> رحلة الطلب كاملة <span class="en">Full Request Journey</span></h2>
+    <div class="content"><p>هذا ما يحدث عندما يضغط المستخدم "تسجيل الدخول":</p></div>
+
+    <div class="live-preview">
+      <div class="lp-header">
+        <span>🌐 رحلة الطلب — Login Request</span>
+        <span class="lp-tag">HTTP Flow</span>
+      </div>
+      <div class="lp-body">
+        <div class="lp-code">
+<pre><span class="c">// 1. المتصفح يُرسل</span>
+<span class="t">POST</span> /api/auth/login
+Content-Type: <span class="s">application/json</span>
+
+{
+  <span class="s">"email"</span>: <span class="s">"user@mail.com"</span>,
+  <span class="s">"password"</span>: <span class="s">"mypassword"</span>
+}
+
+<span class="c">// 2. الخادم يُعالج</span>
+<span class="k">→</span> يقرأ البيانات
+<span class="k">→</span> يبحث في DB
+<span class="k">→</span> يتحقق من كلمة المرور
+<span class="k">→</span> يُنشئ JWT Token
+
+<span class="c">// 3. الخادم يُعيد</span>
+<span class="a">HTTP/1.1</span> <span class="n">200</span> OK
+{
+  <span class="s">"token"</span>: <span class="s">"eyJ..."</span>,
+  <span class="s">"user"</span>: { <span class="s">"id"</span>: <span class="n">1</span> }
+}
+
+<span class="c">// 4. المتصفح يحفظ الـ Token</span>
+<span class="k">→</span> يُخزّنه و يُرسله مع
+   كل طلب لاحق</pre>
+        </div>
+        <div class="lp-terminal">
+          <div class="terminal-window">
+            <div class="terminal-bar">
+              <div class="t-dot red"></div>
+              <div class="t-dot yellow"></div>
+              <div class="t-dot green"></div>
+              <span class="t-title">server.log</span>
+            </div>
+            <div class="terminal-screen">
+              <div><span class="t-prompt">$</span> <span class="t-cmd">node server.js</span></div>
+              <div><span class="t-ok">✓</span> <span class="t-info">Server running on</span></div>
+              <div>&nbsp;&nbsp;<span class="t-url">http://localhost:3000</span></div>
+              <div><span class="t-out">─────────────────────</span></div>
+              <div><span class="t-info">POST</span> <span class="t-cmd">/api/auth/login</span></div>
+              <div><span class="t-out">  body: { email, pass }</span></div>
+              <div><span class="t-out">  DB query: find user</span></div>
+              <div><span class="t-out">  bcrypt: verify ✓</span></div>
+              <div><span class="t-out">  JWT: generated</span></div>
+              <div><span class="t-ok">  → 200 OK</span> <span class="t-out">(42ms)</span></div>
+              <div><span class="t-out">─────────────────────</span></div>
+              <div><span class="t-prompt">$</span> <span class="t-cursor"></span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EXERCISES -->
+  <div class="section" id="exercises">
+    <h2 class="section-title"><span class="num">📝</span> التمارين العملية <span class="en">Exercises</span></h2>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 1: تمييز العناصر</div>
+      <p>صنّف كل عنصر من التالي: (Client / Server / Database)<br>
+      أ) تطبيق Instagram على هاتفك<br>
+      ب) MySQL المثبّت على خادم AWS<br>
+      ج) خادم Node.js يعالج طلبات التسجيل</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <p>أ) <strong>Client</strong> — التطبيق يعمل على جهازك ويُرسل الطلبات<br>
+        ب) <strong>Database</strong> — يخزن ويسترجع البيانات<br>
+        ج) <strong>Server</strong> — يستقبل الطلبات ويعالجها</p>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 2: صمّم API</div>
+      <p>صمّم نقاط API لتطبيق مدونة يحتوي على منشورات (<code>posts</code>). اكتب الـ Method والمسار لكل عملية: جلب الكل، جلب واحد، إنشاء، تعديل، حذف.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box"><pre>GET    /api/posts          <span class="comment">→ جلب جميع المنشورات</span>
+GET    /api/posts/:id      <span class="comment">→ جلب منشور واحد</span>
+POST   /api/posts          <span class="comment">→ إنشاء منشور جديد</span>
+PUT    /api/posts/:id      <span class="comment">→ تحديث المنشور كاملاً</span>
+DELETE /api/posts/:id      <span class="comment">→ حذف المنشور</span></pre></div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 3: أكواد الحالة</div>
+      <p>ما كود HTTP المناسب لكل حالة؟<br>
+      أ) جلب ملف شخصي بنجاح<br>
+      ب) محاولة حذف منشور لا تملكه (مُسجّل لكن غير مخوّل)<br>
+      ج) إرسال بيانات تسجيل ناقصة<br>
+      د) خطأ غير متوقع في الخادم</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <p>أ) <code>200 OK</code> — النجاح العادي<br>
+        ب) <code>403 Forbidden</code> — مُصادق لكن غير مُخوّل<br>
+        ج) <code>400 Bad Request</code> — خطأ في بيانات الطلب<br>
+        د) <code>500 Internal Server Error</code> — خطأ داخلي</p>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 4: رحلة الطلب</div>
+      <p>رتّب الخطوات التالية بالترتيب الصحيح عندما يضغط مستخدم "اشتري الآن":<br>
+      (أ) الخادم يُخصم من المخزون في قاعدة البيانات<br>
+      (ب) التطبيق يُرسل POST /api/orders مع بيانات الطلب<br>
+      (ج) المستخدم يرى تأكيد الطلب على الشاشة<br>
+      (د) الخادم يُعيد 201 Created مع رقم الطلب<br>
+      (هـ) الخادم يتحقق من صحة بيانات الدفع</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <p>الترتيب الصحيح: <strong>ب ← هـ ← أ ← د ← ج</strong><br>
+        (إرسال الطلب ← التحقق من الدفع ← تحديث المخزون ← إعادة الاستجابة ← عرض التأكيد)</p>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 5: فرونت أم باك؟</div>
+      <p>حدّد لكل مهمة: هل هي مسؤولية الفرونت إند أم الباك إند؟<br>
+      أ) التحقق من صحة بريد المستخدم في قاعدة البيانات<br>
+      ب) إظهار رسالة خطأ حمراء عند إدخال كلمة مرور خاطئة<br>
+      ج) تشفير كلمة المرور قبل التخزين<br>
+      د) تنسيق تاريخ إنشاء المنشور بالعربي<br>
+      هـ) إرسال إيميل ترحيب للمستخدم الجديد</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <p>أ) <strong>باك إند</strong> — الوصول لقاعدة البيانات<br>
+        ب) <strong>فرونت إند</strong> — عرض للمستخدم<br>
+        ج) <strong>باك إند</strong> — الأمان الحساس<br>
+        د) <strong>فرونت إند</strong> — تنسيق مرئي<br>
+        هـ) <strong>باك إند</strong> — إرسال البريد من الخادم</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="quiz-container" id="quiz">
+    <div class="quiz-intro"><p>اختبر فهمك لأسس الباك إند والإنترنت!</p></div>
+    <div class="quiz-type-tabs">
+      <button class="qt-tab active" onclick="switchQuiz(this,'tf')">✓✗ صح وخطأ</button>
+      <button class="qt-tab" onclick="switchQuiz(this,'mc')">🔘 اختيار من متعدد</button>
+    </div>
+
+    <div class="quiz-section active" id="quiz-tf">
+      <div class="quiz-question" data-correct="false">
+        <span class="q-num">1</span><span class="q-text">كود الباك إند مرئي للمستخدم في المتصفح مثل HTML و CSS.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">2</span><span class="q-text">HTTP هو البروتوكول الأساسي لتبادل البيانات على الويب.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">3</span><span class="q-text">الخادم (Server) دائماً ينتظر الطلبات ولا يبدأ التواصل بنفسه (في REST).</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="false">
+        <span class="q-num">4</span><span class="q-text">كود HTTP 403 يعني أن المورد غير موجود.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">5</span><span class="q-text">باك إند واحد يمكنه خدمة موقع ويب وتطبيق Android وتطبيق iOS في آنٍ واحد.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <button class="quiz-submit" onclick="submitQuiz('tf')">عرض النتيجة 🎯</button>
+      <div class="quiz-result" id="result-tf"><div class="result-score" id="score-tf">0/5</div><div class="result-label">إجابات صحيحة</div><div class="result-message" id="msg-tf"></div><button class="retry-btn" onclick="retryQuiz('tf')">🔄 حاول تاني</button></div>
+    </div>
+
+    <div class="quiz-section" id="quiz-mc">
+      <div class="quiz-question" data-correct="2">
+        <span class="q-num">1</span><span class="q-text">أي Method HTTP تستخدم لإنشاء مورد جديد؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">GET</button>
+          <button class="q-opt" onclick="answerMC(this,1)">PUT</button>
+          <button class="q-opt" onclick="answerMC(this,2)">POST</button>
+          <button class="q-opt" onclick="answerMC(this,3)">PATCH</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="1">
+        <span class="q-num">2</span><span class="q-text">ما كود HTTP الصحيح لعملية إنشاء مورد جديد بنجاح؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">200 OK</button>
+          <button class="q-opt" onclick="answerMC(this,1)">201 Created</button>
+          <button class="q-opt" onclick="answerMC(this,2)">204 No Content</button>
+          <button class="q-opt" onclick="answerMC(this,3)">200 New</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="3">
+        <span class="q-num">3</span><span class="q-text">ما اختصار API؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">Application Page Interface</button>
+          <button class="q-opt" onclick="answerMC(this,1)">App Protocol Integration</button>
+          <button class="q-opt" onclick="answerMC(this,2)">Advanced Program Input</button>
+          <button class="q-opt" onclick="answerMC(this,3)">Application Programming Interface</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="0">
+        <span class="q-num">4</span><span class="q-text">مستخدم مسجّل الدخول يحاول حذف منشور لا يخصه — ما الكود المناسب؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">403 Forbidden</button>
+          <button class="q-opt" onclick="answerMC(this,1)">401 Unauthorized</button>
+          <button class="q-opt" onclick="answerMC(this,2)">404 Not Found</button>
+          <button class="q-opt" onclick="answerMC(this,3)">400 Bad Request</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="2">
+        <span class="q-num">5</span><span class="q-text">ما الفرق بين PUT و PATCH؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">لا فرق — مترادفان</button>
+          <button class="q-opt" onclick="answerMC(this,1)">PUT للحذف، PATCH للتحديث</button>
+          <button class="q-opt" onclick="answerMC(this,2)">PUT يستبدل المورد كاملاً، PATCH يعدّل حقولاً محددة</button>
+          <button class="q-opt" onclick="answerMC(this,3)">PUT أسرع من PATCH</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <button class="quiz-submit" onclick="submitQuiz('mc')">عرض النتيجة 🎯</button>
+      <div class="quiz-result" id="result-mc"><div class="result-score" id="score-mc">0/5</div><div class="result-label">إجابات صحيحة</div><div class="result-message" id="msg-mc"></div><button class="retry-btn" onclick="retryQuiz('mc')">🔄 حاول تاني</button></div>
+    </div>
+  </div>
+
+  <div class="lesson-nav">
+    <a href="./index.html" class="nav-btn"><span>⬅️</span><span>فهرس المسار</span></a>
+    <button class="nav-btn complete-btn" id="completeBtn" onclick="markComplete(this)" style="background:#7c3aed; border-color:#7c3aed;"><span>✅</span><span>علّم كمكتمل</span></button>
+    <a href="./lesson-02.html" class="nav-btn"><span>الدرس التالي</span><span>➡️</span></a>
+  </div>
+
+  <div class="notebook-footer">
+    <h3>🎉 الأساس واضح الآن!</h3>
+    <p>الإنترنت، HTTP، Client-Server — هذا الفهم سيجعل كل درس قادم أسهل. ⚙️<br><strong>الدرس التالي: Node.js + npm + أول سكريبت 🟢</strong></p>
+  </div>
+</div>
+
+<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">⬆️</button>
+<div class="toast" id="toast"></div>
+<script src="../../js/data/courses.js"></script>
+<script src="../../js/progress.js"></script>
+<script>
+const COURSE_ID='backend', LESSON_ID=1, TOTAL=32;
+function toggleSolution(b){const s=b.nextElementSibling;s.classList.toggle('show');b.textContent=s.classList.contains('show')?'إخفاء الحل ▲':'عرض الحل ▼';}
+function copyCode(b){const p=b.closest('.code-box').querySelector('pre');navigator.clipboard.writeText(p.innerText).then(()=>{b.classList.add('copied');b.textContent='✓ تم النسخ';setTimeout(()=>{b.classList.remove('copied');b.textContent='📋 نسخ';},2000);});}
+function switchQuiz(b,t){document.querySelectorAll('.qt-tab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.quiz-section').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.getElementById('quiz-'+t).classList.add('active');}
+const answers={tf:{},mc:{}};
+function answerTF(b,v){const q=b.closest('.quiz-question'),i=Array.from(q.parentNode.querySelectorAll('.quiz-question')).indexOf(q);q.querySelectorAll('.q-opt').forEach(o=>o.classList.remove('selected'));b.classList.add('selected');answers.tf[i]=v;}
+function answerMC(b,i){const q=b.closest('.quiz-question'),qi=Array.from(q.parentNode.querySelectorAll('.quiz-question')).indexOf(q);q.querySelectorAll('.q-opt').forEach(o=>o.classList.remove('selected'));b.classList.add('selected');answers.mc[qi]=i;}
+function submitQuiz(type){const sec=document.getElementById('quiz-'+type),qs=sec.querySelectorAll('.quiz-question');let c=0;qs.forEach((q,i)=>{const ca=type==='tf'?(q.dataset.correct==='true'):parseInt(q.dataset.correct),ua=answers[type][i],fb=q.querySelector('.q-feedback'),opts=q.querySelectorAll('.q-opt');opts.forEach(o=>{o.classList.remove('selected');o.disabled=true;});if(ua===undefined){fb.className='q-feedback wrong show';fb.textContent='⚠️ ما اخترتش إجابة!';return;}if(ua===ca){c++;fb.className='q-feedback correct show';fb.textContent='✓ إجابة صحيحة!';if(type==='tf')opts[ca?0:1].classList.add('correct');else opts[ca].classList.add('correct');}else{fb.className='q-feedback wrong show';if(type==='tf'){opts[ca?0:1].classList.add('correct');opts[ua?0:1].classList.add('wrong');fb.textContent='✗ خطأ.';}else{opts[ca].classList.add('correct');opts[ua].classList.add('wrong');fb.textContent='✗ الإجابة بالأخضر.';}}});const r=document.getElementById('result-'+type);document.getElementById('score-'+type).textContent=c+'/'+qs.length;const m=document.getElementById('msg-'+type);if(c===qs.length){m.textContent='🏆 ممتاز 100%!';m.className='result-message excellent';}else if(c>=3){m.textContent='👍 جيد!';m.className='result-message good';}else{m.textContent='📚 راجع الدرس.';m.className='result-message try-again';}r.classList.add('show');r.scrollIntoView({behavior:'smooth',block:'center'});}
+function retryQuiz(type){const sec=document.getElementById('quiz-'+type);sec.querySelectorAll('.q-opt').forEach(o=>{o.classList.remove('selected','correct','wrong');o.disabled=false;});sec.querySelectorAll('.q-feedback').forEach(f=>{f.classList.remove('show','correct','wrong');f.textContent='';});document.getElementById('result-'+type).classList.remove('show');answers[type]={};}
+function markComplete(btn){const done=Progress.toggleLessonComplete(COURSE_ID,LESSON_ID);btn.classList.toggle('completed',done);btn.querySelector('span:last-child').textContent=done?'مكتمل! ⭐':'علّم كمكتمل';showToast(done?'🎉 أكملت الدرس الأول!':'تم إلغاء الإكمال');}
+if(Progress.isLessonComplete(COURSE_ID,LESSON_ID)){const b=document.getElementById('completeBtn');b.classList.add('completed');b.querySelector('span:last-child').textContent='مكتمل! ⭐';}
+(function(){const p=Progress.getCourseProgress(COURSE_ID,TOTAL);document.getElementById('progFill').style.width=p+'%';document.getElementById('progText').textContent=p+'%';})();
+function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
+window.addEventListener('scroll',()=>{document.getElementById('scrollTop').classList.toggle('show',window.scrollY>300);});
+document.querySelectorAll('.toc-card a').forEach(l=>{l.addEventListener('click',e=>{e.preventDefault();const t=document.querySelector(l.getAttribute('href'));if(t)t.scrollIntoView({behavior:'smooth',block:'start'});});});
+</script>
+</body>
+</html>

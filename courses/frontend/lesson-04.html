@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-V2NCKVL16D"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-V2NCKVL16D');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>الصور والوسائط المتعددة - دفتر البرمجة</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=Cairo:wght@300;400;500;600;700;900&family=Caveat:wght@400;700&family=Fira+Code:wght@400;500;600&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--paper:#fffef7;--paper-line:#c5d8e8;--paper-margin:#f4a8a8;--ink-blue:#1e3a8a;--ink-blue-light:#2563eb;--ink-red:#dc2626;--ink-pink:#db2777;--ink-green:#15803d;--ink-purple:#7c3aed;--ink-orange:#ea580c;--ink-teal:#0d9488;--text:#1e293b;--text-muted:#64748b;--border:#e2e8f0;--shadow:0 4px 24px rgba(30,58,138,0.08);--shadow-lg:0 20px 60px rgba(0,0,0,0.08);--radius:16px;--code-bg:#fff9e6;--code-bg-blue:#e6f7ff;--code-bg-green:#f0fdf4;--code-bg-pink:#fdf2f8;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Cairo',sans-serif;background:radial-gradient(ellipse at top,#e8d5b7 0%,#d4b896 100%);min-height:100vh;padding:20px 10px;color:var(--text);line-height:1.8;}
+.top-bar{max-width:1100px;margin:0 auto 16px;background:white;border-radius:var(--radius);padding:14px 22px;display:flex;align-items:center;justify-content:space-between;box-shadow:var(--shadow);flex-wrap:wrap;gap:10px;}
+.crumbs{display:flex;align-items:center;gap:8px;font-size:.9rem;color:var(--text-muted);flex-wrap:wrap;}
+.crumbs a{color:var(--ink-blue);text-decoration:none;font-weight:600;}
+.crumbs .sep{color:var(--border);}.crumbs .current{color:var(--text);font-weight:700;}
+.progress-mini{display:flex;align-items:center;gap:8px;font-size:.85rem;}
+.progress-bar-mini{width:100px;height:6px;background:var(--border);border-radius:3px;overflow:hidden;}
+.progress-fill-mini{height:100%;background:linear-gradient(90deg,var(--ink-blue),var(--ink-green));width:0%;transition:width .4s;}
+.notebook{max-width:1100px;margin:0 auto;background:var(--paper);background-image:linear-gradient(var(--paper-line) 1px,transparent 1px);background-size:100% 32px;background-position:0 80px;border-radius:8px;box-shadow:var(--shadow-lg),0 0 0 1px rgba(0,0,0,.05);position:relative;overflow:hidden;padding:30px 40px 40px 60px;}
+.notebook::before{content:'';position:absolute;top:0;bottom:0;right:50px;width:2px;background:var(--paper-margin);opacity:.6;}
+.notebook::after{content:'';position:absolute;left:18px;top:0;bottom:0;width:14px;background-image:radial-gradient(circle at center,#d4b896 0%,#d4b896 50%,transparent 51%);background-size:14px 14px;background-repeat:repeat-y;background-position:center 80px;}
+.notebook-header{text-align:center;padding:20px 0 30px;border-bottom:2px dashed var(--ink-blue);margin-bottom:30px;}
+.lesson-tag{display:inline-flex;align-items:center;gap:6px;background:white;border:2px solid var(--ink-orange);color:var(--ink-orange);padding:5px 14px;border-radius:20px;font-family:'Caveat',cursive;font-size:1.1rem;font-weight:700;margin-bottom:12px;transform:rotate(-2deg);}
+.notebook-header h1{font-family:'Aref Ruqaa',serif;font-size:clamp(1.7rem,4.5vw,2.6rem);color:var(--ink-blue);font-weight:700;display:inline-block;text-decoration:underline;text-decoration-color:var(--ink-red);text-decoration-thickness:2px;text-underline-offset:8px;margin-bottom:12px;}
+.sparkle{color:var(--ink-red);font-size:1.2rem;margin:0 8px;display:inline-block;animation:twinkle 2s ease-in-out infinite;}
+@keyframes twinkle{0%,100%{opacity:1;transform:scale(1) rotate(0deg);}50%{opacity:.6;transform:scale(1.2) rotate(20deg);}}
+.lesson-meta{display:flex;justify-content:center;gap:20px;flex-wrap:wrap;margin-top:12px;font-family:'Caveat',cursive;font-size:1.15rem;color:var(--ink-purple);}
+.toc-card{background:rgba(30,58,138,.05);border:2px solid var(--ink-blue);border-radius:var(--radius);padding:18px 22px;margin-bottom:30px;}
+.toc-card h2{font-family:'Aref Ruqaa',serif;color:var(--ink-blue);margin-bottom:12px;text-align:center;font-size:1.2rem;}
+.toc-card ol{padding-right:25px;columns:2;column-gap:25px;}
+.toc-card li{padding:4px 0;font-size:.95rem;break-inside:avoid;}
+.toc-card a{color:var(--ink-blue);text-decoration:none;border-bottom:1px dotted var(--ink-blue);transition:all .2s;}
+.toc-card a:hover{color:var(--ink-red);}
+@media(max-width:700px){.toc-card ol{columns:1;}}
+.section{margin-bottom:45px;position:relative;scroll-margin-top:20px;}
+.section-title{font-family:'Aref Ruqaa',serif;font-size:1.6rem;color:var(--ink-blue);font-weight:700;margin-bottom:18px;display:flex;align-items:center;gap:10px;}
+.section-title .num{color:var(--ink-red);font-family:'Caveat',cursive;font-size:1.9rem;font-weight:700;}
+.section-title .en{font-family:'Caveat',cursive;color:var(--ink-pink);font-size:1.3rem;font-weight:400;margin-right:auto;}
+.content{padding-right:15px;font-size:1.05rem;line-height:1.95;}
+.content p{margin-bottom:14px;}
+.content strong{color:var(--ink-red);font-weight:700;}
+.content em{color:var(--ink-green);font-style:normal;font-weight:600;font-family:'Fira Code',monospace;background:rgba(21,128,61,.08);padding:1px 7px;border-radius:4px;font-size:.92em;}
+.content ul{list-style:none;padding:0;margin:14px 0;}
+.content ul li{position:relative;padding-right:22px;margin-bottom:10px;line-height:1.9;}
+.content ul li::before{content:'◆';position:absolute;right:0;color:var(--ink-red);font-size:.7rem;top:10px;}
+.content ol{padding-right:25px;margin:14px 0;}
+.content ol li{padding:4px 0;line-height:1.9;padding-right:5px;}
+.sub-header{font-family:'Aref Ruqaa',serif;color:var(--ink-red);font-size:1.2rem;font-weight:700;margin:22px 0 12px;border-right:4px solid var(--ink-red);padding-right:14px;}
+.mini-header{font-family:'Caveat',cursive;color:var(--ink-purple);font-size:1.5rem;font-weight:700;margin:18px 0 10px;}
+.analogy{background:linear-gradient(135deg,#fef3c7 0%,#fde68a 100%);border:2px solid #f59e0b;border-radius:var(--radius);padding:16px 20px;margin:20px 0;position:relative;}
+.analogy-title{font-family:'Aref Ruqaa',serif;color:#92400e;font-weight:700;margin-bottom:8px;}
+.code-box{background:var(--code-bg);border:1.5px solid #d4a574;border-radius:10px;padding:16px 20px;margin:14px 0;font-family:'Fira Code','Courier New',monospace;font-size:.95rem;direction:ltr;text-align:left;overflow-x:auto;box-shadow:2px 2px 0 rgba(212,165,116,.3);line-height:1.7;position:relative;}
+.code-box.blue{background:var(--code-bg-blue);border-color:#7dd3fc;box-shadow:2px 2px 0 rgba(125,211,252,.3);}
+.code-box.green{background:var(--code-bg-green);border-color:#86efac;box-shadow:2px 2px 0 rgba(134,239,172,.3);}
+.code-box.pink{background:var(--code-bg-pink);border-color:#f9a8d4;box-shadow:2px 2px 0 rgba(249,168,212,.3);}
+.code-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;font-family:'Cairo',sans-serif;font-size:.78rem;color:var(--text-muted);direction:rtl;font-weight:600;}
+.copy-btn{background:white;border:1px solid var(--border);border-radius:6px;padding:4px 10px;font-family:'Cairo',sans-serif;font-size:.75rem;font-weight:600;cursor:pointer;transition:all .2s;color:var(--text-muted);}
+.copy-btn:hover{background:var(--ink-blue);color:white;border-color:var(--ink-blue);}
+.copy-btn.copied{background:var(--ink-green);color:white;border-color:var(--ink-green);}
+.tag-open,.tag-close{color:#2563eb;}.tag-name{color:#7c3aed;font-weight:600;}.attr{color:#ea580c;}.attr-val{color:#15803d;}.comment{color:#94a3b8;font-style:italic;}
+.try-it{background:white;border:2px solid var(--ink-purple);border-radius:var(--radius);margin:20px 0;overflow:hidden;box-shadow:var(--shadow);}
+.try-it-header{background:linear-gradient(135deg,var(--ink-purple),#a78bfa);color:white;padding:10px 16px;display:flex;justify-content:space-between;align-items:center;font-weight:700;font-size:.95rem;}
+.try-it-controls{display:flex;gap:8px;}
+.try-btn{background:white;color:var(--ink-purple);border:none;padding:5px 12px;border-radius:6px;font-family:'Cairo',sans-serif;font-size:.78rem;font-weight:700;cursor:pointer;}
+.try-it-body{display:grid;grid-template-columns:1fr 1fr;min-height:200px;}
+.try-it-editor{background:#1e293b;color:white;padding:14px;font-family:'Fira Code',monospace;font-size:.85rem;direction:ltr;text-align:left;border:none;resize:vertical;outline:none;line-height:1.6;min-height:200px;}
+.try-it-preview{background:white;padding:14px;overflow:auto;border-right:2px dashed var(--border);direction:ltr;}
+.try-it-preview iframe{width:100%;height:100%;border:none;min-height:180px;}
+@media(max-width:700px){.try-it-body{grid-template-columns:1fr;}.try-it-preview{border-right:none;border-bottom:2px dashed var(--border);}}
+.example{background:rgba(255,255,255,.7);border-right:4px solid var(--ink-green);padding:14px 18px;margin:14px 0;border-radius:0 8px 8px 0;}
+.example-label{font-family:'Aref Ruqaa',serif;color:var(--ink-green);font-weight:700;display:block;margin-bottom:8px;}
+.warning-box,.tip-box,.note-box,.info-box{border-radius:10px;padding:14px 18px;margin:14px 0;font-size:.98rem;position:relative;padding-right:50px;}
+.warning-box::before,.tip-box::before,.note-box::before,.info-box::before{position:absolute;right:14px;top:12px;font-size:1.3rem;}
+.warning-box{background:#fee2e2;border-right:4px solid var(--ink-red);}.warning-box::before{content:'⚠️';}
+.tip-box{background:#dbeafe;border-right:4px solid var(--ink-blue);}.tip-box::before{content:'💡';}
+.note-box{background:#fef9c3;border-right:4px solid #facc15;}.note-box::before{content:'📌';}
+.info-box{background:#e0f2fe;border-right:4px solid var(--ink-teal);}.info-box::before{content:'ℹ️';}
+.exercise{background:linear-gradient(135deg,#fef3c7 0%,#fde68a 100%);border:2px dashed var(--ink-orange);border-radius:var(--radius);padding:20px 22px;margin:20px 0;position:relative;}
+.exercise::before{content:'✏️';position:absolute;top:-15px;right:20px;background:var(--paper);padding:0 8px;font-size:1.5rem;}
+.exercise-title{font-family:'Aref Ruqaa',serif;color:var(--ink-orange);font-weight:700;font-size:1.15rem;margin-bottom:10px;}
+.solution-toggle{background:var(--ink-green);color:white;border:none;padding:8px 20px;border-radius:20px;font-family:'Cairo',sans-serif;font-size:.95rem;cursor:pointer;margin-top:10px;font-weight:600;transition:all .2s;min-height:44px;}
+.solution-toggle:hover{background:#166534;transform:translateY(-2px);}
+.solution{display:none;margin-top:12px;padding:14px 16px;background:rgba(21,128,61,.08);border-radius:8px;border-right:3px solid var(--ink-green);}
+.solution.show{display:block;animation:slideDown .3s ease-out;}
+@keyframes slideDown{from{opacity:0;transform:translateY(-10px);}to{opacity:1;transform:translateY(0);}}
+.solution-label{font-family:'Caveat',cursive;color:var(--ink-green);font-weight:700;font-size:1.3rem;margin-bottom:8px;display:block;}
+.quiz-container{background:linear-gradient(135deg,#ede9fe 0%,#ddd6fe 100%);border:3px solid var(--ink-purple);border-radius:var(--radius);padding:24px;margin:30px 0;position:relative;}
+.quiz-container::before{content:'🎯 اختبر فهمك';position:absolute;top:-18px;right:30px;background:var(--ink-purple);color:white;padding:6px 16px;border-radius:20px;font-family:'Aref Ruqaa',serif;font-size:1rem;font-weight:700;}
+.quiz-intro{text-align:center;margin-bottom:20px;margin-top:10px;font-size:.95rem;}
+.quiz-type-tabs{display:flex;gap:8px;margin-bottom:20px;justify-content:center;flex-wrap:wrap;}
+.qt-tab{background:white;border:2px solid var(--ink-purple);color:var(--ink-purple);padding:8px 18px;border-radius:20px;font-family:'Cairo',sans-serif;font-size:.9rem;font-weight:700;cursor:pointer;transition:all .2s;}
+.qt-tab.active{background:var(--ink-purple);color:white;}
+.quiz-section{display:none;}.quiz-section.active{display:block;}
+.quiz-question{background:white;padding:16px 18px;border-radius:12px;margin-bottom:14px;box-shadow:0 2px 8px rgba(0,0,0,.05);}
+.q-num{display:inline-block;background:var(--ink-purple);color:white;width:28px;height:28px;border-radius:50%;text-align:center;line-height:28px;font-weight:700;margin-left:10px;font-size:.9rem;}
+.q-text{font-weight:600;font-size:1rem;margin-bottom:14px;display:inline;}
+.q-options{display:flex;flex-direction:column;gap:8px;margin-top:12px;}
+.q-opt{padding:11px 16px;background:#f8fafc;border:2px solid var(--border);border-radius:10px;cursor:pointer;transition:all .2s;font-size:.95rem;text-align:right;font-family:'Cairo',sans-serif;width:100%;}
+.q-opt:hover{border-color:var(--ink-purple);background:white;}.q-opt.selected{border-color:var(--ink-purple);background:#ede9fe;}
+.q-opt.correct{border-color:var(--ink-green);background:#f0fdf4;color:var(--ink-green);font-weight:700;}
+.q-opt.wrong{border-color:var(--ink-red);background:#fee2e2;color:var(--ink-red);}
+.q-feedback{margin-top:10px;padding:10px 14px;border-radius:8px;font-size:.9rem;display:none;line-height:1.7;}
+.q-feedback.show{display:block;animation:slideDown .3s;}
+.q-feedback.correct{background:#f0fdf4;color:var(--ink-green);border-right:3px solid var(--ink-green);}
+.q-feedback.wrong{background:#fee2e2;color:var(--ink-red);border-right:3px solid var(--ink-red);}
+.quiz-submit{width:100%;padding:14px;background:linear-gradient(135deg,var(--ink-purple),#a78bfa);color:white;border:none;border-radius:10px;font-family:'Cairo',sans-serif;font-size:1rem;font-weight:700;cursor:pointer;margin-top:12px;transition:all .2s;}
+.quiz-submit:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(124,58,237,.4);}
+.quiz-result{display:none;background:white;padding:24px;border-radius:12px;margin-top:16px;text-align:center;}
+.quiz-result.show{display:block;animation:slideDown .4s;}
+.result-score{font-family:'Tajawal',sans-serif;font-size:3.5rem;font-weight:900;color:var(--ink-purple);line-height:1;}
+.result-label{font-size:1rem;color:var(--text-muted);margin:6px 0 16px;}
+.result-message{font-size:1.05rem;font-weight:700;margin-bottom:10px;}
+.result-message.excellent{color:var(--ink-green);}.result-message.good{color:var(--ink-blue);}.result-message.try-again{color:var(--ink-orange);}
+.retry-btn{background:var(--ink-purple);color:white;border:none;padding:10px 24px;border-radius:20px;font-family:'Cairo',sans-serif;font-weight:700;cursor:pointer;margin-top:10px;}
+.lesson-nav{display:flex;justify-content:space-between;align-items:center;margin-top:40px;padding-top:30px;border-top:2px dashed var(--ink-blue);gap:12px;flex-wrap:wrap;}
+.nav-btn{display:flex;align-items:center;gap:8px;padding:12px 20px;background:white;border:2px solid var(--ink-blue);border-radius:10px;color:var(--ink-blue);font-family:'Cairo',sans-serif;font-weight:700;font-size:.95rem;cursor:pointer;transition:all .2s;text-decoration:none;}
+.nav-btn:hover{background:var(--ink-blue);color:white;transform:translateY(-2px);}
+.complete-btn{background:var(--ink-green);color:white;border-color:var(--ink-green);flex:1;justify-content:center;max-width:300px;}
+.complete-btn:hover{background:#166534;border-color:#166534;}
+.complete-btn.completed{background:var(--ink-purple);border-color:var(--ink-purple);}
+.notebook-footer{text-align:center;margin-top:30px;padding:22px 25px;background:linear-gradient(135deg,#fce7f3 0%,#fbcfe8 100%);border:2px solid var(--ink-pink);border-radius:var(--radius);}
+.notebook-footer h3{font-family:'Aref Ruqaa',serif;color:var(--ink-pink);font-size:1.3rem;margin-bottom:8px;}
+.notebook-footer p{font-family:'Caveat',cursive;color:var(--ink-purple);font-size:1.2rem;line-height:1.7;}
+.cool-table{width:100%;border-collapse:collapse;margin:16px 0;background:white;border-radius:10px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.05);font-size:.95rem;}
+.cool-table thead{background:linear-gradient(135deg,var(--ink-blue),var(--ink-blue-light));color:white;}
+.cool-table th{padding:12px 14px;text-align:right;font-family:'Aref Ruqaa',serif;font-weight:600;}
+.cool-table td{padding:11px 14px;border-bottom:1px solid var(--border);border-left:1px solid var(--border);}
+.cool-table td:last-child{border-left:none;}
+.cool-table tbody tr:hover{background:#f9fafb;}
+.cool-table code{background:var(--code-bg);padding:2px 8px;border-radius:4px;font-family:'Fira Code',monospace;font-size:.9em;color:var(--ink-purple);}
+.toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(20px);background:#1e293b;color:white;padding:12px 24px;border-radius:30px;font-size:.9rem;font-weight:600;z-index:200;opacity:0;transition:all .3s;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+.scroll-top{position:fixed;bottom:30px;right:30px;width:50px;height:50px;border-radius:50%;background:var(--ink-blue);color:white;border:none;cursor:pointer;font-size:1.3rem;box-shadow:var(--shadow-lg);display:none;z-index:100;transition:all .2s;}
+.scroll-top.show{display:block;}
+@media(max-width:700px){.notebook{padding:20px 20px 25px 35px;}.notebook::before{right:28px;}.notebook::after{left:10px;width:10px;background-size:10px 10px;}.section-title{font-size:1.3rem;}.code-box{font-size:.82rem;padding:12px;}.cool-table{display:block;overflow-x:auto;-webkit-overflow-scrolling:touch;}.try-btn{min-height:44px;padding:8px 14px;}.try-it-editor{font-size:13px;resize:none;}}
+/* Path diagram */
+.path-diagram{background:white;border:2px solid var(--ink-blue);border-radius:12px;padding:18px;margin:16px 0;font-family:'Fira Code',monospace;font-size:.88rem;direction:ltr;}
+.path-diagram .folder{color:var(--ink-orange);font-weight:700;}
+.path-diagram .file{color:var(--ink-green);}
+.path-diagram .current{color:var(--ink-red);font-weight:700;}
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="crumbs">
+    <a href="../../index.html">🏠 الرئيسية</a>
+    <span class="sep">/</span>
+    <a href="./index.html">🌐 الفرونت إند</a>
+    <span class="sep">/</span>
+    <span class="current">📘 الدرس 4: الصور والوسائط المتعددة</span>
+  </div>
+  <div class="progress-mini">
+    <div class="progress-bar-mini"><div class="progress-fill-mini" id="progFill"></div></div>
+    <span id="progText">0%</span>
+  </div>
+</div>
+
+<div class="notebook">
+  <div class="notebook-header">
+    <div class="lesson-tag">📘 الدرس الرابع</div>
+    <h1><span class="sparkle">✦</span> الصور والوسائط المتعددة <span class="sparkle">✦</span></h1>
+    <div class="lesson-meta">
+      <span>⏱️ 30 دقيقة</span>
+      <span>📊 مبتدئ</span>
+      <span>🎯 5 تمارين + اختبار</span>
+    </div>
+  </div>
+
+  <div class="toc-card">
+    <h2>📑 فهرس الدرس</h2>
+    <ol>
+      <li><a href="#s1">وسم الصورة (img)</a></li>
+      <li><a href="#s2">مسارات الصور</a></li>
+      <li><a href="#s3">figure و figcaption</a></li>
+      <li><a href="#s4">الفيديو (video)</a></li>
+      <li><a href="#s5">الصوت (audio)</a></li>
+      <li><a href="#s6">المحتوى المضمّن (iframe)</a></li>
+      <li><a href="#s7">محرر الكود الحي</a></li>
+      <li><a href="#exercises">التمارين</a></li>
+      <li><a href="#quiz">اختبر فهمك</a></li>
+    </ol>
+  </div>
+
+  <!-- SECTION 1 -->
+  <div class="section" id="s1">
+    <h2 class="section-title"><span class="num">.1</span> وسم الصورة <span class="en">The img Tag</span></h2>
+    <div class="content">
+      <p>وسم <em>&lt;img&gt;</em> هو الوسم اللي بيعرض الصور في الصفحة. هو <strong>وسم مفرد</strong> (ملوش إغلاق) وبيحتاج خاصيتين إلزاميتين: <em>src</em> و <em>alt</em>.</p>
+
+      <div class="analogy">
+        <div class="analogy-title">🖼️ تخيل إطار صورة:</div>
+        <p><em>src</em> (Source) = المسار للصورة، زي عنوان المصوّر اللي هتروح تجيب منه الصورة. <em>alt</em> (Alternative Text) = النص البديل اللي بيظهر لو الصورة ما حملتش، أو للمكفوفين.</p>
+      </div>
+
+      <div class="code-box">
+<div class="code-header"><span>🖼️ الصيغة الأساسية</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">&lt;!-- الحد الأدنى --&gt;</span>
+<span class="tag-open">&lt;</span><span class="tag-name">img</span> <span class="attr">src</span>=<span class="attr-val">"photo.jpg"</span> <span class="attr">alt</span>=<span class="attr-val">"وصف الصورة"</span><span class="tag-close">&gt;</span>
+
+<span class="comment">&lt;!-- مع التحكم في الحجم --&gt;</span>
+<span class="tag-open">&lt;</span><span class="tag-name">img</span>
+  <span class="attr">src</span>=<span class="attr-val">"profile.jpg"</span>
+  <span class="attr">alt</span>=<span class="attr-val">"صورة محمد أحمد"</span>
+  <span class="attr">width</span>=<span class="attr-val">"300"</span>
+  <span class="attr">height</span>=<span class="attr-val">"200"</span>
+  <span class="attr">loading</span>=<span class="attr-val">"lazy"</span>
+<span class="tag-close">&gt;</span></pre>
+      </div>
+
+      <div class="sub-header">خصائص وسم الصورة:</div>
+      <table class="cool-table">
+        <thead><tr><th>الخاصية</th><th>وظيفتها</th><th>ملاحظة</th></tr></thead>
+        <tbody>
+          <tr><td><code>src</code></td><td>مسار أو URL الصورة</td><td>إلزامية</td></tr>
+          <tr><td><code>alt</code></td><td>نص بديل عند فشل التحميل أو للمكفوفين</td><td>إلزامية للـ Accessibility و SEO</td></tr>
+          <tr><td><code>width</code></td><td>العرض بالبكسل</td><td>يُفضّل تحديدها لمنع القفز في التحميل</td></tr>
+          <tr><td><code>height</code></td><td>الارتفاع بالبكسل</td><td>يُفضّل تحديدها</td></tr>
+          <tr><td><code>loading="lazy"</code></td><td>يحمّل الصورة فقط لما تظهر في الشاشة</td><td>يُحسّن الأداء كثيراً</td></tr>
+          <tr><td><code>title</code></td><td>نص تلميح عند الـ Hover</td><td>اختياري</td></tr>
+        </tbody>
+      </table>
+
+      <div class="warning-box"><strong>لا تنسى alt أبداً!</strong> الـ alt مش اختياري رغم أن الكود بيشتغل بدونه. هو إلزامي للـ Accessibility والـ SEO. لو الصورة ديكورية بس، اتركه فاضي: <em>alt=""</em></div>
+    </div>
+  </div>
+
+  <!-- SECTION 2 -->
+  <div class="section" id="s2">
+    <h2 class="section-title"><span class="num">.2</span> مسارات الصور <span class="en">Image Paths</span></h2>
+    <div class="content">
+      <p>فهم المسارات مهم جداً عشان الصور تظهر صح. في نوعين:</p>
+
+      <div class="mini-header">1. المسار المطلق (Absolute Path)</div>
+      <p>هو URL كامل لصورة على الإنترنت:</p>
+      <div class="code-box blue">
+<pre><span class="comment">&lt;!-- صورة من موقع تاني --&gt;</span>
+<span class="tag-open">&lt;</span><span class="tag-name">img</span> <span class="attr">src</span>=<span class="attr-val">"https://via.placeholder.com/300x200"</span> <span class="attr">alt</span>=<span class="attr-val">"صورة تجريبية"</span><span class="tag-close">&gt;</span></pre>
+      </div>
+
+      <div class="mini-header">2. المسار النسبي (Relative Path)</div>
+      <p>هو مسار الصورة بالنسبة للملف الحالي:</p>
+      <div class="path-diagram">
+        <div><span class="folder">📁 موقعي/</span></div>
+        <div style="padding-right:20px;"><span class="current">📄 index.html</span> ← أنت هنا</div>
+        <div style="padding-right:20px;"><span class="folder">📁 images/</span></div>
+        <div style="padding-right:40px;"><span class="file">🖼️ profile.jpg</span></div>
+        <div style="padding-right:40px;"><span class="file">🖼️ banner.png</span></div>
+      </div>
+      <div class="code-box green">
+<div class="code-header"><span>📂 أمثلة المسارات النسبية</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">&lt;!-- صورة في نفس المجلد --&gt;</span>
+<span class="tag-open">&lt;</span><span class="tag-name">img</span> <span class="attr">src</span>=<span class="attr-val">"photo.jpg"</span> <span class="attr">alt</span>=<span class="attr-val">"..."</span><span class="tag-close">&gt;</span>
+
+<span class="comment">&lt;!-- صورة في مجلد images --&gt;</span>
+<span class="tag-open">&lt;</span><span class="tag-name">img</span> <span class="attr">src</span>=<span class="attr-val">"images/profile.jpg"</span> <span class="attr">alt</span>=<span class="attr-val">"..."</span><span class="tag-close">&gt;</span>
+
+<span class="comment">&lt;!-- صورة في مجلد أعلى --&gt;</span>
+<span class="tag-open">&lt;</span><span class="tag-name">img</span> <span class="attr">src</span>=<span class="attr-val">"../images/banner.png"</span> <span class="attr">alt</span>=<span class="attr-val">"..."</span><span class="tag-close">&gt;</span>
+<span class="comment">&lt;!-- .. تعني "اصعد مجلد أعلى" --&gt;</span></pre>
+      </div>
+      <div class="tip-box"><strong>نصيحة ذهبية:</strong> دايماً نظّم صورك في مجلد <em>images/</em> أو <em>assets/</em> بدل ما تحطها مع ملفات HTML. ده بيخلي المشروع أنظف.</div>
+    </div>
+  </div>
+
+  <!-- SECTION 3 -->
+  <div class="section" id="s3">
+    <h2 class="section-title"><span class="num">.3</span> figure و figcaption <span class="en">Figure & Caption</span></h2>
+    <div class="content">
+      <p>وسم <em>&lt;figure&gt;</em> هو حاوية دلالية للصور، والـ <em>&lt;figcaption&gt;</em> هو تعليق أو وصف للصورة.</p>
+      <div class="analogy">
+        <div class="analogy-title">📰 تخيل مجلة:</div>
+        <p>في المجلة، كل صورة عندها تعليق تحتها يشرحها. <em>&lt;figure&gt;</em> هو الإطار، و <em>&lt;figcaption&gt;</em> هو التعليق المكتوب تحت الصورة.</p>
+      </div>
+      <div class="code-box pink">
+<div class="code-header"><span>🖼️ الصورة مع التعليق</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-open">&lt;</span><span class="tag-name">figure</span><span class="tag-close">&gt;</span>
+  <span class="tag-open">&lt;</span><span class="tag-name">img</span>
+    <span class="attr">src</span>=<span class="attr-val">"https://via.placeholder.com/400x250"</span>
+    <span class="attr">alt</span>=<span class="attr-val">"البرج الإيفيل في باريس"</span>
+    <span class="attr">width</span>=<span class="attr-val">"400"</span>
+  <span class="tag-close">&gt;</span>
+  <span class="tag-open">&lt;</span><span class="tag-name">figcaption</span><span class="tag-close">&gt;</span>
+    البرج الإيفيل — باريس، فرنسا 🗼
+  <span class="tag-open">&lt;/</span><span class="tag-name">figcaption</span><span class="tag-close">&gt;</span>
+<span class="tag-open">&lt;/</span><span class="tag-name">figure</span><span class="tag-close">&gt;</span></pre>
+      </div>
+      <div class="info-box"><em>&lt;figure&gt;</em> مش محصور للصور فقط — ممكن تحط فيه جداول، رسوم بيانية، أو مقاطع كود كمان!</div>
+    </div>
+  </div>
+
+  <!-- SECTION 4 -->
+  <div class="section" id="s4">
+    <h2 class="section-title"><span class="num">.4</span> الفيديو <span class="en">Video Tag</span></h2>
+    <div class="content">
+      <p>وسم <em>&lt;video&gt;</em> بيضمّن فيديو مباشرة في صفحتك بدون أي إضافات خارجية.</p>
+      <div class="code-box">
+<div class="code-header"><span>🎬 وسم الفيديو</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">&lt;!-- فيديو بسيط --&gt;</span>
+<span class="tag-open">&lt;</span><span class="tag-name">video</span> <span class="attr">src</span>=<span class="attr-val">"movie.mp4"</span> <span class="attr">controls</span><span class="tag-close">&gt;</span>
+  متصفحك لا يدعم الفيديو
+<span class="tag-open">&lt;/</span><span class="tag-name">video</span><span class="tag-close">&gt;</span>
+
+<span class="comment">&lt;!-- فيديو متكامل --&gt;</span>
+<span class="tag-open">&lt;</span><span class="tag-name">video</span>
+  <span class="attr">width</span>=<span class="attr-val">"640"</span>
+  <span class="attr">height</span>=<span class="attr-val">"360"</span>
+  <span class="attr">controls</span>
+  <span class="attr">poster</span>=<span class="attr-val">"thumbnail.jpg"</span>
+  <span class="attr">muted</span>
+<span class="tag-close">&gt;</span>
+  <span class="tag-open">&lt;</span><span class="tag-name">source</span> <span class="attr">src</span>=<span class="attr-val">"movie.mp4"</span> <span class="attr">type</span>=<span class="attr-val">"video/mp4"</span><span class="tag-close">&gt;</span>
+  <span class="tag-open">&lt;</span><span class="tag-name">source</span> <span class="attr">src</span>=<span class="attr-val">"movie.webm"</span> <span class="attr">type</span>=<span class="attr-val">"video/webm"</span><span class="tag-close">&gt;</span>
+  <span class="comment">&lt;!-- المتصفح يختار الصيغة اللي يدعمها --&gt;</span>
+<span class="tag-open">&lt;/</span><span class="tag-name">video</span><span class="tag-close">&gt;</span></pre>
+      </div>
+      <table class="cool-table">
+        <thead><tr><th>الخاصية</th><th>وظيفتها</th></tr></thead>
+        <tbody>
+          <tr><td><code>controls</code></td><td>يعرض أزرار التشغيل والإيقاف والصوت</td></tr>
+          <tr><td><code>autoplay</code></td><td>يشغل الفيديو تلقائياً (يحتاج muted في معظم المتصفحات)</td></tr>
+          <tr><td><code>loop</code></td><td>يعيد تشغيل الفيديو تلقائياً</td></tr>
+          <tr><td><code>muted</code></td><td>يبدأ الفيديو بدون صوت</td></tr>
+          <tr><td><code>poster</code></td><td>صورة تظهر قبل تشغيل الفيديو (Thumbnail)</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- SECTION 5 -->
+  <div class="section" id="s5">
+    <h2 class="section-title"><span class="num">.5</span> الصوت <span class="en">Audio Tag</span></h2>
+    <div class="content">
+      <p>وسم <em>&lt;audio&gt;</em> شبيه بالفيديو بس للصوت فقط.</p>
+      <div class="code-box blue">
+<div class="code-header"><span>🎵 وسم الصوت</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-open">&lt;</span><span class="tag-name">audio</span> <span class="attr">controls</span><span class="tag-close">&gt;</span>
+  <span class="tag-open">&lt;</span><span class="tag-name">source</span> <span class="attr">src</span>=<span class="attr-val">"song.mp3"</span> <span class="attr">type</span>=<span class="attr-val">"audio/mp3"</span><span class="tag-close">&gt;</span>
+  <span class="tag-open">&lt;</span><span class="tag-name">source</span> <span class="attr">src</span>=<span class="attr-val">"song.ogg"</span> <span class="attr">type</span>=<span class="attr-val">"audio/ogg"</span><span class="tag-close">&gt;</span>
+  متصفحك لا يدعم الصوت
+<span class="tag-open">&lt;/</span><span class="tag-name">audio</span><span class="tag-close">&gt;</span>
+
+<span class="comment">&lt;!-- مع autoplay وloop --&gt;</span>
+<span class="tag-open">&lt;</span><span class="tag-name">audio</span> <span class="attr">controls</span> <span class="attr">loop</span> <span class="attr">autoplay</span> <span class="attr">muted</span><span class="tag-close">&gt;</span>
+  <span class="tag-open">&lt;</span><span class="tag-name">source</span> <span class="attr">src</span>=<span class="attr-val">"background.mp3"</span> <span class="attr">type</span>=<span class="attr-val">"audio/mp3"</span><span class="tag-close">&gt;</span>
+<span class="tag-open">&lt;/</span><span class="tag-name">audio</span><span class="tag-close">&gt;</span></pre>
+      </div>
+      <div class="tip-box"><strong>صيغ الصوت المدعومة:</strong> MP3 مدعوم في كل المتصفحات. OGG وWAV مدعومان في معظمها. دايماً قدّم خيارات متعددة.</div>
+    </div>
+  </div>
+
+  <!-- SECTION 6 -->
+  <div class="section" id="s6">
+    <h2 class="section-title"><span class="num">.6</span> المحتوى المضمّن <span class="en">Embedded Content (iframe)</span></h2>
+    <div class="content">
+      <p>وسم <em>&lt;iframe&gt;</em> بيضمّن صفحة ويب كاملة أو محتوى خارجي (يوتيوب، خرائط جوجل) داخل صفحتك.</p>
+      <div class="analogy">
+        <div class="analogy-title">🪟 تخيل نافذة داخل نافذة:</div>
+        <p>الـ iframe زي إنك بتفتح نافذة متصفح مصغّرة داخل صفحتك. الصفحة اللي جوا مستقلة تماماً عن صفحتك الخارجية.</p>
+      </div>
+      <div class="code-box green">
+<div class="code-header"><span>📺 iframe — يوتيوب وخرائط</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">&lt;!-- فيديو يوتيوب --&gt;</span>
+<span class="tag-open">&lt;</span><span class="tag-name">iframe</span>
+  <span class="attr">width</span>=<span class="attr-val">"560"</span>
+  <span class="attr">height</span>=<span class="attr-val">"315"</span>
+  <span class="attr">src</span>=<span class="attr-val">"https://www.youtube.com/embed/VIDEO_ID"</span>
+  <span class="attr">title</span>=<span class="attr-val">"عنوان الفيديو"</span>
+  <span class="attr">allowfullscreen</span>
+<span class="tag-close">&gt;</span><span class="tag-open">&lt;/</span><span class="tag-name">iframe</span><span class="tag-close">&gt;</span>
+
+<span class="comment">&lt;!-- خريطة جوجل --&gt;</span>
+<span class="tag-open">&lt;</span><span class="tag-name">iframe</span>
+  <span class="attr">src</span>=<span class="attr-val">"https://www.google.com/maps/embed?pb=..."</span>
+  <span class="attr">width</span>=<span class="attr-val">"600"</span>
+  <span class="attr">height</span>=<span class="attr-val">"450"</span>
+  <span class="attr">style</span>=<span class="attr-val">"border:0;"</span>
+  <span class="attr">allowfullscreen</span>
+  <span class="attr">loading</span>=<span class="attr-val">"lazy"</span>
+<span class="tag-close">&gt;</span><span class="tag-open">&lt;/</span><span class="tag-name">iframe</span><span class="tag-close">&gt;</span></pre>
+      </div>
+      <div class="note-box"><strong>للحصول على كود اليوتيوب:</strong> افتح أي فيديو على يوتيوب → Share → Embed → انسخ الكود. هيلاقيك &lt;iframe&gt; جاهز!</div>
+      <div class="warning-box"><strong>أمان مهم:</strong> لا تضمّن مواقع مش موثوقة بـ iframe داخل موقعك — ممكن تحتوي على كود ضار.</div>
+    </div>
+  </div>
+
+  <!-- SECTION 7: TRY IT -->
+  <div class="section" id="s7">
+    <h2 class="section-title"><span class="num">.7</span> جرب بنفسك! <span class="en">Try It Live</span></h2>
+    <div class="content">
+      <div class="try-it">
+        <div class="try-it-header">
+          <span>💻 محرر الكود الحي</span>
+          <div class="try-it-controls">
+            <button class="try-btn" onclick="runCode(this)">▶️ تشغيل</button>
+            <button class="try-btn" onclick="resetCode(this)">🔄 إعادة</button>
+          </div>
+        </div>
+        <div class="try-it-body">
+          <textarea class="try-it-editor" spellcheck="false" data-default='<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    body { font-family: Arial; padding: 20px; }
+    figure { display: inline-block; text-align: center; margin: 10px; }
+    figcaption { color: #555; font-size: 0.9em; margin-top: 5px; }
+    img { border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
+    .gallery { display: flex; gap: 15px; flex-wrap: wrap; }
+  </style>
+</head>
+<body>
+  <h1>معرض صوري 🖼️</h1>
+
+  <div class="gallery">
+    <figure>
+      <img
+        src="https://picsum.photos/200/150?random=1"
+        alt="صورة طبيعية"
+        width="200"
+        height="150"
+        loading="lazy"
+      >
+      <figcaption>جمال الطبيعة 🌿</figcaption>
+    </figure>
+
+    <figure>
+      <img
+        src="https://picsum.photos/200/150?random=2"
+        alt="صورة ثانية"
+        width="200"
+        height="150"
+        loading="lazy"
+      >
+      <figcaption>منظر رائع 🏔️</figcaption>
+    </figure>
+
+    <figure>
+      <img
+        src="https://picsum.photos/200/150?random=3"
+        alt="صورة ثالثة"
+        width="200"
+        height="150"
+        loading="lazy"
+      >
+      <figcaption>لحظة جميلة ✨</figcaption>
+    </figure>
+  </div>
+</body>
+</html>'><!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    body { font-family: Arial; padding: 20px; }
+    figure { display: inline-block; text-align: center; margin: 10px; }
+    figcaption { color: #555; font-size: 0.9em; margin-top: 5px; }
+    img { border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
+    .gallery { display: flex; gap: 15px; flex-wrap: wrap; }
+  </style>
+</head>
+<body>
+  <h1>معرض صوري 🖼️</h1>
+  <div class="gallery">
+    <figure>
+      <img src="https://picsum.photos/200/150?random=1" alt="صورة طبيعية" width="200" height="150" loading="lazy">
+      <figcaption>جمال الطبيعة 🌿</figcaption>
+    </figure>
+    <figure>
+      <img src="https://picsum.photos/200/150?random=2" alt="صورة ثانية" width="200" height="150" loading="lazy">
+      <figcaption>منظر رائع 🏔️</figcaption>
+    </figure>
+    <figure>
+      <img src="https://picsum.photos/200/150?random=3" alt="صورة ثالثة" width="200" height="150" loading="lazy">
+      <figcaption>لحظة جميلة ✨</figcaption>
+    </figure>
+  </div>
+</body>
+</html></textarea>
+          <div class="try-it-preview"><iframe srcdoc="" sandbox="allow-scripts allow-same-origin allow-modals allow-popups allow-forms" title="معاينة الكود"></iframe></div>
+        </div>
+      </div>
+      <div class="tip-box"><strong>جرب:</strong> غيّر الأرقام في <em>?random=1</em> لأي رقم تاني، أو غيّر الأبعاد 200/150!</div>
+    </div>
+  </div>
+
+  <!-- EXERCISES -->
+  <div class="section" id="exercises">
+    <h2 class="section-title"><span class="num">📝</span> التمارين <span class="en">Exercises</span></h2>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 1: صورة البروفايل</div>
+      <p>اعمل صورة بروفايل مع كل الخصائص المهمة: src بمسار، alt وصفي، width=200، height=200، loading="lazy"، وtitle.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre><span class="tag-open">&lt;</span><span class="tag-name">img</span>
+  <span class="attr">src</span>=<span class="attr-val">"images/profile.jpg"</span>
+  <span class="attr">alt</span>=<span class="attr-val">"صورة محمد أحمد، مطور ويب"</span>
+  <span class="attr">width</span>=<span class="attr-val">"200"</span>
+  <span class="attr">height</span>=<span class="attr-val">"200"</span>
+  <span class="attr">loading</span>=<span class="attr-val">"lazy"</span>
+  <span class="attr">title</span>=<span class="attr-val">"محمد أحمد - مطور ويب"</span>
+<span class="tag-close">&gt;</span></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 2: معرض صور</div>
+      <p>اعمل معرض صور بـ 3 صور، كل صورة في figure مع figcaption.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre><span class="tag-open">&lt;</span><span class="tag-name">figure</span><span class="tag-close">&gt;</span>
+  <span class="tag-open">&lt;</span><span class="tag-name">img</span> <span class="attr">src</span>=<span class="attr-val">"images/nature.jpg"</span> <span class="attr">alt</span>=<span class="attr-val">"منظر طبيعي"</span> <span class="attr">width</span>=<span class="attr-val">"300"</span><span class="tag-close">&gt;</span>
+  <span class="tag-open">&lt;</span><span class="tag-name">figcaption</span><span class="tag-close">&gt;</span>جبال الأطلس 🏔️<span class="tag-open">&lt;/</span><span class="tag-name">figcaption</span><span class="tag-close">&gt;</span>
+<span class="tag-open">&lt;/</span><span class="tag-name">figure</span><span class="tag-close">&gt;</span>
+
+<span class="tag-open">&lt;</span><span class="tag-name">figure</span><span class="tag-close">&gt;</span>
+  <span class="tag-open">&lt;</span><span class="tag-name">img</span> <span class="attr">src</span>=<span class="attr-val">"images/city.jpg"</span> <span class="attr">alt</span>=<span class="attr-val">"مدينة ليلاً"</span> <span class="attr">width</span>=<span class="attr-val">"300"</span><span class="tag-close">&gt;</span>
+  <span class="tag-open">&lt;</span><span class="tag-name">figcaption</span><span class="tag-close">&gt;</span>القاهرة ليلاً 🌃<span class="tag-open">&lt;/</span><span class="tag-name">figcaption</span><span class="tag-close">&gt;</span>
+<span class="tag-open">&lt;/</span><span class="tag-name">figure</span><span class="tag-close">&gt;</span>
+
+<span class="tag-open">&lt;</span><span class="tag-name">figure</span><span class="tag-close">&gt;</span>
+  <span class="tag-open">&lt;</span><span class="tag-name">img</span> <span class="attr">src</span>=<span class="attr-val">"images/beach.jpg"</span> <span class="attr">alt</span>=<span class="attr-val">"شاطئ صافي"</span> <span class="attr">width</span>=<span class="attr-val">"300"</span><span class="tag-close">&gt;</span>
+  <span class="tag-open">&lt;</span><span class="tag-name">figcaption</span><span class="tag-close">&gt;</span>شاطئ الإسكندرية 🏖️<span class="tag-open">&lt;/</span><span class="tag-name">figcaption</span><span class="tag-close">&gt;</span>
+<span class="tag-open">&lt;/</span><span class="tag-name">figure</span><span class="tag-close">&gt;</span></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 3: صورة رابط</div>
+      <p>اعمل صورة قابلة للضغط (رابط) تأخذك لصفحة في تبويب جديد.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre><span class="tag-open">&lt;</span><span class="tag-name">a</span> <span class="attr">href</span>=<span class="attr-val">"https://google.com"</span> <span class="attr">target</span>=<span class="attr-val">"_blank"</span> <span class="attr">rel</span>=<span class="attr-val">"noopener noreferrer"</span><span class="tag-close">&gt;</span>
+  <span class="tag-open">&lt;</span><span class="tag-name">img</span>
+    <span class="attr">src</span>=<span class="attr-val">"images/google-logo.png"</span>
+    <span class="attr">alt</span>=<span class="attr-val">"اذهب لجوجل"</span>
+    <span class="attr">width</span>=<span class="attr-val">"200"</span>
+  <span class="tag-close">&gt;</span>
+<span class="tag-open">&lt;/</span><span class="tag-name">a</span><span class="tag-close">&gt;</span></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 4: فيديو كامل</div>
+      <p>اعمل فيديو بـ: مصدرين (mp4 و webm)، controls، poster صورة، وmuted.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre><span class="tag-open">&lt;</span><span class="tag-name">video</span>
+  <span class="attr">width</span>=<span class="attr-val">"640"</span>
+  <span class="attr">height</span>=<span class="attr-val">"360"</span>
+  <span class="attr">controls</span>
+  <span class="attr">poster</span>=<span class="attr-val">"images/video-thumbnail.jpg"</span>
+  <span class="attr">muted</span>
+<span class="tag-close">&gt;</span>
+  <span class="tag-open">&lt;</span><span class="tag-name">source</span> <span class="attr">src</span>=<span class="attr-val">"videos/intro.mp4"</span> <span class="attr">type</span>=<span class="attr-val">"video/mp4"</span><span class="tag-close">&gt;</span>
+  <span class="tag-open">&lt;</span><span class="tag-name">source</span> <span class="attr">src</span>=<span class="attr-val">"videos/intro.webm"</span> <span class="attr">type</span>=<span class="attr-val">"video/webm"</span><span class="tag-close">&gt;</span>
+  متصفحك لا يدعم الفيديو.
+<span class="tag-open">&lt;/</span><span class="tag-name">video</span><span class="tag-close">&gt;</span></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 5: صفحة معرض متكاملة</div>
+      <p>اعمل صفحة "معرض الأعمال" فيها: header، 3 figures مع صور وتعليقات، وiframe ليوتيوب.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre><span class="tag-open">&lt;</span><span class="tag-name">header</span><span class="tag-close">&gt;</span><span class="tag-open">&lt;</span><span class="tag-name">h1</span><span class="tag-close">&gt;</span>معرض أعمالي 🎨<span class="tag-open">&lt;/</span><span class="tag-name">h1</span><span class="tag-close">&gt;</span><span class="tag-open">&lt;/</span><span class="tag-name">header</span><span class="tag-close">&gt;</span>
+<span class="tag-open">&lt;</span><span class="tag-name">main</span><span class="tag-close">&gt;</span>
+  <span class="tag-open">&lt;</span><span class="tag-name">section</span><span class="tag-close">&gt;</span>
+    <span class="tag-open">&lt;</span><span class="tag-name">h2</span><span class="tag-close">&gt;</span>الصور<span class="tag-open">&lt;/</span><span class="tag-name">h2</span><span class="tag-close">&gt;</span>
+    <span class="tag-open">&lt;</span><span class="tag-name">figure</span><span class="tag-close">&gt;</span>
+      <span class="tag-open">&lt;</span><span class="tag-name">img</span> <span class="attr">src</span>=<span class="attr-val">"work1.jpg"</span> <span class="attr">alt</span>=<span class="attr-val">"مشروع 1"</span> <span class="attr">width</span>=<span class="attr-val">"300"</span><span class="tag-close">&gt;</span>
+      <span class="tag-open">&lt;</span><span class="tag-name">figcaption</span><span class="tag-close">&gt;</span>موقع الشركة الأولى<span class="tag-open">&lt;/</span><span class="tag-name">figcaption</span><span class="tag-close">&gt;</span>
+    <span class="tag-open">&lt;/</span><span class="tag-name">figure</span><span class="tag-close">&gt;</span>
+  <span class="tag-open">&lt;/</span><span class="tag-name">section</span><span class="tag-close">&gt;</span>
+  <span class="tag-open">&lt;</span><span class="tag-name">section</span><span class="tag-close">&gt;</span>
+    <span class="tag-open">&lt;</span><span class="tag-name">h2</span><span class="tag-close">&gt;</span>فيديو تعريفي<span class="tag-open">&lt;/</span><span class="tag-name">h2</span><span class="tag-close">&gt;</span>
+    <span class="tag-open">&lt;</span><span class="tag-name">iframe</span>
+      <span class="attr">width</span>=<span class="attr-val">"560"</span> <span class="attr">height</span>=<span class="attr-val">"315"</span>
+      <span class="attr">src</span>=<span class="attr-val">"https://www.youtube.com/embed/dQw4w9WgXcQ"</span>
+      <span class="attr">title</span>=<span class="attr-val">"فيديو تعريفي"</span>
+      <span class="attr">allowfullscreen</span>
+    <span class="tag-close">&gt;</span><span class="tag-open">&lt;/</span><span class="tag-name">iframe</span><span class="tag-close">&gt;</span>
+  <span class="tag-open">&lt;/</span><span class="tag-name">section</span><span class="tag-close">&gt;</span>
+<span class="tag-open">&lt;/</span><span class="tag-name">main</span><span class="tag-close">&gt;</span></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="quiz-container" id="quiz">
+    <div class="quiz-intro"><p>اختبر فهمك للدرس!</p></div>
+    <div class="quiz-type-tabs">
+      <button class="qt-tab active" onclick="switchQuiz(this,'tf')">✓✗ صح وخطأ</button>
+      <button class="qt-tab" onclick="switchQuiz(this,'mc')">🔘 اختيار من متعدد</button>
+    </div>
+
+    <div class="quiz-section active" id="quiz-tf">
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">1</span><span class="q-text">وسم &lt;img&gt; وسم مفرد — ليس له وسم إغلاق.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="false">
+        <span class="q-num">2</span><span class="q-text">خاصية alt اختيارية ولا تؤثر على الموقع.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">3</span><span class="q-text">loading="lazy" يُحسّن أداء الصفحة بتأخير تحميل الصور حتى تظهر في الشاشة.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="false">
+        <span class="q-num">4</span><span class="q-text">المسار النسبي "../" يعني "ادخل مجلد فرعي".</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">5</span><span class="q-text">خاصية controls في &lt;video&gt; تعرض أزرار التشغيل والإيقاف للمستخدم.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <button class="quiz-submit" onclick="submitQuiz('tf')">عرض النتيجة 🎯</button>
+      <div class="quiz-result" id="result-tf"><div class="result-score" id="score-tf">0/5</div><div class="result-label">إجابات صحيحة</div><div class="result-message" id="msg-tf"></div><button class="retry-btn" onclick="retryQuiz('tf')">🔄 حاول تاني</button></div>
+    </div>
+
+    <div class="quiz-section" id="quiz-mc">
+      <div class="quiz-question" data-correct="1">
+        <span class="q-num">1</span><span class="q-text">إيه الوسم المناسب لعرض صورة مع تعليق توضيحي تحتها؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">&lt;img&gt; + &lt;p&gt;</button>
+          <button class="q-opt" onclick="answerMC(this,1)">&lt;figure&gt; + &lt;figcaption&gt;</button>
+          <button class="q-opt" onclick="answerMC(this,2)">&lt;div&gt; + &lt;span&gt;</button>
+          <button class="q-opt" onclick="answerMC(this,3)">&lt;picture&gt; + &lt;caption&gt;</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="2">
+        <span class="q-num">2</span><span class="q-text">إيه الـ attribute اللي بيحدد صورة تظهر قبل تشغيل الفيديو؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">thumbnail</button>
+          <button class="q-opt" onclick="answerMC(this,1)">cover</button>
+          <button class="q-opt" onclick="answerMC(this,2)">poster</button>
+          <button class="q-opt" onclick="answerMC(this,3)">preview</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="0">
+        <span class="q-num">3</span><span class="q-text">إيه المسار الصح للصورة في: موقعي/ index.html و موقعي/images/photo.jpg</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">images/photo.jpg</button>
+          <button class="q-opt" onclick="answerMC(this,1)">../images/photo.jpg</button>
+          <button class="q-opt" onclick="answerMC(this,2)">/photo.jpg</button>
+          <button class="q-opt" onclick="answerMC(this,3)">./photo.jpg</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="3">
+        <span class="q-num">4</span><span class="q-text">إيه الوسم اللي بيضمّن محتوى موقع خارجي (زي يوتيوب) داخل صفحتك؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">&lt;embed&gt;</button>
+          <button class="q-opt" onclick="answerMC(this,1)">&lt;video&gt;</button>
+          <button class="q-opt" onclick="answerMC(this,2)">&lt;object&gt;</button>
+          <button class="q-opt" onclick="answerMC(this,3)">&lt;iframe&gt;</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="1">
+        <span class="q-num">5</span><span class="q-text">لو صورة بغرض ديكوري بحت، كيف تكتب الـ alt؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">بتحذف الـ alt كلياً</button>
+          <button class="q-opt" onclick="answerMC(this,1)">alt="" (فارغ)</button>
+          <button class="q-opt" onclick="answerMC(this,2)">alt="صورة"</button>
+          <button class="q-opt" onclick="answerMC(this,3)">alt="decorative"</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <button class="quiz-submit" onclick="submitQuiz('mc')">عرض النتيجة 🎯</button>
+      <div class="quiz-result" id="result-mc"><div class="result-score" id="score-mc">0/5</div><div class="result-label">إجابات صحيحة</div><div class="result-message" id="msg-mc"></div><button class="retry-btn" onclick="retryQuiz('mc')">🔄 حاول تاني</button></div>
+    </div>
+  </div>
+
+  <!-- NAVIGATION -->
+  <div class="lesson-nav">
+    <a href="./lesson-03.html" class="nav-btn"><span>⬅️</span><span>الدرس السابق</span></a>
+    <button class="nav-btn complete-btn" id="completeBtn" onclick="markComplete(this)"><span>✅</span><span>علّم كمكتمل</span></button>
+    <a href="./lesson-05.html" class="nav-btn"><span>الدرس التالي</span><span>➡️</span></a>
+  </div>
+
+  <div class="notebook-footer">
+    <h3>🎉 صفحتك بقت تتكلم بالصور!</h3>
+    <p>الصور والوسائط بتخلي الموقع حي ومثير 🎨<br><strong>درس واحد بس وخلصت HTML! 🚀</strong></p>
+  </div>
+</div>
+
+<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">⬆️</button>
+<div class="toast" id="toast"></div>
+
+<script src="../../js/data/courses.js"></script>
+<script src="../../js/progress.js"></script>
+<script src="../../js/lesson-editor.js"></script>
+<script>
+const COURSE_ID='frontend',LESSON_ID=4,TOTAL=32;
+function toggleSolution(b){const s=b.nextElementSibling;s.classList.toggle('show');b.textContent=s.classList.contains('show')?'إخفاء الحل ▲':'عرض الحل ▼';}
+function copyCode(b){const p=b.closest('.code-box').querySelector('pre');navigator.clipboard.writeText(p.innerText).then(()=>{b.classList.add('copied');b.textContent='✓ تم النسخ';setTimeout(()=>{b.classList.remove('copied');b.textContent='📋 نسخ';},2000);});}
+function runCode(b){const t=b.closest('.try-it');t.querySelector('iframe').srcdoc=t.querySelector('.try-it-editor').value;}
+function resetCode(b){const t=b.closest('.try-it'),e=t.querySelector('.try-it-editor');e.value=e.dataset.default;t.querySelector('iframe').srcdoc=e.value;}
+window.addEventListener('load',()=>{document.querySelectorAll('.try-it').forEach(t=>{const e=t.querySelector('.try-it-editor');t.querySelector('iframe').srcdoc=e.value;});});
+function switchQuiz(b,t){document.querySelectorAll('.qt-tab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.quiz-section').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.getElementById('quiz-'+t).classList.add('active');}
+const answers={tf:{},mc:{}};
+function answerTF(b,v){const q=b.closest('.quiz-question'),i=Array.from(q.parentNode.querySelectorAll('.quiz-question')).indexOf(q);q.querySelectorAll('.q-opt').forEach(o=>o.classList.remove('selected'));b.classList.add('selected');answers.tf[i]=v;}
+function answerMC(b,i){const q=b.closest('.quiz-question'),qi=Array.from(q.parentNode.querySelectorAll('.quiz-question')).indexOf(q);q.querySelectorAll('.q-opt').forEach(o=>o.classList.remove('selected'));b.classList.add('selected');answers.mc[qi]=i;}
+function submitQuiz(type){const sec=document.getElementById('quiz-'+type),qs=sec.querySelectorAll('.quiz-question');let c=0;qs.forEach((q,i)=>{const ca=type==='tf'?(q.dataset.correct==='true'):parseInt(q.dataset.correct),ua=answers[type][i],fb=q.querySelector('.q-feedback'),opts=q.querySelectorAll('.q-opt');opts.forEach(o=>{o.classList.remove('selected');o.disabled=true;});if(ua===undefined){fb.className='q-feedback wrong show';fb.textContent='⚠️ ما اخترتش إجابة!';return;}if(ua===ca){c++;fb.className='q-feedback correct show';fb.textContent='✓ إجابة صحيحة!';if(type==='tf')opts[ca?0:1].classList.add('correct');else opts[ca].classList.add('correct');}else{fb.className='q-feedback wrong show';if(type==='tf'){opts[ca?0:1].classList.add('correct');opts[ua?0:1].classList.add('wrong');fb.textContent='✗ خطأ.';}else{opts[ca].classList.add('correct');opts[ua].classList.add('wrong');fb.textContent='✗ الإجابة بالأخضر.';}}});const r=document.getElementById('result-'+type);document.getElementById('score-'+type).textContent=c+'/'+qs.length;const m=document.getElementById('msg-'+type);if(c===qs.length){m.textContent='🏆 ممتاز 100%!';m.className='result-message excellent';}else if(c>=3){m.textContent='👍 جيد!';m.className='result-message good';}else{m.textContent='📚 راجع الدرس.';m.className='result-message try-again';}r.classList.add('show');r.scrollIntoView({behavior:'smooth',block:'center'});}
+function retryQuiz(type){const sec=document.getElementById('quiz-'+type);sec.querySelectorAll('.q-opt').forEach(o=>{o.classList.remove('selected','correct','wrong');o.disabled=false;});sec.querySelectorAll('.q-feedback').forEach(f=>{f.classList.remove('show','correct','wrong');f.textContent='';});document.getElementById('result-'+type).classList.remove('show');answers[type]={};}
+function markComplete(btn){const done=Progress.toggleLessonComplete(COURSE_ID,LESSON_ID);btn.classList.toggle('completed',done);btn.querySelector('span:last-child').textContent=done?'مكتمل! ⭐':'علّم كمكتمل';showToast(done?'🎉 أكملت الدرس الرابع!':'تم إلغاء الإكمال');}
+if(Progress.isLessonComplete(COURSE_ID,LESSON_ID)){const b=document.getElementById('completeBtn');b.classList.add('completed');b.querySelector('span:last-child').textContent='مكتمل! ⭐';}
+function updateBar(){const p=Progress.getCourseProgress(COURSE_ID,TOTAL);document.getElementById('progFill').style.width=p+'%';document.getElementById('progText').textContent=p+'%';}
+updateBar();
+function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
+window.addEventListener('scroll',()=>{document.getElementById('scrollTop').classList.toggle('show',window.scrollY>300);});
+document.querySelectorAll('.toc-card a').forEach(l=>{l.addEventListener('click',e=>{e.preventDefault();const t=document.querySelector(l.getAttribute('href'));if(t)t.scrollIntoView({behavior:'smooth',block:'start'});});});
+</script>
+</body>
+</html>

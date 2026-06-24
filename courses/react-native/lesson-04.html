@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-V2NCKVL16D"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-V2NCKVL16D');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>مراجعة JSX و ES6 — دفتر البرمجة</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=Cairo:wght@300;400;500;600;700;900&family=Caveat:wght@400;700&family=Fira+Code:wght@400;500;600&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../css/shared.css">
+<link rel="stylesheet" href="../../css/notebook.css">
+<style>
+body { padding: 20px 10px; }
+
+/* phone frame */
+.phone-frame {
+  width: 260px; margin: 20px auto;
+  border: 12px solid #1e293b; border-radius: 34px;
+  background: white; box-shadow: 0 16px 40px rgba(0,0,0,.3);
+  overflow: hidden;
+}
+.phone-notch {
+  background: #1e293b; height: 20px;
+  display: flex; align-items: center; justify-content: center;
+}
+.phone-notch::before {
+  content: ''; width: 56px; height: 12px;
+  background: #0f172a; border-radius: 0 0 8px 8px;
+}
+.phone-screen { min-height: 340px; }
+
+/* compare table */
+.compare-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 12px; margin: 14px 0;
+}
+.cg-box {
+  background: #f8fafc; border: 1.5px solid var(--border);
+  border-radius: 10px; padding: 14px;
+}
+.cg-box.bad  { border-color: #f87171; background: #fff5f5; }
+.cg-box.good { border-color: #4ade80; background: #f0fdf4; }
+.cg-label {
+  font-size: .75rem; font-weight: 700; margin-bottom: 8px;
+  display: flex; align-items: center; gap: 4px;
+}
+.cg-box.bad  .cg-label { color: #dc2626; }
+.cg-box.good .cg-label { color: #16a34a; }
+
+/* concept cards */
+.concept-row {
+  display: flex; gap: 10px; margin: 14px 0; flex-wrap: wrap;
+}
+.concept-chip {
+  background: #e0f2fe; border: 1.5px solid #7dd3fc;
+  border-radius: 999px; padding: 6px 16px;
+  font-family: 'Fira Code', monospace; font-size: .82rem;
+  color: #0369a1; font-weight: 600;
+}
+
+/* rule cards */
+.rule-card {
+  display: flex; gap: 12px; padding: 14px;
+  background: #f8fafc; border-radius: 10px;
+  border-right: 4px solid #0ea5e9; margin: 10px 0;
+  align-items: flex-start;
+}
+.rule-icon { font-size: 1.4rem; flex-shrink: 0; line-height: 1; }
+.rule-body {}
+.rule-title { font-weight: 700; font-size: .92rem; margin-bottom: 4px; }
+.rule-desc  { font-size: .85rem; color: var(--text-muted); line-height: 1.6; }
+
+/* ES6 feature cards */
+.feat-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(220px,1fr));
+  gap: 14px; margin: 14px 0;
+}
+.feat-card {
+  background: #f8fafc; border: 1.5px solid var(--border);
+  border-radius: 12px; padding: 16px;
+}
+.feat-card.dest   { border-color: #a78bfa; }
+.feat-card.spread { border-color: #f472b6; }
+.feat-card.arrow  { border-color: #34d399; }
+.feat-card.tpl    { border-color: #fb923c; }
+.feat-card.opt    { border-color: #60a5fa; }
+.feat-name {
+  font-family: 'Fira Code', monospace; font-weight: 700;
+  font-size: .9rem; margin-bottom: 6px;
+}
+.feat-desc { font-size: .83rem; color: var(--text-muted); line-height: 1.6; }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="crumbs">
+    <a href="../../index.html">🏠 الرئيسية</a>
+    <span class="sep">/</span>
+    <a href="./index.html">📱 React Native</a>
+    <span class="sep">/</span>
+    <span class="current">⚡ الدرس 4: مراجعة JSX و ES6</span>
+  </div>
+  <div class="progress-mini">
+    <div class="progress-bar-mini"><div class="progress-fill-mini" id="progFill"></div></div>
+    <span id="progText">0%</span>
+  </div>
+</div>
+
+<div class="notebook">
+
+  <div class="notebook-header">
+    <div class="lesson-tag">⚡ الدرس الرابع</div>
+    <h1><span class="sparkle">✦</span> مراجعة JSX و ES6 <span class="sparkle">✦</span></h1>
+    <div class="lesson-meta">
+      <span>⏱️ 35 دقيقة</span>
+      <span>📊 مبتدئ+</span>
+      <span>🎯 5 تمارين + اختبار</span>
+    </div>
+  </div>
+
+  <div class="toc-card">
+    <h2>📑 فهرس الدرس</h2>
+    <ol>
+      <li><a href="#s1">ما هو JSX ولماذا نستخدمه؟</a></li>
+      <li><a href="#s2">قواعد JSX الأساسية</a></li>
+      <li><a href="#s3">Destructuring — فك التعبئة</a></li>
+      <li><a href="#s4">Spread Operator مع Props</a></li>
+      <li><a href="#s5">Arrow Functions والمكونات</a></li>
+      <li><a href="#s6">Template Literals في JSX</a></li>
+      <li><a href="#s7">Optional Chaining و Nullish Coalescing</a></li>
+      <li><a href="#s8">محرر تفاعلي — JSX Sandbox</a></li>
+      <li><a href="#exercises">التمارين</a></li>
+      <li><a href="#quiz">اختبر فهمك</a></li>
+    </ol>
+  </div>
+
+  <!-- S1 -->
+  <div class="section" id="s1">
+    <h2 class="section-title"><span class="num">.1</span> ما هو JSX ولماذا نستخدمه؟ <span class="en">What is JSX?</span></h2>
+    <div class="content">
+      <p>تخيّل أنك تكتب وصفة طبخ — بدل ما تقول "خذ طبق، ضع فيه خضار، ثم اسكب فوقه صلصة" بشكل نثري، ترسم الطبق مباشرة بتصميمه! <strong>JSX</strong> هو نفس الفكرة: بدل كتابة الكود بشكل نثري، تكتب الواجهة بشكل بصري.</p>
+
+      <div class="info-box"><strong>JSX = JavaScript + XML</strong> — صيغة كتابة تشبه HTML لكنها تُترجم إلى كود JavaScript عادي.</div>
+
+      <div class="compare-grid">
+        <div class="cg-box bad">
+          <div class="cg-label">❌ بدون JSX (صعب القراءة)</div>
+          <div class="code-box" style="margin:0">
+<pre style="font-size:.75rem">React.createElement(
+  View, {style: styles.box},
+  React.createElement(
+    Text, {style: styles.title},
+    'مرحباً!'
+  ),
+  React.createElement(
+    Text, null,
+    'أهلاً بك'
+  )
+)</pre>
+          </div>
+        </div>
+        <div class="cg-box good">
+          <div class="cg-label">✅ مع JSX (سهل وواضح)</div>
+          <div class="code-box" style="margin:0">
+<pre style="font-size:.75rem">&lt;<span class="attr">View</span> style={styles.box}&gt;
+  &lt;<span class="attr">Text</span> style={styles.title}&gt;
+    مرحباً!
+  &lt;/<span class="attr">Text</span>&gt;
+  &lt;<span class="attr">Text</span>&gt;
+    أهلاً بك
+  &lt;/<span class="attr">Text</span>&gt;
+&lt;/<span class="attr">View</span>&gt;</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="tip-box"><strong>المقارنة اليومية:</strong> JSX مثل رسم المبنى بمخطط معماري مباشرةً، بدل وصف كل طوبة في جملة منفصلة. الناتج النهائي واحد لكن الأول أوضح بكثير!</div>
+    </div>
+  </div>
+
+  <!-- S2 -->
+  <div class="section" id="s2">
+    <h2 class="section-title"><span class="num">.2</span> قواعد JSX الأساسية <span class="en">JSX Rules</span></h2>
+    <div class="content">
+
+      <div class="rule-card">
+        <div class="rule-icon">1️⃣</div>
+        <div class="rule-body">
+          <div class="rule-title">عنصر جذر واحد دائماً</div>
+          <div class="rule-desc">كل مكوّن يجب أن يُرجع عنصراً واحداً فقط في الجذر. استخدم <code>&lt;View&gt;</code> أو Fragment (<code>&lt;&gt;&lt;/&gt;</code>) لتجميع العناصر.</div>
+          <div class="compare-grid" style="margin-top:10px">
+            <div class="cg-box bad">
+              <div class="cg-label">❌ خطأ</div>
+              <div class="code-box" style="margin:0"><pre style="font-size:.75rem"><span class="tag-name">return</span> (
+  &lt;<span class="attr">Text</span>&gt;سطر 1&lt;/<span class="attr">Text</span>&gt;
+  &lt;<span class="attr">Text</span>&gt;سطر 2&lt;/<span class="attr">Text</span>&gt;
+);</pre></div>
+            </div>
+            <div class="cg-box good">
+              <div class="cg-label">✅ صح</div>
+              <div class="code-box" style="margin:0"><pre style="font-size:.75rem"><span class="tag-name">return</span> (
+  &lt;&gt;
+    &lt;<span class="attr">Text</span>&gt;سطر 1&lt;/<span class="attr">Text</span>&gt;
+    &lt;<span class="attr">Text</span>&gt;سطر 2&lt;/<span class="attr">Text</span>&gt;
+  &lt;/&gt;
+);</pre></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="rule-card">
+        <div class="rule-icon">2️⃣</div>
+        <div class="rule-body">
+          <div class="rule-title">أغلق كل الوسوم</div>
+          <div class="rule-desc">في JSX لا يوجد وسوم مفتوحة! كل عنصر يجب إغلاقه إما بـ <code>&lt;View&gt;&lt;/View&gt;</code> أو بنفسه <code>&lt;View /&gt;</code></div>
+          <div class="code-box" style="margin-top:10px">
+<pre><span class="comment">// ✅ صح — إغلاق ذاتي</span>
+&lt;<span class="attr">Image</span> source={logo} style={styles.img} /&gt;
+&lt;<span class="attr">TextInput</span> placeholder=<span class="attr-val">"اكتب هنا..."</span> /&gt;
+
+<span class="comment">// ❌ خطأ في JSX (صح في HTML)</span>
+<span class="comment">// &lt;Image source={logo}&gt;</span>
+<span class="comment">// &lt;br&gt;  ← لا يوجد br في RN أصلاً!</span></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="rule-card">
+        <div class="rule-icon">3️⃣</div>
+        <div class="rule-body">
+          <div class="rule-title">الأنماط بـ style={} بدل className</div>
+          <div class="rule-desc">في HTML تكتب <code>className="title"</code>، في React Native تكتب <code>style={styles.title}</code>. لا يوجد CSS خارجي في RN.</div>
+          <div class="code-box" style="margin-top:10px">
+<pre><span class="comment">// HTML/React Web</span>
+&lt;div <span class="attr-val">className</span>="header"&gt;...&lt;/div&gt;
+
+<span class="comment">// React Native</span>
+&lt;<span class="attr">View</span> style={styles.header}&gt;...&lt;/<span class="attr">View</span>&gt;
+&lt;<span class="attr">View</span> style={{ padding: <span class="attr-val">16</span>, margin: <span class="attr-val">8</span> }}&gt;...&lt;/<span class="attr">View</span>&gt;</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="rule-card">
+        <div class="rule-icon">4️⃣</div>
+        <div class="rule-body">
+          <div class="rule-title">JavaScript داخل {} في JSX</div>
+          <div class="rule-desc">أي تعبير JavaScript يُكتب داخل أقواس معقوصة <code>{}</code> في JSX.</div>
+          <div class="code-box" style="margin-top:10px">
+<pre><span class="tag-name">const</span> name = <span class="attr-val">'سارة'</span>;
+<span class="tag-name">const</span> score = <span class="attr-val">95</span>;
+
+<span class="tag-name">return</span> (
+  &lt;<span class="attr">View</span>&gt;
+    <span class="comment">{/* متغير */}</span>
+    &lt;<span class="attr">Text</span>&gt;مرحباً {name}!&lt;/<span class="attr">Text</span>&gt;
+
+    <span class="comment">{/* حساب */}</span>
+    &lt;<span class="attr">Text</span>&gt;النتيجة: {score * <span class="attr-val">10</span> / <span class="attr-val">100</span>}&lt;/<span class="attr">Text</span>&gt;
+
+    <span class="comment">{/* شرط مختصر */}</span>
+    &lt;<span class="attr">Text</span>&gt;{score >= <span class="attr-val">90</span> ? <span class="attr-val">'ممتاز 🏆'</span> : <span class="attr-val">'جيد 👍'</span>}&lt;/<span class="attr">Text</span>&gt;
+
+    <span class="comment">{/* تعليق داخل JSX */}</span>
+    {<span class="comment">/* هذه تعليق لا يظهر */</span>}
+  &lt;/<span class="attr">View</span>&gt;
+);</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="warning-box"><strong>تذكّر:</strong> التعليقات في JSX تكتب هكذا: <code>{/* تعليق */}</code> وليس <code>// تعليق</code> داخل JSX!</div>
+    </div>
+  </div>
+
+  <!-- S3 -->
+  <div class="section" id="s3">
+    <h2 class="section-title"><span class="num">.3</span> Destructuring — فك التعبئة <span class="en">Destructuring</span></h2>
+    <div class="content">
+      <p>فكّر في الـ Destructuring مثل فتح صندوق هدية واستخراج كل شيء دفعة واحدة بدل ما تقول "أعطني الجزء الأول، ثم الثاني، ثم الثالث".</p>
+
+      <div class="code-box">
+<div class="code-header"><span>📦 Destructuring الـ Objects</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">// بدون Destructuring (طويل)</span>
+<span class="tag-name">function</span> <span class="attr">UserCard</span>(props) {
+  <span class="tag-name">return</span> (
+    &lt;<span class="attr">Text</span>&gt;{props.name} — {props.age} سنة&lt;/<span class="attr">Text</span>&gt;
+  );
+}
+
+<span class="comment">// مع Destructuring (أنظف)</span>
+<span class="tag-name">function</span> <span class="attr">UserCard</span>({ name, age }) {
+  <span class="tag-name">return</span> (
+    &lt;<span class="attr">Text</span>&gt;{name} — {age} سنة&lt;/<span class="attr">Text</span>&gt;
+  );
+}
+
+<span class="comment">// مع قيم افتراضية</span>
+<span class="tag-name">function</span> <span class="attr">UserCard</span>({ name = <span class="attr-val">'زائر'</span>, age = <span class="attr-val">0</span> }) {
+  <span class="tag-name">return</span> &lt;<span class="attr">Text</span>&gt;{name} — {age} سنة&lt;/<span class="attr">Text</span>&gt;;
+}</pre>
+      </div>
+
+      <div class="code-box blue">
+<div class="code-header"><span>📋 Destructuring الـ Arrays</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">// useState يُرجع Array — Destructuring ضروري هنا!</span>
+<span class="tag-name">const</span> [count, setCount] = useState(<span class="attr-val">0</span>);
+<span class="tag-name">const</span> [name, setName]   = useState(<span class="attr-val">''</span>);
+<span class="tag-name">const</span> [loading, setLoading] = useState(<span class="attr-val">false</span>);
+
+<span class="comment">// Destructuring في الـ imports أيضاً</span>
+<span class="tag-name">import</span> { View, Text, StyleSheet, Image } <span class="tag-name">from</span> <span class="attr-val">'react-native'</span>;
+<span class="comment">// ↑ هذا نفسه Destructuring من Object!</span></pre>
+      </div>
+
+      <div class="tip-box"><strong>في RN دائماً تستخدم Destructuring:</strong> عند استيراد المكونات من react-native، وعند استخدام useState، وعند استقبال props في المكوّن.</div>
+    </div>
+  </div>
+
+  <!-- S4 -->
+  <div class="section" id="s4">
+    <h2 class="section-title"><span class="num">.4</span> Spread Operator مع Props <span class="en">Spread Operator</span></h2>
+    <div class="content">
+      <p>الـ Spread Operator (<code>...</code>) مثل "نسخ كل محتوى كيس وصبّه في كيس آخر". ثلاث نقاط فقط تختصر كثير من الكود.</p>
+
+      <div class="code-box">
+<div class="code-header"><span>📤 Spread في Objects</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-name">const</span> baseStyle = { padding: <span class="attr-val">16</span>, borderRadius: <span class="attr-val">10</span> };
+<span class="tag-name">const</span> cardStyle = {
+  ...baseStyle,           <span class="comment">// ← انسخ كل baseStyle</span>
+  backgroundColor: <span class="attr-val">'white'</span>,
+  shadowOpacity: <span class="attr-val">0.1</span>,
+};
+<span class="comment">// cardStyle = { padding:16, borderRadius:10, backgroundColor:'white', shadowOpacity:0.1 }</span>
+
+<span class="comment">// دمج أنماط متعددة في style</span>
+&lt;<span class="attr">View</span> style={[styles.base, styles.card, isActive && styles.active]}&gt;
+  ...
+&lt;/<span class="attr">View</span>&gt;</pre>
+      </div>
+
+      <div class="code-box">
+<div class="code-header"><span>🔄 Spread Props</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">// مكوّن Button مخصّص</span>
+<span class="tag-name">function</span> <span class="attr">MyButton</span>({ title, color = <span class="attr-val">'#0ea5e9'</span>, ...rest }) {
+  <span class="comment">// ...rest = كل الـ props الباقية (onPress, style, disabled, إلخ)</span>
+  <span class="tag-name">return</span> (
+    &lt;<span class="attr">TouchableOpacity</span> {...rest}&gt;
+      &lt;<span class="attr">Text</span> style={{ color }}&gt;{title}&lt;/<span class="attr">Text</span>&gt;
+    &lt;/<span class="attr">TouchableOpacity</span>&gt;
+  );
+}
+
+<span class="comment">// الاستخدام — كل خاصية إضافية تنتقل تلقائياً</span>
+&lt;<span class="attr">MyButton</span>
+  title=<span class="attr-val">"اضغط هنا"</span>
+  onPress={() => alert(<span class="attr-val">'مرحبا!'</span>)}
+  disabled={<span class="attr-val">false</span>}
+  style={{ marginTop: <span class="attr-val">10</span> }}
+/&gt;</pre>
+      </div>
+
+      <div class="code-box blue">
+<div class="code-header"><span>📋 Spread في Arrays</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-name">const</span> fruits = [<span class="attr-val">'تفاح'</span>, <span class="attr-val">'برتقال'</span>];
+<span class="tag-name">const</span> allFruits = [...fruits, <span class="attr-val">'موز'</span>, <span class="attr-val">'عنب'</span>];
+<span class="comment">// ['تفاح', 'برتقال', 'موز', 'عنب']</span>
+
+<span class="comment">// إضافة عنصر لقائمة (state) بدون تغيير الأصل</span>
+setItems(prev => [...prev, newItem]);</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- S5 -->
+  <div class="section" id="s5">
+    <h2 class="section-title"><span class="num">.5</span> Arrow Functions والمكونات <span class="en">Arrow Functions</span></h2>
+    <div class="content">
+      <p>Arrow Functions هي طريقة كتابة الدوال بشكل أقصر. في React Native ستراها في كل مكان.</p>
+
+      <div class="code-box">
+<div class="code-header"><span>🏹 أنواع تعريف الدوال</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">// 1. Function Declaration (تقليدي)</span>
+<span class="tag-name">export default function</span> <span class="attr">App</span>() {
+  <span class="tag-name">return</span> &lt;<span class="attr">View</span>&gt;...&lt;/<span class="attr">View</span>&gt;;
+}
+
+<span class="comment">// 2. Arrow Function Expression (شائع جداً)</span>
+<span class="tag-name">const</span> <span class="attr">App</span> = () => {
+  <span class="tag-name">return</span> &lt;<span class="attr">View</span>&gt;...&lt;/<span class="attr">View</span>&gt;;
+};
+<span class="tag-name">export default</span> <span class="attr">App</span>;
+
+<span class="comment">// 3. Arrow Function مختصرة (بدون return)</span>
+<span class="tag-name">const</span> <span class="attr">Header</span> = () => (
+  &lt;<span class="attr">Text</span> style={styles.title}&gt;رأس الصفحة&lt;/<span class="attr">Text</span>&gt;
+);</pre>
+      </div>
+
+      <div class="code-box">
+<div class="code-header"><span>🎯 Arrow Functions في JSX (Inline)</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">// onPress مع Arrow Function</span>
+&lt;<span class="attr">TouchableOpacity</span> onPress={() => console.log(<span class="attr-val">'ضُغط!'</span>)}&gt;
+  &lt;<span class="attr">Text</span>&gt;اضغط&lt;/<span class="attr">Text</span>&gt;
+&lt;/<span class="attr">TouchableOpacity</span>&gt;
+
+<span class="comment">// مع منطق أكثر</span>
+&lt;<span class="attr">TouchableOpacity</span>
+  onPress={() => {
+    setCount(count + <span class="attr-val">1</span>);
+    showToast(<span class="attr-val">'تم الضغط!'</span>);
+  }}
+&gt;
+  &lt;<span class="attr">Text</span>&gt;{count}&lt;/<span class="attr">Text</span>&gt;
+&lt;/<span class="attr">TouchableOpacity</span>&gt;
+
+<span class="comment">// تمرير معامل</span>
+{items.map(item => (
+  &lt;<span class="attr">Text</span> key={item.id} onPress={() => selectItem(item)}&gt;
+    {item.name}
+  &lt;/<span class="attr">Text</span>&gt;
+))}</pre>
+      </div>
+
+      <div class="info-box"><strong>متى تستخدم أيهما؟</strong> كلاهما صحيح في RN. الـ Function Declaration أوضح للمكوّنات الرئيسية، والـ Arrow Function أنظف للمكوّنات الصغيرة والدوال المساعدة.</div>
+    </div>
+  </div>
+
+  <!-- S6 -->
+  <div class="section" id="s6">
+    <h2 class="section-title"><span class="num">.6</span> Template Literals في JSX <span class="en">Template Literals</span></h2>
+    <div class="content">
+      <p>Template Literals (backticks) تحلّ محل تجميع النصوص بعلامة <code>+</code> وتجعل الكود أكثر وضوحاً.</p>
+
+      <div class="code-box">
+<div class="code-header"><span>💬 Template Literals الأساسية</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-name">const</span> name = <span class="attr-val">'فهد'</span>;
+<span class="tag-name">const</span> score = <span class="attr-val">87</span>;
+<span class="tag-name">const</span> grade = <span class="attr-val">'B+'</span>;
+
+<span class="comment">// بدون Template Literals (صعب)</span>
+<span class="tag-name">const</span> msg1 = <span class="attr-val">'مرحباً '</span> + name + <span class="attr-val">'، حصلت على '</span> + score + <span class="attr-val">' ('</span> + grade + <span class="attr-val">')'</span>;
+
+<span class="comment">// مع Template Literals (أوضح)</span>
+<span class="tag-name">const</span> msg2 = <span class="attr-val">`مرحباً ${name}، حصلت على ${score} (${grade})`</span>;
+
+<span class="comment">// في JSX</span>
+&lt;<span class="attr">Text</span>&gt;{<span class="attr-val">`مرحباً ${name}!`</span>}&lt;/<span class="attr">Text</span>&gt;</pre>
+      </div>
+
+      <div class="code-box blue">
+<div class="code-header"><span>🎨 Template Literals في الأنماط</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-name">const</span> primaryColor = <span class="attr-val">'#0ea5e9'</span>;
+<span class="tag-name">const</span> size = <span class="attr-val">16</span>;
+
+<span class="comment">// تكوين الألوان ديناميكياً</span>
+<span class="tag-name">const</span> cardBorder = <span class="attr-val">`1px solid ${primaryColor}`</span>;
+
+<span class="comment">// رسائل ديناميكية</span>
+<span class="tag-name">const</span> greeting = hour < <span class="attr-val">12</span>
+  ? <span class="attr-val">`صباح الخير ${name} 🌅`</span>
+  : <span class="attr-val">`مساء الخير ${name} 🌙`</span>;
+
+<span class="comment">// URL ديناميكي</span>
+<span class="tag-name">const</span> apiUrl = <span class="attr-val">`https://api.example.com/users/${userId}/posts`</span>;
+
+&lt;<span class="attr">Image</span>
+  source={{ uri: <span class="attr-val">`https://picsum.photos/${size * 10}`</span> }}
+  style={{ width: size * <span class="attr-val">10</span>, height: size * <span class="attr-val">10</span> }}
+/&gt;</pre>
+      </div>
+
+      <div class="tip-box"><strong>قاعدة:</strong> كلما احتجت لدمج متغير داخل نص، استخدم Template Literals بدل <code>+</code> — الكود يصبح أسهل في القراءة والتعديل.</div>
+    </div>
+  </div>
+
+  <!-- S7 -->
+  <div class="section" id="s7">
+    <h2 class="section-title"><span class="num">.7</span> Optional Chaining و Nullish Coalescing <span class="en">Safe Access</span></h2>
+    <div class="content">
+      <p>هذان المعاملان يحمون تطبيقك من الأعطال عند التعامل مع بيانات قد تكون <code>null</code> أو <code>undefined</code>.</p>
+
+      <div class="code-box">
+<div class="code-header"><span>🔗 Optional Chaining (?.) — الوصول الآمن</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-name">const</span> user = {
+  name: <span class="attr-val">'أحمد'</span>,
+  address: { city: <span class="attr-val">'الرياض'</span> }
+};
+
+<span class="comment">// بدون ?. — ممكن يعطل لو address = null</span>
+<span class="tag-name">const</span> city1 = user.address.city;       <span class="comment">// خطر!</span>
+
+<span class="comment">// مع ?. — آمن دائماً</span>
+<span class="tag-name">const</span> city2 = user?.address?.city;     <span class="comment">// 'الرياض' أو undefined</span>
+<span class="tag-name">const</span> zip   = user?.address?.zip;      <span class="comment">// undefined (بدون خطأ)</span>
+<span class="tag-name">const</span> phone = user?.contact?.phone;    <span class="comment">// undefined (بدون خطأ)</span>
+
+<span class="comment">// في JSX</span>
+&lt;<span class="attr">Text</span>&gt;{user?.name}&lt;/<span class="attr">Text</span>&gt;
+&lt;<span class="attr">Text</span>&gt;{user?.address?.city}&lt;/<span class="attr">Text</span>&gt;</pre>
+      </div>
+
+      <div class="code-box">
+<div class="code-header"><span>❓ Nullish Coalescing (??) — القيمة البديلة</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">// ?? يُعطي القيمة اليسرى إن كانت غير null/undefined</span>
+<span class="tag-name">const</span> name  = user?.name  ?? <span class="attr-val">'زائر'</span>;     <span class="comment">// 'أحمد' أو 'زائر'</span>
+<span class="tag-name">const</span> score = data?.score ?? <span class="attr-val">0</span>;          <span class="comment">// الدرجة أو 0</span>
+<span class="tag-name">const</span> img   = user?.avatar ?? <span class="attr-val">'default.png'</span>;
+
+<span class="comment">// مقارنة: ?? مقابل ||</span>
+<span class="tag-name">const</span> a = <span class="attr-val">0</span> || <span class="attr-val">'افتراضي'</span>;    <span class="comment">// 'افتراضي' (0 يُعامل كـ false)</span>
+<span class="tag-name">const</span> b = <span class="attr-val">0</span> ?? <span class="attr-val">'افتراضي'</span>;    <span class="comment">// 0 (لأن 0 ليس null/undefined)</span>
+
+<span class="comment">// في JSX — عرض "لا توجد بيانات" بدل فراغ</span>
+&lt;<span class="attr">Text</span>&gt;{user?.bio ?? <span class="attr-val">'لا توجد نبذة'</span>}&lt;/<span class="attr">Text</span>&gt;
+&lt;<span class="attr">Text</span>&gt;{items?.length ?? <span class="attr-val">0</span>} عنصر&lt;/<span class="attr">Text</span>&gt;</pre>
+      </div>
+
+      <div class="compare-grid">
+        <div class="cg-box bad">
+          <div class="cg-label">❌ بدون حماية</div>
+          <div class="code-box" style="margin:0"><pre style="font-size:.75rem"><span class="comment">// يتعطل لو data = null</span>
+&lt;<span class="attr">Text</span>&gt;
+  {data.user.name}
+&lt;/<span class="attr">Text</span>&gt;</pre></div>
+        </div>
+        <div class="cg-box good">
+          <div class="cg-label">✅ مع حماية</div>
+          <div class="code-box" style="margin:0"><pre style="font-size:.75rem"><span class="comment">// آمن دائماً</span>
+&lt;<span class="attr">Text</span>&gt;
+  {data?.user?.name ?? <span class="attr-val">'مجهول'</span>}
+&lt;/<span class="attr">Text</span>&gt;</pre></div>
+        </div>
+      </div>
+
+      <div class="info-box"><strong>قاعدة الإبهام:</strong> عند جلب بيانات من API أو قاعدة بيانات، استخدم <code>?.</code> دائماً — فقد تأتي البيانات ناقصة أو <code>null</code>، والتطبيق لا يجب أن يتعطل!</div>
+    </div>
+  </div>
+
+  <!-- S8 -->
+  <div class="section" id="s8">
+    <h2 class="section-title"><span class="num">.8</span> محرر تفاعلي — JSX Sandbox <span class="en">Live Editor</span></h2>
+    <div class="content"><p>جرّب مفاهيم ES6 في بيئة محاكاة تفاعلية. عدّل البيانات وشاهد النتيجة على شاشة الجوال:</p></div>
+    <div class="live-preview">
+      <div class="lp-header">
+        <span>📱 معاينة حية — JSX + ES6</span>
+        <span class="lp-tag">Destructuring + Template</span>
+      </div>
+      <div class="lp-body">
+        <div class="lp-code">
+<pre><span class="k">const</span> user = {
+  name: <span class="s">'سارة محمد'</span>,
+  role: <span class="s">'مطورة Frontend'</span>,
+  stats: { posts: <span class="n">42</span>, followers: <span class="n">1280</span> },
+};
+
+<span class="k">export default function</span> <span class="t">App</span>() {
+  <span class="c">// Destructuring</span>
+  <span class="k">const</span> { name, role, stats } = user;
+
+  <span class="c">// Template Literal + Optional Chaining</span>
+  <span class="k">const</span> greeting = <span class="s">`مرحباً، ${name}!`</span>;
+  <span class="k">const</span> followers = stats?.followers ?? <span class="n">0</span>;
+
+  <span class="k">return</span> (
+    <span class="p">&lt;</span><span class="t">View</span> style={styles.card}<span class="p">&gt;</span>
+      <span class="p">&lt;</span><span class="t">Text</span> style={styles.greet}<span class="p">&gt;</span>
+        {greeting}
+      <span class="p">&lt;/</span><span class="t">Text</span><span class="p">&gt;</span>
+      <span class="p">&lt;</span><span class="t">Text</span> style={styles.role}<span class="p">&gt;</span>
+        {role}
+      <span class="p">&lt;/</span><span class="t">Text</span><span class="p">&gt;</span>
+      <span class="p">&lt;</span><span class="t">View</span> style={styles.row}<span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="t">Text</span><span class="p">&gt;</span>📝 {stats.posts}<span class="p">&lt;/</span><span class="t">Text</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="t">Text</span><span class="p">&gt;</span>👥 {followers}<span class="p">&lt;/</span><span class="t">Text</span><span class="p">&gt;</span>
+      <span class="p">&lt;/</span><span class="t">View</span><span class="p">&gt;</span>
+    <span class="p">&lt;/</span><span class="t">View</span><span class="p">&gt;</span>
+  );
+}</pre>
+        </div>
+        <div class="lp-phone-wrap">
+          <div class="lp-phone">
+            <div class="lp-phone-bar"></div>
+            <div class="lp-phone-screen" style="align-items:center; justify-content:center;">
+              <div style="background:white; border-radius:14px; padding:18px 14px; width:100%; box-shadow:0 6px 18px rgba(124,58,237,.18); border:1px solid #ede9fe;">
+                <div style="font-size:1rem; font-weight:800; color:#0f172a; font-family:'Cairo',sans-serif; margin-bottom:4px;">مرحباً، سارة محمد! 👋</div>
+                <div style="font-size:.74rem; color:#7c3aed; font-weight:600; font-family:'Cairo',sans-serif; margin-bottom:14px;">مطورة Frontend</div>
+                <div style="display:flex; justify-content:space-around; padding-top:10px; border-top:1px solid #f1f5f9;">
+                  <div style="text-align:center;">
+                    <div style="font-size:.95rem; font-weight:800; color:#0ea5e9; font-family:monospace;">42</div>
+                    <div style="font-size:.6rem; color:#64748b; font-family:'Cairo',sans-serif;">📝 مقال</div>
+                  </div>
+                  <div style="text-align:center;">
+                    <div style="font-size:.95rem; font-weight:800; color:#0ea5e9; font-family:monospace;">1,280</div>
+                    <div style="font-size:.6rem; color:#64748b; font-family:'Cairo',sans-serif;">👥 متابع</div>
+                  </div>
+                </div>
+                <div style="margin-top:12px; background:#0f172a; color:#4ade80; padding:4px 8px; border-radius:5px; font-size:.6rem; font-family:monospace; text-align:center;">`مرحباً، ${name}!`</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EXERCISES -->
+  <div class="section" id="exercises">
+    <h2 class="section-title"><span class="num">📝</span> التمارين العملية <span class="en">Exercises</span></h2>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 1: إصلاح JSX</div>
+      <p>الكود التالي فيه 3 أخطاء JSX، ابحث عنها وصحّحها:</p>
+      <div class="code-box">
+<pre>&lt;View&gt;
+  مرحباً بالعالم
+  &lt;Image source={{ uri: 'https://picsum.photos/100' }}&gt;
+  &lt;Text style="fontSize:18"&gt;أحمد&lt;/Text&gt;
+&lt;/View&gt;</pre>
+      </div>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الأخطاء الثلاثة:</span>
+        <p>1️⃣ النص مباشرة في View بدون &lt;Text&gt;<br>
+        2️⃣ &lt;Image&gt; لم تُغلق (يجب &lt;Image ... /&gt;)<br>
+        3️⃣ style="fontSize:18" — يجب أن يكون style={{ fontSize: 18 }}</p>
+        <div class="code-box">
+<pre><span class="comment">// الكود الصحيح:</span>
+&lt;<span class="attr">View</span>&gt;
+  &lt;<span class="attr">Text</span>&gt;مرحباً بالعالم&lt;/<span class="attr">Text</span>&gt;
+  &lt;<span class="attr">Image</span> source={{ uri: <span class="attr-val">'https://picsum.photos/100'</span> }} /&gt;
+  &lt;<span class="attr">Text</span> style={{ fontSize: <span class="attr-val">18</span> }}&gt;أحمد&lt;/<span class="attr">Text</span>&gt;
+&lt;/<span class="attr">View</span>&gt;</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 2: Destructuring</div>
+      <p>حوّل هذا المكوّن لاستخدام Destructuring في الـ props:</p>
+      <div class="code-box">
+<pre><span class="tag-name">function</span> <span class="attr">ProductCard</span>(props) {
+  <span class="tag-name">return</span> (
+    &lt;<span class="attr">View</span>&gt;
+      &lt;<span class="attr">Text</span>&gt;{props.name}&lt;/<span class="attr">Text</span>&gt;
+      &lt;<span class="attr">Text</span>&gt;{props.price} ريال&lt;/<span class="attr">Text</span>&gt;
+      &lt;<span class="attr">Text</span>&gt;{props.category}&lt;/<span class="attr">Text</span>&gt;
+    &lt;/<span class="attr">View</span>&gt;
+  );
+}</pre>
+      </div>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre><span class="tag-name">function</span> <span class="attr">ProductCard</span>({ name, price, category = <span class="attr-val">'عام'</span> }) {
+  <span class="tag-name">return</span> (
+    &lt;<span class="attr">View</span>&gt;
+      &lt;<span class="attr">Text</span>&gt;{name}&lt;/<span class="attr">Text</span>&gt;
+      &lt;<span class="attr">Text</span>&gt;{price} ريال&lt;/<span class="attr">Text</span>&gt;
+      &lt;<span class="attr">Text</span>&gt;{category}&lt;/<span class="attr">Text</span>&gt;
+    &lt;/<span class="attr">View</span>&gt;
+  );
+}</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 3: Template Literals</div>
+      <p>حوّل هذا الكود لاستخدام Template Literals بدل علامة +:</p>
+      <div class="code-box">
+<pre><span class="tag-name">const</span> user = { name: <span class="attr-val">'نورة'</span>, age: <span class="attr-val">22</span>, city: <span class="attr-val">'جدة'</span> };
+<span class="tag-name">const</span> msg = <span class="attr-val">'اسمي '</span> + user.name + <span class="attr-val">' عمري '</span> + user.age + <span class="attr-val">' من '</span> + user.city;</pre>
+      </div>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre><span class="tag-name">const</span> user = { name: <span class="attr-val">'نورة'</span>, age: <span class="attr-val">22</span>, city: <span class="attr-val">'جدة'</span> };
+<span class="comment">// مع Destructuring أيضاً</span>
+<span class="tag-name">const</span> { name, age, city } = user;
+<span class="tag-name">const</span> msg = <span class="attr-val">`اسمي ${name} عمري ${age} من ${city}`</span>;</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 4: Optional Chaining</div>
+      <p>اكتب سطر كود يعرض <code>response?.data?.users?.[0]?.name</code> — إن كان موجوداً — وإلا يعرض "لا يوجد مستخدم".</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre><span class="tag-name">const</span> firstName = response?.data?.users?.[<span class="attr-val">0</span>]?.name ?? <span class="attr-val">'لا يوجد مستخدم'</span>;
+
+<span class="comment">// في JSX</span>
+&lt;<span class="attr">Text</span>&gt;
+  {response?.data?.users?.[<span class="attr-val">0</span>]?.name ?? <span class="attr-val">'لا يوجد مستخدم'</span>}
+&lt;/<span class="attr">Text</span>&gt;</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 5: دمج الكل</div>
+      <p>اكتب مكوّن <code>WeatherCard</code> يقبل props: <code>city</code>, <code>temp</code>, <code>weather</code> ويستخدم: Destructuring + Template Literals + Optional Chaining + Arrow Function.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre><span class="tag-name">const</span> <span class="attr">WeatherCard</span> = ({ city = <span class="attr-val">'غير محدد'</span>, temp, weather }) => {
+  <span class="comment">// Optional Chaining + Nullish Coalescing</span>
+  <span class="tag-name">const</span> tempDisplay = temp ?? <span class="attr-val">'--'</span>;
+  <span class="tag-name">const</span> icon = weather?.icon ?? <span class="attr-val">'🌤️'</span>;
+
+  <span class="comment">// Template Literal</span>
+  <span class="tag-name">const</span> title = <span class="attr-val">`طقس ${city} اليوم`</span>;
+
+  <span class="tag-name">return</span> (
+    &lt;<span class="attr">View</span> style={styles.card}&gt;
+      &lt;<span class="attr">Text</span> style={styles.title}&gt;{title}&lt;/<span class="attr">Text</span>&gt;
+      &lt;<span class="attr">Text</span> style={styles.temp}&gt;{icon} {tempDisplay}°&lt;/<span class="attr">Text</span>&gt;
+      &lt;<span class="attr">Text</span>&gt;{weather?.description ?? <span class="attr-val">'لا توجد بيانات'</span>}&lt;/<span class="attr">Text</span>&gt;
+    &lt;/<span class="attr">View</span>&gt;
+  );
+};</pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="quiz-container" id="quiz">
+    <div class="quiz-intro"><p>اختبر فهمك لـ JSX و ES6 في React Native!</p></div>
+    <div class="quiz-type-tabs">
+      <button class="qt-tab active" onclick="switchQuiz(this,'tf')">✓✗ صح وخطأ</button>
+      <button class="qt-tab" onclick="switchQuiz(this,'mc')">🔘 اختيار من متعدد</button>
+    </div>
+
+    <div class="quiz-section active" id="quiz-tf">
+      <div class="quiz-question" data-correct="false">
+        <span class="q-num">1</span><span class="q-text">يمكن لمكوّن React Native أن يُرجع عنصرين منفصلين في المستوى الأعلى بدون Fragment.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">2</span><span class="q-text">التعليقات داخل JSX تكتب بهذه الصيغة: {/* تعليق */}</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">3</span><span class="q-text">Optional Chaining (?.) يمنع حدوث خطأ عند الوصول إلى خاصية لكائن قيمته null.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="false">
+        <span class="q-num">4</span><span class="q-text">المعامل ?? و || لهما نفس السلوك تماماً في JavaScript.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">5</span><span class="q-text">Destructuring يُتيح استخراج قيم من Object أو Array في سطر واحد.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <button class="quiz-submit" onclick="submitQuiz('tf')">عرض النتيجة 🎯</button>
+      <div class="quiz-result" id="result-tf"><div class="result-score" id="score-tf">0/5</div><div class="result-label">إجابات صحيحة</div><div class="result-message" id="msg-tf"></div><button class="retry-btn" onclick="retryQuiz('tf')">🔄 حاول تاني</button></div>
+    </div>
+
+    <div class="quiz-section" id="quiz-mc">
+      <div class="quiz-question" data-correct="2">
+        <span class="q-num">1</span><span class="q-text">ما الفرق الرئيسي بين ?? و || في JavaScript؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">لا فرق بينهما</button>
+          <button class="q-opt" onclick="answerMC(this,1)">?? أسرع من ||</button>
+          <button class="q-opt" onclick="answerMC(this,2)">?? يتحقق فقط من null/undefined، أما || فيتحقق من القيم الـ falsy</button>
+          <button class="q-opt" onclick="answerMC(this,3)">|| يعمل فقط مع Strings</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="1">
+        <span class="q-num">2</span><span class="q-text">ما الكود الصحيح لاستخراج name و age من Object باستخدام Destructuring؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">const name, age = user;</button>
+          <button class="q-opt" onclick="answerMC(this,1)">const { name, age } = user;</button>
+          <button class="q-opt" onclick="answerMC(this,2)">const [name, age] = user;</button>
+          <button class="q-opt" onclick="answerMC(this,3)">destructure(user, name, age);</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="3">
+        <span class="q-num">3</span><span class="q-text">ما وظيفة {...rest} في مكوّن React Native؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">إعادة تعيين الـ state</button>
+          <button class="q-opt" onclick="answerMC(this,1)">إنشاء نسخة جديدة من المكوّن</button>
+          <button class="q-opt" onclick="answerMC(this,2)">حذف الـ props غير المستخدمة</button>
+          <button class="q-opt" onclick="answerMC(this,3)">تمرير باقي الـ props غير المُفككة إلى المكوّن</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="0">
+        <span class="q-num">4</span><span class="q-text">أي من التالي هو Template Literal صحيح؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">`مرحباً ${name}!`</button>
+          <button class="q-opt" onclick="answerMC(this,1)">"مرحباً ${name}!"</button>
+          <button class="q-opt" onclick="answerMC(this,2)">'مرحباً ${name}!'</button>
+          <button class="q-opt" onclick="answerMC(this,3)">«مرحباً ${name}!»</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="2">
+        <span class="q-num">5</span><span class="q-text">ما الفرق بين &lt;&gt;&lt;/&gt; و &lt;View&gt;&lt;/View&gt; في React Native؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">لا فرق، كلاهما متطابقان</button>
+          <button class="q-opt" onclick="answerMC(this,1)">&lt;&gt; أسرع في التصيير</button>
+          <button class="q-opt" onclick="answerMC(this,2)">&lt;&gt; Fragment لا يضيف عنصراً حقيقياً للشجرة، أما View فتضيف عنصر Native</button>
+          <button class="q-opt" onclick="answerMC(this,3)">&lt;&gt; يقبل style و &lt;View&gt; لا يقبله</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <button class="quiz-submit" onclick="submitQuiz('mc')">عرض النتيجة 🎯</button>
+      <div class="quiz-result" id="result-mc"><div class="result-score" id="score-mc">0/5</div><div class="result-label">إجابات صحيحة</div><div class="result-message" id="msg-mc"></div><button class="retry-btn" onclick="retryQuiz('mc')">🔄 حاول تاني</button></div>
+    </div>
+  </div>
+
+  <div class="lesson-nav">
+    <a href="./lesson-03.html" class="nav-btn"><span>⬅️</span><span>الدرس السابق</span></a>
+    <button class="nav-btn complete-btn" id="completeBtn" onclick="markComplete(this)"><span>✅</span><span>علّم كمكتمل</span></button>
+    <a href="./lesson-05.html" class="nav-btn"><span>الدرس التالي</span><span>➡️</span></a>
+  </div>
+
+  <div class="notebook-footer">
+    <h3>🎉 أتقنت JSX و ES6!</h3>
+    <p>الآن أكوادك ستكون أنظف وأقصر وأأمن من الأعطال. 💪<br><strong>الدرس التالي: المكونات الأساسية — View, Text, Image, ScrollView 📱</strong></p>
+  </div>
+</div>
+
+<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">⬆️</button>
+<div class="toast" id="toast"></div>
+<script src="../../js/data/courses.js"></script>
+<script src="../../js/progress.js"></script>
+<script>
+const COURSE_ID='react-native', LESSON_ID=4, TOTAL=28;
+function toggleSolution(b){const s=b.nextElementSibling;s.classList.toggle('show');b.textContent=s.classList.contains('show')?'إخفاء الحل ▲':'عرض الحل ▼';}
+function copyCode(b){const p=b.closest('.code-box').querySelector('pre');navigator.clipboard.writeText(p.innerText).then(()=>{b.classList.add('copied');b.textContent='✓ تم النسخ';setTimeout(()=>{b.classList.remove('copied');b.textContent='📋 نسخ';},2000);});}
+function switchQuiz(b,t){document.querySelectorAll('.qt-tab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.quiz-section').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.getElementById('quiz-'+t).classList.add('active');}
+const answers={tf:{},mc:{}};
+function answerTF(b,v){const q=b.closest('.quiz-question'),i=Array.from(q.parentNode.querySelectorAll('.quiz-question')).indexOf(q);q.querySelectorAll('.q-opt').forEach(o=>o.classList.remove('selected'));b.classList.add('selected');answers.tf[i]=v;}
+function answerMC(b,i){const q=b.closest('.quiz-question'),qi=Array.from(q.parentNode.querySelectorAll('.quiz-question')).indexOf(q);q.querySelectorAll('.q-opt').forEach(o=>o.classList.remove('selected'));b.classList.add('selected');answers.mc[qi]=i;}
+function submitQuiz(type){const sec=document.getElementById('quiz-'+type),qs=sec.querySelectorAll('.quiz-question');let c=0;qs.forEach((q,i)=>{const ca=type==='tf'?(q.dataset.correct==='true'):parseInt(q.dataset.correct),ua=answers[type][i],fb=q.querySelector('.q-feedback'),opts=q.querySelectorAll('.q-opt');opts.forEach(o=>{o.classList.remove('selected');o.disabled=true;});if(ua===undefined){fb.className='q-feedback wrong show';fb.textContent='⚠️ ما اخترتش إجابة!';return;}if(ua===ca){c++;fb.className='q-feedback correct show';fb.textContent='✓ إجابة صحيحة!';if(type==='tf')opts[ca?0:1].classList.add('correct');else opts[ca].classList.add('correct');}else{fb.className='q-feedback wrong show';if(type==='tf'){opts[ca?0:1].classList.add('correct');opts[ua?0:1].classList.add('wrong');fb.textContent='✗ خطأ.';}else{opts[ca].classList.add('correct');opts[ua].classList.add('wrong');fb.textContent='✗ الإجابة بالأخضر.';}}});const r=document.getElementById('result-'+type);document.getElementById('score-'+type).textContent=c+'/'+qs.length;const m=document.getElementById('msg-'+type);if(c===qs.length){m.textContent='🏆 ممتاز 100%!';m.className='result-message excellent';}else if(c>=3){m.textContent='👍 جيد!';m.className='result-message good';}else{m.textContent='📚 راجع الدرس.';m.className='result-message try-again';}r.classList.add('show');r.scrollIntoView({behavior:'smooth',block:'center'});}
+function retryQuiz(type){const sec=document.getElementById('quiz-'+type);sec.querySelectorAll('.q-opt').forEach(o=>{o.classList.remove('selected','correct','wrong');o.disabled=false;});sec.querySelectorAll('.q-feedback').forEach(f=>{f.classList.remove('show','correct','wrong');f.textContent='';});document.getElementById('result-'+type).classList.remove('show');answers[type]={};}
+function markComplete(btn){const done=Progress.toggleLessonComplete(COURSE_ID,LESSON_ID);btn.classList.toggle('completed',done);btn.querySelector('span:last-child').textContent=done?'مكتمل! ⭐':'علّم كمكتمل';showToast(done?'🎉 أكملت درس JSX و ES6!':'تم إلغاء الإكمال');}
+if(Progress.isLessonComplete(COURSE_ID,LESSON_ID)){const b=document.getElementById('completeBtn');b.classList.add('completed');b.querySelector('span:last-child').textContent='مكتمل! ⭐';}
+(function(){const p=Progress.getCourseProgress(COURSE_ID,TOTAL);document.getElementById('progFill').style.width=p+'%';document.getElementById('progText').textContent=p+'%';})();
+function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
+window.addEventListener('scroll',()=>{document.getElementById('scrollTop').classList.toggle('show',window.scrollY>300);});
+document.querySelectorAll('.toc-card a').forEach(l=>{l.addEventListener('click',e=>{e.preventDefault();const t=document.querySelector(l.getAttribute('href'));if(t)t.scrollIntoView({behavior:'smooth',block:'start'});});});
+</script>
+</body>
+</html>

@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-V2NCKVL16D"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-V2NCKVL16D');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>الأبعاد والوحدات — دفتر البرمجة</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=Cairo:wght@300;400;500;600;700;900&family=Caveat:wght@400;700&family=Fira+Code:wght@400;500;600&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../css/shared.css">
+<link rel="stylesheet" href="../../css/notebook.css">
+<style>
+body { padding: 20px 10px; }
+
+/* device showcase */
+.device-row {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(140px,1fr));
+  gap: 12px; margin: 14px 0;
+}
+.device-card {
+  background: #f8fafc; border: 1.5px solid var(--border);
+  border-radius: 12px; padding: 14px; text-align: center;
+}
+.device-icon { font-size: 1.8rem; margin-bottom: 6px; }
+.device-name { font-weight: 700; font-size: .88rem; margin-bottom: 4px; }
+.device-spec {
+  font-family: 'Fira Code', monospace; font-size: .72rem;
+  color: var(--text-muted); margin-top: 4px;
+}
+.device-spec code {
+  background: #e0f2fe; padding: 1px 5px; border-radius: 3px;
+  color: #0369a1; font-size: .7rem;
+}
+
+/* unit comparison */
+.unit-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(180px,1fr));
+  gap: 12px; margin: 14px 0;
+}
+.unit-card {
+  background: #f8fafc; border: 1.5px solid var(--border);
+  border-radius: 12px; padding: 14px;
+}
+.unit-card.dp     { border-color: #0ea5e9; }
+.unit-card.pct    { border-color: #7c3aed; }
+.unit-card.flex   { border-color: #16a34a; }
+.unit-card.fixed  { border-color: #f97316; }
+.unit-name {
+  font-family: 'Fira Code', monospace; font-weight: 700;
+  font-size: .88rem; margin-bottom: 4px;
+}
+.unit-card.dp    .unit-name { color: #0369a1; }
+.unit-card.pct   .unit-name { color: #6d28d9; }
+.unit-card.flex  .unit-name { color: #15803d; }
+.unit-card.fixed .unit-name { color: #c2410c; }
+.unit-desc { font-size: .82rem; color: var(--text-muted); line-height: 1.6; }
+
+/* visual screen sizes */
+.screen-vis {
+  display: flex; gap: 14px; align-items: flex-end;
+  justify-content: center; margin: 16px 0;
+  padding: 20px; background: #1e293b; border-radius: 12px;
+}
+.mini-phone {
+  background: white; border: 3px solid #475569;
+  border-radius: 10px; padding: 6px;
+  display: flex; align-items: center; justify-content: center;
+  position: relative;
+}
+.mini-phone-label {
+  position: absolute; bottom: -24px; left: 50%;
+  transform: translateX(-50%); color: #94a3b8;
+  font-size: .65rem; white-space: nowrap;
+  font-family: 'Fira Code', monospace;
+}
+.mp-content {
+  background: linear-gradient(135deg, #0ea5e9, #7c3aed);
+  width: 100%; height: 100%; border-radius: 4px;
+}
+
+/* platform cards */
+.platform-row {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 14px 0;
+}
+.pf-card {
+  border-radius: 14px; padding: 16px;
+  border: 2px solid transparent;
+}
+.pf-card.ios     { background: #fafafa; border-color: #71717a; }
+.pf-card.android { background: #ecfdf5; border-color: #10b981; }
+.pf-card-icon { font-size: 1.8rem; margin-bottom: 8px; }
+.pf-card-title { font-weight: 700; font-size: .95rem; margin-bottom: 6px; }
+.pf-card-list {
+  font-size: .82rem; color: var(--text-muted);
+  line-height: 1.8; padding-right: 14px;
+}
+
+/* api callout */
+.api-box {
+  background: linear-gradient(135deg, #0f172a, #1e293b);
+  border-radius: 12px; padding: 16px;
+  color: white; margin: 12px 0;
+}
+.api-box .api-tag {
+  display: inline-block; background: #0ea5e9; color: white;
+  padding: 3px 10px; border-radius: 999px;
+  font-family: 'Fira Code', monospace; font-size: .72rem;
+  font-weight: 700; margin-bottom: 8px;
+}
+.api-box .api-title { font-weight: 700; font-size: 1rem; margin-bottom: 6px; }
+.api-box .api-desc  { font-size: .85rem; color: #cbd5e1; line-height: 1.6; }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="crumbs">
+    <a href="../../index.html">🏠 الرئيسية</a>
+    <span class="sep">/</span>
+    <a href="./index.html">📱 React Native</a>
+    <span class="sep">/</span>
+    <span class="current">📐 الدرس 7: الأبعاد والوحدات</span>
+  </div>
+  <div class="progress-mini">
+    <div class="progress-bar-mini"><div class="progress-fill-mini" id="progFill"></div></div>
+    <span id="progText">0%</span>
+  </div>
+</div>
+
+<div class="notebook">
+
+  <div class="notebook-header">
+    <div class="lesson-tag">📐 الدرس السابع</div>
+    <h1><span class="sparkle">✦</span> الأبعاد والوحدات <span class="sparkle">✦</span></h1>
+    <div class="lesson-meta">
+      <span>⏱️ 40 دقيقة</span>
+      <span>📊 مبتدئ+</span>
+      <span>🎯 5 تمارين + اختبار</span>
+    </div>
+  </div>
+
+  <div class="toc-card">
+    <h2>📑 فهرس الدرس</h2>
+    <ol>
+      <li><a href="#s1">تحدي الشاشات المتعددة</a></li>
+      <li><a href="#s2">الوحدات في React Native</a></li>
+      <li><a href="#s3">Dimensions API — جلب أبعاد الشاشة</a></li>
+      <li><a href="#s4">useWindowDimensions — الطريقة الحديثة</a></li>
+      <li><a href="#s5">النسب المئوية والتصميم النسبي</a></li>
+      <li><a href="#s6">PixelRatio — كثافة الشاشة</a></li>
+      <li><a href="#s7">Platform — التفريق بين iOS و Android</a></li>
+      <li><a href="#s8">معاينة حية — تطبيق متجاوب</a></li>
+      <li><a href="#exercises">التمارين</a></li>
+      <li><a href="#quiz">اختبر فهمك</a></li>
+    </ol>
+  </div>
+
+  <!-- S1 -->
+  <div class="section" id="s1">
+    <h2 class="section-title"><span class="num">.1</span> تحدي الشاشات المتعددة <span class="en">Multi-Screen Challenge</span></h2>
+    <div class="content">
+      <p>تخيّل أنك تخيط ملابس لمعرض كامل — لكل شخص قياسات مختلفة! نفس الأمر مع تطبيقك: ملايين الأجهزة بأحجام مختلفة من iPhone SE الصغير إلى iPad Pro الكبير.</p>
+
+      <div class="device-row">
+        <div class="device-card">
+          <div class="device-icon">📱</div>
+          <div class="device-name">iPhone SE</div>
+          <div class="device-spec"><code>375 × 667</code></div>
+        </div>
+        <div class="device-card">
+          <div class="device-icon">📱</div>
+          <div class="device-name">iPhone 15</div>
+          <div class="device-spec"><code>393 × 852</code></div>
+        </div>
+        <div class="device-card">
+          <div class="device-icon">📱</div>
+          <div class="device-name">Pixel 8 Pro</div>
+          <div class="device-spec"><code>412 × 915</code></div>
+        </div>
+        <div class="device-card">
+          <div class="device-icon">📟</div>
+          <div class="device-name">iPad</div>
+          <div class="device-spec"><code>768 × 1024</code></div>
+        </div>
+      </div>
+
+      <div class="screen-vis">
+        <div class="mini-phone" style="width:50px; height:80px;">
+          <div class="mp-content"></div>
+          <div class="mini-phone-label">375px</div>
+        </div>
+        <div class="mini-phone" style="width:58px; height:105px;">
+          <div class="mp-content"></div>
+          <div class="mini-phone-label">393px</div>
+        </div>
+        <div class="mini-phone" style="width:62px; height:115px;">
+          <div class="mp-content"></div>
+          <div class="mini-phone-label">412px</div>
+        </div>
+        <div class="mini-phone" style="width:110px; height:140px;">
+          <div class="mp-content"></div>
+          <div class="mini-phone-label">768px (iPad)</div>
+        </div>
+      </div>
+
+      <div class="warning-box" style="margin-top:34px;"><strong>المشكلة:</strong> لو كتبت <code>width: 350</code> ثابتة، تطبيقك سيبدو رائعاً على iPhone 15 لكن مكسوراً على iPhone SE (لأن 350 قريب من 375 — لا توجد مساحة كافية)!</div>
+
+      <div class="tip-box"><strong>الحل:</strong> استخدم <strong>النسب</strong> (<code>'50%'</code>)، أو <strong>flex</strong>، أو <strong>Dimensions API</strong> للحصول على عرض الشاشة الفعلي ديناميكياً.</div>
+    </div>
+  </div>
+
+  <!-- S2 -->
+  <div class="section" id="s2">
+    <h2 class="section-title"><span class="num">.2</span> الوحدات في React Native <span class="en">Units in RN</span></h2>
+    <div class="content">
+      <p>في React Native، الأرقام بدون وحدة هي <strong>density-independent pixels (dp)</strong> — وحدات مستقلة عن كثافة الشاشة. لا يوجد px، rem، أو em!</p>
+
+      <div class="unit-grid">
+        <div class="unit-card dp">
+          <div class="unit-name">أرقام (dp)</div>
+          <div class="unit-desc">القيمة الافتراضية. <code>width: 100</code> = 100dp.<br><strong>متى:</strong> أبعاد ثابتة (أيقونات، حدود)</div>
+        </div>
+        <div class="unit-card pct">
+          <div class="unit-name">نسب مئوية '%'</div>
+          <div class="unit-desc">كنص داخل علامتي تنصيص. <code>width: '50%'</code>.<br><strong>متى:</strong> نسبة من الأب المباشر</div>
+        </div>
+        <div class="unit-card flex">
+          <div class="unit-name">flex: number</div>
+          <div class="unit-desc">حصة من المساحة. <code>flex: 1</code> = اشغل الباقي.<br><strong>متى:</strong> الأشيع للتخطيطات المرنة</div>
+        </div>
+        <div class="unit-card fixed">
+          <div class="unit-name">Dimensions</div>
+          <div class="unit-desc">قيم محسوبة من حجم الشاشة الفعلي.<br><strong>متى:</strong> تخطيطات معقدة (50% - 20px)</div>
+        </div>
+      </div>
+
+      <div class="code-box">
+<div class="code-header"><span>📏 أمثلة على الوحدات</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">// 1️⃣ أرقام = dp (الأشيع)</span>
+{ width: <span class="attr-val">100</span>, height: <span class="attr-val">100</span>, padding: <span class="attr-val">16</span> }
+
+<span class="comment">// 2️⃣ نسب مئوية كـ string</span>
+{ width: <span class="attr-val">'50%'</span>, height: <span class="attr-val">'100%'</span> }
+
+<span class="comment">// 3️⃣ flex — حصص من المساحة</span>
+{ flex: <span class="attr-val">1</span> }      <span class="comment">// 100% من الباقي</span>
+{ flex: <span class="attr-val">2</span> }      <span class="comment">// ضعف العنصر الذي flex: 1</span>
+
+<span class="comment">// 4️⃣ Dimensions — قيم ديناميكية</span>
+<span class="tag-name">const</span> screenWidth = Dimensions.get(<span class="attr-val">'window'</span>).width;
+{ width: screenWidth * <span class="attr-val">0.9</span> }   <span class="comment">// 90% بطريقة برمجية</span></pre>
+      </div>
+
+      <div class="info-box"><strong>ما هي dp؟</strong> وحدة تتكيّف مع كثافة الشاشة — حتى يبدو الزر بنفس الحجم البصري على كل الأجهزة، سواء كانت شاشتها كثيفة أو عادية.</div>
+    </div>
+  </div>
+
+  <!-- S3 -->
+  <div class="section" id="s3">
+    <h2 class="section-title"><span class="num">.3</span> Dimensions API <span class="en">Dimensions API</span></h2>
+    <div class="content">
+      <p>للحصول على الأبعاد الحقيقية للشاشة، نستخدم <code>Dimensions</code> من react-native:</p>
+
+      <div class="api-box">
+        <span class="api-tag">Dimensions.get('window')</span>
+        <div class="api-title">جلب أبعاد النافذة الحالية</div>
+        <div class="api-desc">يُرجع object بـ <code style="background:#0ea5e9; padding:1px 5px; border-radius:3px; font-family:monospace;">{ width, height, scale, fontScale }</code></div>
+      </div>
+
+      <div class="code-box">
+<div class="code-header"><span>📐 استخدام Dimensions</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-name">import</span> { View, Text, Dimensions, StyleSheet } <span class="tag-name">from</span> <span class="attr-val">'react-native'</span>;
+
+<span class="comment">// جلب الأبعاد مرة واحدة</span>
+<span class="tag-name">const</span> { width, height } = Dimensions.get(<span class="attr-val">'window'</span>);
+
+<span class="tag-name">export default function</span> <span class="attr">App</span>() {
+  <span class="tag-name">return</span> (
+    &lt;<span class="attr">View</span> style={styles.container}&gt;
+      &lt;<span class="attr">Text</span>&gt;عرض الشاشة: {width}px&lt;/<span class="attr">Text</span>&gt;
+      &lt;<span class="attr">Text</span>&gt;طول الشاشة: {height}px&lt;/<span class="attr">Text</span>&gt;
+
+      <span class="comment">{/* بطاقة بـ 90% من العرض */}</span>
+      &lt;<span class="attr">View</span> style={{ width: width * <span class="attr-val">0.9</span>, height: <span class="attr-val">200</span> }}&gt;
+        ...
+      &lt;/<span class="attr">View</span>&gt;
+    &lt;/<span class="attr">View</span>&gt;
+  );
+}
+
+<span class="tag-name">const</span> <span class="attr">styles</span> = StyleSheet.create({
+  container: { flex: <span class="attr-val">1</span>, alignItems: <span class="attr-val">'center'</span> },
+});</pre>
+      </div>
+
+      <p><strong>الفرق بين 'window' و 'screen':</strong></p>
+      <table class="cool-table">
+        <thead><tr><th>القيمة</th><th>المعنى</th><th>متى تستخدمها</th></tr></thead>
+        <tbody>
+          <tr><td><code>'window'</code></td><td>المساحة المتاحة لتطبيقك (بدون شريط الحالة)</td><td>الاستخدام الشائع (99%)</td></tr>
+          <tr><td><code>'screen'</code></td><td>كامل الشاشة الفيزيائية</td><td>نادراً — قياس شاشة الجهاز كاملة</td></tr>
+        </tbody>
+      </table>
+
+      <div class="warning-box"><strong>عيب Dimensions.get():</strong> يُحسب مرة واحدة فقط — لا يتحدث عند دوران الجهاز أو تغيير حجم النافذة. للحل: استخدم <code>useWindowDimensions</code> في القسم التالي.</div>
+    </div>
+  </div>
+
+  <!-- S4 -->
+  <div class="section" id="s4">
+    <h2 class="section-title"><span class="num">.4</span> useWindowDimensions — الطريقة الحديثة <span class="en">Modern Way</span></h2>
+    <div class="content">
+      <p>الـ Hook <code>useWindowDimensions</code> هو الحل الموصى به — يُعيد تشغيل المكوّن تلقائياً عند تغيير الأبعاد.</p>
+
+      <div class="api-box">
+        <span class="api-tag">useWindowDimensions()</span>
+        <div class="api-title">Hook متجاوب مع تغييرات الشاشة</div>
+        <div class="api-desc">يستمع للتغييرات تلقائياً (دوران الشاشة، تغيير حجم النافذة، الـ Split Screen).</div>
+      </div>
+
+      <div class="code-box">
+<div class="code-header"><span>⚡ useWindowDimensions — الموصى به</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-name">import</span> { View, Text, useWindowDimensions } <span class="tag-name">from</span> <span class="attr-val">'react-native'</span>;
+
+<span class="tag-name">export default function</span> <span class="attr">App</span>() {
+  <span class="tag-name">const</span> { width, height } = useWindowDimensions();
+
+  <span class="comment">// تخطيط متكيّف — صف للشاشات الكبيرة، عمود للصغيرة</span>
+  <span class="tag-name">const</span> isLandscape = width > height;
+
+  <span class="tag-name">return</span> (
+    &lt;<span class="attr">View</span> style={{
+      flex: <span class="attr-val">1</span>,
+      flexDirection: isLandscape ? <span class="attr-val">'row'</span> : <span class="attr-val">'column'</span>,
+    }}&gt;
+      &lt;<span class="attr">View</span> style={{ flex: <span class="attr-val">1</span>, backgroundColor: <span class="attr-val">'#0ea5e9'</span> }} /&gt;
+      &lt;<span class="attr">View</span> style={{ flex: <span class="attr-val">2</span>, backgroundColor: <span class="attr-val">'#7c3aed'</span> }} /&gt;
+    &lt;/<span class="attr">View</span>&gt;
+  );
+}</pre>
+      </div>
+
+      <div class="compare-grid" style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin:14px 0;">
+        <div class="info-box" style="background:#fef3c7; border:2px solid #fbbf24;">
+          <strong>❌ Dimensions.get()</strong><br>
+          <span style="font-size:.82rem; color:#92400e;">قيمة ثابتة — لا تتحدث عند دوران الشاشة</span>
+        </div>
+        <div class="tip-box" style="background:#dcfce7; border:2px solid #4ade80;">
+          <strong>✅ useWindowDimensions()</strong><br>
+          <span style="font-size:.82rem; color:#15803d;">يتحدث تلقائياً — مثالي للتطبيقات الحديثة</span>
+        </div>
+      </div>
+
+      <div class="tip-box"><strong>القاعدة:</strong> في المكوّنات الحديثة، استخدم <code>useWindowDimensions</code> دائماً. اترك <code>Dimensions.get</code> فقط للاستخدامات خارج المكوّنات (constants).</div>
+    </div>
+  </div>
+
+  <!-- S5 -->
+  <div class="section" id="s5">
+    <h2 class="section-title"><span class="num">.5</span> النسب المئوية والتصميم النسبي <span class="en">Percentage Sizing</span></h2>
+    <div class="content">
+      <p>النسب المئوية في RN تختلف قليلاً عن CSS — يجب كتابتها كـ <strong>string</strong>:</p>
+
+      <div class="code-box">
+<div class="code-header"><span>📊 النسب المئوية</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">// ✅ صحيح — كـ string</span>
+{ width: <span class="attr-val">'80%'</span>, height: <span class="attr-val">'50%'</span> }
+
+<span class="comment">// ❌ خطأ — كرقم</span>
+{ width: <span class="attr-val">80%</span> }     <span class="comment">// Syntax Error</span>
+
+<span class="comment">// ❌ خطأ شائع — بدون علامتي تنصيص</span>
+{ width: <span class="attr-val">"80"</span> }    <span class="comment">// تُفسَّر كـ 80dp وليس 80%</span></pre>
+      </div>
+
+      <div class="code-box blue">
+<div class="code-header"><span>🎯 مثال عملي — بطاقة متجاوبة</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">// بطاقة تشغل 90% من العرض على كل الأجهزة</span>
+<span class="tag-name">const</span> <span class="attr">styles</span> = StyleSheet.create({
+  container: {
+    flex: <span class="attr-val">1</span>,
+    alignItems: <span class="attr-val">'center'</span>,
+    justifyContent: <span class="attr-val">'center'</span>,
+  },
+  card: {
+    width: <span class="attr-val">'90%'</span>,          <span class="comment">// نسبة من الأب</span>
+    maxWidth: <span class="attr-val">500</span>,         <span class="comment">// حد أقصى للأجهزة الكبيرة</span>
+    padding: <span class="attr-val">20</span>,
+    backgroundColor: <span class="attr-val">'white'</span>,
+    borderRadius: <span class="attr-val">12</span>,
+  },
+});</pre>
+      </div>
+
+      <div class="warning-box"><strong>تنبيه مهم:</strong> النسب تُحسب من <strong>الأب المباشر</strong>، وليس من الشاشة. لو الأب عرضه 200، فـ <code>'50%'</code> = 100.</div>
+    </div>
+  </div>
+
+  <!-- S6 -->
+  <div class="section" id="s6">
+    <h2 class="section-title"><span class="num">.6</span> PixelRatio — كثافة الشاشة <span class="en">PixelRatio</span></h2>
+    <div class="content">
+      <p>الشاشات الحديثة تختلف في كثافة البكسل — شاشة Retina تعرض ضعف البكسلات في نفس المساحة. <code>PixelRatio</code> يساعدك في التعامل مع هذا.</p>
+
+      <div class="code-box">
+<div class="code-header"><span>🔍 PixelRatio API</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-name">import</span> { PixelRatio } <span class="tag-name">from</span> <span class="attr-val">'react-native'</span>;
+
+<span class="comment">// 1. الحصول على كثافة الشاشة</span>
+<span class="tag-name">const</span> ratio = PixelRatio.get();
+<span class="comment">// iPhone عادي: 2, Retina: 3, Android متوسط: 2-3</span>
+
+<span class="comment">// 2. حجم الخط النسبي (يحترم إعدادات المستخدم)</span>
+<span class="tag-name">const</span> fontScale = PixelRatio.getFontScale();
+
+<span class="comment">// 3. تحويل dp إلى بكسلات حقيقية</span>
+<span class="tag-name">const</span> pixels = PixelRatio.getPixelSizeForLayoutSize(<span class="attr-val">100</span>);
+<span class="comment">// 100dp × 3 = 300 بكسل حقيقي على Retina</span>
+
+<span class="comment">// 4. تقريب لأقرب بكسل (لتجنب التشويش)</span>
+<span class="tag-name">const</span> roundedSize = PixelRatio.roundToNearestPixel(<span class="attr-val">8.4</span>);</pre>
+      </div>
+
+      <div class="info-box"><strong>متى تستخدمه؟</strong> غالباً لا تحتاجه! React Native تتعامل مع الكثافة تلقائياً. تستخدمه فقط للحالات الخاصة كالرسومات المخصصة (Canvas, SVG) أو الصور عالية الدقة.</div>
+    </div>
+  </div>
+
+  <!-- S7 -->
+  <div class="section" id="s7">
+    <h2 class="section-title"><span class="num">.7</span> Platform — التفريق بين iOS و Android <span class="en">Platform API</span></h2>
+    <div class="content">
+      <p>أحياناً تحتاج تنسيقاً مختلفاً لكل نظام — Platform API يساعدك:</p>
+
+      <div class="platform-row">
+        <div class="pf-card ios">
+          <div class="pf-card-icon">🍎</div>
+          <div class="pf-card-title">iOS</div>
+          <ul class="pf-card-list">
+            <li>ظلال بـ shadowColor + shadowOffset</li>
+            <li>SafeAreaView مهمة (notch + bezel)</li>
+            <li>خط San Francisco افتراضي</li>
+            <li>التنقل من اليسار للخلف</li>
+          </ul>
+        </div>
+        <div class="pf-card android">
+          <div class="pf-card-icon">🤖</div>
+          <div class="pf-card-title">Android</div>
+          <ul class="pf-card-list">
+            <li>ظلال بـ elevation فقط</li>
+            <li>StatusBar أكثر تخصيصاً</li>
+            <li>خط Roboto افتراضي</li>
+            <li>زر Back فيزيائي/برمجي</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="code-box">
+<div class="code-header"><span>📱 استخدام Platform</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-name">import</span> { Platform, StyleSheet } <span class="tag-name">from</span> <span class="attr-val">'react-native'</span>;
+
+<span class="comment">// 1. التحقق من النظام</span>
+<span class="tag-name">if</span> (Platform.OS === <span class="attr-val">'ios'</span>) {
+  console.log(<span class="attr-val">'تطبيق على iPhone'</span>);
+}
+
+<span class="comment">// 2. قيمة مختلفة لكل نظام</span>
+<span class="tag-name">const</span> headerHeight = Platform.OS === <span class="attr-val">'ios'</span> ? <span class="attr-val">88</span> : <span class="attr-val">64</span>;
+
+<span class="comment">// 3. الطريقة الأنظف — Platform.select</span>
+<span class="tag-name">const</span> <span class="attr">styles</span> = StyleSheet.create({
+  card: {
+    backgroundColor: <span class="attr-val">'white'</span>,
+    borderRadius: <span class="attr-val">12</span>,
+    ...Platform.select({
+      ios: {
+        shadowColor: <span class="attr-val">'#000'</span>,
+        shadowOffset: { width: <span class="attr-val">0</span>, height: <span class="attr-val">2</span> },
+        shadowOpacity: <span class="attr-val">0.1</span>,
+        shadowRadius: <span class="attr-val">4</span>,
+      },
+      android: {
+        elevation: <span class="attr-val">4</span>,
+      },
+    }),
+  },
+});
+
+<span class="comment">// 4. التحقق من إصدار النظام</span>
+<span class="tag-name">if</span> (Platform.Version >= <span class="attr-val">14</span>) {
+  <span class="comment">// ميزة iOS 14+</span>
+}</pre>
+      </div>
+
+      <div class="tip-box"><strong>قاعدة عملية:</strong> الظلال هي أكثر مكان تحتاج فيه Platform.select — لأن iOS يستخدم <code>shadow*</code> و Android يستخدم <code>elevation</code>.</div>
+    </div>
+  </div>
+
+  <!-- S8 -->
+  <div class="section" id="s8">
+    <h2 class="section-title"><span class="num">.8</span> معاينة حية — تطبيق متجاوب <span class="en">Live Preview</span></h2>
+    <div class="content"><p>كود حقيقي يجمع كل ما تعلّمته — تطبيق يتكيّف مع حجم الشاشة:</p></div>
+
+    <div class="live-preview">
+      <div class="lp-header">
+        <span>📱 معاينة حية — Responsive Card</span>
+        <span class="lp-tag">useWindowDimensions + Platform</span>
+      </div>
+      <div class="lp-body">
+        <div class="lp-code">
+<pre><span class="k">import</span> {
+  View, Text, Platform,
+  useWindowDimensions,
+} <span class="k">from</span> <span class="s">'react-native'</span>;
+
+<span class="k">export default function</span> <span class="t">App</span>() {
+  <span class="k">const</span> { width } = useWindowDimensions();
+
+  <span class="c">// عرض ديناميكي — 90% بحد أقصى 500</span>
+  <span class="k">const</span> cardW = Math.min(width * <span class="n">0.9</span>, <span class="n">500</span>);
+
+  <span class="c">// عمودين على iPad، عمود واحد على الجوال</span>
+  <span class="k">const</span> isTablet = width &gt; <span class="n">600</span>;
+
+  <span class="k">return</span> (
+    <span class="p">&lt;</span><span class="t">View</span> style={s.screen}<span class="p">&gt;</span>
+      <span class="p">&lt;</span><span class="t">View</span>
+        style={[
+          s.card,
+          { width: cardW },
+        ]}
+      <span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="t">Text</span> style={s.title}<span class="p">&gt;</span>
+          {isTablet ? <span class="s">'iPad 📟'</span> : <span class="s">'جوال 📱'</span>}
+        <span class="p">&lt;/</span><span class="t">Text</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="t">Text</span> style={s.info}<span class="p">&gt;</span>
+          العرض: {width}dp
+        <span class="p">&lt;/</span><span class="t">Text</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="t">Text</span> style={s.info}<span class="p">&gt;</span>
+          النظام: {Platform.OS}
+        <span class="p">&lt;/</span><span class="t">Text</span><span class="p">&gt;</span>
+      <span class="p">&lt;/</span><span class="t">View</span><span class="p">&gt;</span>
+    <span class="p">&lt;/</span><span class="t">View</span><span class="p">&gt;</span>
+  );
+}</pre>
+        </div>
+        <div class="lp-phone-wrap">
+          <div class="lp-phone">
+            <div class="lp-phone-bar"></div>
+            <div class="lp-phone-screen" style="align-items:center; justify-content:center;">
+              <div style="background:white; border-radius:14px; padding:18px 14px; width:90%; text-align:center; box-shadow:0 6px 18px rgba(14,165,233,.18);">
+                <div style="font-size:1.6rem; margin-bottom:6px;">📱</div>
+                <div style="font-size:.85rem; font-weight:800; color:#0369a1; font-family:'Cairo',sans-serif; margin-bottom:8px;">جوال</div>
+                <div style="background:#f0f9ff; padding:6px 10px; border-radius:6px; margin-bottom:4px;">
+                  <div style="font-size:.62rem; color:#64748b; font-family:'Cairo',sans-serif;">العرض</div>
+                  <div style="font-size:.78rem; font-weight:700; color:#0ea5e9; font-family:monospace;">393 dp</div>
+                </div>
+                <div style="background:#f0f9ff; padding:6px 10px; border-radius:6px;">
+                  <div style="font-size:.62rem; color:#64748b; font-family:'Cairo',sans-serif;">النظام</div>
+                  <div style="font-size:.78rem; font-weight:700; color:#0ea5e9; font-family:monospace;">ios</div>
+                </div>
+                <div style="margin-top:10px; font-size:.55rem; color:#94a3b8; font-family:monospace;">✓ width &lt; 600 → الجوال</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EXERCISES -->
+  <div class="section" id="exercises">
+    <h2 class="section-title"><span class="num">📝</span> التمارين العملية <span class="en">Exercises</span></h2>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 1: التفريق بين dp و %</div>
+      <p>أيهما أفضل لكل حالة:<br>
+      أ) صورة شعار التطبيق بحجم 80<br>
+      ب) بطاقة منتج تشغل 90% من العرض<br>
+      ج) حد دائرة بـ 2 بكسل</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <p>أ) <code>80</code> (dp) — لأن الشعار حجم ثابت يجب أن يظهر بنفس الحجم البصري<br>
+        ب) <code>'90%'</code> — لأنها نسبة من الأب وتتكيف مع كل الأجهزة<br>
+        ج) <code>2</code> (dp) — الحدود الرفيعة دائماً بأرقام صغيرة</p>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 2: useWindowDimensions</div>
+      <p>اكتب مكوّن يعرض رسالة مختلفة بناءً على عرض الشاشة:<br>
+      • أقل من 400: "جوال صغير 📱"<br>
+      • 400-700: "جوال كبير 📱"<br>
+      • أكثر من 700: "تابلت 📟"</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box"><pre><span class="tag-name">import</span> { Text, useWindowDimensions } <span class="tag-name">from</span> <span class="attr-val">'react-native'</span>;
+
+<span class="tag-name">function</span> <span class="attr">DeviceLabel</span>() {
+  <span class="tag-name">const</span> { width } = useWindowDimensions();
+
+  <span class="tag-name">let</span> label;
+  <span class="tag-name">if</span> (width &lt; <span class="attr-val">400</span>) label = <span class="attr-val">'جوال صغير 📱'</span>;
+  <span class="tag-name">else if</span> (width &lt; <span class="attr-val">700</span>) label = <span class="attr-val">'جوال كبير 📱'</span>;
+  <span class="tag-name">else</span> label = <span class="attr-val">'تابلت 📟'</span>;
+
+  <span class="tag-name">return</span> &lt;<span class="attr">Text</span>&gt;{label}&lt;/<span class="attr">Text</span>&gt;;
+}</pre></div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 3: Platform.select</div>
+      <p>اكتب نمط <code>card</code> له ظل: يستخدم <code>shadow*</code> على iOS و <code>elevation</code> على Android.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box"><pre><span class="tag-name">import</span> { Platform, StyleSheet } <span class="tag-name">from</span> <span class="attr-val">'react-native'</span>;
+
+<span class="tag-name">const</span> <span class="attr">styles</span> = StyleSheet.create({
+  card: {
+    backgroundColor: <span class="attr-val">'white'</span>,
+    borderRadius: <span class="attr-val">12</span>,
+    padding: <span class="attr-val">16</span>,
+    ...Platform.select({
+      ios: {
+        shadowColor: <span class="attr-val">'#000'</span>,
+        shadowOffset: { width: <span class="attr-val">0</span>, height: <span class="attr-val">2</span> },
+        shadowOpacity: <span class="attr-val">0.15</span>,
+        shadowRadius: <span class="attr-val">6</span>,
+      },
+      android: {
+        elevation: <span class="attr-val">5</span>,
+      },
+    }),
+  },
+});</pre></div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 4: بطاقة بحد أقصى</div>
+      <p>اكتب نمط لبطاقة عرضها 90% من الشاشة لكن لا يتجاوز 600dp (مهم للأجهزة الكبيرة).</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box"><pre><span class="comment">// الطريقة 1: CSS فقط</span>
+card: {
+  width: <span class="attr-val">'90%'</span>,
+  maxWidth: <span class="attr-val">600</span>,
+  alignSelf: <span class="attr-val">'center'</span>,
+}
+
+<span class="comment">// الطريقة 2: بالحساب</span>
+<span class="tag-name">const</span> { width } = useWindowDimensions();
+<span class="tag-name">const</span> cardWidth = Math.min(width * <span class="attr-val">0.9</span>, <span class="attr-val">600</span>);
+
+&lt;<span class="attr">View</span> style={{ width: cardWidth }}&gt; ... &lt;/<span class="attr">View</span>&gt;</pre></div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 5: تخطيط متجاوب</div>
+      <p>اكتب مكوّن يعرض عمودين (flexDirection: 'row') لو الشاشة أكبر من 600dp، وعمود واحد (column) لو أقل.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box"><pre><span class="tag-name">function</span> <span class="attr">ResponsiveLayout</span>() {
+  <span class="tag-name">const</span> { width } = useWindowDimensions();
+  <span class="tag-name">const</span> isWide = width &gt;= <span class="attr-val">600</span>;
+
+  <span class="tag-name">return</span> (
+    &lt;<span class="attr">View</span> style={{
+      flex: <span class="attr-val">1</span>,
+      flexDirection: isWide ? <span class="attr-val">'row'</span> : <span class="attr-val">'column'</span>,
+    }}&gt;
+      &lt;<span class="attr">View</span> style={{ flex: <span class="attr-val">1</span>, backgroundColor: <span class="attr-val">'#0ea5e9'</span> }} /&gt;
+      &lt;<span class="attr">View</span> style={{ flex: <span class="attr-val">1</span>, backgroundColor: <span class="attr-val">'#7c3aed'</span> }} /&gt;
+    &lt;/<span class="attr">View</span>&gt;
+  );
+}</pre></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="quiz-container" id="quiz">
+    <div class="quiz-intro"><p>اختبر فهمك للأبعاد والوحدات!</p></div>
+    <div class="quiz-type-tabs">
+      <button class="qt-tab active" onclick="switchQuiz(this,'tf')">✓✗ صح وخطأ</button>
+      <button class="qt-tab" onclick="switchQuiz(this,'mc')">🔘 اختيار من متعدد</button>
+    </div>
+
+    <div class="quiz-section active" id="quiz-tf">
+      <div class="quiz-question" data-correct="false">
+        <span class="q-num">1</span><span class="q-text">الأرقام في React Native يجب أن تنتهي بـ px مثل CSS.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">2</span><span class="q-text">useWindowDimensions يُعيد تشغيل المكوّن تلقائياً عند تغيير حجم الشاشة.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">3</span><span class="q-text">النسب المئوية في RN يجب كتابتها كـ string، مثل '50%'.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="false">
+        <span class="q-num">4</span><span class="q-text">elevation تعمل على iOS بنفس الطريقة التي تعمل بها على Android.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">5</span><span class="q-text">Dimensions.get('window') يُحسب مرة واحدة فقط ولا يتحدث عند دوران الشاشة.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <button class="quiz-submit" onclick="submitQuiz('tf')">عرض النتيجة 🎯</button>
+      <div class="quiz-result" id="result-tf"><div class="result-score" id="score-tf">0/5</div><div class="result-label">إجابات صحيحة</div><div class="result-message" id="msg-tf"></div><button class="retry-btn" onclick="retryQuiz('tf')">🔄 حاول تاني</button></div>
+    </div>
+
+    <div class="quiz-section" id="quiz-mc">
+      <div class="quiz-question" data-correct="2">
+        <span class="q-num">1</span><span class="q-text">ما الوحدة الافتراضية للأرقام في React Native؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">px (بكسل)</button>
+          <button class="q-opt" onclick="answerMC(this,1)">em</button>
+          <button class="q-opt" onclick="answerMC(this,2)">dp (density-independent pixels)</button>
+          <button class="q-opt" onclick="answerMC(this,3)">rem</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="3">
+        <span class="q-num">2</span><span class="q-text">ما الطريقة الموصى بها للحصول على أبعاد الشاشة في المكوّنات الحديثة؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">window.innerWidth</button>
+          <button class="q-opt" onclick="answerMC(this,1)">Dimensions.get('window')</button>
+          <button class="q-opt" onclick="answerMC(this,2)">document.body.clientWidth</button>
+          <button class="q-opt" onclick="answerMC(this,3)">useWindowDimensions()</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="1">
+        <span class="q-num">3</span><span class="q-text">ما الكود الصحيح لجعل عرض البطاقة 90% مع حد أقصى 500dp؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">{ width: 90, max: 500 }</button>
+          <button class="q-opt" onclick="answerMC(this,1)">{ width: '90%', maxWidth: 500 }</button>
+          <button class="q-opt" onclick="answerMC(this,2)">{ width: '90', maxWidth: '500' }</button>
+          <button class="q-opt" onclick="answerMC(this,3)">{ width: 90%, maxWidth: 500 }</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="2">
+        <span class="q-num">4</span><span class="q-text">أي API يساعد في كتابة كود مختلف لـ iOS و Android؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">Device.getOS()</button>
+          <button class="q-opt" onclick="answerMC(this,1)">System.os</button>
+          <button class="q-opt" onclick="answerMC(this,2)">Platform.OS و Platform.select</button>
+          <button class="q-opt" onclick="answerMC(this,3)">OS.detect()</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="0">
+        <span class="q-num">5</span><span class="q-text">للحصول على عرض الشاشة دون أن يحدث عند الدوران، نستخدم:</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">Dimensions.get('window').width</button>
+          <button class="q-opt" onclick="answerMC(this,1)">useWindowDimensions().width</button>
+          <button class="q-opt" onclick="answerMC(this,2)">Screen.width</button>
+          <button class="q-opt" onclick="answerMC(this,3)">window.width</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <button class="quiz-submit" onclick="submitQuiz('mc')">عرض النتيجة 🎯</button>
+      <div class="quiz-result" id="result-mc"><div class="result-score" id="score-mc">0/5</div><div class="result-label">إجابات صحيحة</div><div class="result-message" id="msg-mc"></div><button class="retry-btn" onclick="retryQuiz('mc')">🔄 حاول تاني</button></div>
+    </div>
+  </div>
+
+  <div class="lesson-nav">
+    <a href="./lesson-06.html" class="nav-btn"><span>⬅️</span><span>الدرس السابق</span></a>
+    <button class="nav-btn complete-btn" id="completeBtn" onclick="markComplete(this)"><span>✅</span><span>علّم كمكتمل</span></button>
+    <a href="./lesson-08.html" class="nav-btn"><span>الدرس التالي</span><span>➡️</span></a>
+  </div>
+
+  <div class="notebook-footer">
+    <h3>🎉 أتقنت الأبعاد والتجاوب!</h3>
+    <p>تطبيقك الآن سيبدو رائعاً على كل الأجهزة من iPhone SE إلى iPad Pro. 📐<br><strong>الدرس التالي: SafeAreaView, StatusBar, KeyboardAvoidingView 🛡️</strong></p>
+  </div>
+</div>
+
+<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">⬆️</button>
+<div class="toast" id="toast"></div>
+<script src="../../js/data/courses.js"></script>
+<script src="../../js/progress.js"></script>
+<script>
+const COURSE_ID='react-native', LESSON_ID=7, TOTAL=28;
+function toggleSolution(b){const s=b.nextElementSibling;s.classList.toggle('show');b.textContent=s.classList.contains('show')?'إخفاء الحل ▲':'عرض الحل ▼';}
+function copyCode(b){const p=b.closest('.code-box').querySelector('pre');navigator.clipboard.writeText(p.innerText).then(()=>{b.classList.add('copied');b.textContent='✓ تم النسخ';setTimeout(()=>{b.classList.remove('copied');b.textContent='📋 نسخ';},2000);});}
+function switchQuiz(b,t){document.querySelectorAll('.qt-tab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.quiz-section').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.getElementById('quiz-'+t).classList.add('active');}
+const answers={tf:{},mc:{}};
+function answerTF(b,v){const q=b.closest('.quiz-question'),i=Array.from(q.parentNode.querySelectorAll('.quiz-question')).indexOf(q);q.querySelectorAll('.q-opt').forEach(o=>o.classList.remove('selected'));b.classList.add('selected');answers.tf[i]=v;}
+function answerMC(b,i){const q=b.closest('.quiz-question'),qi=Array.from(q.parentNode.querySelectorAll('.quiz-question')).indexOf(q);q.querySelectorAll('.q-opt').forEach(o=>o.classList.remove('selected'));b.classList.add('selected');answers.mc[qi]=i;}
+function submitQuiz(type){const sec=document.getElementById('quiz-'+type),qs=sec.querySelectorAll('.quiz-question');let c=0;qs.forEach((q,i)=>{const ca=type==='tf'?(q.dataset.correct==='true'):parseInt(q.dataset.correct),ua=answers[type][i],fb=q.querySelector('.q-feedback'),opts=q.querySelectorAll('.q-opt');opts.forEach(o=>{o.classList.remove('selected');o.disabled=true;});if(ua===undefined){fb.className='q-feedback wrong show';fb.textContent='⚠️ ما اخترتش إجابة!';return;}if(ua===ca){c++;fb.className='q-feedback correct show';fb.textContent='✓ إجابة صحيحة!';if(type==='tf')opts[ca?0:1].classList.add('correct');else opts[ca].classList.add('correct');}else{fb.className='q-feedback wrong show';if(type==='tf'){opts[ca?0:1].classList.add('correct');opts[ua?0:1].classList.add('wrong');fb.textContent='✗ خطأ.';}else{opts[ca].classList.add('correct');opts[ua].classList.add('wrong');fb.textContent='✗ الإجابة بالأخضر.';}}});const r=document.getElementById('result-'+type);document.getElementById('score-'+type).textContent=c+'/'+qs.length;const m=document.getElementById('msg-'+type);if(c===qs.length){m.textContent='🏆 ممتاز 100%!';m.className='result-message excellent';}else if(c>=3){m.textContent='👍 جيد!';m.className='result-message good';}else{m.textContent='📚 راجع الدرس.';m.className='result-message try-again';}r.classList.add('show');r.scrollIntoView({behavior:'smooth',block:'center'});}
+function retryQuiz(type){const sec=document.getElementById('quiz-'+type);sec.querySelectorAll('.q-opt').forEach(o=>{o.classList.remove('selected','correct','wrong');o.disabled=false;});sec.querySelectorAll('.q-feedback').forEach(f=>{f.classList.remove('show','correct','wrong');f.textContent='';});document.getElementById('result-'+type).classList.remove('show');answers[type]={};}
+function markComplete(btn){const done=Progress.toggleLessonComplete(COURSE_ID,LESSON_ID);btn.classList.toggle('completed',done);btn.querySelector('span:last-child').textContent=done?'مكتمل! ⭐':'علّم كمكتمل';showToast(done?'🎉 أكملت درس الأبعاد!':'تم إلغاء الإكمال');}
+if(Progress.isLessonComplete(COURSE_ID,LESSON_ID)){const b=document.getElementById('completeBtn');b.classList.add('completed');b.querySelector('span:last-child').textContent='مكتمل! ⭐';}
+(function(){const p=Progress.getCourseProgress(COURSE_ID,TOTAL);document.getElementById('progFill').style.width=p+'%';document.getElementById('progText').textContent=p+'%';})();
+function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
+window.addEventListener('scroll',()=>{document.getElementById('scrollTop').classList.toggle('show',window.scrollY>300);});
+document.querySelectorAll('.toc-card a').forEach(l=>{l.addEventListener('click',e=>{e.preventDefault();const t=document.querySelector(l.getAttribute('href'));if(t)t.scrollIntoView({behavior:'smooth',block:'start'});});});
+</script>
+</body>
+</html>

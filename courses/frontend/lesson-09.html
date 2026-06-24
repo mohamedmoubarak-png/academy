@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-V2NCKVL16D"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-V2NCKVL16D');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Display و Position — دفتر البرمجة</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=Cairo:wght@300;400;500;600;700;900&family=Caveat:wght@400;700&family=Fira+Code:wght@400;500;600&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../css/shared.css">
+<link rel="stylesheet" href="../../css/notebook.css">
+<style>
+body { padding: 20px 10px; }
+
+/* Display demo */
+.display-demo { background: #f0f4ff; border-radius: 10px; padding: 14px; margin: 12px 0; }
+.display-demo .d-block  { display: block;        background: #bfdbfe; padding: 6px 12px; border-radius: 5px; margin-bottom: 4px; }
+.display-demo .d-inline { display: inline;       background: #bbf7d0; padding: 6px 12px; border-radius: 5px; margin: 2px; }
+.display-demo .d-inbl   { display: inline-block; background: #fde68a; padding: 6px 12px; border-radius: 5px; margin: 2px; width: 90px; text-align: center; }
+
+/* Position demo */
+.pos-demo { background: #f8fafc; border: 2px dashed var(--border); border-radius: 10px; padding: 14px; margin: 14px 0; min-height: 120px; position: relative; }
+.pos-box  { width: 60px; height: 60px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: .75rem; font-weight: 700; color: white; text-align: center; }
+
+/* z-index demo */
+.z-demo { position: relative; height: 80px; margin: 14px 0; }
+.z-box  { width: 80px; height: 60px; border-radius: 8px; position: absolute; display: flex; align-items: center; justify-content: center; font-weight: 700; color: white; font-size: .8rem; }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="crumbs">
+    <a href="../../index.html">🏠 الرئيسية</a>
+    <span class="sep">/</span>
+    <a href="./index.html">🌐 الفرونت إند</a>
+    <span class="sep">/</span>
+    <span class="current">🎨 الدرس 9: Display و Position</span>
+  </div>
+  <div class="progress-mini">
+    <div class="progress-bar-mini"><div class="progress-fill-mini" id="progFill"></div></div>
+    <span id="progText">0%</span>
+  </div>
+</div>
+
+<div class="notebook">
+
+  <div class="notebook-header">
+    <div class="lesson-tag">🎨 الدرس التاسع</div>
+    <h1><span class="sparkle">✦</span> Display و Position <span class="sparkle">✦</span></h1>
+    <div class="lesson-meta">
+      <span>⏱️ 45 دقيقة</span>
+      <span>📊 متوسط</span>
+      <span>🎯 5 تمارين + اختبار</span>
+    </div>
+  </div>
+
+  <div class="toc-card">
+    <h2>📑 فهرس الدرس</h2>
+    <ol>
+      <li><a href="#s1">خاصية Display</a></li>
+      <li><a href="#s2">block vs inline vs inline-block</a></li>
+      <li><a href="#s3">display: none و visibility</a></li>
+      <li><a href="#s4">خاصية Position</a></li>
+      <li><a href="#s5">static و relative</a></li>
+      <li><a href="#s6">absolute و fixed و sticky</a></li>
+      <li><a href="#s7">z-index</a></li>
+      <li><a href="#s8">محرر الكود الحي</a></li>
+      <li><a href="#exercises">التمارين</a></li>
+      <li><a href="#quiz">اختبر فهمك</a></li>
+    </ol>
+  </div>
+
+  <!-- S1 -->
+  <div class="section" id="s1">
+    <h2 class="section-title"><span class="num">.1</span> خاصية Display <span class="en">The Display Property</span></h2>
+    <div class="content">
+      <p>خاصية <em>display</em> هي الأقوى في CSS — تتحكم في كيفية عرض العنصر وتفاعله مع العناصر المجاورة.</p>
+
+      <table class="cool-table">
+        <thead><tr><th>القيمة</th><th>السلوك</th><th>أمثلة</th></tr></thead>
+        <tbody>
+          <tr><td><code>block</code></td><td>يأخذ سطراً كاملاً، يقبل width/height</td><td>div, p, h1, section</td></tr>
+          <tr><td><code>inline</code></td><td>بجانب العناصر، لا يقبل width/height</td><td>span, a, strong, em</td></tr>
+          <tr><td><code>inline-block</code></td><td>بجانب العناصر لكن يقبل width/height</td><td>أزرار، أيقونات</td></tr>
+          <tr><td><code>none</code></td><td>يختفي تماماً ولا يأخذ مساحة</td><td>إخفاء مؤقت</td></tr>
+          <tr><td><code>flex</code></td><td>حاوية Flexbox (الدرس القادم!)</td><td>nav, cards-row</td></tr>
+          <tr><td><code>grid</code></td><td>حاوية Grid (درس 11)</td><td>layouts معقدة</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- S2 -->
+  <div class="section" id="s2">
+    <h2 class="section-title"><span class="num">.2</span> block vs inline vs inline-block <span class="en">Display Types</span></h2>
+    <div class="content">
+
+      <div class="display-demo">
+        <div class="d-block">block: يأخذ سطر كامل</div>
+        <div class="d-block">block: كل واحد في سطره</div>
+      </div>
+
+      <div class="display-demo">
+        <span class="d-inline">inline</span>
+        <span class="d-inline">inline</span>
+        <span class="d-inline">كلهم في سطر واحد</span>
+        <span class="d-inline">لكن لا يقبل width</span>
+      </div>
+
+      <div class="display-demo">
+        <span class="d-inbl">inline-block</span>
+        <span class="d-inbl">inline-block</span>
+        <span class="d-inbl">يقبل width!</span>
+      </div>
+
+      <div class="code-box">
+<div class="code-header"><span>🎭 مثال عملي: أزرار</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">/* الـ a بـ inline افتراضياً — لا يقبل padding عمودي */</span>
+a { display: inline; }
+
+<span class="comment">/* نحوّله لـ inline-block عشان يقبل الأبعاد */</span>
+.btn {
+  display: inline-block;
+  padding: 10px 24px;
+  border-radius: 20px;
+  background: #1e3a8a;
+  color: white;
+  text-decoration: none;
+}
+
+<span class="comment">/* أو نحوّل li لـ inline لعمل nav أفقي */</span>
+nav li { display: inline; margin-left: 16px; }
+
+<span class="comment">/* تحويل inline لـ block (مثلاً img) */</span>
+img { display: block; margin: 0 auto; }</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- S3 -->
+  <div class="section" id="s3">
+    <h2 class="section-title"><span class="num">.3</span> display:none و visibility <span class="en">Hiding Elements</span></h2>
+    <div class="content">
+
+      <div class="code-box blue">
+<div class="code-header"><span>👻 طرق الإخفاء</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">/* display: none — يختفي ولا يأخذ مساحة */</span>
+.hidden { display: none; }
+<span class="comment">/* العناصر المجاورة تتحرك لتملأ مكانه */</span>
+
+<span class="comment">/* visibility: hidden — يختفي لكن يحتفظ بمساحته */</span>
+.invisible { visibility: hidden; }
+<span class="comment">/* المساحة الفارغة تبقى! */</span>
+
+<span class="comment">/* opacity: 0 — شفاف لكن موجود وقابل للنقر! */</span>
+.transparent { opacity: 0; }
+
+<span class="comment">/* مقارنة: */</span>
+<span class="comment">/*  display:none    → اختفى + بلا مساحة */</span>
+<span class="comment">/*  visibility:hidden → اختفى + مساحة موجودة */</span>
+<span class="comment">/*  opacity:0       → شفاف + مساحة + قابل للنقر */</span></pre>
+      </div>
+
+      <div class="tip-box"><strong>متى تستخدم كل واحدة؟</strong><br>
+        • <em>display: none</em> — إخفاء كامل (قوائم منسدلة، modals مغلقة)<br>
+        • <em>visibility: hidden</em> — الحفاظ على التخطيط مع الإخفاء<br>
+        • <em>opacity: 0</em> — انيميشن التلاشي (fade effect)
+      </div>
+    </div>
+  </div>
+
+  <!-- S4 -->
+  <div class="section" id="s4">
+    <h2 class="section-title"><span class="num">.4</span> خاصية Position <span class="en">The Position Property</span></h2>
+    <div class="content">
+      <p>خاصية <em>position</em> تتحكم في <strong>كيفية وضع العنصر</strong> في الصفحة. بعد تحديد position، نستخدم <em>top, right, bottom, left</em> للتحريك.</p>
+
+      <div class="analogy">
+        <div class="analogy-title">🏙️ تخيل مدينة بطبقات:</div>
+        <ul style="margin-top:8px;">
+          <li><strong>static</strong> = أثاث في مكانه الطبيعي على الأرض</li>
+          <li><strong>relative</strong> = تحريك الأثاث من مكانه الأصلي لكن المكان محجوز</li>
+          <li><strong>absolute</strong> = عنصر عائم، يتموضع بالنسبة لأقرب أب له position</li>
+          <li><strong>fixed</strong> = لوحة إعلانية معلّقة في الهواء — لا تتحرك عند التمرير</li>
+          <li><strong>sticky</strong> = عنصر يظل في مكانه حتى تصل إليه، ثم يتجمد</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- S5 -->
+  <div class="section" id="s5">
+    <h2 class="section-title"><span class="num">.5</span> static و relative <span class="en">Static & Relative</span></h2>
+    <div class="content">
+
+      <div class="code-box green">
+<div class="code-header"><span>📍 static و relative</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">/* static: الوضع الافتراضي — top/left لا تعمل */</span>
+.box { position: static; }
+
+<span class="comment">/* relative: يتحرك من مكانه الأصلي */</span>
+<span class="comment">/* المكان الأصلي يبقى محجوزاً في التخطيط */</span>
+.badge {
+  position: relative;
+  top:  -5px;    <span class="comment">/* يرتفع 5px */</span>
+  right: 10px;   <span class="comment">/* يتحرك يميناً */</span>
+}
+
+<span class="comment">/* الاستخدام الأهم لـ relative: */</span>
+<span class="comment">/* يجعله حاوية مرجعية للـ absolute داخله! */</span>
+.card { position: relative; }  <span class="comment">/* ← مهم جداً */</span></pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- S6 -->
+  <div class="section" id="s6">
+    <h2 class="section-title"><span class="num">.6</span> absolute و fixed و sticky <span class="en">Advanced Positioning</span></h2>
+    <div class="content">
+
+      <div class="code-box">
+<div class="code-header"><span>🎯 absolute — الأكثر استخداماً</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">/* absolute: يتموضع بالنسبة لأقرب أب بـ position (غير static) */</span>
+<span class="comment">/* يخرج من التدفق الطبيعي — لا يحجز مكاناً */</span>
+
+.card { position: relative; }  <span class="comment">/* الأب المرجعي */</span>
+
+.badge {
+  position: absolute;
+  top:  -10px;   <span class="comment">/* من أعلى الأب */</span>
+  left: -10px;   <span class="comment">/* من يسار الأب */</span>
+}
+
+<span class="comment">/* توسيط عنصر absolute */</span>
+.centered {
+  position: absolute;
+  top:  50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}</pre>
+      </div>
+
+      <div class="code-box blue">
+<div class="code-header"><span>📌 fixed — ثابت على الشاشة</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">/* fixed: يتموضع بالنسبة للـ viewport (الشاشة) */</span>
+<span class="comment">/* لا يتحرك عند التمرير (scroll) */</span>
+
+.navbar {
+  position: fixed;
+  top:   0;
+  right: 0;
+  left:  0;        <span class="comment">/* يمتد بعرض الشاشة */</span>
+  z-index: 100;    <span class="comment">/* فوق كل شيء */</span>
+}
+
+.scroll-to-top {
+  position: fixed;
+  bottom: 30px;
+  left:   30px;
+}</pre>
+      </div>
+
+      <div class="code-box pink">
+<div class="code-header"><span>🍯 sticky — اللاصق</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">/* sticky: عادي حتى تصل إليه بالتمرير، ثم يتجمد */</span>
+<span class="comment">/* يجمع بين relative و fixed */</span>
+
+.section-header {
+  position: sticky;
+  top: 0;          <span class="comment">/* يتجمد عند أعلى الشاشة */</span>
+  background: white;
+  z-index: 10;
+}
+
+<span class="comment">/* مثال آخر: جدول مع رأس ثابت */</span>
+thead { position: sticky; top: 0; }</pre>
+      </div>
+
+      <div class="pos-demo">
+        <p style="font-family:'Caveat',cursive;font-size:1rem;color:var(--text-muted);margin-bottom:8px;">مثال مرئي: كارت مع بادج absolute</p>
+        <div style="background:white;border-radius:12px;padding:20px;border:2px solid var(--border);display:inline-block;position:relative;min-width:160px;text-align:center;">
+          <div style="position:absolute;top:-10px;right:-10px;background:var(--ink-red);color:white;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:700;">3</div>
+          <div style="font-size:2rem;">🛒</div>
+          <div style="font-size:.9rem;color:var(--text-muted);">سلة التسوق</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- S7 -->
+  <div class="section" id="s7">
+    <h2 class="section-title"><span class="num">.7</span> z-index — الترتيب العمودي <span class="en">z-index</span></h2>
+    <div class="content">
+      <p>الـ <em>z-index</em> يتحكم في أي عنصر يظهر <strong>فوق</strong> الآخر. الأعلى رقماً يظهر في المقدمة.</p>
+
+      <div class="analogy">
+        <div class="analogy-title">🥞 تخيل أوراق مكدّسة:</div>
+        <p>z-index: 1 = الورقة في الأسفل. z-index: 100 = الورقة في الأعلى. الـ z-index يعمل فقط على العناصر التي لها position (غير static).</p>
+      </div>
+
+      <div class="z-demo">
+        <div class="z-box" style="background:var(--ink-blue);right:0;top:0;z-index:1;">z:1</div>
+        <div class="z-box" style="background:var(--ink-red);right:30px;top:10px;z-index:2;">z:2</div>
+        <div class="z-box" style="background:var(--ink-green);right:60px;top:20px;z-index:3;">z:3</div>
+      </div>
+
+      <div class="code-box">
+<div class="code-header"><span>📚 z-index عملي</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">/* ترتيب منطقي لـ z-index في المشروع */</span>
+.content  { z-index: 1; }
+.dropdown { z-index: 10; }   <span class="comment">/* قوائم منسدلة */</span>
+.modal    { z-index: 100; }  <span class="comment">/* نوافذ منبثقة */</span>
+.tooltip  { z-index: 200; }  <span class="comment">/* تلميحات */</span>
+.navbar   { z-index: 50; }   <span class="comment">/* شريط التنقل */</span>
+
+<span class="comment">/* تذكر: z-index يحتاج position غير static */</span>
+.badge { position: absolute; z-index: 5; }</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- S8: TRY IT -->
+  <div class="section" id="s8">
+    <h2 class="section-title"><span class="num">.8</span> جرب بنفسك! <span class="en">Try It Live</span></h2>
+    <div class="content">
+      <div class="try-it">
+        <div class="try-it-header">
+          <span>💻 محرر الكود الحي</span>
+          <div class="try-it-controls">
+            <button class="try-btn" onclick="runCode(this)">▶️ تشغيل</button>
+            <button class="try-btn" onclick="resetCode(this)">🔄 إعادة</button>
+          </div>
+        </div>
+        <div class="try-it-body">
+          <textarea class="try-it-editor" spellcheck="false" data-default='<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: Arial; background: #f0f4ff; }
+
+  /* Navbar ثابتة */
+  .navbar {
+    position: fixed;
+    top: 0; right: 0; left: 0;
+    background: #1e3a8a;
+    color: white;
+    padding: 14px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 100;
+  }
+  .navbar nav a {
+    color: white;
+    text-decoration: none;
+    margin-left: 16px;
+    font-size: 0.9rem;
+  }
+
+  .page-content {
+    margin-top: 60px; /* لا يختبئ تحت الـ navbar */
+    padding: 20px;
+  }
+
+  /* كارت مع بادج absolute */
+  .card-wrap { display: flex; gap: 16px; flex-wrap: wrap; }
+
+  .product-card {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    width: 160px;
+    text-align: center;
+    position: relative;  /* مهم للـ badge! */
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    cursor: pointer;
+    transition: transform 0.2s;
+  }
+  .product-card:hover { transform: translateY(-4px); }
+
+  .badge {
+    position: absolute;
+    top: -8px;
+    left: -8px;
+    background: #dc2626;
+    color: white;
+    border-radius: 50%;
+    width: 26px;
+    height: 26px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.78rem;
+    font-weight: 700;
+  }
+
+  .emoji { font-size: 2.5rem; margin-bottom: 8px; }
+  .name  { font-size: 0.9rem; font-weight: 600; color: #1e293b; }
+  .price { color: #15803d; font-weight: 700; margin-top: 4px; }
+
+  /* Tooltip */
+  .tooltip-wrap {
+    display: inline-block;
+    position: relative;
+    margin-top: 20px;
+  }
+  .tooltip-wrap:hover .tooltip { display: block; }
+  .tooltip {
+    display: none;
+    position: absolute;
+    bottom: calc(100% + 8px);
+    right: 50%;
+    transform: translateX(50%);
+    background: #1e293b;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    white-space: nowrap;
+    z-index: 10;
+  }
+  .info-btn {
+    background: #7c3aed;
+    color: white;
+    border: none;
+    padding: 8px 18px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: 700;
+  }
+</style>
+</head>
+<body>
+
+<div class="navbar">
+  <span style="font-weight:700;font-size:1.1rem;">🛍️ متجري</span>
+  <nav>
+    <a href="#">الرئيسية</a>
+    <a href="#">المنتجات</a>
+    <a href="#">تواصل</a>
+  </nav>
+</div>
+
+<div class="page-content">
+  <h2 style="margin-bottom:16px;color:#1e3a8a;">المنتجات المميزة</h2>
+
+  <div class="card-wrap">
+    <div class="product-card">
+      <div class="badge">جديد</div>
+      <div class="emoji">📱</div>
+      <div class="name">سماعة لاسلكية</div>
+      <div class="price">199 ر.س</div>
+    </div>
+
+    <div class="product-card">
+      <div class="badge">-20%</div>
+      <div class="emoji">💻</div>
+      <div class="name">لوحة مفاتيح</div>
+      <div class="price">149 ر.س</div>
+    </div>
+
+    <div class="product-card">
+      <div class="emoji">🖱️</div>
+      <div class="name">ماوس لاسلكي</div>
+      <div class="price">89 ر.س</div>
+    </div>
+  </div>
+
+  <br>
+  <div class="tooltip-wrap">
+    <button class="info-btn">مرّر الماوس عليّ 🔍</button>
+    <div class="tooltip">هذا tooltip بـ position: absolute!</div>
+  </div>
+</div>
+
+</body>
+</html>'><!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:Arial;background:#f0f4ff;}
+  .navbar{position:fixed;top:0;right:0;left:0;background:#1e3a8a;color:white;padding:14px 20px;display:flex;justify-content:space-between;align-items:center;z-index:100;}
+  .navbar nav a{color:white;text-decoration:none;margin-left:16px;font-size:0.9rem;}
+  .page-content{margin-top:60px;padding:20px;}
+  .card-wrap{display:flex;gap:16px;flex-wrap:wrap;}
+  .product-card{background:white;border-radius:12px;padding:20px;width:160px;text-align:center;position:relative;box-shadow:0 2px 8px rgba(0,0,0,0.08);cursor:pointer;transition:transform 0.2s;}
+  .product-card:hover{transform:translateY(-4px);}
+  .badge{position:absolute;top:-8px;left:-8px;background:#dc2626;color:white;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:0.78rem;font-weight:700;}
+  .emoji{font-size:2.5rem;margin-bottom:8px;}
+  .name{font-size:0.9rem;font-weight:600;color:#1e293b;}
+  .price{color:#15803d;font-weight:700;margin-top:4px;}
+  .tooltip-wrap{display:inline-block;position:relative;margin-top:20px;}
+  .tooltip-wrap:hover .tooltip{display:block;}
+  .tooltip{display:none;position:absolute;bottom:calc(100% + 8px);right:50%;transform:translateX(50%);background:#1e293b;color:white;padding:6px 12px;border-radius:6px;font-size:0.8rem;white-space:nowrap;z-index:10;}
+  .info-btn{background:#7c3aed;color:white;border:none;padding:8px 18px;border-radius:20px;cursor:pointer;font-weight:700;}
+</style>
+</head>
+<body>
+  <div class="navbar"><span style="font-weight:700;">🛍️ متجري</span><nav><a href="#">الرئيسية</a><a href="#">المنتجات</a></nav></div>
+  <div class="page-content">
+    <h2 style="margin-bottom:16px;color:#1e3a8a;">المنتجات</h2>
+    <div class="card-wrap">
+      <div class="product-card"><div class="badge">جديد</div><div class="emoji">📱</div><div class="name">سماعة</div><div class="price">199 ر.س</div></div>
+      <div class="product-card"><div class="badge">-20%</div><div class="emoji">💻</div><div class="name">لوحة مفاتيح</div><div class="price">149 ر.س</div></div>
+      <div class="product-card"><div class="emoji">🖱️</div><div class="name">ماوس</div><div class="price">89 ر.س</div></div>
+    </div>
+    <br>
+    <div class="tooltip-wrap"><button class="info-btn">مرّر الماوس 🔍</button><div class="tooltip">tooltip بـ position: absolute!</div></div>
+  </div>
+</body>
+</html></textarea>
+          <div class="try-it-preview"><iframe srcdoc="" sandbox="allow-scripts allow-same-origin allow-modals allow-popups allow-forms" title="معاينة الكود"></iframe></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EXERCISES -->
+  <div class="section" id="exercises">
+    <h2 class="section-title"><span class="num">📝</span> التمارين <span class="en">Exercises</span></h2>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 1: قائمة تنقل أفقية</div>
+      <p>حوّل قائمة &lt;ul&gt;&lt;li&gt; عمودية لأفقية باستخدام display: inline أو inline-block على الـ li.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution"><span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre>nav ul { list-style: none; padding: 0; }
+nav li { display: inline-block; margin-left: 20px; }
+nav a  { text-decoration: none; color: #1e3a8a; font-weight: 600; }
+nav a:hover { color: #dc2626; }</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 2: بادج على الكارت</div>
+      <p>اعمل .card بـ position: relative، وبادج .badge عليه بـ position: absolute في الزاوية العليا اليمنى.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution"><span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre>.card {
+  position: relative;
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+}
+
+.badge {
+  position: absolute;
+  top:   -8px;
+  right: -8px;
+  background: #dc2626;
+  color: white;
+  border-radius: 20px;
+  padding: 3px 10px;
+  font-size: 0.8rem;
+  font-weight: 700;
+}</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 3: Navbar ثابتة</div>
+      <p>اعمل navbar ثابتة في أعلى الشاشة بـ position: fixed، عرض كامل، z-index: 100، وخلفية زرقاء.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution"><span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre>.navbar {
+  position: fixed;
+  top:   0;
+  right: 0;
+  left:  0;
+  background: #1e3a8a;
+  color: white;
+  padding: 16px 24px;
+  z-index: 100;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
+/* تعويض ارتفاع الـ navbar */
+body { margin-top: 64px; }</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 4: عنصر مركزي بـ absolute</div>
+      <p>اجعل عنصر .centered في المنتصف تماماً داخل حاوية .wrapper باستخدام position: absolute وtransform.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution"><span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre>.wrapper {
+  position: relative;
+  width: 300px;
+  height: 200px;
+  background: #f0f4ff;
+}
+
+.centered {
+  position: absolute;
+  top:  50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #1e3a8a;
+  color: white;
+  padding: 12px 24px;
+  border-radius: 8px;
+}</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 5: زر العودة للأعلى</div>
+      <p>اعمل زر .scroll-top ثابت في الزاوية السفلى اليسرى بـ position: fixed، دائري الشكل، z-index: 99.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution"><span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre>.scroll-top {
+  position: fixed;
+  bottom: 24px;
+  left:   24px;
+  width:  48px;
+  height: 48px;
+  border-radius: 50%;
+  background: #1e3a8a;
+  color: white;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  z-index: 99;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  transition: background 0.2s;
+}
+
+.scroll-top:hover { background: #2563eb; }</pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="quiz-container" id="quiz">
+    <div class="quiz-intro"><p>اختبر فهمك!</p></div>
+    <div class="quiz-type-tabs">
+      <button class="qt-tab active" onclick="switchQuiz(this,'tf')">✓✗ صح وخطأ</button>
+      <button class="qt-tab" onclick="switchQuiz(this,'mc')">🔘 اختيار من متعدد</button>
+    </div>
+
+    <div class="quiz-section active" id="quiz-tf">
+      <div class="quiz-question" data-correct="false">
+        <span class="q-num">1</span><span class="q-text">العنصر بـ display: none يحتفظ بمساحته في التخطيط.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">2</span><span class="q-text">position: fixed يضع العنصر بالنسبة للـ viewport ولا يتحرك عند التمرير.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">3</span><span class="q-text">z-index يعمل فقط على العناصر التي لها position غير static.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="false">
+        <span class="q-num">4</span><span class="q-text">position: absolute يتموضع دائماً بالنسبة للـ body.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">5</span><span class="q-text">inline-block يجمع بين: البقاء في نفس السطر + قبول width وheight.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <button class="quiz-submit" onclick="submitQuiz('tf')">عرض النتيجة 🎯</button>
+      <div class="quiz-result" id="result-tf"><div class="result-score" id="score-tf">0/5</div><div class="result-label">إجابات صحيحة</div><div class="result-message" id="msg-tf"></div><button class="retry-btn" onclick="retryQuiz('tf')">🔄 حاول تاني</button></div>
+    </div>
+
+    <div class="quiz-section" id="quiz-mc">
+      <div class="quiz-question" data-correct="2">
+        <span class="q-num">1</span><span class="q-text">إيه الـ position اللي يجعل العنصر يتموضع بالنسبة لأقرب أب بـ position؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">fixed</button>
+          <button class="q-opt" onclick="answerMC(this,1)">relative</button>
+          <button class="q-opt" onclick="answerMC(this,2)">absolute</button>
+          <button class="q-opt" onclick="answerMC(this,3)">sticky</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="1">
+        <span class="q-num">2</span><span class="q-text">إيه الفرق بين visibility: hidden وdisplay: none؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">مفيش فرق</button>
+          <button class="q-opt" onclick="answerMC(this,1)">hidden يحتفظ بالمساحة، none لا</button>
+          <button class="q-opt" onclick="answerMC(this,2)">none يحتفظ بالمساحة، hidden لا</button>
+          <button class="q-opt" onclick="answerMC(this,3)">hidden للنص فقط، none للصور</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="3">
+        <span class="q-num">3</span><span class="q-text">لعمل navbar تظل في أعلى الشاشة عند التمرير، نستخدم؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">position: absolute</button>
+          <button class="q-opt" onclick="answerMC(this,1)">position: relative</button>
+          <button class="q-opt" onclick="answerMC(this,2)">position: sticky</button>
+          <button class="q-opt" onclick="answerMC(this,3)">position: fixed</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="0">
+        <span class="q-num">4</span><span class="q-text">لماذا نضع position: relative على الحاوية الأب للـ absolute؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">لجعله المرجع لـ absolute داخله</button>
+          <button class="q-opt" onclick="answerMC(this,1)">لتحسين الأداء</button>
+          <button class="q-opt" onclick="answerMC(this,2)">شرط إلزامي في CSS</button>
+          <button class="q-opt" onclick="answerMC(this,3)">لا حاجة لذلك</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="2">
+        <span class="q-num">5</span><span class="q-text">position: sticky يتصرف كـ؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">absolute دائماً</button>
+          <button class="q-opt" onclick="answerMC(this,1)">fixed دائماً</button>
+          <button class="q-opt" onclick="answerMC(this,2)">relative ثم fixed عند التمرير</button>
+          <button class="q-opt" onclick="answerMC(this,3)">static دائماً</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <button class="quiz-submit" onclick="submitQuiz('mc')">عرض النتيجة 🎯</button>
+      <div class="quiz-result" id="result-mc"><div class="result-score" id="score-mc">0/5</div><div class="result-label">إجابات صحيحة</div><div class="result-message" id="msg-mc"></div><button class="retry-btn" onclick="retryQuiz('mc')">🔄 حاول تاني</button></div>
+    </div>
+  </div>
+
+  <div class="lesson-nav">
+    <a href="./lesson-08.html" class="nav-btn"><span>⬅️</span><span>الدرس السابق</span></a>
+    <button class="nav-btn complete-btn" id="completeBtn" onclick="markComplete(this)"><span>✅</span><span>علّم كمكتمل</span></button>
+    <a href="./lesson-10.html" class="nav-btn"><span>الدرس التالي</span><span>➡️</span></a>
+  </div>
+
+  <div class="notebook-footer">
+    <h3>🎉 أتقنت Display و Position!</h3>
+    <p>دلوقتي تقدر تتحكم في مكان كل عنصر بدقة ❤️<br><strong>الدرس التالي: Flexbox — التخطيط المرن! 💪</strong></p>
+  </div>
+</div>
+
+<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">⬆️</button>
+<div class="toast" id="toast"></div>
+<script src="../../js/data/courses.js"></script>
+<script src="../../js/progress.js"></script>
+<script src="../../js/lesson-editor.js"></script>
+<script>
+const COURSE_ID='frontend',LESSON_ID=9,TOTAL=32;
+function toggleSolution(b){const s=b.nextElementSibling;s.classList.toggle('show');b.textContent=s.classList.contains('show')?'إخفاء الحل ▲':'عرض الحل ▼';}
+function copyCode(b){const p=b.closest('.code-box').querySelector('pre');navigator.clipboard.writeText(p.innerText).then(()=>{b.classList.add('copied');b.textContent='✓ تم النسخ';setTimeout(()=>{b.classList.remove('copied');b.textContent='📋 نسخ';},2000);});}
+function runCode(b){const t=b.closest('.try-it');t.querySelector('iframe').srcdoc=t.querySelector('.try-it-editor').value;}
+function resetCode(b){const t=b.closest('.try-it'),e=t.querySelector('.try-it-editor');e.value=e.dataset.default;t.querySelector('iframe').srcdoc=e.value;}
+window.addEventListener('load',()=>{document.querySelectorAll('.try-it').forEach(t=>{const e=t.querySelector('.try-it-editor');t.querySelector('iframe').srcdoc=e.value;});});
+function switchQuiz(b,t){document.querySelectorAll('.qt-tab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.quiz-section').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.getElementById('quiz-'+t).classList.add('active');}
+const answers={tf:{},mc:{}};
+function answerTF(b,v){const q=b.closest('.quiz-question'),i=Array.from(q.parentNode.querySelectorAll('.quiz-question')).indexOf(q);q.querySelectorAll('.q-opt').forEach(o=>o.classList.remove('selected'));b.classList.add('selected');answers.tf[i]=v;}
+function answerMC(b,i){const q=b.closest('.quiz-question'),qi=Array.from(q.parentNode.querySelectorAll('.quiz-question')).indexOf(q);q.querySelectorAll('.q-opt').forEach(o=>o.classList.remove('selected'));b.classList.add('selected');answers.mc[qi]=i;}
+function submitQuiz(type){const sec=document.getElementById('quiz-'+type),qs=sec.querySelectorAll('.quiz-question');let c=0;qs.forEach((q,i)=>{const ca=type==='tf'?(q.dataset.correct==='true'):parseInt(q.dataset.correct),ua=answers[type][i],fb=q.querySelector('.q-feedback'),opts=q.querySelectorAll('.q-opt');opts.forEach(o=>{o.classList.remove('selected');o.disabled=true;});if(ua===undefined){fb.className='q-feedback wrong show';fb.textContent='⚠️ ما اخترتش إجابة!';return;}if(ua===ca){c++;fb.className='q-feedback correct show';fb.textContent='✓ إجابة صحيحة!';if(type==='tf')opts[ca?0:1].classList.add('correct');else opts[ca].classList.add('correct');}else{fb.className='q-feedback wrong show';if(type==='tf'){opts[ca?0:1].classList.add('correct');opts[ua?0:1].classList.add('wrong');fb.textContent='✗ خطأ.';}else{opts[ca].classList.add('correct');opts[ua].classList.add('wrong');fb.textContent='✗ الإجابة بالأخضر.';}}});const r=document.getElementById('result-'+type);document.getElementById('score-'+type).textContent=c+'/'+qs.length;const m=document.getElementById('msg-'+type);if(c===qs.length){m.textContent='🏆 ممتاز 100%!';m.className='result-message excellent';}else if(c>=3){m.textContent='👍 جيد!';m.className='result-message good';}else{m.textContent='📚 راجع الدرس.';m.className='result-message try-again';}r.classList.add('show');r.scrollIntoView({behavior:'smooth',block:'center'});}
+function retryQuiz(type){const sec=document.getElementById('quiz-'+type);sec.querySelectorAll('.q-opt').forEach(o=>{o.classList.remove('selected','correct','wrong');o.disabled=false;});sec.querySelectorAll('.q-feedback').forEach(f=>{f.classList.remove('show','correct','wrong');f.textContent='';});document.getElementById('result-'+type).classList.remove('show');answers[type]={};}
+function markComplete(btn){const done=Progress.toggleLessonComplete(COURSE_ID,LESSON_ID);btn.classList.toggle('completed',done);btn.querySelector('span:last-child').textContent=done?'مكتمل! ⭐':'علّم كمكتمل';showToast(done?'🎉 أكملت الدرس التاسع!':'تم إلغاء الإكمال');}
+if(Progress.isLessonComplete(COURSE_ID,LESSON_ID)){const b=document.getElementById('completeBtn');b.classList.add('completed');b.querySelector('span:last-child').textContent='مكتمل! ⭐';}
+(function(){const p=Progress.getCourseProgress(COURSE_ID,TOTAL);document.getElementById('progFill').style.width=p+'%';document.getElementById('progText').textContent=p+'%';})();
+function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
+window.addEventListener('scroll',()=>{document.getElementById('scrollTop').classList.toggle('show',window.scrollY>300);});
+document.querySelectorAll('.toc-card a').forEach(l=>{l.addEventListener('click',e=>{e.preventDefault();const t=document.querySelector(l.getAttribute('href'));if(t)t.scrollIntoView({behavior:'smooth',block:'start'});});});
+</script>
+</body>
+</html>

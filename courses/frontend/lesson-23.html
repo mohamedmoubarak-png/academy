@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-V2NCKVL16D"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-V2NCKVL16D');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>مميزات ES6+ الحديثة — دفتر البرمجة</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=Cairo:wght@300;400;500;600;700;900&family=Caveat:wght@400;700&family=Fira+Code:wght@400;500;600&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../css/shared.css">
+<link rel="stylesheet" href="../../css/notebook.css">
+<style>
+body { padding: 20px 10px; }
+.mini-console {
+  background: #1e293b; border-radius: 10px; padding: 14px 16px;
+  margin: 10px 0; font-family: 'Fira Code', monospace; font-size: .88rem; direction: ltr;
+}
+.mc-line { margin: 3px 0; }
+.mc-in { color: #94a3b8; }
+.mc-in::before { content: '> '; color: #7c3aed; }
+.mc-out { color: #4ade80; }
+.mc-out::before { content: '← '; color: #4ade80; }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="crumbs">
+    <a href="../../index.html">🏠 الرئيسية</a>
+    <span class="sep">/</span>
+    <a href="./index.html">🌐 الفرونت إند</a>
+    <span class="sep">/</span>
+    <span class="current">⚡ الدرس 23: ES6+</span>
+  </div>
+  <div class="progress-mini">
+    <div class="progress-bar-mini"><div class="progress-fill-mini" id="progFill"></div></div>
+    <span id="progText">0%</span>
+  </div>
+</div>
+
+<div class="notebook">
+
+  <div class="notebook-header">
+    <div class="lesson-tag">⚡ الدرس الثالث والعشرون</div>
+    <h1><span class="sparkle">✦</span> مميزات ES6+ الحديثة <span class="sparkle">✦</span></h1>
+    <div class="lesson-meta">
+      <span>⏱️ 45 دقيقة</span>
+      <span>📊 متوسط</span>
+      <span>🎯 5 تمارين + اختبار</span>
+    </div>
+  </div>
+
+  <div class="toc-card">
+    <h2>📑 فهرس الدرس</h2>
+    <ol>
+      <li><a href="#s1">ما هو ES6+؟</a></li>
+      <li><a href="#s2">Destructuring (المصفوفات والكائنات)</a></li>
+      <li><a href="#s3">Spread و Rest Operator</a></li>
+      <li><a href="#s4">Optional Chaining و Nullish Coalescing</a></li>
+      <li><a href="#s5">Short-circuit Assignment</a></li>
+      <li><a href="#s6">Modules (import / export)</a></li>
+      <li><a href="#s7">Map و Set</a></li>
+      <li><a href="#s8">محرر الكود الحي</a></li>
+      <li><a href="#exercises">التمارين</a></li>
+      <li><a href="#quiz">اختبر فهمك</a></li>
+    </ol>
+  </div>
+
+  <!-- S1 -->
+  <div class="section" id="s1">
+    <h2 class="section-title"><span class="num">.1</span> ما هو ES6+؟ <span class="en">What is ES6+?</span></h2>
+    <div class="content">
+      <p><strong>ES6</strong> (ECMAScript 2015) كان أكبر تحديث في تاريخ JavaScript. أضاف عشرات المميزات الجديدة التي جعلت الكتابة أسرع وأوضح. والإصدارات بعده (ES7, ES8...) تضيف مميزات أصغر كل سنة.</p>
+      <div class="analogy">
+        <div class="analogy-title">📱 تخيل تحديث iOS:</div>
+        <p>ES5 كانت كالهاتف القديم — تعمل لكنها مرهقة. ES6+ هي كالنظام الحديث — نفس الجهاز لكن أسرع، أجمل، وأقل كوداً.</p>
+      </div>
+      <table class="cool-table">
+        <thead><tr><th>الميزة</th><th>ES6+</th></tr></thead>
+        <tbody>
+          <tr><td>المتغيرات</td><td><code>let</code> و <code>const</code> بدل <code>var</code></td></tr>
+          <tr><td>الدوال</td><td>Arrow Functions <code>() =&gt;</code></td></tr>
+          <tr><td>النصوص</td><td>Template Literals <code>`${}`</code></td></tr>
+          <tr><td>الاستخراج</td><td>Destructuring</td></tr>
+          <tr><td>النشر</td><td>Spread <code>...</code> و Rest</td></tr>
+          <tr><td>الوحدات</td><td><code>import / export</code></td></tr>
+          <tr><td>هياكل بيانات</td><td><code>Map</code> و <code>Set</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- S2 -->
+  <div class="section" id="s2">
+    <h2 class="section-title"><span class="num">.2</span> Destructuring <span class="en">Destructuring Assignment</span></h2>
+    <div class="content">
+      <p>استخرجنا قيماً من المصفوفات والكائنات في دروس سابقة — هنا نراجع ونعمّق:</p>
+      <div class="code-box">
+<div class="code-header"><span>📦 Destructuring متقدم</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">// Nested Destructuring</span>
+<span class="tag-name">const</span> <span class="attr">user</span> = {
+  <span class="attr">name</span>: <span class="attr-val">'أحمد'</span>,
+  <span class="attr">address</span>: { <span class="attr">city</span>: <span class="attr-val">'القاهرة'</span>, <span class="attr">zip</span>: <span class="attr-val">'12345'</span> }
+};
+
+<span class="tag-name">const</span> { <span class="attr">name</span>, <span class="attr">address</span>: { <span class="attr">city</span> } } = <span class="attr">user</span>;
+<span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr">city</span>);  <span class="comment">// 'القاهرة'</span>
+
+<span class="comment">// في معاملات الدوال</span>
+<span class="tag-name">function</span> <span class="attr">display</span>({ <span class="attr">name</span>, <span class="attr">age</span> = <span class="attr-val">0</span> }) {
+  <span class="tag-name">return</span> <span class="attr-val">`${name} — ${age}`</span>;
+}
+
+<span class="comment">// Swap بدون متغير مؤقت</span>
+<span class="tag-name">let</span> <span class="attr">a</span> = <span class="attr-val">1</span>, <span class="attr">b</span> = <span class="attr-val">2</span>;
+[<span class="attr">a</span>, <span class="attr">b</span>] = [<span class="attr">b</span>, <span class="attr">a</span>];
+<span class="comment">// a=2, b=1</span></pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- S3 -->
+  <div class="section" id="s3">
+    <h2 class="section-title"><span class="num">.3</span> Spread و Rest <span class="en">... Operator</span></h2>
+    <div class="content">
+      <p>نفس الرمز <em>...</em> لكن بمعنيين حسب السياق:</p>
+      <div class="code-box">
+<div class="code-header"><span>🌊 Spread — نشر القيم</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">// نشر مصفوفة</span>
+<span class="tag-name">const</span> <span class="attr">nums</span>   = [<span class="attr-val">1</span>, <span class="attr-val">2</span>, <span class="attr-val">3</span>];
+<span class="tag-name">const</span> <span class="attr">more</span>   = [<span class="attr-val">0</span>, ...<span class="attr">nums</span>, <span class="attr-val">4</span>];  <span class="comment">// [0,1,2,3,4]</span>
+<span class="tag-name">const</span> <span class="attr">copy</span>   = [...<span class="attr">nums</span>];         <span class="comment">// نسخة</span>
+
+<span class="comment">// نشر كائن</span>
+<span class="tag-name">const</span> <span class="attr">base</span>   = { <span class="attr">x</span>: <span class="attr-val">1</span>, <span class="attr">y</span>: <span class="attr-val">2</span> };
+<span class="tag-name">const</span> <span class="attr">moved</span>  = { ...<span class="attr">base</span>, <span class="attr">x</span>: <span class="attr-val">10</span> }; <span class="comment">// {x:10, y:2}</span>
+
+<span class="comment">// تمرير مصفوفة كوسائط</span>
+<span class="tag-name">Math</span>.<span class="tag-name">max</span>(...[<span class="attr-val">3</span>, <span class="attr-val">1</span>, <span class="attr-val">9</span>, <span class="attr-val">4</span>])  <span class="comment">// 9</span></pre>
+      </div>
+
+      <div class="code-box blue">
+<div class="code-header"><span>🗃️ Rest — جمع الباقي</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">// في الدوال</span>
+<span class="tag-name">function</span> <span class="attr">sum</span>(<span class="attr">first</span>, ...<span class="attr">rest</span>) {
+  <span class="tag-name">return</span> <span class="attr">first</span> + <span class="attr">rest</span>.<span class="tag-name">reduce</span>((<span class="attr">a</span>, <span class="attr">b</span>) => <span class="attr">a</span> + <span class="attr">b</span>, <span class="attr-val">0</span>);
+}
+<span class="attr">sum</span>(<span class="attr-val">1</span>, <span class="attr-val">2</span>, <span class="attr-val">3</span>, <span class="attr-val">4</span>)  <span class="comment">// 10</span>
+
+<span class="comment">// في Destructuring</span>
+<span class="tag-name">const</span> [<span class="attr">head</span>, ...<span class="attr">tail</span>] = [<span class="attr-val">10</span>, <span class="attr-val">20</span>, <span class="attr-val">30</span>];
+<span class="comment">// head=10, tail=[20,30]</span>
+
+<span class="tag-name">const</span> { <span class="attr">name</span>, ...<span class="attr">rest2</span> } = { <span class="attr">name</span>:<span class="attr-val">'أحمد'</span>, <span class="attr">age</span>:<span class="attr-val">25</span>, <span class="attr">city</span>:<span class="attr-val">'القاهرة'</span> };
+<span class="comment">// name='أحمد', rest2={age:25, city:'القاهرة'}</span></pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- S4 -->
+  <div class="section" id="s4">
+    <h2 class="section-title"><span class="num">.4</span> Optional Chaining و Nullish Coalescing <span class="en">Safe Navigation</span></h2>
+    <div class="content">
+      <p>من أكثر المميزات الحديثة فائدةً في العمل اليومي:</p>
+      <div class="code-box">
+<div class="code-header"><span>🔗 Optional Chaining (?.) — ES2020</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-name">const</span> <span class="attr">user</span> = { <span class="attr">profile</span>: { <span class="attr">name</span>: <span class="attr-val">'سارة'</span> } };
+
+<span class="comment">// بدون ?. — يرمي error لو profile غير موجود</span>
+<span class="comment">// user.address.city  ← TypeError!</span>
+
+<span class="comment">// مع ?. — يعيد undefined بدلاً من error</span>
+<span class="attr">user</span>?.<span class="attr">address</span>?.<span class="attr">city</span>       <span class="comment">// undefined (بدون خطأ)</span>
+<span class="attr">user</span>?.<span class="attr">profile</span>?.<span class="attr">name</span>       <span class="comment">// 'سارة'</span>
+
+<span class="comment">// مع المصفوفات والدوال</span>
+<span class="attr">user</span>?.<span class="attr">friends</span>?.[<span class="attr-val">0</span>]         <span class="comment">// undefined</span>
+<span class="attr">user</span>?.<span class="attr">greet</span>?.()             <span class="comment">// undefined (لو الدالة غير موجودة)</span></pre>
+      </div>
+
+      <div class="code-box green">
+<div class="code-header"><span>❓ Nullish Coalescing (??) — ES2020</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">// || يستخدم القيمة الثانية عند أي falsy value</span>
+<span class="attr-val">0</span>     || <span class="attr-val">'افتراضي'</span>   <span class="comment">// 'افتراضي' (لأن 0 falsy)</span>
+<span class="attr-val">''</span>    || <span class="attr-val">'افتراضي'</span>   <span class="comment">// 'افتراضي' (لأن '' falsy)</span>
+
+<span class="comment">// ?? يستخدم الثانية فقط عند null/undefined</span>
+<span class="attr-val">0</span>     ?? <span class="attr-val">'افتراضي'</span>   <span class="comment">// 0 ✅ (لأنه ليس null/undefined)</span>
+<span class="attr-val">''</span>    ?? <span class="attr-val">'افتراضي'</span>   <span class="comment">// '' ✅</span>
+<span class="attr-val">null</span>  ?? <span class="attr-val">'افتراضي'</span>   <span class="comment">// 'افتراضي'</span>
+
+<span class="comment">// مع Optional Chaining</span>
+<span class="tag-name">const</span> <span class="attr">city</span> = <span class="attr">user</span>?.<span class="attr">address</span>?.<span class="attr">city</span> ?? <span class="attr-val">'غير محدد'</span>;</pre>
+      </div>
+      <div class="tip-box"><strong>قاعدة:</strong> استخدم <em>??</em> دائماً بدل <em>||</em> للقيم الافتراضية — أأمن وأدق.</div>
+    </div>
+  </div>
+
+  <!-- S5 -->
+  <div class="section" id="s5">
+    <h2 class="section-title"><span class="num">.5</span> Logical Assignment <span class="en">&&= ||= ??=</span></h2>
+    <div class="content">
+      <div class="code-box">
+<div class="code-header"><span>⚡ Logical Assignment — ES2021</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-name">let</span> <span class="attr">a</span> = <span class="attr-val">null</span>;
+<span class="tag-name">let</span> <span class="attr">b</span> = <span class="attr-val">5</span>;
+
+<span class="comment">// ??= — عيّن لو القيمة null/undefined</span>
+<span class="attr">a</span> ??= <span class="attr-val">'افتراضي'</span>;  <span class="comment">// a = 'افتراضي'</span>
+<span class="attr">b</span> ??= <span class="attr-val">10</span>;         <span class="comment">// b = 5 (لم يتغير)</span>
+
+<span class="comment">// ||= — عيّن لو القيمة falsy</span>
+<span class="tag-name">let</span> <span class="attr">name</span> = <span class="attr-val">''</span>;
+<span class="attr">name</span> ||= <span class="attr-val">'زائر'</span>;   <span class="comment">// name = 'زائر'</span>
+
+<span class="comment">// &&= — عيّن لو القيمة truthy</span>
+<span class="tag-name">let</span> <span class="attr">count</span> = <span class="attr-val">5</span>;
+<span class="attr">count</span> &&= <span class="attr">count</span> + <span class="attr-val">1</span>;  <span class="comment">// count = 6</span></pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- S6 -->
+  <div class="section" id="s6">
+    <h2 class="section-title"><span class="num">.6</span> Modules — import / export <span class="en">ES Modules</span></h2>
+    <div class="content">
+      <p>تقسيم الكود إلى ملفات منفصلة — كل ملف module مستقل:</p>
+      <div class="code-box">
+<div class="code-header"><span>📤 export — تصدير من الملف</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">// utils.js</span>
+
+<span class="comment">// Named exports</span>
+<span class="tag-name">export</span> <span class="tag-name">const</span> <span class="attr">PI</span> = <span class="attr-val">3.14159</span>;
+
+<span class="tag-name">export function</span> <span class="attr">add</span>(<span class="attr">a</span>, <span class="attr">b</span>) {
+  <span class="tag-name">return</span> <span class="attr">a</span> + <span class="attr">b</span>;
+}
+
+<span class="tag-name">export const</span> <span class="attr">greet</span> = <span class="attr">name</span> => <span class="attr-val">`مرحباً ${name}`</span>;
+
+<span class="comment">// Default export (واحد فقط لكل ملف)</span>
+<span class="tag-name">export default</span> <span class="tag-name">class</span> <span class="attr">Calculator</span> { ... }</pre>
+      </div>
+
+      <div class="code-box blue">
+<div class="code-header"><span>📥 import — استيراد في ملف آخر</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">// app.js</span>
+
+<span class="comment">// Named imports</span>
+<span class="tag-name">import</span> { <span class="attr">PI</span>, <span class="attr">add</span>, <span class="attr">greet</span> } <span class="tag-name">from</span> <span class="attr-val">'./utils.js'</span>;
+
+<span class="comment">// Default import</span>
+<span class="tag-name">import</span> <span class="attr">Calculator</span> <span class="tag-name">from</span> <span class="attr-val">'./utils.js'</span>;
+
+<span class="comment">// Import كل شيء تحت namespace</span>
+<span class="tag-name">import</span> * <span class="tag-name">as</span> <span class="attr">Utils</span> <span class="tag-name">from</span> <span class="attr-val">'./utils.js'</span>;
+<span class="attr">Utils</span>.<span class="attr">add</span>(<span class="attr-val">1</span>, <span class="attr-val">2</span>);</pre>
+      </div>
+
+      <div class="note-box"><strong>في المتصفح:</strong> أضف <em>type="module"</em> لوسم script:<br><em>&lt;script type="module" src="app.js"&gt;&lt;/script&gt;</em></div>
+    </div>
+  </div>
+
+  <!-- S7 -->
+  <div class="section" id="s7">
+    <h2 class="section-title"><span class="num">.7</span> Map و Set <span class="en">Map & Set</span></h2>
+    <div class="content">
+      <div class="code-box">
+<div class="code-header"><span>🗺️ Map — قاموس متقدم</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-name">const</span> <span class="attr">map</span> = <span class="tag-name">new</span> <span class="attr">Map</span>();
+
+<span class="comment">// إضافة (أي نوع كـ key)</span>
+<span class="attr">map</span>.<span class="tag-name">set</span>(<span class="attr-val">'name'</span>, <span class="attr-val">'أحمد'</span>);
+<span class="attr">map</span>.<span class="tag-name">set</span>(<span class="attr-val">42</span>, <span class="attr-val">'رقم'</span>);
+<span class="attr">map</span>.<span class="tag-name">set</span>({ <span class="attr">id</span>: <span class="attr-val">1</span> }, <span class="attr-val">'كائن'</span>);
+
+<span class="comment">// قراءة وبحث</span>
+<span class="attr">map</span>.<span class="tag-name">get</span>(<span class="attr-val">'name'</span>)       <span class="comment">// 'أحمد'</span>
+<span class="attr">map</span>.<span class="tag-name">has</span>(<span class="attr-val">'name'</span>)       <span class="comment">// true</span>
+<span class="attr">map</span>.<span class="attr">size</span>              <span class="comment">// 3</span>
+<span class="attr">map</span>.<span class="tag-name">delete</span>(<span class="attr-val">'name'</span>)
+
+<span class="comment">// التجوال</span>
+<span class="tag-name">for</span> (<span class="tag-name">const</span> [<span class="attr">key</span>, <span class="attr">val</span>] <span class="tag-name">of</span> <span class="attr">map</span>) {
+  <span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr">key</span>, <span class="attr-val">'→'</span>, <span class="attr">val</span>);
+}</pre>
+      </div>
+
+      <div class="code-box green">
+<div class="code-header"><span>🔵 Set — مجموعة بدون تكرار</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-name">const</span> <span class="attr">set</span> = <span class="tag-name">new</span> <span class="attr">Set</span>([<span class="attr-val">1</span>, <span class="attr-val">2</span>, <span class="attr-val">3</span>, <span class="attr-val">2</span>, <span class="attr-val">1</span>]);
+<span class="comment">// Set {1, 2, 3} — حذف التكرارات تلقائياً!</span>
+
+<span class="attr">set</span>.<span class="tag-name">add</span>(<span class="attr-val">4</span>);
+<span class="attr">set</span>.<span class="tag-name">has</span>(<span class="attr-val">3</span>);   <span class="comment">// true</span>
+<span class="attr">set</span>.<span class="attr">size</span>;    <span class="comment">// 4</span>
+
+<span class="comment">// حيلة رائعة: إزالة التكرارات من مصفوفة</span>
+<span class="tag-name">const</span> <span class="attr">unique</span> = [...<span class="tag-name">new</span> <span class="attr">Set</span>([<span class="attr-val">1</span>,<span class="attr-val">2</span>,<span class="attr-val">2</span>,<span class="attr-val">3</span>,<span class="attr-val">3</span>])];
+<span class="comment">// [1, 2, 3]</span></pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- S8 -->
+  <div class="section" id="s8">
+    <h2 class="section-title"><span class="num">.8</span> محرر الكود الحي <span class="en">Live Editor</span></h2>
+    <div class="content"><p>جرب مميزات ES6+ بنفسك:</p></div>
+    <div class="try-it">
+      <div class="try-it-header">
+        <span>⚡ جرب ES6+</span>
+        <div class="try-it-controls">
+          <button class="try-btn" onclick="runCode(this)">▶️ تشغيل</button>
+          <button class="try-btn" onclick="resetCode(this)">🔄 إعادة</button>
+        </div>
+      </div>
+      <div class="try-it-body">
+        <textarea class="try-it-editor" spellcheck="false" data-default='<!DOCTYPE html>
+<html><head><meta charset="UTF-8"></head>
+<body style="font-family:Arial;padding:20px;direction:rtl;">
+  <h2>✨ تجارب ES6+</h2>
+  <div id="out" style="background:#1e293b;color:#4ade80;padding:16px;border-radius:10px;font-family:monospace;white-space:pre-line;line-height:1.8;"></div>
+<script>
+  const p = s => document.getElementById("out").textContent += s + "\n";
+
+  // Optional Chaining
+  const user = { profile: { name: "سارة", scores: [90, 85, 95] } };
+  p("الاسم: " + (user?.profile?.name ?? "غير معروف"));
+  p("المدينة: " + (user?.address?.city ?? "غير محدد"));
+  p("أول درجة: " + (user?.profile?.scores?.[0] ?? "لا يوجد"));
+
+  // Destructuring مع Defaults
+  const { profile: { name, age = 20 } } = user;
+  p(`\n${name}, العمر: ${age}`);
+
+  // Set لإزالة التكرارات
+  const tags = ["JS", "CSS", "JS", "HTML", "CSS", "JS"];
+  const unique = [...new Set(tags)];
+  p("\nتاقات فريدة: " + unique.join(", "));
+
+  // Spread لدمج قوائم
+  const frontEnd = ["HTML", "CSS"];
+  const skills   = [...frontEnd, "JavaScript", "React"];
+  p("المهارات: " + skills.join(" | "));
+
+  // Map
+  const scores = new Map([["أحمد", 95], ["سارة", 88], ["محمد", 72]]);
+  p("\nالدرجات:");
+  for (const [name, score] of scores) {
+    p(`  ${name}: ${score}`);
+  }
+</script>
+</body></html>'><!DOCTYPE html>
+<html><head><meta charset="UTF-8"></head>
+<body style="font-family:Arial;padding:20px;direction:rtl;">
+  <h2>✨ تجارب ES6+</h2>
+  <div id="out" style="background:#1e293b;color:#4ade80;padding:16px;border-radius:10px;font-family:monospace;white-space:pre-line;line-height:1.8;"></div>
+<script>
+  const p = s => document.getElementById("out").textContent += s + "\n";
+
+  const user = { profile: { name: "سارة", scores: [90, 85, 95] } };
+  p("الاسم: " + (user?.profile?.name ?? "غير معروف"));
+  p("المدينة: " + (user?.address?.city ?? "غير محدد"));
+  p("أول درجة: " + (user?.profile?.scores?.[0] ?? "لا يوجد"));
+
+  const { profile: { name, age = 20 } } = user;
+  p(`\n${name}, العمر: ${age}`);
+
+  const tags = ["JS", "CSS", "JS", "HTML", "CSS", "JS"];
+  const unique = [...new Set(tags)];
+  p("\nتاقات فريدة: " + unique.join(", "));
+
+  const frontEnd = ["HTML", "CSS"];
+  const skills   = [...frontEnd, "JavaScript", "React"];
+  p("المهارات: " + skills.join(" | "));
+
+  const scores = new Map([["أحمد", 95], ["سارة", 88], ["محمد", 72]]);
+  p("\nالدرجات:");
+  for (const [name, score] of scores) {
+    p(`  ${name}: ${score}`);
+  }
+</script>
+</body></html></textarea>
+        <div class="try-it-preview"><iframe srcdoc="" sandbox="allow-scripts allow-same-origin allow-modals allow-popups allow-forms" title="معاينة الكود"></iframe></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EXERCISES -->
+  <div class="section" id="exercises">
+    <h2 class="section-title"><span class="num">📝</span> التمارين العملية <span class="en">Exercises</span></h2>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 1: Optional Chaining</div>
+      <p>عندك <em>const data = { user: null }</em>. اكتب سطراً يجلب <em>data.user.name</em> بأمان ويعيد "مجهول" لو غير موجود.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre><span class="tag-name">const</span> <span class="attr">data</span> = { <span class="attr">user</span>: <span class="attr-val">null</span> };
+<span class="tag-name">const</span> <span class="attr">name</span> = <span class="attr">data</span>?.<span class="attr">user</span>?.<span class="attr">name</span> ?? <span class="attr-val">'مجهول'</span>;
+<span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr">name</span>);  <span class="comment">// 'مجهول'</span></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 2: إزالة التكرارات</div>
+      <p>استخدم Set لإزالة التكرارات من <em>[5,3,5,1,3,2,1,2]</em> وأعدها مصفوفة.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre><span class="tag-name">const</span> <span class="attr">unique</span> = [...<span class="tag-name">new</span> <span class="attr">Set</span>([<span class="attr-val">5</span>,<span class="attr-val">3</span>,<span class="attr-val">5</span>,<span class="attr-val">1</span>,<span class="attr-val">3</span>,<span class="attr-val">2</span>,<span class="attr-val">1</span>,<span class="attr-val">2</span>])];
+<span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr">unique</span>);  <span class="comment">// [5,3,1,2]</span></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 3: Spread لدمج كائنين</div>
+      <p>ادمج <em>{name:'أحمد'}</em> و <em>{age:25, city:'القاهرة'}</em> في كائن واحد وغيّر age إلى 26.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre><span class="tag-name">const</span> <span class="attr">merged</span> = { ...<span class="attr-val">{name:'أحمد'}</span>, ...<span class="attr-val">{age:25, city:'القاهرة'}</span>, <span class="attr">age</span>: <span class="attr-val">26</span> };
+<span class="comment">// {name:'أحمد', age:26, city:'القاهرة'}</span></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 4: Map لعدّ التكرارات</div>
+      <p>من المصفوفة <em>['أحمر','أزرق','أحمر','أخضر','أزرق','أحمر']</em>، استخدم Map لعدّ كم مرة تكرر كل لون.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre><span class="tag-name">const</span> <span class="attr">colors</span> = [<span class="attr-val">'أحمر'</span>,<span class="attr-val">'أزرق'</span>,<span class="attr-val">'أحمر'</span>,<span class="attr-val">'أخضر'</span>,<span class="attr-val">'أزرق'</span>,<span class="attr-val">'أحمر'</span>];
+<span class="tag-name">const</span> <span class="attr">count</span>  = <span class="tag-name">new</span> <span class="attr">Map</span>();
+<span class="attr">colors</span>.<span class="tag-name">forEach</span>(<span class="attr">c</span> => <span class="attr">count</span>.<span class="tag-name">set</span>(<span class="attr">c</span>, (<span class="attr">count</span>.<span class="tag-name">get</span>(<span class="attr">c</span>) ?? <span class="attr-val">0</span>) + <span class="attr-val">1</span>));
+<span class="comment">// Map { أحمر→3, أزرق→2, أخضر→1 }</span></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 5: Rest في Destructuring</div>
+      <p>من <em>const arr = [1,2,3,4,5]</em>، استخرج العنصر الأول في متغير <em>first</em> والباقي في <em>rest</em>.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre><span class="tag-name">const</span> [<span class="attr">first</span>, ...<span class="attr">rest</span>] = [<span class="attr-val">1</span>,<span class="attr-val">2</span>,<span class="attr-val">3</span>,<span class="attr-val">4</span>,<span class="attr-val">5</span>];
+<span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr">first</span>); <span class="comment">// 1</span>
+<span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr">rest</span>);  <span class="comment">// [2,3,4,5]</span></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="quiz-container" id="quiz">
+    <div class="quiz-intro"><p>اختبر فهمك لـ ES6+!</p></div>
+    <div class="quiz-type-tabs">
+      <button class="qt-tab active" onclick="switchQuiz(this,'tf')">✓✗ صح وخطأ</button>
+      <button class="qt-tab" onclick="switchQuiz(this,'mc')">🔘 اختيار من متعدد</button>
+    </div>
+    <div class="quiz-section active" id="quiz-tf">
+      <div class="quiz-question" data-correct="false">
+        <span class="q-num">1</span><span class="q-text">?? و || يعطيان نفس النتيجة دائماً.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">2</span><span class="q-text">Set يحذف القيم المكررة تلقائياً.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">3</span><span class="q-text">?. يعيد undefined بدلاً من رمي TypeError عند الوصول لخاصية null.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="false">
+        <span class="q-num">4</span><span class="q-text">يمكن استخدام أكثر من default export في نفس الملف.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">5</span><span class="q-text">Map يقبل أي نوع بيانات كـ key، بخلاف الكائن العادي.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <button class="quiz-submit" onclick="submitQuiz('tf')">عرض النتيجة 🎯</button>
+      <div class="quiz-result" id="result-tf"><div class="result-score" id="score-tf">0/5</div><div class="result-label">إجابات صحيحة</div><div class="result-message" id="msg-tf"></div><button class="retry-btn" onclick="retryQuiz('tf')">🔄 حاول تاني</button></div>
+    </div>
+    <div class="quiz-section" id="quiz-mc">
+      <div class="quiz-question" data-correct="2">
+        <span class="q-num">1</span><span class="q-text">ما ناتج: 0 ?? 'default'؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">'default'</button>
+          <button class="q-opt" onclick="answerMC(this,1)">null</button>
+          <button class="q-opt" onclick="answerMC(this,2)">0</button>
+          <button class="q-opt" onclick="answerMC(this,3)">undefined</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="1">
+        <span class="q-num">2</span><span class="q-text">كيف تزيل تكرارات من مصفوفة بسطر واحد؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">arr.unique()</button>
+          <button class="q-opt" onclick="answerMC(this,1)">[...new Set(arr)]</button>
+          <button class="q-opt" onclick="answerMC(this,2)">arr.filter(unique)</button>
+          <button class="q-opt" onclick="answerMC(this,3)">new Map(arr)</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="3">
+        <span class="q-num">3</span><span class="q-text">ما الفرق بين Spread و Rest؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">لا فرق</button>
+          <button class="q-opt" onclick="answerMC(this,1)">Spread للكائنات فقط</button>
+          <button class="q-opt" onclick="answerMC(this,2)">Rest للمصفوفات فقط</button>
+          <button class="q-opt" onclick="answerMC(this,3)">Spread ينشر القيم، Rest يجمعها في مصفوفة</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="0">
+        <span class="q-num">4</span><span class="q-text">كيف تصدّر دالة مسمّاة من ملف؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">export function myFn() {}</button>
+          <button class="q-opt" onclick="answerMC(this,1)">module.export = myFn</button>
+          <button class="q-opt" onclick="answerMC(this,2)">send function myFn() {}</button>
+          <button class="q-opt" onclick="answerMC(this,3)">public function myFn() {}</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="2">
+        <span class="q-num">5</span><span class="q-text">ما ناتج: const [a,,c] = [1,2,3]؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">a=1, c=2</button>
+          <button class="q-opt" onclick="answerMC(this,1)">خطأ</button>
+          <button class="q-opt" onclick="answerMC(this,2)">a=1, c=3</button>
+          <button class="q-opt" onclick="answerMC(this,3)">a=1, c=undefined</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <button class="quiz-submit" onclick="submitQuiz('mc')">عرض النتيجة 🎯</button>
+      <div class="quiz-result" id="result-mc"><div class="result-score" id="score-mc">0/5</div><div class="result-label">إجابات صحيحة</div><div class="result-message" id="msg-mc"></div><button class="retry-btn" onclick="retryQuiz('mc')">🔄 حاول تاني</button></div>
+    </div>
+  </div>
+
+  <div class="lesson-nav">
+    <a href="./lesson-22.html" class="nav-btn"><span>⬅️</span><span>الدرس السابق</span></a>
+    <button class="nav-btn complete-btn" id="completeBtn" onclick="markComplete(this)"><span>✅</span><span>علّم كمكتمل</span></button>
+    <a href="./lesson-24.html" class="nav-btn"><span>الدرس التالي</span><span>➡️</span></a>
+  </div>
+
+  <div class="notebook-footer">
+    <h3>🎉 أتقنت ES6+!</h3>
+    <p>كودك الآن عصري ونظيف ❤️<br><strong>الدرس التالي: التخزين المحلي (localStorage) 💾</strong></p>
+  </div>
+</div>
+
+<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">⬆️</button>
+<div class="toast" id="toast"></div>
+<script src="../../js/data/courses.js"></script>
+<script src="../../js/progress.js"></script>
+<script src="../../js/lesson-editor.js"></script>
+<script>
+const COURSE_ID='frontend',LESSON_ID=23,TOTAL=32;
+function toggleSolution(b){const s=b.nextElementSibling;s.classList.toggle('show');b.textContent=s.classList.contains('show')?'إخفاء الحل ▲':'عرض الحل ▼';}
+function copyCode(b){const p=b.closest('.code-box').querySelector('pre');navigator.clipboard.writeText(p.innerText).then(()=>{b.classList.add('copied');b.textContent='✓ تم النسخ';setTimeout(()=>{b.classList.remove('copied');b.textContent='📋 نسخ';},2000);});}
+function runCode(b){const t=b.closest('.try-it');t.querySelector('iframe').srcdoc=t.querySelector('.try-it-editor').value;}
+function resetCode(b){const t=b.closest('.try-it'),e=t.querySelector('.try-it-editor');e.value=e.dataset.default;t.querySelector('iframe').srcdoc=e.value;}
+window.addEventListener('load',()=>{document.querySelectorAll('.try-it').forEach(t=>{const e=t.querySelector('.try-it-editor');t.querySelector('iframe').srcdoc=e.value;});});
+function switchQuiz(b,t){document.querySelectorAll('.qt-tab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.quiz-section').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.getElementById('quiz-'+t).classList.add('active');}
+const answers={tf:{},mc:{}};
+function answerTF(b,v){const q=b.closest('.quiz-question'),i=Array.from(q.parentNode.querySelectorAll('.quiz-question')).indexOf(q);q.querySelectorAll('.q-opt').forEach(o=>o.classList.remove('selected'));b.classList.add('selected');answers.tf[i]=v;}
+function answerMC(b,i){const q=b.closest('.quiz-question'),qi=Array.from(q.parentNode.querySelectorAll('.quiz-question')).indexOf(q);q.querySelectorAll('.q-opt').forEach(o=>o.classList.remove('selected'));b.classList.add('selected');answers.mc[qi]=i;}
+function submitQuiz(type){const sec=document.getElementById('quiz-'+type),qs=sec.querySelectorAll('.quiz-question');let c=0;qs.forEach((q,i)=>{const ca=type==='tf'?(q.dataset.correct==='true'):parseInt(q.dataset.correct),ua=answers[type][i],fb=q.querySelector('.q-feedback'),opts=q.querySelectorAll('.q-opt');opts.forEach(o=>{o.classList.remove('selected');o.disabled=true;});if(ua===undefined){fb.className='q-feedback wrong show';fb.textContent='⚠️ ما اخترتش إجابة!';return;}if(ua===ca){c++;fb.className='q-feedback correct show';fb.textContent='✓ إجابة صحيحة!';if(type==='tf')opts[ca?0:1].classList.add('correct');else opts[ca].classList.add('correct');}else{fb.className='q-feedback wrong show';if(type==='tf'){opts[ca?0:1].classList.add('correct');opts[ua?0:1].classList.add('wrong');fb.textContent='✗ خطأ.';}else{opts[ca].classList.add('correct');opts[ua].classList.add('wrong');fb.textContent='✗ الإجابة بالأخضر.';}}});const r=document.getElementById('result-'+type);document.getElementById('score-'+type).textContent=c+'/'+qs.length;const m=document.getElementById('msg-'+type);if(c===qs.length){m.textContent='🏆 ممتاز 100%!';m.className='result-message excellent';}else if(c>=3){m.textContent='👍 جيد!';m.className='result-message good';}else{m.textContent='📚 راجع الدرس.';m.className='result-message try-again';}r.classList.add('show');r.scrollIntoView({behavior:'smooth',block:'center'});}
+function retryQuiz(type){const sec=document.getElementById('quiz-'+type);sec.querySelectorAll('.q-opt').forEach(o=>{o.classList.remove('selected','correct','wrong');o.disabled=false;});sec.querySelectorAll('.q-feedback').forEach(f=>{f.classList.remove('show','correct','wrong');f.textContent='';});document.getElementById('result-'+type).classList.remove('show');answers[type]={};}
+function markComplete(btn){const done=Progress.toggleLessonComplete(COURSE_ID,LESSON_ID);btn.classList.toggle('completed',done);btn.querySelector('span:last-child').textContent=done?'مكتمل! ⭐':'علّم كمكتمل';showToast(done?'🎉 أكملت درس ES6+!':'تم إلغاء الإكمال');}
+if(Progress.isLessonComplete(COURSE_ID,LESSON_ID)){const b=document.getElementById('completeBtn');b.classList.add('completed');b.querySelector('span:last-child').textContent='مكتمل! ⭐';}
+(function(){const p=Progress.getCourseProgress(COURSE_ID,TOTAL);document.getElementById('progFill').style.width=p+'%';document.getElementById('progText').textContent=p+'%';})();
+function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
+window.addEventListener('scroll',()=>{document.getElementById('scrollTop').classList.toggle('show',window.scrollY>300);});
+document.querySelectorAll('.toc-card a').forEach(l=>{l.addEventListener('click',e=>{e.preventDefault();const t=document.querySelector(l.getAttribute('href'));if(t)t.scrollIntoView({behavior:'smooth',block:'start'});});});
+</script>
+</body>
+</html>

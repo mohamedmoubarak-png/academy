@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-V2NCKVL16D"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-V2NCKVL16D');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>التخزين المحلي localStorage — دفتر البرمجة</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=Cairo:wght@300;400;500;600;700;900&family=Caveat:wght@400;700&family=Fira+Code:wght@400;500;600&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../css/shared.css">
+<link rel="stylesheet" href="../../css/notebook.css">
+<style>
+body { padding: 20px 10px; }
+.mini-console {
+  background: #1e293b; border-radius: 10px; padding: 14px 16px;
+  margin: 10px 0; font-family: 'Fira Code', monospace; font-size: .88rem; direction: ltr;
+}
+.mc-line { margin: 3px 0; }
+.mc-in { color: #94a3b8; }
+.mc-in::before { content: '> '; color: #7c3aed; }
+.mc-out { color: #4ade80; }
+.mc-out::before { content: '← '; color: #4ade80; }
+
+/* storage visual */
+.storage-visual {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 6px; margin: 12px 0; direction: ltr;
+}
+.sv-key { background: #dbeafe; color: var(--ink-blue); padding: 8px 12px; border-radius: 6px 0 0 6px; font-family:'Fira Code',monospace; font-size:.85rem; font-weight:700; }
+.sv-val { background: #dcfce7; color: var(--ink-green); padding: 8px 12px; border-radius: 0 6px 6px 0; font-family:'Fira Code',monospace; font-size:.85rem; }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="crumbs">
+    <a href="../../index.html">🏠 الرئيسية</a>
+    <span class="sep">/</span>
+    <a href="./index.html">🌐 الفرونت إند</a>
+    <span class="sep">/</span>
+    <span class="current">⚡ الدرس 24: localStorage</span>
+  </div>
+  <div class="progress-mini">
+    <div class="progress-bar-mini"><div class="progress-fill-mini" id="progFill"></div></div>
+    <span id="progText">0%</span>
+  </div>
+</div>
+
+<div class="notebook">
+
+  <div class="notebook-header">
+    <div class="lesson-tag">⚡ الدرس الرابع والعشرون</div>
+    <h1><span class="sparkle">✦</span> التخزين المحلي — localStorage <span class="sparkle">✦</span></h1>
+    <div class="lesson-meta">
+      <span>⏱️ 35 دقيقة</span>
+      <span>📊 متوسط</span>
+      <span>🎯 5 تمارين + اختبار</span>
+    </div>
+  </div>
+
+  <div class="toc-card">
+    <h2>📑 فهرس الدرس</h2>
+    <ol>
+      <li><a href="#s1">ما هو localStorage؟</a></li>
+      <li><a href="#s2">العمليات الأساسية</a></li>
+      <li><a href="#s3">تخزين الكائنات والمصفوفات</a></li>
+      <li><a href="#s4">sessionStorage — الفرق</a></li>
+      <li><a href="#s5">نمط مساعد لـ localStorage</a></li>
+      <li><a href="#s6">حالات استخدام شائعة</a></li>
+      <li><a href="#s7">القيود والحدود</a></li>
+      <li><a href="#s8">محرر الكود الحي</a></li>
+      <li><a href="#exercises">التمارين</a></li>
+      <li><a href="#quiz">اختبر فهمك</a></li>
+    </ol>
+  </div>
+
+  <!-- S1 -->
+  <div class="section" id="s1">
+    <h2 class="section-title"><span class="num">.1</span> ما هو localStorage؟ <span class="en">What is localStorage?</span></h2>
+    <div class="content">
+      <p><strong>localStorage</strong> هو مخزن بيانات في المتصفح — يحفظ البيانات على جهاز المستخدم وتبقى حتى بعد إغلاق المتصفح وإعادة تشغيله.</p>
+      <div class="analogy">
+        <div class="analogy-title">📒 تخيل دفتر ملاحظات شخصي:</div>
+        <p>كل مرة تفتح تطبيقك تجد ملاحظاتك موجودة. localStorage هو هذا الدفتر — يحفظ بياناتك على جهازك وتجدها في كل زيارة.</p>
+      </div>
+
+      <div class="storage-visual">
+        <div class="sv-key">theme</div><div class="sv-val">"dark"</div>
+        <div class="sv-key">username</div><div class="sv-val">"أحمد"</div>
+        <div class="sv-key">cart</div><div class="sv-val">'[{"id":1,...}]'</div>
+        <div class="sv-key">lastVisit</div><div class="sv-val">"2024-01-15"</div>
+      </div>
+
+      <div class="info-box">
+        <strong>تخزّن فيه:</strong> إعدادات المستخدم، سلة التسوق، التقدم في التعلم، آخر بحث، الوضع الليلي...
+        <br><strong>لا تخزّن فيه:</strong> كلمات المرور، بيانات حساسة، بيانات ضخمة.
+      </div>
+    </div>
+  </div>
+
+  <!-- S2 -->
+  <div class="section" id="s2">
+    <h2 class="section-title"><span class="num">.2</span> العمليات الأساسية <span class="en">Basic Operations</span></h2>
+    <div class="content">
+      <div class="code-box">
+<div class="code-header"><span>💾 CRUD في localStorage</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">// ✅ حفظ (Create / Update)</span>
+<span class="attr">localStorage</span>.<span class="tag-name">setItem</span>(<span class="attr-val">'username'</span>, <span class="attr-val">'أحمد'</span>);
+<span class="attr">localStorage</span>.<span class="tag-name">setItem</span>(<span class="attr-val">'age'</span>, <span class="attr-val">'25'</span>);     <span class="comment">// القيم دائماً String</span>
+
+<span class="comment">// ✅ قراءة (Read)</span>
+<span class="tag-name">const</span> <span class="attr">name</span> = <span class="attr">localStorage</span>.<span class="tag-name">getItem</span>(<span class="attr-val">'username'</span>);
+<span class="comment">// 'أحمد'</span>
+
+<span class="tag-name">const</span> <span class="attr">missing</span> = <span class="attr">localStorage</span>.<span class="tag-name">getItem</span>(<span class="attr-val">'notExists'</span>);
+<span class="comment">// null (لو المفتاح غير موجود)</span>
+
+<span class="comment">// ✅ حذف مفتاح (Delete)</span>
+<span class="attr">localStorage</span>.<span class="tag-name">removeItem</span>(<span class="attr-val">'age'</span>);
+
+<span class="comment">// ✅ مسح كل البيانات</span>
+<span class="attr">localStorage</span>.<span class="tag-name">clear</span>();
+
+<span class="comment">// ✅ عدد المفاتيح</span>
+<span class="attr">localStorage</span>.<span class="attr">length</span>;  <span class="comment">// عدد العناصر المخزنة</span></pre>
+      </div>
+
+      <div class="mini-console">
+        <div class="mc-line mc-in">localStorage.setItem('color', 'blue')</div>
+        <div class="mc-line mc-in">localStorage.getItem('color')</div>
+        <div class="mc-line mc-out">'blue'</div>
+        <div class="mc-line mc-in">localStorage.removeItem('color')</div>
+        <div class="mc-line mc-in">localStorage.getItem('color')</div>
+        <div class="mc-line mc-out">null</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- S3 -->
+  <div class="section" id="s3">
+    <h2 class="section-title"><span class="num">.3</span> تخزين الكائنات والمصفوفات <span class="en">Storing Objects & Arrays</span></h2>
+    <div class="content">
+      <p>localStorage يخزّن نصوصاً فقط. لتخزين كائنات ومصفوفات نستخدم <em>JSON.stringify</em> و <em>JSON.parse</em>:</p>
+      <div class="code-box">
+<div class="code-header"><span>🔄 JSON.stringify و JSON.parse</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-name">const</span> <span class="attr">user</span> = { <span class="attr">name</span>: <span class="attr-val">'سارة'</span>, <span class="attr">age</span>: <span class="attr-val">22</span>, <span class="attr">skills</span>: [<span class="attr-val">'HTML'</span>, <span class="attr-val">'CSS'</span>] };
+
+<span class="comment">// حفظ: كائن → نص</span>
+<span class="attr">localStorage</span>.<span class="tag-name">setItem</span>(<span class="attr-val">'user'</span>, <span class="tag-name">JSON</span>.<span class="tag-name">stringify</span>(<span class="attr">user</span>));
+
+<span class="comment">// قراءة: نص → كائن</span>
+<span class="tag-name">const</span> <span class="attr">saved</span> = <span class="tag-name">JSON</span>.<span class="tag-name">parse</span>(<span class="attr">localStorage</span>.<span class="tag-name">getItem</span>(<span class="attr-val">'user'</span>));
+<span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr">saved</span>.<span class="attr">name</span>);    <span class="comment">// 'سارة'</span>
+<span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr">saved</span>.<span class="attr">skills</span>); <span class="comment">// ['HTML', 'CSS']</span></pre>
+      </div>
+
+      <div class="code-box green">
+<div class="code-header"><span>✅ نمط آمن مع ??</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">// آمن لو المفتاح غير موجود</span>
+<span class="tag-name">const</span> <span class="attr">data</span> = <span class="tag-name">JSON</span>.<span class="tag-name">parse</span>(
+  <span class="attr">localStorage</span>.<span class="tag-name">getItem</span>(<span class="attr-val">'todos'</span>) ?? <span class="attr-val">'[]'</span>
+);
+<span class="comment">// لو 'todos' غير موجود → مصفوفة فارغة بدل null</span></pre>
+      </div>
+
+      <div class="warning-box"><strong>JSON.parse على null يرمي خطأ!</strong> دائماً تحقق من وجود القيمة أو استخدم القيمة الافتراضية كما في المثال أعلاه.</div>
+    </div>
+  </div>
+
+  <!-- S4 -->
+  <div class="section" id="s4">
+    <h2 class="section-title"><span class="num">.4</span> sessionStorage — الفرق <span class="en">sessionStorage vs localStorage</span></h2>
+    <div class="content">
+      <p>نفس API تماماً، لكن البيانات تُمسح عند إغلاق التبويب:</p>
+      <table class="cool-table">
+        <thead><tr><th></th><th>localStorage</th><th>sessionStorage</th></tr></thead>
+        <tbody>
+          <tr><td>المدة</td><td>تبقى حتى تُحذف يدوياً</td><td>تُمسح عند إغلاق التبويب</td></tr>
+          <tr><td>المشاركة</td><td>بين كل تبويبات نفس الموقع</td><td>لهذا التبويب فقط</td></tr>
+          <tr><td>الحجم</td><td>~5MB</td><td>~5MB</td></tr>
+          <tr><td>متى تستخدم؟</td><td>إعدادات، تسجيل دخول، سلة تسوق</td><td>بيانات النموذج المؤقتة</td></tr>
+        </tbody>
+      </table>
+      <div class="code-box blue">
+<div class="code-header"><span>نفس الـ API</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="attr">sessionStorage</span>.<span class="tag-name">setItem</span>(<span class="attr-val">'key'</span>, <span class="attr-val">'value'</span>);
+<span class="attr">sessionStorage</span>.<span class="tag-name">getItem</span>(<span class="attr-val">'key'</span>);
+<span class="attr">sessionStorage</span>.<span class="tag-name">removeItem</span>(<span class="attr-val">'key'</span>);</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- S5 -->
+  <div class="section" id="s5">
+    <h2 class="section-title"><span class="num">.5</span> نمط مساعد لـ localStorage <span class="en">Storage Helper Pattern</span></h2>
+    <div class="content">
+      <p>بدل تكرار JSON.stringify/parse في كل مكان، ابنِ مساعداً صغيراً:</p>
+      <div class="code-box">
+<div class="code-header"><span>🛠️ Storage Helper</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-name">const</span> <span class="attr">storage</span> = {
+  <span class="attr">get</span>(<span class="attr">key</span>, <span class="attr">fallback</span> = <span class="attr-val">null</span>) {
+    <span class="tag-name">try</span> {
+      <span class="tag-name">const</span> <span class="attr">val</span> = <span class="attr">localStorage</span>.<span class="tag-name">getItem</span>(<span class="attr">key</span>);
+      <span class="tag-name">return</span> <span class="attr">val</span> ? <span class="tag-name">JSON</span>.<span class="tag-name">parse</span>(<span class="attr">val</span>) : <span class="attr">fallback</span>;
+    } <span class="tag-name">catch</span> { <span class="tag-name">return</span> <span class="attr">fallback</span>; }
+  },
+  <span class="attr">set</span>(<span class="attr">key</span>, <span class="attr">value</span>) {
+    <span class="attr">localStorage</span>.<span class="tag-name">setItem</span>(<span class="attr">key</span>, <span class="tag-name">JSON</span>.<span class="tag-name">stringify</span>(<span class="attr">value</span>));
+  },
+  <span class="attr">remove</span>(<span class="attr">key</span>) {
+    <span class="attr">localStorage</span>.<span class="tag-name">removeItem</span>(<span class="attr">key</span>);
+  }
+};
+
+<span class="comment">// استخدام نظيف</span>
+<span class="attr">storage</span>.<span class="tag-name">set</span>(<span class="attr-val">'user'</span>, { <span class="attr">name</span>: <span class="attr-val">'أحمد'</span>, <span class="attr">age</span>: <span class="attr-val">25</span> });
+<span class="tag-name">const</span> <span class="attr">user</span> = <span class="attr">storage</span>.<span class="tag-name">get</span>(<span class="attr-val">'user'</span>, {});
+<span class="tag-name">const</span> <span class="attr">todos</span> = <span class="attr">storage</span>.<span class="tag-name">get</span>(<span class="attr-val">'todos'</span>, []);  <span class="comment">// [] كقيمة افتراضية</span></pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- S6 -->
+  <div class="section" id="s6">
+    <h2 class="section-title"><span class="num">.6</span> حالات استخدام شائعة <span class="en">Common Use Cases</span></h2>
+    <div class="content">
+      <div class="code-box">
+<div class="code-header"><span>🌙 الوضع الليلي</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">// حفظ الوضع الليلي</span>
+<span class="tag-name">function</span> <span class="attr">toggleDark</span>() {
+  <span class="tag-name">const</span> <span class="attr">isDark</span> = <span class="attr">document</span>.<span class="attr">body</span>.<span class="attr">classList</span>.<span class="tag-name">toggle</span>(<span class="attr-val">'dark'</span>);
+  <span class="attr">localStorage</span>.<span class="tag-name">setItem</span>(<span class="attr-val">'darkMode'</span>, <span class="attr">isDark</span>);
+}
+
+<span class="comment">// استعادة الوضع عند التحميل</span>
+<span class="tag-name">if</span> (<span class="attr">localStorage</span>.<span class="tag-name">getItem</span>(<span class="attr-val">'darkMode'</span>) === <span class="attr-val">'true'</span>) {
+  <span class="attr">document</span>.<span class="attr">body</span>.<span class="attr">classList</span>.<span class="tag-name">add</span>(<span class="attr-val">'dark'</span>);
+}</pre>
+      </div>
+
+      <div class="code-box blue">
+<div class="code-header"><span>📝 حفظ قائمة مهام</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-name">let</span> <span class="attr">todos</span> = <span class="tag-name">JSON</span>.<span class="tag-name">parse</span>(<span class="attr">localStorage</span>.<span class="tag-name">getItem</span>(<span class="attr-val">'todos'</span>) ?? <span class="attr-val">'[]'</span>);
+
+<span class="tag-name">function</span> <span class="attr">addTodo</span>(<span class="attr">text</span>) {
+  <span class="attr">todos</span>.<span class="tag-name">push</span>({ <span class="attr">text</span>, <span class="attr">done</span>: <span class="attr-val">false</span>, <span class="attr">id</span>: <span class="attr">Date</span>.<span class="tag-name">now</span>() });
+  <span class="attr">localStorage</span>.<span class="tag-name">setItem</span>(<span class="attr-val">'todos'</span>, <span class="tag-name">JSON</span>.<span class="tag-name">stringify</span>(<span class="attr">todos</span>));
+}
+
+<span class="tag-name">function</span> <span class="attr">toggleTodo</span>(<span class="attr">id</span>) {
+  <span class="attr">todos</span> = <span class="attr">todos</span>.<span class="tag-name">map</span>(<span class="attr">t</span> =>
+    <span class="attr">t</span>.<span class="attr">id</span> === <span class="attr">id</span> ? { ...<span class="attr">t</span>, <span class="attr">done</span>: !<span class="attr">t</span>.<span class="attr">done</span> } : <span class="attr">t</span>
+  );
+  <span class="attr">localStorage</span>.<span class="tag-name">setItem</span>(<span class="attr-val">'todos'</span>, <span class="tag-name">JSON</span>.<span class="tag-name">stringify</span>(<span class="attr">todos</span>));
+}</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- S7 -->
+  <div class="section" id="s7">
+    <h2 class="section-title"><span class="num">.7</span> القيود والحدود <span class="en">Limitations</span></h2>
+    <div class="content">
+      <table class="cool-table">
+        <thead><tr><th>القيد</th><th>التفاصيل</th><th>الحل</th></tr></thead>
+        <tbody>
+          <tr><td>الحجم</td><td>~5MB فقط</td><td>لا تخزّن صوراً أو ملفات كبيرة</td></tr>
+          <tr><td>النوع</td><td>نصوص فقط</td><td>استخدم JSON.stringify</td></tr>
+          <tr><td>الأمان</td><td>JavaScript يمكنه قراءته</td><td>لا تخزّن كلمات مرور أو tokens</td></tr>
+          <tr><td>المزامنة</td><td>متزامن (synchronous)</td><td>لا تستخدمه في loops ضخمة</td></tr>
+          <tr><td>المجال</td><td>لكل domain منفصل</td><td>بيانات موقعك خاصة بك</td></tr>
+        </tbody>
+      </table>
+      <div class="tip-box"><strong>بديل أقوى لبيانات ضخمة:</strong> استخدم <em>IndexedDB</em> أو قاعدة بيانات على السيرفر.</div>
+    </div>
+  </div>
+
+  <!-- S8 -->
+  <div class="section" id="s8">
+    <h2 class="section-title"><span class="num">.8</span> محرر الكود الحي <span class="en">Live Editor</span></h2>
+    <div class="content"><p>جرب localStorage — البيانات تبقى حتى بعد إعادة تشغيل الكود:</p></div>
+    <div class="try-it">
+      <div class="try-it-header">
+        <span>⚡ جرب localStorage</span>
+        <div class="try-it-controls">
+          <button class="try-btn" onclick="runCode(this)">▶️ تشغيل</button>
+          <button class="try-btn" onclick="resetCode(this)">🔄 إعادة</button>
+        </div>
+      </div>
+      <div class="try-it-body">
+        <textarea class="try-it-editor" spellcheck="false" data-default='<!DOCTYPE html>
+<html><head><meta charset="UTF-8">
+<style>
+  body { font-family: Arial; padding: 20px; direction: rtl; background: #f8fafc; }
+  .card { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 2px 10px rgba(0,0,0,.08); max-width: 400px; }
+  input { padding: 10px; border: 2px solid #e2e8f0; border-radius: 8px; width: 100%; box-sizing: border-box; font-size: 1rem; margin: 8px 0; }
+  input:focus { border-color: #1e3a8a; outline: none; }
+  .btns { display: flex; gap: 8px; margin-top: 8px; }
+  button { padding: 10px 16px; border: none; border-radius: 8px; cursor: pointer; font-family: Arial; font-size: .9rem; }
+  .save { background: #1e3a8a; color: white; }
+  .load { background: #dcfce7; color: #15803d; }
+  .clear { background: #fee2e2; color: #dc2626; }
+  .result { margin-top: 12px; padding: 12px; background: #f1f5f9; border-radius: 8px; font-size: .9rem; min-height: 40px; }
+  label { font-size: .85rem; color: #64748b; }
+</style>
+</head>
+<body>
+<div class="card">
+  <h3>💾 تجربة localStorage</h3>
+  <label>اسمك:</label>
+  <input id="nameIn" placeholder="أدخل اسمك...">
+  <label>مدينتك:</label>
+  <input id="cityIn" placeholder="أدخل مدينتك...">
+  <div class="btns">
+    <button class="save" onclick="saveData()">💾 حفظ</button>
+    <button class="load" onclick="loadData()">📂 تحميل</button>
+    <button class="clear" onclick="clearData()">🗑️ مسح</button>
+  </div>
+  <div class="result" id="result">اضغط "حفظ" ثم أعِد تشغيل الكود وجرب "تحميل"...</div>
+</div>
+
+<script>
+  function saveData() {
+    const data = {
+      name: document.getElementById("nameIn").value,
+      city: document.getElementById("cityIn").value,
+      savedAt: new Date().toLocaleString("ar")
+    };
+    localStorage.setItem("userData", JSON.stringify(data));
+    document.getElementById("result").textContent = "✅ تم الحفظ: " + data.name + " من " + data.city;
+  }
+
+  function loadData() {
+    const saved = JSON.parse(localStorage.getItem("userData") ?? "null");
+    if (!saved) {
+      document.getElementById("result").textContent = "⚠️ لا توجد بيانات محفوظة";
+      return;
+    }
+    document.getElementById("nameIn").value = saved.name;
+    document.getElementById("cityIn").value = saved.city;
+    document.getElementById("result").textContent = `📂 تم التحميل — حُفظ في: ${saved.savedAt}`;
+  }
+
+  function clearData() {
+    localStorage.removeItem("userData");
+    document.getElementById("nameIn").value = "";
+    document.getElementById("cityIn").value = "";
+    document.getElementById("result").textContent = "🗑️ تم المسح";
+  }
+
+  // تحميل تلقائي عند الفتح
+  loadData();
+</script>
+</body></html>'><!DOCTYPE html>
+<html><head><meta charset="UTF-8">
+<style>
+  body { font-family: Arial; padding: 20px; direction: rtl; background: #f8fafc; }
+  .card { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 2px 10px rgba(0,0,0,.08); max-width: 400px; }
+  input { padding: 10px; border: 2px solid #e2e8f0; border-radius: 8px; width: 100%; box-sizing: border-box; font-size: 1rem; margin: 8px 0; }
+  input:focus { border-color: #1e3a8a; outline: none; }
+  .btns { display: flex; gap: 8px; margin-top: 8px; }
+  button { padding: 10px 16px; border: none; border-radius: 8px; cursor: pointer; font-family: Arial; font-size: .9rem; }
+  .save { background: #1e3a8a; color: white; }
+  .load { background: #dcfce7; color: #15803d; }
+  .clear { background: #fee2e2; color: #dc2626; }
+  .result { margin-top: 12px; padding: 12px; background: #f1f5f9; border-radius: 8px; font-size: .9rem; min-height: 40px; }
+  label { font-size: .85rem; color: #64748b; }
+</style>
+</head>
+<body>
+<div class="card">
+  <h3>💾 تجربة localStorage</h3>
+  <label>اسمك:</label>
+  <input id="nameIn" placeholder="أدخل اسمك...">
+  <label>مدينتك:</label>
+  <input id="cityIn" placeholder="أدخل مدينتك...">
+  <div class="btns">
+    <button class="save" onclick="saveData()">💾 حفظ</button>
+    <button class="load" onclick="loadData()">📂 تحميل</button>
+    <button class="clear" onclick="clearData()">🗑️ مسح</button>
+  </div>
+  <div class="result" id="result">اضغط "حفظ" ثم أعِد تشغيل الكود وجرب "تحميل"...</div>
+</div>
+<script>
+  function saveData() {
+    const data = { name: document.getElementById("nameIn").value, city: document.getElementById("cityIn").value, savedAt: new Date().toLocaleString("ar") };
+    localStorage.setItem("userData", JSON.stringify(data));
+    document.getElementById("result").textContent = "✅ تم الحفظ: " + data.name + " من " + data.city;
+  }
+  function loadData() {
+    const saved = JSON.parse(localStorage.getItem("userData") ?? "null");
+    if (!saved) { document.getElementById("result").textContent = "⚠️ لا توجد بيانات"; return; }
+    document.getElementById("nameIn").value = saved.name;
+    document.getElementById("cityIn").value = saved.city;
+    document.getElementById("result").textContent = `📂 تم التحميل — حُفظ في: ${saved.savedAt}`;
+  }
+  function clearData() {
+    localStorage.removeItem("userData");
+    document.getElementById("nameIn").value = "";
+    document.getElementById("cityIn").value = "";
+    document.getElementById("result").textContent = "🗑️ تم المسح";
+  }
+  loadData();
+</script>
+</body></html></textarea>
+        <div class="try-it-preview"><iframe srcdoc="" sandbox="allow-scripts allow-same-origin allow-modals allow-popups allow-forms" title="معاينة الكود"></iframe></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EXERCISES -->
+  <div class="section" id="exercises">
+    <h2 class="section-title"><span class="num">📝</span> التمارين العملية <span class="en">Exercises</span></h2>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 1: حفظ وقراءة</div>
+      <p>احفظ قيمة <em>'dark'</em> بالمفتاح <em>'theme'</em> ثم اقرأها وأعدها.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre><span class="attr">localStorage</span>.<span class="tag-name">setItem</span>(<span class="attr-val">'theme'</span>, <span class="attr-val">'dark'</span>);
+<span class="tag-name">const</span> <span class="attr">theme</span> = <span class="attr">localStorage</span>.<span class="tag-name">getItem</span>(<span class="attr-val">'theme'</span>);
+<span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr">theme</span>);  <span class="comment">// 'dark'</span></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 2: حفظ مصفوفة</div>
+      <p>احفظ مصفوفة <em>['HTML','CSS','JS']</em> في localStorage باسم <em>'skills'</em> ثم استعدها كمصفوفة JS.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre><span class="attr">localStorage</span>.<span class="tag-name">setItem</span>(<span class="attr-val">'skills'</span>, <span class="tag-name">JSON</span>.<span class="tag-name">stringify</span>([<span class="attr-val">'HTML'</span>,<span class="attr-val">'CSS'</span>,<span class="attr-val">'JS'</span>]));
+
+<span class="tag-name">const</span> <span class="attr">skills</span> = <span class="tag-name">JSON</span>.<span class="tag-name">parse</span>(<span class="attr">localStorage</span>.<span class="tag-name">getItem</span>(<span class="attr-val">'skills'</span>) ?? <span class="attr-val">'[]'</span>);
+<span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr">skills</span>);  <span class="comment">// ['HTML', 'CSS', 'JS']</span></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 3: عداد زيارات</div>
+      <p>اكتب كوداً يزيد عدد زيارات المستخدم بمقدار 1 في كل مرة يُشغَّل (يستخدم localStorage).</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre><span class="tag-name">const</span> <span class="attr">visits</span> = (<span class="tag-name">parseInt</span>(<span class="attr">localStorage</span>.<span class="tag-name">getItem</span>(<span class="attr-val">'visits'</span>)) || <span class="attr-val">0</span>) + <span class="attr-val">1</span>;
+<span class="attr">localStorage</span>.<span class="tag-name">setItem</span>(<span class="attr-val">'visits'</span>, <span class="attr">visits</span>);
+<span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr-val">`زيارة رقم: ${visits}`</span>);</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 4: الوضع الليلي</div>
+      <p>اكتب دالة تُبدّل بين الوضع الليلي والعادي وتحفظ الاختيار في localStorage.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre><span class="tag-name">function</span> <span class="attr">toggleTheme</span>() {
+  <span class="tag-name">const</span> <span class="attr">isDark</span> = <span class="attr">document</span>.<span class="attr">body</span>.<span class="attr">classList</span>.<span class="tag-name">toggle</span>(<span class="attr-val">'dark'</span>);
+  <span class="attr">localStorage</span>.<span class="tag-name">setItem</span>(<span class="attr-val">'theme'</span>, <span class="attr">isDark</span> ? <span class="attr-val">'dark'</span> : <span class="attr-val">'light'</span>);
+}
+
+<span class="comment">// تطبيق الثيم عند التحميل</span>
+<span class="tag-name">if</span> (<span class="attr">localStorage</span>.<span class="tag-name">getItem</span>(<span class="attr-val">'theme'</span>) === <span class="attr-val">'dark'</span>) {
+  <span class="attr">document</span>.<span class="attr">body</span>.<span class="attr">classList</span>.<span class="tag-name">add</span>(<span class="attr-val">'dark'</span>);
+}</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 5: مسح كل البيانات</div>
+      <p>اكتب دالة <em>logout()</em> تحذف مفاتيح: <em>user</em> و <em>token</em> و <em>settings</em> من localStorage.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre><span class="tag-name">function</span> <span class="attr">logout</span>() {
+  [<span class="attr-val">'user'</span>, <span class="attr-val">'token'</span>, <span class="attr-val">'settings'</span>].<span class="tag-name">forEach</span>(<span class="attr">key</span> => {
+    <span class="attr">localStorage</span>.<span class="tag-name">removeItem</span>(<span class="attr">key</span>);
+  });
+  <span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr-val">'تم تسجيل الخروج'</span>);
+}</pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="quiz-container" id="quiz">
+    <div class="quiz-intro"><p>اختبر فهمك لـ localStorage!</p></div>
+    <div class="quiz-type-tabs">
+      <button class="qt-tab active" onclick="switchQuiz(this,'tf')">✓✗ صح وخطأ</button>
+      <button class="qt-tab" onclick="switchQuiz(this,'mc')">🔘 اختيار من متعدد</button>
+    </div>
+    <div class="quiz-section active" id="quiz-tf">
+      <div class="quiz-question" data-correct="false">
+        <span class="q-num">1</span><span class="q-text">localStorage تُمسح عند إغلاق المتصفح.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">2</span><span class="q-text">localStorage تخزّن فقط نصوصاً (Strings).</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="false">
+        <span class="q-num">3</span><span class="q-text">getItem يعيد undefined لو المفتاح غير موجود.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">4</span><span class="q-text">JSON.stringify تحول الكائن لنص قبل حفظه.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="false">
+        <span class="q-num">5</span><span class="q-text">sessionStorage و localStorage يشتركان في نفس البيانات.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <button class="quiz-submit" onclick="submitQuiz('tf')">عرض النتيجة 🎯</button>
+      <div class="quiz-result" id="result-tf"><div class="result-score" id="score-tf">0/5</div><div class="result-label">إجابات صحيحة</div><div class="result-message" id="msg-tf"></div><button class="retry-btn" onclick="retryQuiz('tf')">🔄 حاول تاني</button></div>
+    </div>
+    <div class="quiz-section" id="quiz-mc">
+      <div class="quiz-question" data-correct="1">
+        <span class="q-num">1</span><span class="q-text">كيف تحفظ كائن في localStorage؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">localStorage.setItem('k', obj)</button>
+          <button class="q-opt" onclick="answerMC(this,1)">localStorage.setItem('k', JSON.stringify(obj))</button>
+          <button class="q-opt" onclick="answerMC(this,2)">localStorage.save('k', obj)</button>
+          <button class="q-opt" onclick="answerMC(this,3)">localStorage.store(obj)</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="2">
+        <span class="q-num">2</span><span class="q-text">ما الفرق الرئيسي بين localStorage و sessionStorage؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">sessionStorage أكبر حجماً</button>
+          <button class="q-opt" onclick="answerMC(this,1)">localStorage للنصوص فقط</button>
+          <button class="q-opt" onclick="answerMC(this,2)">sessionStorage تُمسح عند إغلاق التبويب</button>
+          <button class="q-opt" onclick="answerMC(this,3)">لا فرق بينهما</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="3">
+        <span class="q-num">3</span><span class="q-text">ما ترجعه getItem لو المفتاح غير موجود؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">undefined</button>
+          <button class="q-opt" onclick="answerMC(this,1)">false</button>
+          <button class="q-opt" onclick="answerMC(this,2)">''</button>
+          <button class="q-opt" onclick="answerMC(this,3)">null</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="0">
+        <span class="q-num">4</span><span class="q-text">كيف تمسح كل بيانات localStorage؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">localStorage.clear()</button>
+          <button class="q-opt" onclick="answerMC(this,1)">localStorage.delete()</button>
+          <button class="q-opt" onclick="answerMC(this,2)">localStorage.removeAll()</button>
+          <button class="q-opt" onclick="answerMC(this,3)">localStorage.flush()</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="1">
+        <span class="q-num">5</span><span class="q-text">ما الحجم الأقصى التقريبي لـ localStorage؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">500KB</button>
+          <button class="q-opt" onclick="answerMC(this,1)">5MB</button>
+          <button class="q-opt" onclick="answerMC(this,2)">50MB</button>
+          <button class="q-opt" onclick="answerMC(this,3)">500MB</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <button class="quiz-submit" onclick="submitQuiz('mc')">عرض النتيجة 🎯</button>
+      <div class="quiz-result" id="result-mc"><div class="result-score" id="score-mc">0/5</div><div class="result-label">إجابات صحيحة</div><div class="result-message" id="msg-mc"></div><button class="retry-btn" onclick="retryQuiz('mc')">🔄 حاول تاني</button></div>
+    </div>
+  </div>
+
+  <div class="lesson-nav">
+    <a href="./lesson-23.html" class="nav-btn"><span>⬅️</span><span>الدرس السابق</span></a>
+    <button class="nav-btn complete-btn" id="completeBtn" onclick="markComplete(this)"><span>✅</span><span>علّم كمكتمل</span></button>
+    <a href="./lesson-25.html" class="nav-btn"><span>الدرس التالي</span><span>➡️</span></a>
+  </div>
+
+  <div class="notebook-footer">
+    <h3>🎉 أتقنت localStorage!</h3>
+    <p>بياناتك الآن تُحفظ على جهاز المستخدم ❤️<br><strong>الدرس التالي: تنظيم الكود (Modules) 📦</strong></p>
+  </div>
+</div>
+
+<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">⬆️</button>
+<div class="toast" id="toast"></div>
+<script src="../../js/data/courses.js"></script>
+<script src="../../js/progress.js"></script>
+<script src="../../js/lesson-editor.js"></script>
+<script>
+const COURSE_ID='frontend',LESSON_ID=24,TOTAL=32;
+function toggleSolution(b){const s=b.nextElementSibling;s.classList.toggle('show');b.textContent=s.classList.contains('show')?'إخفاء الحل ▲':'عرض الحل ▼';}
+function copyCode(b){const p=b.closest('.code-box').querySelector('pre');navigator.clipboard.writeText(p.innerText).then(()=>{b.classList.add('copied');b.textContent='✓ تم النسخ';setTimeout(()=>{b.classList.remove('copied');b.textContent='📋 نسخ';},2000);});}
+function runCode(b){const t=b.closest('.try-it');t.querySelector('iframe').srcdoc=t.querySelector('.try-it-editor').value;}
+function resetCode(b){const t=b.closest('.try-it'),e=t.querySelector('.try-it-editor');e.value=e.dataset.default;t.querySelector('iframe').srcdoc=e.value;}
+window.addEventListener('load',()=>{document.querySelectorAll('.try-it').forEach(t=>{const e=t.querySelector('.try-it-editor');t.querySelector('iframe').srcdoc=e.value;});});
+function switchQuiz(b,t){document.querySelectorAll('.qt-tab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.quiz-section').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.getElementById('quiz-'+t).classList.add('active');}
+const answers={tf:{},mc:{}};
+function answerTF(b,v){const q=b.closest('.quiz-question'),i=Array.from(q.parentNode.querySelectorAll('.quiz-question')).indexOf(q);q.querySelectorAll('.q-opt').forEach(o=>o.classList.remove('selected'));b.classList.add('selected');answers.tf[i]=v;}
+function answerMC(b,i){const q=b.closest('.quiz-question'),qi=Array.from(q.parentNode.querySelectorAll('.quiz-question')).indexOf(q);q.querySelectorAll('.q-opt').forEach(o=>o.classList.remove('selected'));b.classList.add('selected');answers.mc[qi]=i;}
+function submitQuiz(type){const sec=document.getElementById('quiz-'+type),qs=sec.querySelectorAll('.quiz-question');let c=0;qs.forEach((q,i)=>{const ca=type==='tf'?(q.dataset.correct==='true'):parseInt(q.dataset.correct),ua=answers[type][i],fb=q.querySelector('.q-feedback'),opts=q.querySelectorAll('.q-opt');opts.forEach(o=>{o.classList.remove('selected');o.disabled=true;});if(ua===undefined){fb.className='q-feedback wrong show';fb.textContent='⚠️ ما اخترتش إجابة!';return;}if(ua===ca){c++;fb.className='q-feedback correct show';fb.textContent='✓ إجابة صحيحة!';if(type==='tf')opts[ca?0:1].classList.add('correct');else opts[ca].classList.add('correct');}else{fb.className='q-feedback wrong show';if(type==='tf'){opts[ca?0:1].classList.add('correct');opts[ua?0:1].classList.add('wrong');fb.textContent='✗ خطأ.';}else{opts[ca].classList.add('correct');opts[ua].classList.add('wrong');fb.textContent='✗ الإجابة بالأخضر.';}}});const r=document.getElementById('result-'+type);document.getElementById('score-'+type).textContent=c+'/'+qs.length;const m=document.getElementById('msg-'+type);if(c===qs.length){m.textContent='🏆 ممتاز 100%!';m.className='result-message excellent';}else if(c>=3){m.textContent='👍 جيد!';m.className='result-message good';}else{m.textContent='📚 راجع الدرس.';m.className='result-message try-again';}r.classList.add('show');r.scrollIntoView({behavior:'smooth',block:'center'});}
+function retryQuiz(type){const sec=document.getElementById('quiz-'+type);sec.querySelectorAll('.q-opt').forEach(o=>{o.classList.remove('selected','correct','wrong');o.disabled=false;});sec.querySelectorAll('.q-feedback').forEach(f=>{f.classList.remove('show','correct','wrong');f.textContent='';});document.getElementById('result-'+type).classList.remove('show');answers[type]={};}
+function markComplete(btn){const done=Progress.toggleLessonComplete(COURSE_ID,LESSON_ID);btn.classList.toggle('completed',done);btn.querySelector('span:last-child').textContent=done?'مكتمل! ⭐':'علّم كمكتمل';showToast(done?'🎉 أكملت درس localStorage!':'تم إلغاء الإكمال');}
+if(Progress.isLessonComplete(COURSE_ID,LESSON_ID)){const b=document.getElementById('completeBtn');b.classList.add('completed');b.querySelector('span:last-child').textContent='مكتمل! ⭐';}
+(function(){const p=Progress.getCourseProgress(COURSE_ID,TOTAL);document.getElementById('progFill').style.width=p+'%';document.getElementById('progText').textContent=p+'%';})();
+function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
+window.addEventListener('scroll',()=>{document.getElementById('scrollTop').classList.toggle('show',window.scrollY>300);});
+document.querySelectorAll('.toc-card a').forEach(l=>{l.addEventListener('click',e=>{e.preventDefault();const t=document.querySelector(l.getAttribute('href'));if(t)t.scrollIntoView({behavior:'smooth',block:'start'});});});
+</script>
+</body>
+</html>

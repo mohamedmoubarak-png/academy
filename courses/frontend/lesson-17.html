@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-V2NCKVL16D"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-V2NCKVL16D');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>الدوال Functions — دفتر البرمجة</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=Cairo:wght@300;400;500;600;700;900&family=Caveat:wght@400;700&family=Fira+Code:wght@400;500;600&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../css/shared.css">
+<link rel="stylesheet" href="../../css/notebook.css">
+<style>
+body { padding: 20px 10px; }
+.mini-console {
+  background: #1e293b; border-radius: 10px; padding: 14px 16px;
+  margin: 10px 0; font-family: 'Fira Code', monospace; font-size: .88rem; direction: ltr;
+}
+.mc-line { margin: 3px 0; }
+.mc-in  { color: #94a3b8; }
+.mc-in::before  { content: '> '; color: #7c3aed; }
+.mc-out { color: #4ade80; }
+.mc-out::before { content: '← '; color: #4ade80; }
+
+/* function anatomy */
+.fn-anatomy {
+  background: #f8fafc; border: 2px solid var(--ink-blue);
+  border-radius: 12px; padding: 16px 20px; margin: 14px 0;
+  font-family: 'Fira Code', monospace; font-size: .9rem;
+  direction: ltr; line-height: 2.2;
+}
+.fn-kw   { color: #7c3aed; font-weight: 700; }
+.fn-name { color: #1e3a8a; font-weight: 700; }
+.fn-param{ color: #ea580c; }
+.fn-body { color: #1e293b; }
+.fn-ret  { color: #15803d; font-weight: 700; }
+.fn-ann  {
+  font-family: 'Cairo', sans-serif; font-size: .78rem;
+  color: var(--ink-purple); margin-right: 10px; font-style: italic;
+}
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="crumbs">
+    <a href="../../index.html">🏠 الرئيسية</a>
+    <span class="sep">/</span>
+    <a href="./index.html">🌐 الفرونت إند</a>
+    <span class="sep">/</span>
+    <span class="current">⚡ الدرس 17: الدوال</span>
+  </div>
+  <div class="progress-mini">
+    <div class="progress-bar-mini"><div class="progress-fill-mini" id="progFill"></div></div>
+    <span id="progText">0%</span>
+  </div>
+</div>
+
+<div class="notebook">
+
+  <div class="notebook-header">
+    <div class="lesson-tag">⚡ الدرس السابع عشر</div>
+    <h1><span class="sparkle">✦</span> الدوال — Functions <span class="sparkle">✦</span></h1>
+    <div class="lesson-meta">
+      <span>⏱️ 45 دقيقة</span>
+      <span>📊 مبتدئ-متوسط</span>
+      <span>🎯 5 تمارين + اختبار</span>
+    </div>
+  </div>
+
+  <div class="toc-card">
+    <h2>📑 فهرس الدرس</h2>
+    <ol>
+      <li><a href="#s1">ما هي الدالة؟</a></li>
+      <li><a href="#s2">تعريف الدوال واستدعاؤها</a></li>
+      <li><a href="#s3">المعاملات والقيم الافتراضية</a></li>
+      <li><a href="#s4">return — إرجاع قيمة</a></li>
+      <li><a href="#s5">Arrow Functions</a></li>
+      <li><a href="#s6">نطاق المتغيرات (Scope)</a></li>
+      <li><a href="#s7">الدوال من الدرجة الأولى</a></li>
+      <li><a href="#s8">محرر الكود الحي</a></li>
+      <li><a href="#exercises">التمارين</a></li>
+      <li><a href="#quiz">اختبر فهمك</a></li>
+    </ol>
+  </div>
+
+  <!-- S1 -->
+  <div class="section" id="s1">
+    <h2 class="section-title"><span class="num">.1</span> ما هي الدالة؟ <span class="en">What is a Function?</span></h2>
+    <div class="content">
+      <p>الدالة هي <strong>كتلة كود معاد الاستخدام</strong> — تعرّفها مرة واحدة وتستدعيها كلما احتجتها.</p>
+      <div class="analogy">
+        <div class="analogy-title">☕ تخيل ماكينة قهوة:</div>
+        <p>
+          الماكينة مبرمجة مرة واحدة على "كيفية صنع القهوة". كل ما تضغط الزر، تنفّذ نفس التعليمات وتخرج لك قهوة.
+          الدالة هكذا — تعرّفها مرة وتستدعيها متى شئت.
+        </p>
+      </div>
+      <div class="sub-header">لماذا نستخدم الدوال؟</div>
+      <ul>
+        <li><strong>إعادة الاستخدام:</strong> لا تكرر نفس الكود — ضعه في دالة واستدعِها</li>
+        <li><strong>التنظيم:</strong> تقسيم الكود الكبير إلى وحدات صغيرة مفهومة</li>
+        <li><strong>سهولة الصيانة:</strong> تعدّل مكان واحد بدل مئة مكان</li>
+        <li><strong>القابلية للاختبار:</strong> تختبر كل دالة بشكل مستقل</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- S2 -->
+  <div class="section" id="s2">
+    <h2 class="section-title"><span class="num">.2</span> تعريف الدوال واستدعاؤها <span class="en">Declaring & Calling</span></h2>
+    <div class="content">
+      <div class="fn-anatomy">
+        <span class="fn-kw">function</span> <span class="fn-name">greet</span>(<span class="fn-param">name</span>) {<span class="fn-ann">← المعامل (parameter)</span><br>
+        &nbsp;&nbsp;<span class="fn-ret">return</span> <span class="fn-body">`مرحباً ${name}!`</span>;<span class="fn-ann">← الإرجاع</span><br>
+        }<br><br>
+        <span class="fn-name">greet</span>(<span class="fn-body">'أحمد'</span>);<span class="fn-ann">← الاستدعاء مع الوسيطة (argument)</span>
+      </div>
+
+      <div class="code-box">
+<div class="code-header"><span>📋 أمثلة</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">// دالة بدون معاملات</span>
+<span class="tag-name">function</span> <span class="attr">sayHello</span>() {
+  <span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr-val">'مرحباً بالعالم!'</span>);
+}
+<span class="attr">sayHello</span>();  <span class="comment">// مرحباً بالعالم!</span>
+
+<span class="comment">// دالة بمعاملين</span>
+<span class="tag-name">function</span> <span class="attr">add</span>(<span class="attr">a</span>, <span class="attr">b</span>) {
+  <span class="tag-name">return</span> <span class="attr">a</span> + <span class="attr">b</span>;
+}
+<span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr">add</span>(<span class="attr-val">3</span>, <span class="attr-val">5</span>));  <span class="comment">// 8</span></pre>
+      </div>
+
+      <div class="sub-header">Function Declaration vs Function Expression:</div>
+      <div class="code-box blue">
+<div class="code-header"><span>🔍 نوعان رئيسيان</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">// Declaration — يمكن استدعاؤها قبل تعريفها (Hoisting)</span>
+<span class="tag-name">function</span> <span class="attr">square</span>(<span class="attr">n</span>) { <span class="tag-name">return</span> <span class="attr">n</span> * <span class="attr">n</span>; }
+
+<span class="comment">// Expression — تُحفظ في متغير</span>
+<span class="tag-name">const</span> <span class="attr">cube</span> = <span class="tag-name">function</span>(<span class="attr">n</span>) { <span class="tag-name">return</span> <span class="attr">n</span> ** <span class="attr-val">3</span>; };</pre>
+      </div>
+      <div class="tip-box"><strong>Hoisting:</strong> Function Declarations ترتفع لأعلى الكود تلقائياً — يمكنك استدعاؤها قبل سطر تعريفها. أما Function Expressions فلا.</div>
+    </div>
+  </div>
+
+  <!-- S3 -->
+  <div class="section" id="s3">
+    <h2 class="section-title"><span class="num">.3</span> المعاملات والقيم الافتراضية <span class="en">Parameters & Defaults</span></h2>
+    <div class="content">
+      <p>تستطيع إعطاء معاملات قيماً افتراضية تُستخدم لو لم يُمرَّر شيء:</p>
+      <div class="code-box">
+<div class="code-header"><span>⚙️ Default Parameters</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-name">function</span> <span class="attr">greet</span>(<span class="attr">name</span> = <span class="attr-val">'زائر'</span>, <span class="attr">lang</span> = <span class="attr-val">'ar'</span>) {
+  <span class="tag-name">if</span> (<span class="attr">lang</span> === <span class="attr-val">'ar'</span>) <span class="tag-name">return</span> <span class="attr-val">`مرحباً ${name}!`</span>;
+  <span class="tag-name">return</span> <span class="attr-val">`Hello ${name}!`</span>;
+}
+
+<span class="attr">greet</span>(<span class="attr-val">'أحمد'</span>)        <span class="comment">// "مرحباً أحمد!"</span>
+<span class="attr">greet</span>()             <span class="comment">// "مرحباً زائر!"  ← قيمة افتراضية</span>
+<span class="attr">greet</span>(<span class="attr-val">'Sara'</span>, <span class="attr-val">'en'</span>) <span class="comment">// "Hello Sara!"</span></pre>
+      </div>
+
+      <div class="sub-header">Rest Parameters — عدد غير محدود من الوسائط:</div>
+      <div class="code-box green">
+<div class="code-header"><span>📦 ...rest</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-name">function</span> <span class="attr">sum</span>(...<span class="attr">numbers</span>) {
+  <span class="tag-name">return</span> <span class="attr">numbers</span>.<span class="tag-name">reduce</span>((<span class="attr">total</span>, <span class="attr">n</span>) => <span class="attr">total</span> + <span class="attr">n</span>, <span class="attr-val">0</span>);
+}
+
+<span class="attr">sum</span>(<span class="attr-val">1</span>, <span class="attr-val">2</span>, <span class="attr-val">3</span>)          <span class="comment">// 6</span>
+<span class="attr">sum</span>(<span class="attr-val">10</span>, <span class="attr-val">20</span>, <span class="attr-val">30</span>, <span class="attr-val">40</span>)   <span class="comment">// 100</span></pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- S4 -->
+  <div class="section" id="s4">
+    <h2 class="section-title"><span class="num">.4</span> return — إرجاع قيمة <span class="en">Return Statement</span></h2>
+    <div class="content">
+      <p><em>return</em> تُنهي تنفيذ الدالة وترجع قيمة للمستدعي:</p>
+      <div class="code-box">
+<div class="code-header"><span>↩️ return</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-name">function</span> <span class="attr">max</span>(<span class="attr">a</span>, <span class="attr">b</span>) {
+  <span class="tag-name">if</span> (<span class="attr">a</span> > <span class="attr">b</span>) <span class="tag-name">return</span> <span class="attr">a</span>;
+  <span class="tag-name">return</span> <span class="attr">b</span>;
+}
+
+<span class="tag-name">const</span> <span class="attr">result</span> = <span class="attr">max</span>(<span class="attr-val">10</span>, <span class="attr-val">25</span>);
+<span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr">result</span>);  <span class="comment">// 25</span></pre>
+      </div>
+
+      <div class="warning-box">
+        <strong>الكود بعد return لا يُنفَّذ:</strong>
+        <div class="code-box" style="margin-top:8px;">
+<pre><span class="tag-name">function</span> <span class="attr">test</span>() {
+  <span class="tag-name">return</span> <span class="attr-val">'انتهيت'</span>;
+  <span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr-val">'هذا لن يُطبع أبداً'</span>);  <span class="comment">// dead code</span>
+}</pre>
+        </div>
+      </div>
+
+      <div class="note-box"><strong>دالة بدون return:</strong> ترجع <em>undefined</em> تلقائياً.</div>
+
+      <div class="mini-console">
+        <div class="mc-line mc-in">function double(n) { return n * 2 }</div>
+        <div class="mc-line mc-in">double(7)</div>
+        <div class="mc-line mc-out">14</div>
+        <div class="mc-line mc-in">double(double(3))</div>
+        <div class="mc-line mc-out">12</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- S5 -->
+  <div class="section" id="s5">
+    <h2 class="section-title"><span class="num">.5</span> Arrow Functions <span class="en">Arrow Functions ⇒</span></h2>
+    <div class="content">
+      <p>صيغة أحدث وأقصر لكتابة الدوال — الأكثر استخداماً في JS الحديث:</p>
+      <div class="code-box">
+<div class="code-header"><span>🏹 Arrow Function</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">// الصيغة التقليدية</span>
+<span class="tag-name">function</span> <span class="attr">add</span>(<span class="attr">a</span>, <span class="attr">b</span>) {
+  <span class="tag-name">return</span> <span class="attr">a</span> + <span class="attr">b</span>;
+}
+
+<span class="comment">// Arrow Function — مكافئة تماماً</span>
+<span class="tag-name">const</span> <span class="attr">add</span> = (<span class="attr">a</span>, <span class="attr">b</span>) => {
+  <span class="tag-name">return</span> <span class="attr">a</span> + <span class="attr">b</span>;
+};
+
+<span class="comment">// اختصار: جسم واحد بدون {} و return</span>
+<span class="tag-name">const</span> <span class="attr">add</span> = (<span class="attr">a</span>, <span class="attr">b</span>) => <span class="attr">a</span> + <span class="attr">b</span>;
+
+<span class="comment">// معامل واحد: بدون أقواس</span>
+<span class="tag-name">const</span> <span class="attr">double</span> = <span class="attr">n</span> => <span class="attr">n</span> * <span class="attr-val">2</span>;
+
+<span class="comment">// بدون معاملات: أقواس فارغة</span>
+<span class="tag-name">const</span> <span class="attr">hello</span> = () => <span class="attr-val">'مرحباً!'</span>;</pre>
+      </div>
+
+      <table class="cool-table">
+        <thead><tr><th>الحالة</th><th>الصيغة</th></tr></thead>
+        <tbody>
+          <tr><td>معاملان فأكثر</td><td><code>(a, b) => a + b</code></td></tr>
+          <tr><td>معامل واحد</td><td><code>n => n * 2</code></td></tr>
+          <tr><td>بدون معاملات</td><td><code>() => 'hello'</code></td></tr>
+          <tr><td>جسم متعدد الأسطر</td><td><code>(a, b) => { ... return x; }</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- S6 -->
+  <div class="section" id="s6">
+    <h2 class="section-title"><span class="num">.6</span> نطاق المتغيرات <span class="en">Scope</span></h2>
+    <div class="content">
+      <p>النطاق (Scope) يحدد أين يمكن الوصول للمتغير:</p>
+      <div class="code-box">
+<div class="code-header"><span>🔭 Global vs Local Scope</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-name">const</span> <span class="attr">global</span> = <span class="attr-val">'أنا في كل مكان'</span>;  <span class="comment">// Global scope</span>
+
+<span class="tag-name">function</span> <span class="attr">test</span>() {
+  <span class="tag-name">const</span> <span class="attr">local</span> = <span class="attr-val">'أنا داخل الدالة فقط'</span>; <span class="comment">// Local scope</span>
+  <span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr">global</span>);  <span class="comment">// ✅ يصل للـ global</span>
+  <span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr">local</span>);   <span class="comment">// ✅ يصل للـ local</span>
+}
+
+<span class="attr">test</span>();
+<span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr">global</span>);  <span class="comment">// ✅</span>
+<span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr">local</span>);   <span class="comment">// ❌ ReferenceError!</span></pre>
+      </div>
+      <div class="tip-box"><strong>القاعدة:</strong> متغير داخل دالة غير مرئي خارجها. لكن الدالة ترى المتغيرات في النطاق الأوسع منها.</div>
+    </div>
+  </div>
+
+  <!-- S7 -->
+  <div class="section" id="s7">
+    <h2 class="section-title"><span class="num">.7</span> الدوال من الدرجة الأولى <span class="en">First-Class Functions</span></h2>
+    <div class="content">
+      <p>في JS، الدوال <strong>كائنات من الدرجة الأولى</strong> — يمكن تمريرها كوسائط أو إرجاعها من دوال أخرى:</p>
+      <div class="code-box">
+<div class="code-header"><span>🎯 تمرير دالة كوسيط</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">// تمرير دالة كمعامل (Callback)</span>
+<span class="tag-name">function</span> <span class="attr">doTwice</span>(<span class="attr">fn</span>) {
+  <span class="attr">fn</span>();
+  <span class="attr">fn</span>();
+}
+
+<span class="attr">doTwice</span>(() => <span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr-val">'مرحباً!'</span>));
+<span class="comment">// مرحباً!
+// مرحباً!</span></pre>
+      </div>
+
+      <div class="code-box blue">
+<div class="code-header"><span>🔢 أمثلة عملية على Callbacks</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-name">const</span> <span class="attr">nums</span> = [<span class="attr-val">1</span>, <span class="attr-val">2</span>, <span class="attr-val">3</span>, <span class="attr-val">4</span>, <span class="attr-val">5</span>];
+
+<span class="comment">// forEach — تنفّذ دالة على كل عنصر</span>
+<span class="attr">nums</span>.<span class="tag-name">forEach</span>(<span class="attr">n</span> => <span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr">n</span>));
+
+<span class="comment">// map — تحوّل كل عنصر</span>
+<span class="tag-name">const</span> <span class="attr">doubled</span> = <span class="attr">nums</span>.<span class="tag-name">map</span>(<span class="attr">n</span> => <span class="attr">n</span> * <span class="attr-val">2</span>);
+<span class="comment">// [2, 4, 6, 8, 10]</span>
+
+<span class="comment">// filter — تُصفّي العناصر</span>
+<span class="tag-name">const</span> <span class="attr">evens</span> = <span class="attr">nums</span>.<span class="tag-name">filter</span>(<span class="attr">n</span> => <span class="attr">n</span> % <span class="attr-val">2</span> === <span class="attr-val">0</span>);
+<span class="comment">// [2, 4]</span></pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- S8 -->
+  <div class="section" id="s8">
+    <h2 class="section-title"><span class="num">.8</span> محرر الكود الحي <span class="en">Live Editor</span></h2>
+    <div class="content"><p>جرب الدوال بنفسك:</p></div>
+    <div class="try-it">
+      <div class="try-it-header">
+        <span>⚡ جرب الدوال</span>
+        <div class="try-it-controls">
+          <button class="try-btn" onclick="runCode(this)">▶️ تشغيل</button>
+          <button class="try-btn" onclick="resetCode(this)">🔄 إعادة</button>
+        </div>
+      </div>
+      <div class="try-it-body">
+        <textarea class="try-it-editor" spellcheck="false" data-default='<!DOCTYPE html>
+<html><head><meta charset="UTF-8"></head>
+<body style="font-family:Arial;padding:20px;direction:rtl;">
+  <h2>⚙️ تجارب الدوال</h2>
+  <div id="out" style="background:#1e293b;color:#4ade80;padding:16px;border-radius:10px;font-family:monospace;white-space:pre-line;line-height:1.8;"></div>
+<script>
+  const p = s => document.getElementById("out").textContent += s + "\n";
+
+  // دالة عادية
+  function greet(name = "زائر") {
+    return `مرحباً ${name}! 👋`;
+  }
+  p(greet("أحمد"));
+  p(greet());
+
+  // Arrow Function
+  const square = n => n ** 2;
+  p(`مربع 7 = ${square(7)}`);
+
+  // دالة تحسب المتوسط
+  function average(...nums) {
+    const sum = nums.reduce((a, b) => a + b, 0);
+    return sum / nums.length;
+  }
+  p(`متوسط [10,20,30] = ${average(10, 20, 30)}`);
+
+  // map + arrow
+  const prices = [100, 200, 150];
+  const withTax = prices.map(p => p * 1.14);
+  p(`الأسعار بعد الضريبة: ${withTax}`);
+</script>
+</body></html>'><!DOCTYPE html>
+<html><head><meta charset="UTF-8"></head>
+<body style="font-family:Arial;padding:20px;direction:rtl;">
+  <h2>⚙️ تجارب الدوال</h2>
+  <div id="out" style="background:#1e293b;color:#4ade80;padding:16px;border-radius:10px;font-family:monospace;white-space:pre-line;line-height:1.8;"></div>
+<script>
+  const p = s => document.getElementById("out").textContent += s + "\n";
+
+  function greet(name = "زائر") {
+    return `مرحباً ${name}! 👋`;
+  }
+  p(greet("أحمد"));
+  p(greet());
+
+  const square = n => n ** 2;
+  p(`مربع 7 = ${square(7)}`);
+
+  function average(...nums) {
+    const sum = nums.reduce((a, b) => a + b, 0);
+    return sum / nums.length;
+  }
+  p(`متوسط [10,20,30] = ${average(10, 20, 30)}`);
+
+  const prices = [100, 200, 150];
+  const withTax = prices.map(p => p * 1.14);
+  p(`الأسعار بعد الضريبة: ${withTax}`);
+</script>
+</body></html></textarea>
+        <div class="try-it-preview"><iframe srcdoc="" sandbox="allow-scripts allow-same-origin allow-modals allow-popups allow-forms" title="معاينة الكود"></iframe></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EXERCISES -->
+  <div class="section" id="exercises">
+    <h2 class="section-title"><span class="num">📝</span> التمارين العملية <span class="en">Exercises</span></h2>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 1: دالة المساحة</div>
+      <p>اكتب دالة <em>area(width, height)</em> تحسب مساحة المستطيل وتعيدها.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre><span class="tag-name">function</span> <span class="attr">area</span>(<span class="attr">width</span>, <span class="attr">height</span>) {
+  <span class="tag-name">return</span> <span class="attr">width</span> * <span class="attr">height</span>;
+}
+<span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr">area</span>(<span class="attr-val">5</span>, <span class="attr-val">10</span>));  <span class="comment">// 50</span></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 2: Arrow Function</div>
+      <p>حوّل هذه الدالة إلى Arrow Function: <em>function double(n) { return n * 2; }</em></p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre><span class="tag-name">const</span> <span class="attr">double</span> = <span class="attr">n</span> => <span class="attr">n</span> * <span class="attr-val">2</span>;
+<span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr">double</span>(<span class="attr-val">6</span>));  <span class="comment">// 12</span></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 3: قيمة افتراضية</div>
+      <p>اكتب دالة <em>power(base, exp = 2)</em> تحسب القوة. لو لم يُمرَّر exp تستخدم 2.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre><span class="tag-name">function</span> <span class="attr">power</span>(<span class="attr">base</span>, <span class="attr">exp</span> = <span class="attr-val">2</span>) {
+  <span class="tag-name">return</span> <span class="attr">base</span> ** <span class="attr">exp</span>;
+}
+<span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr">power</span>(<span class="attr-val">3</span>));      <span class="comment">// 9  (3²)</span>
+<span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr">power</span>(<span class="attr-val">2</span>, <span class="attr-val">10</span>));  <span class="comment">// 1024</span></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 4: دالة تحديد الحد الأقصى</div>
+      <p>اكتب دالة <em>maxOf(...nums)</em> تأخذ أي عدد من الأرقام وتعيد الأكبر بينها.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre><span class="tag-name">function</span> <span class="attr">maxOf</span>(...<span class="attr">nums</span>) {
+  <span class="tag-name">return</span> <span class="tag-name">Math</span>.<span class="tag-name">max</span>(...<span class="attr">nums</span>);
+}
+<span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr">maxOf</span>(<span class="attr-val">3</span>, <span class="attr-val">7</span>, <span class="attr-val">1</span>, <span class="attr-val">9</span>, <span class="attr-val">4</span>));  <span class="comment">// 9</span></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 5: دالة تصفية</div>
+      <p>استخدم <em>filter</em> و Arrow Function لاستخراج كل الأعداد الأكبر من 10 من المصفوفة <em>[5, 12, 3, 18, 7, 25]</em>.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre><span class="tag-name">const</span> <span class="attr">nums</span> = [<span class="attr-val">5</span>, <span class="attr-val">12</span>, <span class="attr-val">3</span>, <span class="attr-val">18</span>, <span class="attr-val">7</span>, <span class="attr-val">25</span>];
+<span class="tag-name">const</span> <span class="attr">big</span>  = <span class="attr">nums</span>.<span class="tag-name">filter</span>(<span class="attr">n</span> => <span class="attr">n</span> > <span class="attr-val">10</span>);
+<span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr">big</span>);  <span class="comment">// [12, 18, 25]</span></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="quiz-container" id="quiz">
+    <div class="quiz-intro"><p>اختبر فهمك للدوال!</p></div>
+    <div class="quiz-type-tabs">
+      <button class="qt-tab active" onclick="switchQuiz(this,'tf')">✓✗ صح وخطأ</button>
+      <button class="qt-tab" onclick="switchQuiz(this,'mc')">🔘 اختيار من متعدد</button>
+    </div>
+
+    <div class="quiz-section active" id="quiz-tf">
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">1</span><span class="q-text">Arrow Function بمعامل واحد لا تحتاج أقواساً حول المعامل.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="false">
+        <span class="q-num">2</span><span class="q-text">الكود بعد return في دالة يُنفَّذ دائماً.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">3</span><span class="q-text">دالة بدون return ترجع undefined.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">4</span><span class="q-text">يمكن تمرير دالة كوسيط لدالة أخرى في JavaScript.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="false">
+        <span class="q-num">5</span><span class="q-text">متغير معرَّف داخل دالة يمكن الوصول إليه من خارجها.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <button class="quiz-submit" onclick="submitQuiz('tf')">عرض النتيجة 🎯</button>
+      <div class="quiz-result" id="result-tf"><div class="result-score" id="score-tf">0/5</div><div class="result-label">إجابات صحيحة</div><div class="result-message" id="msg-tf"></div><button class="retry-btn" onclick="retryQuiz('tf')">🔄 حاول تاني</button></div>
+    </div>
+
+    <div class="quiz-section" id="quiz-mc">
+      <div class="quiz-question" data-correct="2">
+        <span class="q-num">1</span><span class="q-text">ما Arrow Function مكافئة لـ: function double(n) { return n*2; }؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">double = n: n*2</button>
+          <button class="q-opt" onclick="answerMC(this,1)">const double = n => { n*2 }</button>
+          <button class="q-opt" onclick="answerMC(this,2)">const double = n => n*2</button>
+          <button class="q-opt" onclick="answerMC(this,3)">const double = (n) { return n*2 }</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="0">
+        <span class="q-num">2</span><span class="q-text">ما وظيفة ...rest في المعاملات؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">جمع عدد غير محدود من الوسائط في مصفوفة</button>
+          <button class="q-opt" onclick="answerMC(this,1)">نشر مصفوفة</button>
+          <button class="q-opt" onclick="answerMC(this,2)">تعيين قيمة افتراضية</button>
+          <button class="q-opt" onclick="answerMC(this,3)">إيقاف الدالة</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="3">
+        <span class="q-num">3</span><span class="q-text">ما الفرق بين parameter و argument؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">لا فرق</button>
+          <button class="q-opt" onclick="answerMC(this,1)">parameter القيمة الممرَّرة، argument المتغير في التعريف</button>
+          <button class="q-opt" onclick="answerMC(this,2)">parameter للـ Arrow فقط</button>
+          <button class="q-opt" onclick="answerMC(this,3)">parameter المتغير في التعريف، argument القيمة عند الاستدعاء</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="1">
+        <span class="q-num">4</span><span class="q-text">ما ناتج: [1,2,3].map(n => n*3)؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">[1,2,3]</button>
+          <button class="q-opt" onclick="answerMC(this,1)">[3,6,9]</button>
+          <button class="q-opt" onclick="answerMC(this,2)">9</button>
+          <button class="q-opt" onclick="answerMC(this,3)">undefined</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="2">
+        <span class="q-num">5</span><span class="q-text">ما ميزة Function Declaration على Function Expression؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">أسرع في التنفيذ</button>
+          <button class="q-opt" onclick="answerMC(this,1)">تدعم Arrow Syntax</button>
+          <button class="q-opt" onclick="answerMC(this,2)">يمكن استدعاؤها قبل تعريفها (Hoisting)</button>
+          <button class="q-opt" onclick="answerMC(this,3)">لا توجد فروق</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <button class="quiz-submit" onclick="submitQuiz('mc')">عرض النتيجة 🎯</button>
+      <div class="quiz-result" id="result-mc"><div class="result-score" id="score-mc">0/5</div><div class="result-label">إجابات صحيحة</div><div class="result-message" id="msg-mc"></div><button class="retry-btn" onclick="retryQuiz('mc')">🔄 حاول تاني</button></div>
+    </div>
+  </div>
+
+  <div class="lesson-nav">
+    <a href="./lesson-16.html" class="nav-btn"><span>⬅️</span><span>الدرس السابق</span></a>
+    <button class="nav-btn complete-btn" id="completeBtn" onclick="markComplete(this)"><span>✅</span><span>علّم كمكتمل</span></button>
+    <a href="./lesson-18.html" class="nav-btn"><span>الدرس التالي</span><span>➡️</span></a>
+  </div>
+
+  <div class="notebook-footer">
+    <h3>🎉 أتقنت الدوال!</h3>
+    <p>كودك أصبح منظماً وقابلاً لإعادة الاستخدام ❤️<br><strong>الدرس التالي: المصفوفات (Arrays) 📋</strong></p>
+  </div>
+</div>
+
+<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">⬆️</button>
+<div class="toast" id="toast"></div>
+<script src="../../js/data/courses.js"></script>
+<script src="../../js/progress.js"></script>
+<script src="../../js/lesson-editor.js"></script>
+<script>
+const COURSE_ID='frontend',LESSON_ID=17,TOTAL=32;
+function toggleSolution(b){const s=b.nextElementSibling;s.classList.toggle('show');b.textContent=s.classList.contains('show')?'إخفاء الحل ▲':'عرض الحل ▼';}
+function copyCode(b){const p=b.closest('.code-box').querySelector('pre');navigator.clipboard.writeText(p.innerText).then(()=>{b.classList.add('copied');b.textContent='✓ تم النسخ';setTimeout(()=>{b.classList.remove('copied');b.textContent='📋 نسخ';},2000);});}
+function runCode(b){const t=b.closest('.try-it');t.querySelector('iframe').srcdoc=t.querySelector('.try-it-editor').value;}
+function resetCode(b){const t=b.closest('.try-it'),e=t.querySelector('.try-it-editor');e.value=e.dataset.default;t.querySelector('iframe').srcdoc=e.value;}
+window.addEventListener('load',()=>{document.querySelectorAll('.try-it').forEach(t=>{const e=t.querySelector('.try-it-editor');t.querySelector('iframe').srcdoc=e.value;});});
+function switchQuiz(b,t){document.querySelectorAll('.qt-tab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.quiz-section').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.getElementById('quiz-'+t).classList.add('active');}
+const answers={tf:{},mc:{}};
+function answerTF(b,v){const q=b.closest('.quiz-question'),i=Array.from(q.parentNode.querySelectorAll('.quiz-question')).indexOf(q);q.querySelectorAll('.q-opt').forEach(o=>o.classList.remove('selected'));b.classList.add('selected');answers.tf[i]=v;}
+function answerMC(b,i){const q=b.closest('.quiz-question'),qi=Array.from(q.parentNode.querySelectorAll('.quiz-question')).indexOf(q);q.querySelectorAll('.q-opt').forEach(o=>o.classList.remove('selected'));b.classList.add('selected');answers.mc[qi]=i;}
+function submitQuiz(type){const sec=document.getElementById('quiz-'+type),qs=sec.querySelectorAll('.quiz-question');let c=0;qs.forEach((q,i)=>{const ca=type==='tf'?(q.dataset.correct==='true'):parseInt(q.dataset.correct),ua=answers[type][i],fb=q.querySelector('.q-feedback'),opts=q.querySelectorAll('.q-opt');opts.forEach(o=>{o.classList.remove('selected');o.disabled=true;});if(ua===undefined){fb.className='q-feedback wrong show';fb.textContent='⚠️ ما اخترتش إجابة!';return;}if(ua===ca){c++;fb.className='q-feedback correct show';fb.textContent='✓ إجابة صحيحة!';if(type==='tf')opts[ca?0:1].classList.add('correct');else opts[ca].classList.add('correct');}else{fb.className='q-feedback wrong show';if(type==='tf'){opts[ca?0:1].classList.add('correct');opts[ua?0:1].classList.add('wrong');fb.textContent='✗ خطأ.';}else{opts[ca].classList.add('correct');opts[ua].classList.add('wrong');fb.textContent='✗ الإجابة بالأخضر.';}}});const r=document.getElementById('result-'+type);document.getElementById('score-'+type).textContent=c+'/'+qs.length;const m=document.getElementById('msg-'+type);if(c===qs.length){m.textContent='🏆 ممتاز 100%!';m.className='result-message excellent';}else if(c>=3){m.textContent='👍 جيد!';m.className='result-message good';}else{m.textContent='📚 راجع الدرس.';m.className='result-message try-again';}r.classList.add('show');r.scrollIntoView({behavior:'smooth',block:'center'});}
+function retryQuiz(type){const sec=document.getElementById('quiz-'+type);sec.querySelectorAll('.q-opt').forEach(o=>{o.classList.remove('selected','correct','wrong');o.disabled=false;});sec.querySelectorAll('.q-feedback').forEach(f=>{f.classList.remove('show','correct','wrong');f.textContent='';});document.getElementById('result-'+type).classList.remove('show');answers[type]={};}
+function markComplete(btn){const done=Progress.toggleLessonComplete(COURSE_ID,LESSON_ID);btn.classList.toggle('completed',done);btn.querySelector('span:last-child').textContent=done?'مكتمل! ⭐':'علّم كمكتمل';showToast(done?'🎉 أكملت درس الدوال!':'تم إلغاء الإكمال');}
+if(Progress.isLessonComplete(COURSE_ID,LESSON_ID)){const b=document.getElementById('completeBtn');b.classList.add('completed');b.querySelector('span:last-child').textContent='مكتمل! ⭐';}
+(function(){const p=Progress.getCourseProgress(COURSE_ID,TOTAL);document.getElementById('progFill').style.width=p+'%';document.getElementById('progText').textContent=p+'%';})();
+function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
+window.addEventListener('scroll',()=>{document.getElementById('scrollTop').classList.toggle('show',window.scrollY>300);});
+document.querySelectorAll('.toc-card a').forEach(l=>{l.addEventListener('click',e=>{e.preventDefault();const t=document.querySelector(l.getAttribute('href'));if(t)t.scrollIntoView({behavior:'smooth',block:'start'});});});
+</script>
+</body>
+</html>

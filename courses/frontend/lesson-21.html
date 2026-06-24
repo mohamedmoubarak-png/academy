@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-V2NCKVL16D"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-V2NCKVL16D');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>الأحداث Events — دفتر البرمجة</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=Cairo:wght@300;400;500;600;700;900&family=Caveat:wght@400;700&family=Fira+Code:wght@400;500;600&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../css/shared.css">
+<link rel="stylesheet" href="../../css/notebook.css">
+<style>
+body { padding: 20px 10px; }
+.mini-console {
+  background: #1e293b; border-radius: 10px; padding: 14px 16px;
+  margin: 10px 0; font-family: 'Fira Code', monospace; font-size: .88rem; direction: ltr;
+}
+.mc-line { margin: 3px 0; }
+.mc-in { color: #94a3b8; }
+.mc-in::before { content: '> '; color: #7c3aed; }
+.mc-out { color: #4ade80; }
+.mc-out::before { content: '← '; color: #4ade80; }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="crumbs">
+    <a href="../../index.html">🏠 الرئيسية</a>
+    <span class="sep">/</span>
+    <a href="./index.html">🌐 الفرونت إند</a>
+    <span class="sep">/</span>
+    <span class="current">⚡ الدرس 21: الأحداث</span>
+  </div>
+  <div class="progress-mini">
+    <div class="progress-bar-mini"><div class="progress-fill-mini" id="progFill"></div></div>
+    <span id="progText">0%</span>
+  </div>
+</div>
+
+<div class="notebook">
+
+  <div class="notebook-header">
+    <div class="lesson-tag">⚡ الدرس الحادي والعشرون</div>
+    <h1><span class="sparkle">✦</span> الأحداث — Events <span class="sparkle">✦</span></h1>
+    <div class="lesson-meta">
+      <span>⏱️ 45 دقيقة</span>
+      <span>📊 متوسط</span>
+      <span>🎯 5 تمارين + اختبار</span>
+    </div>
+  </div>
+
+  <div class="toc-card">
+    <h2>📑 فهرس الدرس</h2>
+    <ol>
+      <li><a href="#s1">ما هو الحدث؟</a></li>
+      <li><a href="#s2">addEventListener</a></li>
+      <li><a href="#s3">أشهر الأحداث</a></li>
+      <li><a href="#s4">كائن الحدث (event object)</a></li>
+      <li><a href="#s5">preventDefault و stopPropagation</a></li>
+      <li><a href="#s6">Event Delegation</a></li>
+      <li><a href="#s7">أحداث الـ keyboard و input</a></li>
+      <li><a href="#s8">محرر الكود الحي</a></li>
+      <li><a href="#exercises">التمارين</a></li>
+      <li><a href="#quiz">اختبر فهمك</a></li>
+    </ol>
+  </div>
+
+  <!-- S1 -->
+  <div class="section" id="s1">
+    <h2 class="section-title"><span class="num">.1</span> ما هو الحدث؟ <span class="en">What is an Event?</span></h2>
+    <div class="content">
+      <p>الحدث هو أي شيء يحدث في المتصفح — ضغطة زر، تحريك ماوس، كتابة نص، تحميل صفحة... JavaScript تستمع لهذه الأحداث وتستجيب لها.</p>
+      <div class="analogy">
+        <div class="analogy-title">🔔 تخيل جرس الباب:</div>
+        <p>لما حد يضغط الجرس (الحدث)، تسمعه (addEventListener) وتفتح الباب (الـ handler function). بدون الاستماع، الجرس يرن ولا أحد يسمعه.</p>
+      </div>
+      <div class="code-box">
+<div class="code-header"><span>🔔 المفهوم الأساسي</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">// العنصر          الحدث        الدالة المُنفَّذة</span>
+element.<span class="tag-name">addEventListener</span>(<span class="attr-val">'click'</span>, () => {
+  <span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr-val">'تم الضغط!'</span>);
+});</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- S2 -->
+  <div class="section" id="s2">
+    <h2 class="section-title"><span class="num">.2</span> addEventListener <span class="en">Adding Event Listeners</span></h2>
+    <div class="content">
+      <div class="code-box">
+<div class="code-header"><span>👂 addEventListener vs onclick</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-name">const</span> <span class="attr">btn</span> = <span class="attr">document</span>.<span class="tag-name">querySelector</span>(<span class="attr-val">'#myBtn'</span>);
+
+<span class="comment">// ❌ الطريقة القديمة (تستبدل الـ handler السابق)</span>
+<span class="attr">btn</span>.<span class="attr">onclick</span> = () => <span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr-val">'مرحبا'</span>);
+
+<span class="comment">// ✅ addEventListener (يمكن إضافة عدة handlers)</span>
+<span class="attr">btn</span>.<span class="tag-name">addEventListener</span>(<span class="attr-val">'click'</span>, () => <span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr-val">'Handler 1'</span>));
+<span class="attr">btn</span>.<span class="tag-name">addEventListener</span>(<span class="attr-val">'click'</span>, () => <span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr-val">'Handler 2'</span>));
+<span class="comment">// كلاهما ينفّذ عند الضغط</span>
+
+<span class="comment">// إزالة الـ listener (يجب نفس الدالة المُسمّاة)</span>
+<span class="tag-name">function</span> <span class="attr">handleClick</span>() { <span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr-val">'click'</span>); }
+<span class="attr">btn</span>.<span class="tag-name">addEventListener</span>(<span class="attr-val">'click'</span>, <span class="attr">handleClick</span>);
+<span class="attr">btn</span>.<span class="tag-name">removeEventListener</span>(<span class="attr-val">'click'</span>, <span class="attr">handleClick</span>);</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- S3 -->
+  <div class="section" id="s3">
+    <h2 class="section-title"><span class="num">.3</span> أشهر الأحداث <span class="en">Common Events</span></h2>
+    <div class="content">
+      <table class="cool-table">
+        <thead><tr><th>الحدث</th><th>متى يُطلق؟</th><th>يُستخدم مع</th></tr></thead>
+        <tbody>
+          <tr><td><code>click</code></td><td>ضغطة ماوس</td><td>الأزرار، الروابط، أي عنصر</td></tr>
+          <tr><td><code>dblclick</code></td><td>ضغطتان متتاليتان</td><td>الأزرار، الصور</td></tr>
+          <tr><td><code>mouseover</code></td><td>الماوس يدخل العنصر</td><td>tooltips، تأثيرات hover</td></tr>
+          <tr><td><code>mouseout</code></td><td>الماوس يغادر العنصر</td><td>tooltip، تأثيرات hover</td></tr>
+          <tr><td><code>input</code></td><td>تغيير قيمة input</td><td>البحث الفوري</td></tr>
+          <tr><td><code>change</code></td><td>تأكيد التغيير (blur)</td><td>select، checkbox</td></tr>
+          <tr><td><code>submit</code></td><td>إرسال نموذج</td><td>form</td></tr>
+          <tr><td><code>keydown</code></td><td>ضغط مفتاح</td><td>اختصارات لوحة المفاتيح</td></tr>
+          <tr><td><code>keyup</code></td><td>رفع مفتاح</td><td>البحث، الإدخال</td></tr>
+          <tr><td><code>DOMContentLoaded</code></td><td>HTML تحمّل بالكامل</td><td>document</td></tr>
+          <tr><td><code>scroll</code></td><td>تمرير الصفحة</td><td>window</td></tr>
+          <tr><td><code>resize</code></td><td>تغيير حجم النافذة</td><td>window</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- S4 -->
+  <div class="section" id="s4">
+    <h2 class="section-title"><span class="num">.4</span> كائن الحدث <span class="en">The Event Object</span></h2>
+    <div class="content">
+      <p>عند استدعاء الـ handler، JS تمرر له تلقائياً كائناً يحتوي معلومات عن الحدث:</p>
+      <div class="code-box">
+<div class="code-header"><span>📦 event object</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="attr">document</span>.<span class="tag-name">addEventListener</span>(<span class="attr-val">'click'</span>, (<span class="attr">event</span>) => {
+  <span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr">event</span>.<span class="attr">type</span>);      <span class="comment">// 'click'</span>
+  <span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr">event</span>.<span class="attr">target</span>);    <span class="comment">// العنصر الذي ضُغط عليه</span>
+  <span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr">event</span>.<span class="attr">clientX</span>);  <span class="comment">// موضع الماوس X</span>
+  <span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr">event</span>.<span class="attr">clientY</span>);  <span class="comment">// موضع الماوس Y</span>
+});
+
+<span class="comment">// حدث keyboard</span>
+<span class="attr">document</span>.<span class="tag-name">addEventListener</span>(<span class="attr-val">'keydown'</span>, (<span class="attr">e</span>) => {
+  <span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr">e</span>.<span class="attr">key</span>);     <span class="comment">// 'Enter', 'a', 'ArrowUp'...</span>
+  <span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr">e</span>.<span class="attr">ctrlKey</span>); <span class="comment">// true لو Ctrl مضغوط</span>
+  <span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr">e</span>.<span class="attr">code</span>);    <span class="comment">// 'KeyA', 'Enter'...</span>
+});</pre>
+      </div>
+      <div class="mini-console">
+        <div class="mc-line mc-in">btn.addEventListener('click', e => console.log(e.target.textContent))</div>
+        <div class="mc-line mc-out">اضغطني</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- S5 -->
+  <div class="section" id="s5">
+    <h2 class="section-title"><span class="num">.5</span> preventDefault و stopPropagation <span class="en">Controlling Events</span></h2>
+    <div class="content">
+      <div class="code-box">
+<div class="code-header"><span>🚫 preventDefault</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">// منع السلوك الافتراضي</span>
+<span class="tag-name">const</span> <span class="attr">form</span> = <span class="attr">document</span>.<span class="tag-name">querySelector</span>(<span class="attr-val">'form'</span>);
+<span class="attr">form</span>.<span class="tag-name">addEventListener</span>(<span class="attr-val">'submit'</span>, (<span class="attr">e</span>) => {
+  <span class="attr">e</span>.<span class="tag-name">preventDefault</span>();  <span class="comment">// منع إعادة تحميل الصفحة</span>
+  <span class="comment">// عالج البيانات بنفسك</span>
+});
+
+<span class="comment">// منع فتح رابط</span>
+<span class="tag-name">const</span> <span class="attr">link</span> = <span class="attr">document</span>.<span class="tag-name">querySelector</span>(<span class="attr-val">'a'</span>);
+<span class="attr">link</span>.<span class="tag-name">addEventListener</span>(<span class="attr-val">'click'</span>, (<span class="attr">e</span>) => {
+  <span class="attr">e</span>.<span class="tag-name">preventDefault</span>();
+  <span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr-val">'الرابط محظور!'</span>);
+});</pre>
+      </div>
+
+      <div class="sub-header">Event Bubbling — فقاعة الأحداث:</div>
+      <div class="code-box blue">
+<div class="code-header"><span>🫧 Bubbling و stopPropagation</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">// الضغط على child ينتشر لأعلى (parent ← grandparent...)</span>
+<span class="attr">child</span>.<span class="tag-name">addEventListener</span>(<span class="attr-val">'click'</span>, (<span class="attr">e</span>) => {
+  <span class="attr">e</span>.<span class="tag-name">stopPropagation</span>();  <span class="comment">// أوقف الانتشار</span>
+  <span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr-val">'child فقط'</span>);
+});
+
+<span class="attr">parent</span>.<span class="tag-name">addEventListener</span>(<span class="attr-val">'click'</span>, () => {
+  <span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr-val">'لن يُطبع لو stopPropagation في الابن'</span>);
+});</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- S6 -->
+  <div class="section" id="s6">
+    <h2 class="section-title"><span class="num">.6</span> Event Delegation <span class="en">Event Delegation</span></h2>
+    <div class="content">
+      <p>بدل إضافة listener لكل عنصر، أضفه للأب وتحقق من target — أقوى وأكفأ بكثير:</p>
+      <div class="code-box">
+<div class="code-header"><span>🎯 Event Delegation</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">// ❌ طريقة سيئة — listener على كل زر</span>
+<span class="attr">document</span>.<span class="tag-name">querySelectorAll</span>(<span class="attr-val">'.btn'</span>).<span class="tag-name">forEach</span>(<span class="attr">btn</span> => {
+  <span class="attr">btn</span>.<span class="tag-name">addEventListener</span>(<span class="attr-val">'click'</span>, <span class="attr">handler</span>);
+});
+
+<span class="comment">// ✅ Event Delegation — listener واحد على الأب</span>
+<span class="attr">document</span>.<span class="tag-name">querySelector</span>(<span class="attr-val">'#container'</span>)
+  .<span class="tag-name">addEventListener</span>(<span class="attr-val">'click'</span>, (<span class="attr">e</span>) => {
+    <span class="comment">// تحقق من العنصر الذي ضُغط</span>
+    <span class="tag-name">if</span> (<span class="attr">e</span>.<span class="attr">target</span>.<span class="attr">classList</span>.<span class="tag-name">contains</span>(<span class="attr-val">'btn'</span>)) {
+      <span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr-val">'زر:'</span>, <span class="attr">e</span>.<span class="attr">target</span>.<span class="attr">textContent</span>);
+    }
+    <span class="tag-name">if</span> (<span class="attr">e</span>.<span class="attr">target</span>.<span class="attr">classList</span>.<span class="tag-name">contains</span>(<span class="attr-val">'del'</span>)) {
+      <span class="attr">e</span>.<span class="attr">target</span>.<span class="tag-name">closest</span>(<span class="attr-val">'.item'</span>).<span class="tag-name">remove</span>();
+    }
+  });</pre>
+      </div>
+      <div class="tip-box"><strong>Event Delegation مفيد جداً</strong> لما تضيف عناصر ديناميكياً — الـ listener يعمل على العناصر الجديدة تلقائياً.</div>
+    </div>
+  </div>
+
+  <!-- S7 -->
+  <div class="section" id="s7">
+    <h2 class="section-title"><span class="num">.7</span> أحداث Keyboard و Input <span class="en">Keyboard & Input Events</span></h2>
+    <div class="content">
+      <div class="code-box">
+<div class="code-header"><span>⌨️ أحداث الكتابة</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-name">const</span> <span class="attr">input</span> = <span class="attr">document</span>.<span class="tag-name">querySelector</span>(<span class="attr-val">'input'</span>);
+
+<span class="comment">// يُطلق مع كل حرف يُكتب</span>
+<span class="attr">input</span>.<span class="tag-name">addEventListener</span>(<span class="attr-val">'input'</span>, (<span class="attr">e</span>) => {
+  <span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr">e</span>.<span class="attr">target</span>.<span class="attr">value</span>);   <span class="comment">// القيمة الحالية</span>
+});
+
+<span class="comment">// اكتشاف مفتاح Enter</span>
+<span class="attr">input</span>.<span class="tag-name">addEventListener</span>(<span class="attr-val">'keydown'</span>, (<span class="attr">e</span>) => {
+  <span class="tag-name">if</span> (<span class="attr">e</span>.<span class="attr">key</span> === <span class="attr-val">'Enter'</span>) {
+    <span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr-val">'Enter!'</span>, <span class="attr">input</span>.<span class="attr">value</span>);
+  }
+  <span class="tag-name">if</span> (<span class="attr">e</span>.<span class="attr">key</span> === <span class="attr-val">'Escape'</span>) {
+    <span class="attr">input</span>.<span class="attr">value</span> = <span class="attr-val">''</span>;  <span class="comment">// تفريغ عند Escape</span>
+  }
+});
+
+<span class="comment">// اختصارات Ctrl+S</span>
+<span class="attr">document</span>.<span class="tag-name">addEventListener</span>(<span class="attr-val">'keydown'</span>, (<span class="attr">e</span>) => {
+  <span class="tag-name">if</span> (<span class="attr">e</span>.<span class="attr">ctrlKey</span> && <span class="attr">e</span>.<span class="attr">key</span> === <span class="attr-val">'s'</span>) {
+    <span class="attr">e</span>.<span class="tag-name">preventDefault</span>();
+    <span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr-val">'حفظ!'</span>);
+  }
+});</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- S8 -->
+  <div class="section" id="s8">
+    <h2 class="section-title"><span class="num">.8</span> محرر الكود الحي <span class="en">Live Editor</span></h2>
+    <div class="content"><p>جرب الأحداث بنفسك:</p></div>
+    <div class="try-it">
+      <div class="try-it-header">
+        <span>⚡ جرب Events</span>
+        <div class="try-it-controls">
+          <button class="try-btn" onclick="runCode(this)">▶️ تشغيل</button>
+          <button class="try-btn" onclick="resetCode(this)">🔄 إعادة</button>
+        </div>
+      </div>
+      <div class="try-it-body">
+        <textarea class="try-it-editor" spellcheck="false" data-default='<!DOCTYPE html>
+<html><head><meta charset="UTF-8">
+<style>
+  body{font-family:Arial;padding:20px;direction:rtl;background:#f8fafc;}
+  .card{background:white;border-radius:12px;padding:20px;box-shadow:0 2px 10px rgba(0,0,0,.08);max-width:400px;}
+  input{padding:10px;border:2px solid #e2e8f0;border-radius:8px;width:100%;font-size:1rem;margin:10px 0;box-sizing:border-box;}
+  input:focus{border-color:#1e3a8a;outline:none;}
+  .count{font-size:2rem;font-weight:900;color:#1e3a8a;text-align:center;margin:10px 0;}
+  .btns{display:flex;gap:8px;justify-content:center;}
+  button{padding:10px 20px;border:none;border-radius:8px;font-size:1rem;cursor:pointer;font-family:Arial;}
+  .plus{background:#dcfce7;color:#15803d;}
+  .minus{background:#fee2e2;color:#dc2626;}
+  .reset{background:#f1f5f9;color:#475569;}
+  #log{margin-top:12px;font-size:.85rem;color:#64748b;min-height:40px;}
+</style>
+</head>
+<body>
+<div class="card">
+  <h3>🎮 تجربة الأحداث</h3>
+
+  <input id="searchInput" placeholder="اكتب شيئاً..." />
+  <div id="searchResult">...</div>
+
+  <hr style="margin:16px 0;border-color:#f1f5f9;">
+
+  <div class="count" id="counter">0</div>
+  <div class="btns">
+    <button class="plus"  id="plus">+</button>
+    <button class="minus" id="minus">-</button>
+    <button class="reset" id="resetBtn">إعادة</button>
+  </div>
+  <div id="log"></div>
+</div>
+
+<script>
+  // بحث فوري
+  document.getElementById("searchInput").addEventListener("input", e => {
+    document.getElementById("searchResult").textContent =
+      e.target.value ? `بحثت عن: "${e.target.value}"` : "...";
+  });
+
+  // عداد بـ Event Delegation
+  let count = 0;
+  const counterEl = document.getElementById("counter");
+  const logEl = document.getElementById("log");
+
+  document.querySelector(".btns").addEventListener("click", e => {
+    const id = e.target.id;
+    if (id === "plus")     count++;
+    else if (id === "minus") count--;
+    else if (id === "resetBtn") count = 0;
+    else return;
+
+    counterEl.textContent = count;
+    counterEl.style.color = count > 0 ? "#15803d" : count < 0 ? "#dc2626" : "#1e3a8a";
+    logEl.textContent = `آخر حدث: ${e.target.textContent} — القيمة: ${count}`;
+  });
+</script>
+</body></html>'><!DOCTYPE html>
+<html><head><meta charset="UTF-8">
+<style>
+  body{font-family:Arial;padding:20px;direction:rtl;background:#f8fafc;}
+  .card{background:white;border-radius:12px;padding:20px;box-shadow:0 2px 10px rgba(0,0,0,.08);max-width:400px;}
+  input{padding:10px;border:2px solid #e2e8f0;border-radius:8px;width:100%;font-size:1rem;margin:10px 0;box-sizing:border-box;}
+  input:focus{border-color:#1e3a8a;outline:none;}
+  .count{font-size:2rem;font-weight:900;color:#1e3a8a;text-align:center;margin:10px 0;}
+  .btns{display:flex;gap:8px;justify-content:center;}
+  button{padding:10px 20px;border:none;border-radius:8px;font-size:1rem;cursor:pointer;font-family:Arial;}
+  .plus{background:#dcfce7;color:#15803d;}
+  .minus{background:#fee2e2;color:#dc2626;}
+  .reset{background:#f1f5f9;color:#475569;}
+  #log{margin-top:12px;font-size:.85rem;color:#64748b;min-height:40px;}
+</style>
+</head>
+<body>
+<div class="card">
+  <h3>🎮 تجربة الأحداث</h3>
+  <input id="searchInput" placeholder="اكتب شيئاً..." />
+  <div id="searchResult">...</div>
+  <hr style="margin:16px 0;border-color:#f1f5f9;">
+  <div class="count" id="counter">0</div>
+  <div class="btns">
+    <button class="plus"  id="plus">+</button>
+    <button class="minus" id="minus">-</button>
+    <button class="reset" id="resetBtn">إعادة</button>
+  </div>
+  <div id="log"></div>
+</div>
+<script>
+  document.getElementById("searchInput").addEventListener("input", e => {
+    document.getElementById("searchResult").textContent =
+      e.target.value ? `بحثت عن: "${e.target.value}"` : "...";
+  });
+  let count = 0;
+  const counterEl = document.getElementById("counter");
+  const logEl = document.getElementById("log");
+  document.querySelector(".btns").addEventListener("click", e => {
+    const id = e.target.id;
+    if (id === "plus") count++;
+    else if (id === "minus") count--;
+    else if (id === "resetBtn") count = 0;
+    else return;
+    counterEl.textContent = count;
+    counterEl.style.color = count > 0 ? "#15803d" : count < 0 ? "#dc2626" : "#1e3a8a";
+    logEl.textContent = `آخر حدث: ${e.target.textContent} — القيمة: ${count}`;
+  });
+</script>
+</body></html></textarea>
+        <div class="try-it-preview"><iframe srcdoc="" sandbox="allow-scripts allow-same-origin allow-modals allow-popups allow-forms" title="معاينة الكود"></iframe></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EXERCISES -->
+  <div class="section" id="exercises">
+    <h2 class="section-title"><span class="num">📝</span> التمارين العملية <span class="en">Exercises</span></h2>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 1: زر تغيير اللون</div>
+      <p>اكتب JS يغيّر لون خلفية الصفحة لأحمر عند الضغط على زر، ويعيدها لأبيض عند الضغط مرة أخرى.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre><span class="tag-name">const</span> <span class="attr">btn</span> = <span class="attr">document</span>.<span class="tag-name">querySelector</span>(<span class="attr-val">'button'</span>);
+<span class="attr">btn</span>.<span class="tag-name">addEventListener</span>(<span class="attr-val">'click'</span>, () => {
+  <span class="attr">document</span>.<span class="attr">body</span>.<span class="attr">style</span>.<span class="attr">background</span> =
+    <span class="attr">document</span>.<span class="attr">body</span>.<span class="attr">style</span>.<span class="attr">background</span> === <span class="attr-val">'red'</span> ? <span class="attr-val">'white'</span> : <span class="attr-val">'red'</span>;
+});</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 2: منع إرسال نموذج</div>
+      <p>اكتب JS يمنع إرسال أي نموذج ويطبع بدلاً من ذلك قيم الحقول في الـ console.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre><span class="tag-name">const</span> <span class="attr">form</span> = <span class="attr">document</span>.<span class="tag-name">querySelector</span>(<span class="attr-val">'form'</span>);
+<span class="attr">form</span>.<span class="tag-name">addEventListener</span>(<span class="attr-val">'submit'</span>, (<span class="attr">e</span>) => {
+  <span class="attr">e</span>.<span class="tag-name">preventDefault</span>();
+  <span class="tag-name">const</span> <span class="attr">inputs</span> = <span class="attr">form</span>.<span class="tag-name">querySelectorAll</span>(<span class="attr-val">'input'</span>);
+  <span class="attr">inputs</span>.<span class="tag-name">forEach</span>(<span class="attr">inp</span> => <span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr">inp</span>.<span class="attr">name</span>, inp.value));
+});</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 3: بحث فوري</div>
+      <p>اكتب JS يُصفّي قائمة من العناصر لحظة الكتابة في حقل بحث — أخفِ العناصر التي لا تطابق النص.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre><span class="tag-name">const</span> <span class="attr">search</span> = <span class="attr">document</span>.<span class="tag-name">querySelector</span>(<span class="attr-val">'#search'</span>);
+<span class="tag-name">const</span> <span class="attr">items</span>  = <span class="attr">document</span>.<span class="tag-name">querySelectorAll</span>(<span class="attr-val">'.item'</span>);
+
+<span class="attr">search</span>.<span class="tag-name">addEventListener</span>(<span class="attr-val">'input'</span>, (<span class="attr">e</span>) => {
+  <span class="tag-name">const</span> <span class="attr">q</span> = <span class="attr">e</span>.<span class="attr">target</span>.<span class="attr">value</span>.<span class="tag-name">toLowerCase</span>();
+  <span class="attr">items</span>.<span class="tag-name">forEach</span>(<span class="attr">item</span> => {
+    <span class="tag-name">const</span> <span class="attr">match</span> = <span class="attr">item</span>.<span class="attr">textContent</span>.<span class="tag-name">toLowerCase</span>().<span class="tag-name">includes</span>(<span class="attr">q</span>);
+    <span class="attr">item</span>.<span class="attr">style</span>.<span class="attr">display</span> = <span class="attr">match</span> ? <span class="attr-val">''</span> : <span class="attr-val">'none'</span>;
+  });
+});</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 4: Event Delegation</div>
+      <p>عندك قائمة <em>ul</em> بعناصر <em>li</em>. أضف listener واحد فقط على الـ ul يحذف أي li عند الضغط عليه.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre><span class="attr">document</span>.<span class="tag-name">querySelector</span>(<span class="attr-val">'ul'</span>).<span class="tag-name">addEventListener</span>(<span class="attr-val">'click'</span>, (<span class="attr">e</span>) => {
+  <span class="tag-name">if</span> (<span class="attr">e</span>.<span class="attr">target</span>.<span class="attr">tagName</span> === <span class="attr-val">'LI'</span>) {
+    <span class="attr">e</span>.<span class="attr">target</span>.<span class="tag-name">remove</span>();
+  }
+});</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 5: اختصار Ctrl+Enter</div>
+      <p>اكتب JS يستمع لحدث keydown على document ويطبع "إرسال!" فقط عند ضغط Ctrl + Enter معاً.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre><span class="attr">document</span>.<span class="tag-name">addEventListener</span>(<span class="attr-val">'keydown'</span>, (<span class="attr">e</span>) => {
+  <span class="tag-name">if</span> (<span class="attr">e</span>.<span class="attr">ctrlKey</span> && <span class="attr">e</span>.<span class="attr">key</span> === <span class="attr-val">'Enter'</span>) {
+    <span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr-val">'إرسال!'</span>);
+  }
+});</pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="quiz-container" id="quiz">
+    <div class="quiz-intro"><p>اختبر فهمك للأحداث!</p></div>
+    <div class="quiz-type-tabs">
+      <button class="qt-tab active" onclick="switchQuiz(this,'tf')">✓✗ صح وخطأ</button>
+      <button class="qt-tab" onclick="switchQuiz(this,'mc')">🔘 اختيار من متعدد</button>
+    </div>
+    <div class="quiz-section active" id="quiz-tf">
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">1</span><span class="q-text">addEventListener يسمح بإضافة أكثر من handler لنفس الحدث.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">2</span><span class="q-text">e.preventDefault() يمنع السلوك الافتراضي للمتصفح.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="false">
+        <span class="q-num">3</span><span class="q-text">Event Delegation يضيف listener على كل عنصر على حدة.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">4</span><span class="q-text">e.target يشير إلى العنصر الذي أطلق الحدث فعلياً.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="false">
+        <span class="q-num">5</span><span class="q-text">حدث input يُطلق فقط عند فقدان التركيز (blur).</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <button class="quiz-submit" onclick="submitQuiz('tf')">عرض النتيجة 🎯</button>
+      <div class="quiz-result" id="result-tf"><div class="result-score" id="score-tf">0/5</div><div class="result-label">إجابات صحيحة</div><div class="result-message" id="msg-tf"></div><button class="retry-btn" onclick="retryQuiz('tf')">🔄 حاول تاني</button></div>
+    </div>
+    <div class="quiz-section" id="quiz-mc">
+      <div class="quiz-question" data-correct="1">
+        <span class="q-num">1</span><span class="q-text">أي حدث يُطلق مع كل حرف يُكتب في input؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">change</button>
+          <button class="q-opt" onclick="answerMC(this,1)">input</button>
+          <button class="q-opt" onclick="answerMC(this,2)">keypress</button>
+          <button class="q-opt" onclick="answerMC(this,3)">blur</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="2">
+        <span class="q-num">2</span><span class="q-text">ما وظيفة e.stopPropagation()؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">يمنع السلوك الافتراضي</button>
+          <button class="q-opt" onclick="answerMC(this,1)">يحذف الـ listener</button>
+          <button class="q-opt" onclick="answerMC(this,2)">يوقف انتشار الحدث للأعلى</button>
+          <button class="q-opt" onclick="answerMC(this,3)">يعيد تشغيل الحدث</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="3">
+        <span class="q-num">3</span><span class="q-text">ما ميزة Event Delegation؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">أبطأ في التنفيذ</button>
+          <button class="q-opt" onclick="answerMC(this,1)">يعمل فقط مع العناصر الموجودة مسبقاً</button>
+          <button class="q-opt" onclick="answerMC(this,2)">يحتاج listeners أكثر</button>
+          <button class="q-opt" onclick="answerMC(this,3)">listener واحد يعمل على كل الأبناء بما فيهم الجدد</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="0">
+        <span class="q-num">4</span><span class="q-text">كيف تتحقق من ضغط مفتاح Enter في keydown؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">e.key === 'Enter'</button>
+          <button class="q-opt" onclick="answerMC(this,1)">e.keyCode === 'Enter'</button>
+          <button class="q-opt" onclick="answerMC(this,2)">e.enter === true</button>
+          <button class="q-opt" onclick="answerMC(this,3)">e.key === 13</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="2">
+        <span class="q-num">5</span><span class="q-text">أي حدث يُستخدم لمنع إرسال نموذج HTML؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">click</button>
+          <button class="q-opt" onclick="answerMC(this,1)">input</button>
+          <button class="q-opt" onclick="answerMC(this,2)">submit</button>
+          <button class="q-opt" onclick="answerMC(this,3)">change</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <button class="quiz-submit" onclick="submitQuiz('mc')">عرض النتيجة 🎯</button>
+      <div class="quiz-result" id="result-mc"><div class="result-score" id="score-mc">0/5</div><div class="result-label">إجابات صحيحة</div><div class="result-message" id="msg-mc"></div><button class="retry-btn" onclick="retryQuiz('mc')">🔄 حاول تاني</button></div>
+    </div>
+  </div>
+
+  <div class="lesson-nav">
+    <a href="./lesson-20.html" class="nav-btn"><span>⬅️</span><span>الدرس السابق</span></a>
+    <button class="nav-btn complete-btn" id="completeBtn" onclick="markComplete(this)"><span>✅</span><span>علّم كمكتمل</span></button>
+    <a href="./lesson-22.html" class="nav-btn"><span>الدرس التالي</span><span>➡️</span></a>
+  </div>
+
+  <div class="notebook-footer">
+    <h3>🎉 أتقنت الأحداث!</h3>
+    <p>صفحتك أصبحت تتفاعل مع المستخدم بشكل حقيقي ❤️<br><strong>الدرس التالي: Async/Promises/Fetch ⏳</strong></p>
+  </div>
+</div>
+
+<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">⬆️</button>
+<div class="toast" id="toast"></div>
+<script src="../../js/data/courses.js"></script>
+<script src="../../js/progress.js"></script>
+<script src="../../js/lesson-editor.js"></script>
+<script>
+const COURSE_ID='frontend',LESSON_ID=21,TOTAL=32;
+function toggleSolution(b){const s=b.nextElementSibling;s.classList.toggle('show');b.textContent=s.classList.contains('show')?'إخفاء الحل ▲':'عرض الحل ▼';}
+function copyCode(b){const p=b.closest('.code-box').querySelector('pre');navigator.clipboard.writeText(p.innerText).then(()=>{b.classList.add('copied');b.textContent='✓ تم النسخ';setTimeout(()=>{b.classList.remove('copied');b.textContent='📋 نسخ';},2000);});}
+function runCode(b){const t=b.closest('.try-it');t.querySelector('iframe').srcdoc=t.querySelector('.try-it-editor').value;}
+function resetCode(b){const t=b.closest('.try-it'),e=t.querySelector('.try-it-editor');e.value=e.dataset.default;t.querySelector('iframe').srcdoc=e.value;}
+window.addEventListener('load',()=>{document.querySelectorAll('.try-it').forEach(t=>{const e=t.querySelector('.try-it-editor');t.querySelector('iframe').srcdoc=e.value;});});
+function switchQuiz(b,t){document.querySelectorAll('.qt-tab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.quiz-section').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.getElementById('quiz-'+t).classList.add('active');}
+const answers={tf:{},mc:{}};
+function answerTF(b,v){const q=b.closest('.quiz-question'),i=Array.from(q.parentNode.querySelectorAll('.quiz-question')).indexOf(q);q.querySelectorAll('.q-opt').forEach(o=>o.classList.remove('selected'));b.classList.add('selected');answers.tf[i]=v;}
+function answerMC(b,i){const q=b.closest('.quiz-question'),qi=Array.from(q.parentNode.querySelectorAll('.quiz-question')).indexOf(q);q.querySelectorAll('.q-opt').forEach(o=>o.classList.remove('selected'));b.classList.add('selected');answers.mc[qi]=i;}
+function submitQuiz(type){const sec=document.getElementById('quiz-'+type),qs=sec.querySelectorAll('.quiz-question');let c=0;qs.forEach((q,i)=>{const ca=type==='tf'?(q.dataset.correct==='true'):parseInt(q.dataset.correct),ua=answers[type][i],fb=q.querySelector('.q-feedback'),opts=q.querySelectorAll('.q-opt');opts.forEach(o=>{o.classList.remove('selected');o.disabled=true;});if(ua===undefined){fb.className='q-feedback wrong show';fb.textContent='⚠️ ما اخترتش إجابة!';return;}if(ua===ca){c++;fb.className='q-feedback correct show';fb.textContent='✓ إجابة صحيحة!';if(type==='tf')opts[ca?0:1].classList.add('correct');else opts[ca].classList.add('correct');}else{fb.className='q-feedback wrong show';if(type==='tf'){opts[ca?0:1].classList.add('correct');opts[ua?0:1].classList.add('wrong');fb.textContent='✗ خطأ.';}else{opts[ca].classList.add('correct');opts[ua].classList.add('wrong');fb.textContent='✗ الإجابة بالأخضر.';}}});const r=document.getElementById('result-'+type);document.getElementById('score-'+type).textContent=c+'/'+qs.length;const m=document.getElementById('msg-'+type);if(c===qs.length){m.textContent='🏆 ممتاز 100%!';m.className='result-message excellent';}else if(c>=3){m.textContent='👍 جيد!';m.className='result-message good';}else{m.textContent='📚 راجع الدرس.';m.className='result-message try-again';}r.classList.add('show');r.scrollIntoView({behavior:'smooth',block:'center'});}
+function retryQuiz(type){const sec=document.getElementById('quiz-'+type);sec.querySelectorAll('.q-opt').forEach(o=>{o.classList.remove('selected','correct','wrong');o.disabled=false;});sec.querySelectorAll('.q-feedback').forEach(f=>{f.classList.remove('show','correct','wrong');f.textContent='';});document.getElementById('result-'+type).classList.remove('show');answers[type]={};}
+function markComplete(btn){const done=Progress.toggleLessonComplete(COURSE_ID,LESSON_ID);btn.classList.toggle('completed',done);btn.querySelector('span:last-child').textContent=done?'مكتمل! ⭐':'علّم كمكتمل';showToast(done?'🎉 أكملت درس الأحداث!':'تم إلغاء الإكمال');}
+if(Progress.isLessonComplete(COURSE_ID,LESSON_ID)){const b=document.getElementById('completeBtn');b.classList.add('completed');b.querySelector('span:last-child').textContent='مكتمل! ⭐';}
+(function(){const p=Progress.getCourseProgress(COURSE_ID,TOTAL);document.getElementById('progFill').style.width=p+'%';document.getElementById('progText').textContent=p+'%';})();
+function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
+window.addEventListener('scroll',()=>{document.getElementById('scrollTop').classList.toggle('show',window.scrollY>300);});
+document.querySelectorAll('.toc-card a').forEach(l=>{l.addEventListener('click',e=>{e.preventDefault();const t=document.querySelector(l.getAttribute('href'));if(t)t.scrollIntoView({behavior:'smooth',block:'start'});});});
+</script>
+</body>
+</html>

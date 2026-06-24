@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-V2NCKVL16D"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-V2NCKVL16D');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Routing — المسارات والمعاملات — دفتر البرمجة</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=Cairo:wght@300;400;500;600;700;900&family=Caveat:wght@400;700&family=Fira+Code:wght@400;500;600&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../css/shared.css">
+<link rel="stylesheet" href="../../css/notebook.css">
+<style>
+body { padding: 20px 10px; }
+
+/* terminal */
+.lp-terminal { background: #0f172a; padding: 20px; display: flex; align-items: flex-start; justify-content: center; }
+.terminal-window { width: 100%; max-width: 320px; border: 2px solid #334155; border-radius: 10px; overflow: hidden; box-shadow: 0 12px 32px rgba(0,0,0,.6); }
+.terminal-bar { background: #334155; padding: 8px 12px; display: flex; align-items: center; gap: 6px; }
+.t-dot { width: 10px; height: 10px; border-radius: 50%; }
+.t-dot.red { background: #f87171; } .t-dot.yellow { background: #fbbf24; } .t-dot.green { background: #4ade80; }
+.t-title { font-family: 'Fira Code', monospace; font-size: .68rem; color: #94a3b8; margin-right: auto; }
+.terminal-screen { padding: 14px; font-family: 'Fira Code', monospace; font-size: .76rem; line-height: 1.9; color: #e2e8f0; background: #0f172a; min-height: 200px; direction: ltr; text-align: left; }
+.t-prompt { color: #4ade80; } .t-cmd { color: #e2e8f0; } .t-out { color: #94a3b8; }
+.t-ok { color: #4ade80; font-weight: 600; } .t-info { color: #60a5fa; } .t-url { color: #fbbf24; }
+.t-err { color: #f87171; }
+.t-cursor { display: inline-block; width: 8px; height: 14px; background: #4ade80; animation: blink 1s step-end infinite; vertical-align: middle; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+/* URL anatomy */
+.url-anatomy { background: #0f172a; border-radius: 12px; padding: 20px; margin: 14px 0; direction: ltr; text-align: left; }
+.url-string { font-family: 'Fira Code', monospace; font-size: .9rem; display: flex; flex-wrap: wrap; gap: 0; line-height: 2.5; }
+.url-part { padding: 2px 4px; border-radius: 4px; }
+.up-domain  { color: #4ade80;  border-bottom: 2px solid #4ade80; }
+.up-path    { color: #60a5fa;  border-bottom: 2px solid #60a5fa; }
+.up-param   { color: #f472b6;  border-bottom: 2px dashed #f472b6; }
+.up-sep     { color: #64748b; }
+.up-query   { color: #fbbf24;  border-bottom: 2px dotted #fbbf24; }
+.url-legend { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; }
+.url-leg-item { display: flex; align-items: center; gap: 6px; font-family: 'Fira Code', monospace; font-size: .74rem; }
+.url-leg-dot { width: 12px; height: 4px; border-radius: 2px; }
+
+/* route match visual */
+.route-match { display: flex; flex-direction: column; gap: 8px; margin: 14px 0; }
+.route-match-row { display: flex; align-items: center; gap: 10px; padding: 10px 14px; background: white; border: 1.5px solid var(--border); border-radius: 10px; flex-wrap: wrap; }
+.rm-pattern { font-family: 'Fira Code', monospace; font-size: .82rem; color: #7c3aed; font-weight: 700; flex: 1; min-width: 160px; }
+.rm-example { font-family: 'Fira Code', monospace; font-size: .78rem; color: #64748b; }
+.rm-result  { font-family: 'Fira Code', monospace; font-size: .76rem; background: #f8fafc; padding: 4px 8px; border-radius: 6px; color: #0369a1; direction: ltr; }
+
+/* query builder visual */
+.query-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 14px 0; }
+@media (max-width: 600px) { .query-grid { grid-template-columns: 1fr; } }
+.query-card { background: white; border-radius: 10px; padding: 12px 14px; border: 1.5px solid var(--border); }
+.qc-url  { font-family: 'Fira Code', monospace; font-size: .74rem; color: #0369a1; direction: ltr; background: #f0f9ff; padding: 4px 8px; border-radius: 6px; margin-bottom: 8px; word-break: break-all; }
+.qc-code { font-family: 'Fira Code', monospace; font-size: .76rem; color: #1e293b; direction: ltr; }
+
+/* comparison table */
+.comp-table { width: 100%; border-collapse: collapse; font-size: .83rem; margin: 14px 0; }
+.comp-table th { background: #1e293b; color: white; padding: 10px 14px; text-align: right; }
+.comp-table td { padding: 9px 14px; border-bottom: 1px solid var(--border); }
+.comp-table tr:last-child td { border: none; }
+.comp-table tr:nth-child(even) td { background: #f8fafc; }
+.comp-table .good { color: #16a34a; font-weight: 700; }
+.table-scroll { overflow-x: auto; }
+
+@media (max-width: 700px) {
+  .lp-body { flex-direction: column; }
+  .terminal-window { max-width: 100%; }
+}
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="crumbs">
+    <a href="../../index.html">🏠 الرئيسية</a>
+    <span class="sep">/</span>
+    <a href="./index.html">⚙️ الباك إند</a>
+    <span class="sep">/</span>
+    <span class="current">🗺️ الدرس 7: Routing</span>
+  </div>
+  <div class="progress-mini">
+    <div class="progress-bar-mini"><div class="progress-fill-mini" id="progFill"></div></div>
+    <span id="progText">0%</span>
+  </div>
+</div>
+
+<div class="notebook">
+
+  <div class="notebook-header">
+    <div class="lesson-tag" style="border-color:#7c3aed; color:#7c3aed;">🗺️ الدرس السابع</div>
+    <h1><span class="sparkle">✦</span> Routing — المسارات والمعاملات <span class="sparkle">✦</span></h1>
+    <div class="lesson-meta">
+      <span>⏱️ 45 دقيقة</span>
+      <span>📊 متوسط</span>
+      <span>🎯 التحكم الكامل بالمسارات</span>
+    </div>
+  </div>
+
+  <div class="toc-card">
+    <h2>📑 فهرس الدرس</h2>
+    <ol>
+      <li><a href="#s1">Route Parameters — الـ :param</a></li>
+      <li><a href="#s2">معاملات متعددة في المسار</a></li>
+      <li><a href="#s3">Query String — استعلام الـ URL</a></li>
+      <li><a href="#s4">التحقق من الـ Params والـ Query</a></li>
+      <li><a href="#s5">router.route() — تجميع المسارات</a></li>
+      <li><a href="#s6">Router منفصل لكل Resource</a></li>
+      <li><a href="#s7">أنماط متقدمة — Wildcard وOptional</a></li>
+      <li><a href="#s8">Routing كامل في العمل</a></li>
+      <li><a href="#exercises">التمارين</a></li>
+      <li><a href="#quiz">اختبر فهمك</a></li>
+    </ol>
+  </div>
+
+  <!-- S1 -->
+  <div class="section" id="s1">
+    <h2 class="section-title"><span class="num">.1</span> Route Parameters — الـ :param <span class="en">Route Params</span></h2>
+    <div class="content">
+      <p>الـ Route Parameter هو جزء متغيّر من المسار — تُعرّفه بعلامة <code>:</code> وتجده في <code>req.params</code>:</p>
+
+      <div class="url-anatomy">
+        <div class="url-string">
+          <span class="url-part up-domain">http://localhost:3000</span>
+          <span class="url-part up-path">/api/users/</span>
+          <span class="url-part up-param">42</span>
+          <span class="url-part up-path">/posts/</span>
+          <span class="url-part up-param">7</span>
+          <span class="url-part up-sep">?</span>
+          <span class="url-part up-query">page=2&sort=date</span>
+        </div>
+        <div class="url-legend">
+          <div class="url-leg-item"><div class="url-leg-dot" style="background:#4ade80"></div><span style="color:#4ade80">Domain</span></div>
+          <div class="url-leg-item"><div class="url-leg-dot" style="background:#60a5fa"></div><span style="color:#60a5fa">Path ثابت</span></div>
+          <div class="url-leg-item"><div class="url-leg-dot" style="background:#f472b6;height:3px;border-style:dashed"></div><span style="color:#f472b6">:param متغيّر</span></div>
+          <div class="url-leg-item"><div class="url-leg-dot" style="background:#fbbf24;height:3px;border-style:dotted"></div><span style="color:#fbbf24">Query String</span></div>
+        </div>
+      </div>
+
+      <div class="code-box">
+<div class="code-header"><span>🔖 Route Parameters الأساسية</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">// :id في تعريف المسار ← param ديناميكي</span>
+app.get('/api/users/:id', (req, res) => {
+  console.log(req.params);    <span class="comment">// { id: '42' }</span>
+  console.log(req.params.id); <span class="comment">// '42'  ← دائماً string!</span>
+
+  const id = Number(req.params.id); <span class="comment">// حوّله لرقم</span>
+  res.json({ userId: id });
+});
+
+<span class="comment">// اختبار:</span>
+<span class="comment">// GET /api/users/42   → { userId: 42 }</span>
+<span class="comment">// GET /api/users/abc  → { userId: NaN } ← تحتاج تحقق!</span></pre>
+      </div>
+
+      <div class="route-match">
+        <div class="route-match-row">
+          <span class="rm-pattern">/api/users/:id</span>
+          <span class="rm-example">← pattern</span>
+          <span class="rm-result">req.params = { id: '42' }</span>
+        </div>
+        <div class="route-match-row">
+          <span class="rm-pattern">/api/posts/:slug</span>
+          <span class="rm-example">← pattern</span>
+          <span class="rm-result">req.params = { slug: 'my-post' }</span>
+        </div>
+        <div class="route-match-row">
+          <span class="rm-pattern">/files/:filename.:ext</span>
+          <span class="rm-example">← مع امتداد</span>
+          <span class="rm-result">req.params = { filename: 'logo', ext: 'png' }</span>
+        </div>
+      </div>
+
+      <div class="warn-box" style="background:#fef2f2;border:1.5px solid #fca5a5;border-radius:10px;padding:12px 16px;margin:14px 0;">
+        <strong>⚠️ تنبيه:</strong> قيم <code>req.params</code> دائماً <strong>strings</strong> — حتى لو أرسلت رقماً. تحويلها إلزامي قبل المقارنة الرقمية.
+      </div>
+    </div>
+  </div>
+
+  <!-- S2 -->
+  <div class="section" id="s2">
+    <h2 class="section-title"><span class="num">.2</span> معاملات متعددة في المسار <span class="en">Multiple Params</span></h2>
+    <div class="content">
+      <p>يمكنك وضع أكثر من param في نفس المسار — كل منها يُخزَّن بمفتاحه في <code>req.params</code>:</p>
+
+      <div class="code-box">
+<div class="code-header"><span>🗂️ مسارات متداخلة (Nested Resources)</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">// مستخدم → منشوراته</span>
+app.get('/api/users/:userId/posts', (req, res) => {
+  const { userId } = req.params;
+  res.json({ userId, posts: [] });
+  <span class="comment">// GET /api/users/5/posts → userId = '5'</span>
+});
+
+<span class="comment">// مستخدم → منشور محدد</span>
+app.get('/api/users/:userId/posts/:postId', (req, res) => {
+  const { userId, postId } = req.params;
+  res.json({ userId, postId });
+  <span class="comment">// GET /api/users/5/posts/12 → { userId:'5', postId:'12' }</span>
+});
+
+<span class="comment">// مسار عام لـ resource أي يقبل أي نوع</span>
+app.get('/api/:resource/:id', (req, res) => {
+  const { resource, id } = req.params;
+  res.json({ resource, id });
+  <span class="comment">// GET /api/users/3  → { resource:'users', id:'3' }</span>
+  <span class="comment">// GET /api/posts/10 → { resource:'posts', id:'10' }</span>
+});</pre>
+      </div>
+
+      <div class="info-box"><strong>المسارات الثابتة أولاً!</strong> إذا كان لديك <code>/api/users/me</code> و<code>/api/users/:id</code>، عرّف الثابت <strong>أولاً</strong> — وإلا سيلتقط <code>:id</code> قيمة <code>"me"</code> ويعاملها كـ ID.</div>
+
+      <div class="code-box blue">
+<div class="code-header"><span>⚠️ الترتيب مهم — ثابت قبل ديناميكي</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">// ✅ الصحيح — الثابت أولاً</span>
+app.get('/api/users/me',  getMeProfile);    <span class="comment">// يتطابق مع /me</span>
+app.get('/api/users/:id', getUserById);     <span class="comment">// يتطابق مع أي شيء آخر</span>
+
+<span class="comment">// ❌ الخطأ — :id يلتقط "me"</span>
+app.get('/api/users/:id', getUserById);     <span class="comment">// ← يمسك كل شيء!</span>
+app.get('/api/users/me',  getMeProfile);    <span class="comment">// لن يُنفَّذ أبداً</span></pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- S3 -->
+  <div class="section" id="s3">
+    <h2 class="section-title"><span class="num">.3</span> Query String — استعلام الـ URL <span class="en">Query String</span></h2>
+    <div class="content">
+      <p>الـ Query String هو كل ما يأتي بعد <code>?</code> في الـ URL — يُستخدم للفلترة والترقيم والبحث. تجده في <code>req.query</code>:</p>
+
+      <div class="query-grid">
+        <div class="query-card">
+          <div class="qc-url">/api/products?page=2&limit=10</div>
+          <div class="qc-code">req.query.page  = "2"<br>req.query.limit = "10"</div>
+        </div>
+        <div class="query-card">
+          <div class="qc-url">/api/search?q=Express&sort=date</div>
+          <div class="qc-code">req.query.q    = "Express"<br>req.query.sort = "date"</div>
+        </div>
+        <div class="query-card">
+          <div class="qc-url">/api/users?role=admin&active=true</div>
+          <div class="qc-code">req.query.role   = "admin"<br>req.query.active = "true"</div>
+        </div>
+        <div class="query-card">
+          <div class="qc-url">/api/products?tags=js&tags=node</div>
+          <div class="qc-code">req.query.tags = ["js", "node"]<br><span style="color:#94a3b8">← يصبح array!</span></div>
+        </div>
+      </div>
+
+      <div class="code-box">
+<div class="code-header"><span>🔍 Query String مع قيم افتراضية</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre>app.get('/api/products', (req, res) => {
+  <span class="comment">// استخراج القيم مع defaults</span>
+  const {
+    page     = '1',
+    limit    = '10',
+    sort     = 'id',
+    order    = 'asc',
+    search   = '',
+    category,          <span class="comment">// اختياري — قد يكون undefined</span>
+  } = req.query;
+
+  <span class="comment">// تحويل النصوص لأرقام</span>
+  const pageNum  = Math.max(1, Number(page));
+  const limitNum = Math.min(100, Math.max(1, Number(limit)));
+
+  res.json({
+    page:     pageNum,
+    limit:    limitNum,
+    sort,
+    order,
+    search,
+    category: category || null,
+    total:    0,
+    data:     [],
+  });
+});
+
+<span class="comment">// اختبار:</span>
+<span class="comment">// GET /api/products?page=2&limit=5&sort=price&order=desc</span>
+<span class="comment">// → { page: 2, limit: 5, sort: 'price', order: 'desc', ... }</span></pre>
+      </div>
+
+      <div class="tip-box"><strong>القيم دائماً strings:</strong> حتى <code>?page=2</code> يُعطي <code>"2"</code> وليس <code>2</code>. استخدم <code>Number()</code> أو <code>parseInt()</code> للتحويل. كذلك <code>?active=true</code> يُعطي string <code>"true"</code> وليس boolean!</div>
+    </div>
+  </div>
+
+  <!-- S4 -->
+  <div class="section" id="s4">
+    <h2 class="section-title"><span class="num">.4</span> التحقق من الـ Params والـ Query <span class="en">Validation</span></h2>
+    <div class="content">
+      <p>دائماً تحقق من بيانات الـ URL قبل استخدامها — المستخدم قد يُرسل قيماً خاطئة:</p>
+
+      <div class="code-box">
+<div class="code-header"><span>✅ التحقق الكامل من الـ :id</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre>app.get('/api/users/:id', (req, res) => {
+  const id = Number(req.params.id);
+
+  <span class="comment">// التحقق: رقم صحيح موجب</span>
+  if (!Number.isInteger(id) || id <= 0) {
+    return res.status(400).json({
+      error: 'الـ ID يجب أن يكون رقماً صحيحاً موجباً',
+    });
+  }
+
+  <span class="comment">// البحث في البيانات</span>
+  const user = users.find(u => u.id === id);
+  if (!user) {
+    return res.status(404).json({
+      error: `المستخدم رقم ${id} غير موجود`,
+    });
+  }
+
+  res.json({ data: user });
+});</pre>
+      </div>
+
+      <div class="code-box blue">
+<div class="code-header"><span>⚙️ Middleware للتحقق من الـ Pagination</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">// middleware يُعدّ بيانات الترقيم ويتحقق منها</span>
+function validatePagination(req, res, next) {
+  const page  = Number(req.query.page  || 1);
+  const limit = Number(req.query.limit || 10);
+
+  if (isNaN(page) || page < 1) {
+    return res.status(400).json({ error: 'page يجب أن يكون >= 1' });
+  }
+  if (isNaN(limit) || limit < 1 || limit > 100) {
+    return res.status(400).json({ error: 'limit بين 1 و 100' });
+  }
+
+  <span class="comment">// أضف القيم المُعالجة للـ req</span>
+  req.pagination = {
+    page,
+    limit,
+    skip: (page - 1) * limit,  <span class="comment">// لقاعدة البيانات</span>
+  };
+
+  next();  <span class="comment">// تابع للـ route handler</span>
+}
+
+<span class="comment">// استخدام الـ middleware على route محدد</span>
+app.get('/api/products', validatePagination, (req, res) => {
+  const { page, limit, skip } = req.pagination;
+  res.json({ page, limit, skip, data: [] });
+});</pre>
+      </div>
+
+      <div class="note-box"><strong>أين تضع التحقق؟</strong> إذا كان التحقق لـ route واحد، ضعه داخله. إذا تكرر في أكثر من route، حوّله لـ middleware كما في المثال — وهذا ما سنتعمق فيه في درس الـ Middleware.</div>
+    </div>
+  </div>
+
+  <!-- S5 -->
+  <div class="section" id="s5">
+    <h2 class="section-title"><span class="num">.5</span> router.route() — تجميع المسارات <span class="en">Route Chaining</span></h2>
+    <div class="content">
+      <p><code>router.route()</code> يُمكّنك من تعريف جميع الـ HTTP methods لنفس المسار في سلسلة واحدة — يُقلّل التكرار ويُحسّن القراءة:</p>
+
+      <div class="code-box">
+<div class="code-header"><span>🔗 قبل router.route() — متكرر</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">// ❌ نكرر '/api/users' في كل سطر</span>
+app.get('/api/users',     (req, res) => res.json({ action: 'getAll' }));
+app.post('/api/users',    (req, res) => res.json({ action: 'create' }));
+
+app.get('/api/users/:id',    (req, res) => res.json({ action: 'getOne' }));
+app.put('/api/users/:id',    (req, res) => res.json({ action: 'replace' }));
+app.patch('/api/users/:id',  (req, res) => res.json({ action: 'update' }));
+app.delete('/api/users/:id', (req, res) => res.json({ action: 'delete' }));</pre>
+      </div>
+
+      <div class="code-box">
+<div class="code-header"><span>✅ مع router.route() — أنيق</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre>const router = require('express').Router();
+
+<span class="comment">// المسار الجذر /api/users</span>
+router.route('/')
+  .get((req, res)  => res.json({ action: 'getAll' }))
+  .post((req, res) => res.json({ action: 'create' }));
+
+<span class="comment">// المسار مع ID /api/users/:id</span>
+router.route('/:id')
+  .get((req, res)    => res.json({ action: 'getOne',   id: req.params.id }))
+  .put((req, res)    => res.json({ action: 'replace',  id: req.params.id }))
+  .patch((req, res)  => res.json({ action: 'update',   id: req.params.id }))
+  .delete((req, res) => res.json({ action: 'delete',   id: req.params.id }));
+
+module.exports = router;</pre>
+      </div>
+
+      <div class="code-box blue">
+<div class="code-header"><span>🏗️ مع handler functions منفصلة</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">// عادةً تُعرَّف الدوال في controller منفصل</span>
+const { getAll, create, getOne, update, remove } = require('./controllers/users');
+
+router.route('/')
+  .get(getAll)
+  .post(create);
+
+router.route('/:id')
+  .get(getOne)
+  .patch(update)
+  .delete(remove);</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- S6 -->
+  <div class="section" id="s6">
+    <h2 class="section-title"><span class="num">.6</span> Router منفصل لكل Resource <span class="en">Modular Router</span></h2>
+    <div class="content">
+      <p>الهيكل الاحترافي: ملف Router مستقل لكل نوع من البيانات (users, posts, products...):</p>
+
+      <div class="code-box">
+<div class="code-header"><span>📁 routes/users.js — ملف Router مستقل</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre>const router = require('express').Router();
+
+const users = [
+  { id: 1, name: 'أحمد', email: 'ahmed@mail.com' },
+  { id: 2, name: 'سارة', email: 'sara@mail.com' },
+];
+
+<span class="comment">// GET / → /api/users</span>
+router.get('/', (req, res) => {
+  res.json({ data: users, count: users.length });
+});
+
+<span class="comment">// GET /:id → /api/users/:id</span>
+router.get('/:id', (req, res) => {
+  const user = users.find(u => u.id === Number(req.params.id));
+  if (!user) return res.status(404).json({ error: 'غير موجود' });
+  res.json({ data: user });
+});
+
+<span class="comment">// POST / → /api/users</span>
+router.post('/', (req, res) => {
+  const { name, email } = req.body;
+  if (!name || !email) return res.status(400).json({ error: 'ناقص' });
+  const user = { id: Date.now(), name, email };
+  users.push(user);
+  res.status(201).json({ data: user });
+});
+
+<span class="comment">// DELETE /:id → /api/users/:id</span>
+router.delete('/:id', (req, res) => {
+  const idx = users.findIndex(u => u.id === Number(req.params.id));
+  if (idx === -1) return res.status(404).json({ error: 'غير موجود' });
+  users.splice(idx, 1);
+  res.sendStatus(204);
+});
+
+module.exports = router;</pre>
+      </div>
+
+      <div class="code-box">
+<div class="code-header"><span>⚙️ app.js — تجميع الـ Routers</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre>const express = require('express');
+const app = express();
+
+app.use(express.json());
+
+<span class="comment">// تحميل الـ Routers</span>
+app.use('/api/users',    require('./routes/users'));
+app.use('/api/posts',    require('./routes/posts'));
+app.use('/api/products', require('./routes/products'));
+
+<span class="comment">// 404 handler — آخر شيء دائماً</span>
+app.use((req, res) => {
+  res.status(404).json({ error: 'Not Found', path: req.url });
+});
+
+app.listen(3000, () => console.log('✅ يعمل :3000'));</pre>
+      </div>
+
+      <div class="tip-box"><strong>لماذا نفصل الـ Routes؟</strong> مشروع بـ 10 entities (users, products, orders...) بدون تنظيم = ملف app.js بـ 500 سطر. بالـ Router المنفصل كل ملف 30-50 سطر — سهل القراءة والاختبار والصيانة.</div>
+    </div>
+  </div>
+
+  <!-- S7 -->
+  <div class="section" id="s7">
+    <h2 class="section-title"><span class="num">.7</span> أنماط متقدمة — Wildcard وOptional <span class="en">Advanced Patterns</span></h2>
+    <div class="content">
+      <p>Express يدعم أنماط أكثر مرونة في تعريف المسارات:</p>
+
+      <div class="code-box">
+<div class="code-header"><span>⭐ Wildcard — المسار العام *</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">// يلتقط أي شيء يبدأ بـ /api/</span>
+app.get('/api/*', (req, res) => {
+  res.status(404).json({
+    error: 'API endpoint غير موجود',
+    path: req.url,
+    hint: 'تحقق من الـ docs',
+  });
+});
+
+<span class="comment">// يلتقط كل شيء — 404 handler عام</span>
+app.use('*', (req, res) => {
+  res.status(404).json({ error: 'الصفحة غير موجودة' });
+});</pre>
+      </div>
+
+      <div class="code-box">
+<div class="code-header"><span>❓ Optional Param — اختياري بـ ?</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">// :id اختياري — بدونه يجلب الكل</span>
+app.get('/api/users/:id?', (req, res) => {
+  if (req.params.id) {
+    const user = users.find(u => u.id === Number(req.params.id));
+    return res.json({ mode: 'single', data: user });
+  }
+  res.json({ mode: 'all', data: users });
+});
+
+<span class="comment">// GET /api/users    → { mode: 'all', data: [...] }</span>
+<span class="comment">// GET /api/users/5  → { mode: 'single', data: {...} }</span></pre>
+      </div>
+
+      <div class="code-box blue">
+<div class="code-header"><span>📋 ملخص أنماط الـ Routes</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">// ثابت — يتطابق فقط مع /api/users/me</span>
+app.get('/api/users/me', ...);
+
+<span class="comment">// ديناميكي — :id يتطابق مع أي قيمة</span>
+app.get('/api/users/:id', ...);
+
+<span class="comment">// متعدد — userId و postId</span>
+app.get('/api/users/:userId/posts/:postId', ...);
+
+<span class="comment">// اختياري — :id موجود أو لا</span>
+app.get('/api/users/:id?', ...);
+
+<span class="comment">// Wildcard — أي شيء بعد /files/</span>
+app.get('/files/*', ...);
+
+<span class="comment">// Regular Expression — ينتهي بـ .json</span>
+app.get(/\.json$/, (req, res) => res.json({ format: 'json' }));</pre>
+      </div>
+
+      <div class="info-box"><strong>ترتيب التعريف = ترتيب التطابق:</strong> Express يتحقق من الـ routes بالترتيب من الأعلى للأسفل ويتوقف عند أول تطابق. الثوابت أولاً، ثم الديناميكية، ثم الـ Wildcard، ثم الـ 404 handler دائماً آخراً.</div>
+    </div>
+  </div>
+
+  <!-- S8 — Live Preview -->
+  <div class="section" id="s8">
+    <h2 class="section-title"><span class="num">.8</span> Routing كامل في العمل <span class="en">Full Routing Demo</span></h2>
+    <div class="content"><p>خادم Express كامل مع Routing منظّم ويشمل params, query, router.route():</p></div>
+
+    <div class="live-preview">
+      <div class="lp-header">
+        <span>🗺️ Routing — users API كاملة</span>
+        <span class="lp-tag">routes/users.js</span>
+      </div>
+      <div class="lp-body">
+        <div class="lp-code">
+<pre><span class="c">// routes/users.js</span>
+<span class="k">const</span> router =
+  <span class="t">require</span>(<span class="s">'express'</span>).<span class="t">Router</span>();
+
+<span class="k">let</span> users = [
+  { id:<span class="n">1</span>, name:<span class="s">'أحمد'</span>, role:<span class="s">'admin'</span> },
+  { id:<span class="n">2</span>, name:<span class="s">'سارة'</span>, role:<span class="s">'user'</span>  },
+];
+
+<span class="c">// GET / — مع query فلترة</span>
+router.<span class="t">get</span>(<span class="s">'/'</span>, (req, res) => {
+  <span class="k">const</span> { role, page=<span class="s">'1'</span> } = req.query;
+  <span class="k">let</span> data = [...users];
+  <span class="k">if</span>(role) data = data.<span class="t">filter</span>(
+    u => u.role === role
+  );
+  res.<span class="t">json</span>({
+    data,
+    page: <span class="t">Number</span>(page),
+    total: data.length,
+  });
+});
+
+<span class="c">// route() — تجميع /:id</span>
+router.<span class="t">route</span>(<span class="s">'/:id'</span>)
+  .<span class="t">get</span>((req, res) => {
+    <span class="k">const</span> u = users.<span class="t">find</span>(
+      x => x.id===<span class="t">Number</span>(req.params.id)
+    );
+    <span class="k">if</span>(!u) <span class="k">return</span> res
+      .<span class="t">status</span>(<span class="n">404</span>)
+      .<span class="t">json</span>({error:<span class="s">'غير موجود'</span>});
+    res.<span class="t">json</span>({ data: u });
+  })
+  .<span class="t">patch</span>((req, res) => {
+    <span class="k">const</span> u = users.<span class="t">find</span>(
+      x => x.id===<span class="t">Number</span>(req.params.id)
+    );
+    <span class="k">if</span>(!u) <span class="k">return</span> res
+      .<span class="t">status</span>(<span class="n">404</span>)
+      .<span class="t">json</span>({error:<span class="s">'غير موجود'</span>});
+    <span class="t">Object</span>.<span class="t">assign</span>(u, req.body);
+    res.<span class="t">json</span>({ data: u });
+  })
+  .<span class="t">delete</span>((req, res) => {
+    <span class="k">const</span> i = users.<span class="t">findIndex</span>(
+      x => x.id===<span class="t">Number</span>(req.params.id)
+    );
+    <span class="k">if</span>(i===-<span class="n">1</span>) <span class="k">return</span> res
+      .<span class="t">status</span>(<span class="n">404</span>)
+      .<span class="t">json</span>({error:<span class="s">'غير موجود'</span>});
+    users.<span class="t">splice</span>(i,<span class="n">1</span>);
+    res.<span class="t">sendStatus</span>(<span class="n">204</span>);
+  });
+
+module.exports = router;</pre>
+        </div>
+        <div class="lp-terminal">
+          <div class="terminal-window">
+            <div class="terminal-bar">
+              <div class="t-dot red"></div><div class="t-dot yellow"></div><div class="t-dot green"></div>
+              <span class="t-title">Express Routing</span>
+            </div>
+            <div class="terminal-screen">
+              <div><span class="t-prompt">$</span> <span class="t-cmd">node app.js</span></div>
+              <div><span class="t-ok">✅ يعمل على :3000</span></div>
+              <div><span class="t-out">──────────────────────</span></div>
+              <div><span class="t-info">GET</span> <span class="t-url">/api/users</span></div>
+              <div><span class="t-ok"> 200</span> <span class="t-out">{ data:[...], total:2 }</span></div>
+              <div><span class="t-out">──────────────────────</span></div>
+              <div><span class="t-info">GET</span> <span class="t-url">/api/users?role=admin</span></div>
+              <div><span class="t-ok"> 200</span> <span class="t-out">{ data:[{أحمد}], total:1 }</span></div>
+              <div><span class="t-out">──────────────────────</span></div>
+              <div><span class="t-info">GET</span> <span class="t-url">/api/users/1</span></div>
+              <div><span class="t-ok"> 200</span> <span class="t-out">{ data:{id:1,name:'أحمد'} }</span></div>
+              <div><span class="t-out">──────────────────────</span></div>
+              <div><span class="t-info">GET</span> <span class="t-url">/api/users/99</span></div>
+              <div><span class="t-err"> 404</span> <span class="t-out">{ error:'غير موجود' }</span></div>
+              <div><span class="t-out">──────────────────────</span></div>
+              <div><span class="t-info">PATCH</span> <span class="t-url">/api/users/2</span></div>
+              <div><span class="t-out"> body:{name:'سارة 2'}</span></div>
+              <div><span class="t-ok"> 200</span> <span class="t-out">{ data:{id:2,...} }</span></div>
+              <div><span class="t-out">──────────────────────</span></div>
+              <div><span class="t-info">DELETE</span> <span class="t-url">/api/users/1</span></div>
+              <div><span class="t-ok"> 204</span> <span class="t-out">No Content</span></div>
+              <div><span class="t-prompt">$</span> <span class="t-cursor"></span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EXERCISES -->
+  <div class="section" id="exercises">
+    <h2 class="section-title"><span class="num">📝</span> التمارين العملية <span class="en">Exercises</span></h2>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 1: Route مع التحقق من ID</div>
+      <p>أنشئ <code>GET /api/products/:id</code> يتحقق أن الـ ID رقم صحيح موجب، ثم يبحث في مصفوفة وهمية. يُعيد 400 إذا كان الـ ID غير صالح، و404 إذا لم يوجد المنتج.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box"><pre>const products = [{ id: 1, name: 'لابتوب' }, { id: 2, name: 'جوال' }];
+
+app.get('/api/products/:id', (req, res) => {
+  const id = Number(req.params.id);
+
+  if (!Number.isInteger(id) || id <= 0) {
+    return res.status(400).json({ error: 'ID غير صالح' });
+  }
+
+  const product = products.find(p => p.id === id);
+  if (!product) {
+    return res.status(404).json({ error: `المنتج ${id} غير موجود` });
+  }
+
+  res.json({ data: product });
+});</pre></div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 2: مسار متداخل</div>
+      <p>أنشئ <code>GET /api/users/:userId/orders</code> يُعيد orders لمستخدم محدد. إذا لم يوجد المستخدم أعد 404. البيانات وهمية.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box"><pre>const users  = [{ id: 1, name: 'أحمد' }, { id: 2, name: 'سارة' }];
+const orders = [
+  { id: 101, userId: 1, total: 250 },
+  { id: 102, userId: 1, total: 180 },
+  { id: 103, userId: 2, total: 320 },
+];
+
+app.get('/api/users/:userId/orders', (req, res) => {
+  const userId = Number(req.params.userId);
+  const user   = users.find(u => u.id === userId);
+
+  if (!user) return res.status(404).json({ error: 'المستخدم غير موجود' });
+
+  const userOrders = orders.filter(o => o.userId === userId);
+  res.json({ user, orders: userOrders, count: userOrders.length });
+});</pre></div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 3: Search مع Query Validation</div>
+      <p>أنشئ <code>GET /api/search</code> يقرأ: <code>?q=&page=&limit=</code><br>
+      التحقق: <code>q</code> مطلوب، <code>page</code> >= 1، <code>limit</code> بين 1 و 50.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box"><pre>app.get('/api/search', (req, res) => {
+  const { q, page = '1', limit = '10' } = req.query;
+
+  if (!q || q.trim() === '') {
+    return res.status(400).json({ error: 'q مطلوب' });
+  }
+
+  const pageNum  = Number(page);
+  const limitNum = Number(limit);
+
+  if (isNaN(pageNum) || pageNum < 1)
+    return res.status(400).json({ error: 'page >= 1' });
+  if (isNaN(limitNum) || limitNum < 1 || limitNum > 50)
+    return res.status(400).json({ error: 'limit بين 1 و50' });
+
+  res.json({ q: q.trim(), page: pageNum, limit: limitNum, results: [] });
+});</pre></div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 4: router.route() لـ Posts</div>
+      <p>استخدم <code>router.route()</code> لبناء CRUD كامل لـ <code>/api/posts</code>:<br>
+      GET الكل، POST إنشاء، GET واحد بـ :id، PUT تحديث، DELETE حذف.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box"><pre>const router = require('express').Router();
+let posts = [{ id: 1, title: 'أول منشور' }];
+
+router.route('/')
+  .get((req, res) => res.json({ data: posts }))
+  .post((req, res) => {
+    const { title } = req.body;
+    if (!title) return res.status(400).json({ error: 'العنوان مطلوب' });
+    const post = { id: Date.now(), title };
+    posts.push(post);
+    res.status(201).json({ data: post });
+  });
+
+router.route('/:id')
+  .get((req, res) => {
+    const post = posts.find(p => p.id === Number(req.params.id));
+    if (!post) return res.status(404).json({ error: 'غير موجود' });
+    res.json({ data: post });
+  })
+  .put((req, res) => {
+    const i = posts.findIndex(p => p.id === Number(req.params.id));
+    if (i === -1) return res.status(404).json({ error: 'غير موجود' });
+    posts[i] = { ...posts[i], ...req.body };
+    res.json({ data: posts[i] });
+  })
+  .delete((req, res) => {
+    const i = posts.findIndex(p => p.id === Number(req.params.id));
+    if (i === -1) return res.status(404).json({ error: 'غير موجود' });
+    posts.splice(i, 1);
+    res.sendStatus(204);
+  });
+
+module.exports = router;</pre></div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 5: ترتيب الـ Routes</div>
+      <p>رتّب هذه الـ routes بالترتيب الصحيح واشرح لماذا:<br>
+      أ) <code>app.get('/api/users/:id', ...)</code><br>
+      ب) <code>app.use((req,res) => res.status(404)...)</code><br>
+      ج) <code>app.get('/api/users/me', ...)</code><br>
+      د) <code>app.get('/api/users', ...)</code></p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <p><strong>الترتيب الصحيح: د ← ج ← أ ← ب</strong><br>
+        • <strong>د</strong> أولاً: GET /api/users (ثابت، الأكثر تحديداً للمجموعة)<br>
+        • <strong>ج</strong> ثانياً: GET /api/users/me (ثابت — يجب قبل :id وإلا التقطه)<br>
+        • <strong>أ</strong> ثالثاً: GET /api/users/:id (ديناميكي — يلتقط كل ما لم يُعرَّف)<br>
+        • <strong>ب</strong> آخراً: 404 handler (يمسك كل ما لم يتطابق)</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="quiz-container" id="quiz">
+    <div class="quiz-intro"><p>اختبر فهمك لـ Routing في Express!</p></div>
+    <div class="quiz-type-tabs">
+      <button class="qt-tab active" onclick="switchQuiz(this,'tf')">✓✗ صح وخطأ</button>
+      <button class="qt-tab" onclick="switchQuiz(this,'mc')">🔘 اختيار من متعدد</button>
+    </div>
+
+    <div class="quiz-section active" id="quiz-tf">
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">1</span><span class="q-text">قيم <code>req.params</code> دائماً من نوع string حتى لو أرسلت رقماً في الـ URL.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">2</span><span class="q-text">يمكن وضع أكثر من param في نفس المسار مثل <code>/users/:userId/posts/:postId</code>.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="false">
+        <span class="q-num">3</span><span class="q-text"><code>req.query</code> يحتوي فقط على أول query parameter في الـ URL.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="false">
+        <span class="q-num">4</span><span class="q-text">ترتيب تعريف الـ routes في Express لا يؤثر على أيها يتطابق مع الطلب.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">5</span><span class="q-text">يجب تعريف route ثابت مثل <code>/users/me</code> قبل الديناميكي <code>/users/:id</code>.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <button class="quiz-submit" onclick="submitQuiz('tf')">عرض النتيجة 🎯</button>
+      <div class="quiz-result" id="result-tf"><div class="result-score" id="score-tf">0/5</div><div class="result-label">إجابات صحيحة</div><div class="result-message" id="msg-tf"></div><button class="retry-btn" onclick="retryQuiz('tf')">🔄 حاول تاني</button></div>
+    </div>
+
+    <div class="quiz-section" id="quiz-mc">
+      <div class="quiz-question" data-correct="1">
+        <span class="q-num">1</span><span class="q-text">للـ URL <code>/api/users/42</code> وroute <code>/api/users/:id</code>، ما قيمة <code>req.params.id</code>؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">42 (number)</button>
+          <button class="q-opt" onclick="answerMC(this,1)">"42" (string)</button>
+          <button class="q-opt" onclick="answerMC(this,2)">{ id: 42 }</button>
+          <button class="q-opt" onclick="answerMC(this,3)">undefined</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="1">
+        <span class="q-num">2</span><span class="q-text">لقراءة <code>page</code> من <code>/api/users?page=2</code>، ما الصحيح؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">req.params.page</button>
+          <button class="q-opt" onclick="answerMC(this,1)">req.query.page</button>
+          <button class="q-opt" onclick="answerMC(this,2)">req.body.page</button>
+          <button class="q-opt" onclick="answerMC(this,3)">req.url.page</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="2">
+        <span class="q-num">3</span><span class="q-text">ما الكود الصحيح لتحويل <code>req.params.id</code> من string لرقم؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">req.params.id.toNumber()</button>
+          <button class="q-opt" onclick="answerMC(this,1)">req.params.id.convert()</button>
+          <button class="q-opt" onclick="answerMC(this,2)">parseInt(req.params.id)</button>
+          <button class="q-opt" onclick="answerMC(this,3)">Number.convert(req.params.id)</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="0">
+        <span class="q-num">4</span><span class="q-text">ما الغرض الرئيسي من <code>router.route('/users/:id')</code>؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">تجميع GET وPUT وDELETE لنفس المسار في مكان واحد</button>
+          <button class="q-opt" onclick="answerMC(this,1)">تسريع تنفيذ الـ route</button>
+          <button class="q-opt" onclick="answerMC(this,2)">تطبيق middleware تلقائياً</button>
+          <button class="q-opt" onclick="answerMC(this,3)">تعريف route لجميع المسارات</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="3">
+        <span class="q-num">5</span><span class="q-text">أين يجب وضع الـ 404 handler في Express؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">في البداية قبل كل الـ routes</button>
+          <button class="q-opt" onclick="answerMC(this,1)">في منتصف الـ routes</button>
+          <button class="q-opt" onclick="answerMC(this,2)">الترتيب لا يهم</button>
+          <button class="q-opt" onclick="answerMC(this,3)">في النهاية بعد جميع الـ routes</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <button class="quiz-submit" onclick="submitQuiz('mc')">عرض النتيجة 🎯</button>
+      <div class="quiz-result" id="result-mc"><div class="result-score" id="score-mc">0/5</div><div class="result-label">إجابات صحيحة</div><div class="result-message" id="msg-mc"></div><button class="retry-btn" onclick="retryQuiz('mc')">🔄 حاول تاني</button></div>
+    </div>
+  </div>
+
+  <div class="lesson-nav">
+    <a href="./lesson-06.html" class="nav-btn"><span>⬅️</span><span>الدرس السابق</span></a>
+    <button class="nav-btn complete-btn" id="completeBtn" onclick="markComplete(this)" style="background:#7c3aed; border-color:#7c3aed;"><span>✅</span><span>علّم كمكتمل</span></button>
+    <a href="./lesson-08.html" class="nav-btn"><span>الدرس التالي</span><span>➡️</span></a>
+  </div>
+
+  <div class="notebook-footer">
+    <h3>🎉 أتقنت فن الـ Routing!</h3>
+    <p>params, query, router.route()، وتنظيم الـ Router — كلها في يدك. 🗺️<br><strong>الدرس التالي: Middleware — الحارس الأمين بين الطلب والرد 🛡️</strong></p>
+  </div>
+</div>
+
+<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">⬆️</button>
+<div class="toast" id="toast"></div>
+<script src="../../js/data/courses.js"></script>
+<script src="../../js/progress.js"></script>
+<script>
+const COURSE_ID='backend', LESSON_ID=7, TOTAL=32;
+function toggleSolution(b){const s=b.nextElementSibling;s.classList.toggle('show');b.textContent=s.classList.contains('show')?'إخفاء الحل ▲':'عرض الحل ▼';}
+function copyCode(b){const p=b.closest('.code-box').querySelector('pre');navigator.clipboard.writeText(p.innerText).then(()=>{b.classList.add('copied');b.textContent='✓ تم النسخ';setTimeout(()=>{b.classList.remove('copied');b.textContent='📋 نسخ';},2000);});}
+function switchQuiz(b,t){document.querySelectorAll('.qt-tab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.quiz-section').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.getElementById('quiz-'+t).classList.add('active');}
+const answers={tf:{},mc:{}};
+function answerTF(b,v){const q=b.closest('.quiz-question'),i=Array.from(q.parentNode.querySelectorAll('.quiz-question')).indexOf(q);q.querySelectorAll('.q-opt').forEach(o=>o.classList.remove('selected'));b.classList.add('selected');answers.tf[i]=v;}
+function answerMC(b,i){const q=b.closest('.quiz-question'),qi=Array.from(q.parentNode.querySelectorAll('.quiz-question')).indexOf(q);q.querySelectorAll('.q-opt').forEach(o=>o.classList.remove('selected'));b.classList.add('selected');answers.mc[qi]=i;}
+function submitQuiz(type){const sec=document.getElementById('quiz-'+type),qs=sec.querySelectorAll('.quiz-question');let c=0;qs.forEach((q,i)=>{const ca=type==='tf'?(q.dataset.correct==='true'):parseInt(q.dataset.correct),ua=answers[type][i],fb=q.querySelector('.q-feedback'),opts=q.querySelectorAll('.q-opt');opts.forEach(o=>{o.classList.remove('selected');o.disabled=true;});if(ua===undefined){fb.className='q-feedback wrong show';fb.textContent='⚠️ ما اخترتش إجابة!';return;}if(ua===ca){c++;fb.className='q-feedback correct show';fb.textContent='✓ إجابة صحيحة!';if(type==='tf')opts[ca?0:1].classList.add('correct');else opts[ca].classList.add('correct');}else{fb.className='q-feedback wrong show';if(type==='tf'){opts[ca?0:1].classList.add('correct');opts[ua?0:1].classList.add('wrong');fb.textContent='✗ خطأ.';}else{opts[ca].classList.add('correct');opts[ua].classList.add('wrong');fb.textContent='✗ الإجابة بالأخضر.';}}});const r=document.getElementById('result-'+type);document.getElementById('score-'+type).textContent=c+'/'+qs.length;const m=document.getElementById('msg-'+type);if(c===qs.length){m.textContent='🏆 ممتاز 100%!';m.className='result-message excellent';}else if(c>=3){m.textContent='👍 جيد!';m.className='result-message good';}else{m.textContent='📚 راجع الدرس.';m.className='result-message try-again';}r.classList.add('show');r.scrollIntoView({behavior:'smooth',block:'center'});}
+function retryQuiz(type){const sec=document.getElementById('quiz-'+type);sec.querySelectorAll('.q-opt').forEach(o=>{o.classList.remove('selected','correct','wrong');o.disabled=false;});sec.querySelectorAll('.q-feedback').forEach(f=>{f.classList.remove('show','correct','wrong');f.textContent='';});document.getElementById('result-'+type).classList.remove('show');answers[type]={};}
+function markComplete(btn){const done=Progress.toggleLessonComplete(COURSE_ID,LESSON_ID);btn.classList.toggle('completed',done);btn.querySelector('span:last-child').textContent=done?'مكتمل! ⭐':'علّم كمكتمل';showToast(done?'🎉 أكملت الدرس السابع!':'تم إلغاء الإكمال');}
+if(Progress.isLessonComplete(COURSE_ID,LESSON_ID)){const b=document.getElementById('completeBtn');b.classList.add('completed');b.querySelector('span:last-child').textContent='مكتمل! ⭐';}
+(function(){const p=Progress.getCourseProgress(COURSE_ID,TOTAL);document.getElementById('progFill').style.width=p+'%';document.getElementById('progText').textContent=p+'%';})();
+function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
+window.addEventListener('scroll',()=>{document.getElementById('scrollTop').classList.toggle('show',window.scrollY>300);});
+document.querySelectorAll('.toc-card a').forEach(l=>{l.addEventListener('click',e=>{e.preventDefault();const t=document.querySelector(l.getAttribute('href'));if(t)t.scrollIntoView({behavior:'smooth',block:'start'});});});
+</script>
+</body>
+</html>

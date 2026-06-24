@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-V2NCKVL16D"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-V2NCKVL16D');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>الشروط if/else/switch — دفتر البرمجة</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=Cairo:wght@300;400;500;600;700;900&family=Caveat:wght@400;700&family=Fira+Code:wght@400;500;600&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../css/shared.css">
+<link rel="stylesheet" href="../../css/notebook.css">
+<style>
+body { padding: 20px 10px; }
+.mini-console {
+  background: #1e293b; border-radius: 10px; padding: 14px 16px;
+  margin: 10px 0; font-family: 'Fira Code', monospace; font-size: .88rem; direction: ltr;
+}
+.mc-line { margin: 3px 0; }
+.mc-in  { color: #94a3b8; }
+.mc-in::before  { content: '> '; color: #7c3aed; }
+.mc-out { color: #4ade80; }
+.mc-out::before { content: '← '; color: #4ade80; }
+
+/* flowchart */
+.flow { display: flex; flex-direction: column; align-items: center; gap: 4px; margin: 16px 0; direction: ltr; }
+.flow-box { padding: 10px 20px; border-radius: 8px; font-family: 'Fira Code', monospace; font-size: .85rem; font-weight: 700; text-align: center; min-width: 160px; }
+.flow-diamond { background: #fef3c7; border: 2px solid #f59e0b; color: #92400e; transform: perspective(80px) rotateX(10deg); }
+.flow-action  { background: #dbeafe; border: 2px solid var(--ink-blue); color: var(--ink-blue); }
+.flow-arrow   { color: var(--ink-blue); font-size: 1.2rem; }
+.flow-row     { display: flex; gap: 20px; align-items: center; }
+.flow-label   { font-family: 'Caveat', cursive; font-size: 1rem; color: var(--ink-red); }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="crumbs">
+    <a href="../../index.html">🏠 الرئيسية</a>
+    <span class="sep">/</span>
+    <a href="./index.html">🌐 الفرونت إند</a>
+    <span class="sep">/</span>
+    <span class="current">⚡ الدرس 15: الشروط</span>
+  </div>
+  <div class="progress-mini">
+    <div class="progress-bar-mini"><div class="progress-fill-mini" id="progFill"></div></div>
+    <span id="progText">0%</span>
+  </div>
+</div>
+
+<div class="notebook">
+
+  <div class="notebook-header">
+    <div class="lesson-tag">⚡ الدرس الخامس عشر</div>
+    <h1><span class="sparkle">✦</span> الشروط — if / else / switch <span class="sparkle">✦</span></h1>
+    <div class="lesson-meta">
+      <span>⏱️ 40 دقيقة</span>
+      <span>📊 مبتدئ</span>
+      <span>🎯 5 تمارين + اختبار</span>
+    </div>
+  </div>
+
+  <div class="toc-card">
+    <h2>📑 فهرس الدرس</h2>
+    <ol>
+      <li><a href="#s1">ما هي الشروط؟</a></li>
+      <li><a href="#s2">if الأساسي</a></li>
+      <li><a href="#s3">if / else</a></li>
+      <li><a href="#s4">else if — شروط متعددة</a></li>
+      <li><a href="#s5">switch</a></li>
+      <li><a href="#s6">Ternary Operator — الاختصار</a></li>
+      <li><a href="#s7">Truthy و Falsy في الشروط</a></li>
+      <li><a href="#s8">محرر الكود الحي</a></li>
+      <li><a href="#exercises">التمارين</a></li>
+      <li><a href="#quiz">اختبر فهمك</a></li>
+    </ol>
+  </div>
+
+  <!-- S1 -->
+  <div class="section" id="s1">
+    <h2 class="section-title"><span class="num">.1</span> ما هي الشروط؟ <span class="en">What are Conditions?</span></h2>
+    <div class="content">
+      <p>الشروط هي طريقة البرنامج لـ<strong>اتخاذ القرار</strong>. "لو كان كذا، افعل كذا. وإلا، افعل كذا."</p>
+      <div class="analogy">
+        <div class="analogy-title">🚦 تخيل إشارة مرور:</div>
+        <p>
+          لو الإشارة خضرا → امشِ.<br>
+          لو الإشارة حمرا → وقِف.<br>
+          لو الإشارة صفرا → تأهّب.
+        </p>
+        <p style="margin-top:8px;">البرامج بتفكر بنفس الطريقة — كل قرار مبني على شرط.</p>
+      </div>
+      <div class="flow">
+        <div class="flow-box flow-diamond">هل age >= 18?</div>
+        <div class="flow-row">
+          <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+            <span class="flow-label">نعم ✅</span>
+            <span class="flow-arrow">↓</span>
+            <div class="flow-box flow-action">اسمح بالدخول</div>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+            <span class="flow-label">لا ❌</span>
+            <span class="flow-arrow">↓</span>
+            <div class="flow-box flow-action" style="border-color:var(--ink-red);color:var(--ink-red);background:#fee2e2;">ارفض الدخول</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- S2 -->
+  <div class="section" id="s2">
+    <h2 class="section-title"><span class="num">.2</span> if الأساسي <span class="en">Basic if</span></h2>
+    <div class="content">
+      <p>أبسط شكل للشرط — ينفّذ الكود فقط لو الشرط <em>true</em>:</p>
+      <div class="code-box">
+<div class="code-header"><span>✅ if بسيط</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-name">if</span> (الشرط) {
+  <span class="comment">// كود ينفّذ لو الشرط true</span>
+}
+
+<span class="comment">// مثال:</span>
+<span class="tag-name">const</span> <span class="attr">score</span> = <span class="attr-val">85</span>;
+
+<span class="tag-name">if</span> (<span class="attr">score</span> >= <span class="attr-val">50</span>) {
+  <span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr-val">'ناجح! 🎉'</span>);
+}</pre>
+      </div>
+      <div class="mini-console">
+        <div class="mc-in">if (85 >= 50) { console.log('ناجح!') }</div>
+        <div class="mc-out">ناجح!</div>
+      </div>
+      <div class="tip-box"><strong>الأقواس الموجية {} مهمة!</strong> كل الكود بداخلها ينفّذ لو الشرط true. لو سطر واحد فقط، الأقواس اختيارية — لكن استخدمها دائماً لتجنب الأخطاء.</div>
+    </div>
+  </div>
+
+  <!-- S3 -->
+  <div class="section" id="s3">
+    <h2 class="section-title"><span class="num">.3</span> if / else <span class="en">if / else</span></h2>
+    <div class="content">
+      <p>لما تريد تنفّذ كود مختلف لو الشرط <em>false</em>:</p>
+      <div class="code-box">
+<div class="code-header"><span>🔀 if / else</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-name">const</span> <span class="attr">age</span> = <span class="attr-val">16</span>;
+
+<span class="tag-name">if</span> (<span class="attr">age</span> >= <span class="attr-val">18</span>) {
+  <span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr-val">'مسموح بالدخول ✅'</span>);
+} <span class="tag-name">else</span> {
+  <span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr-val">'ممنوع الدخول ❌'</span>);
+}
+<span class="comment">// ← "ممنوع الدخول ❌"</span></pre>
+      </div>
+      <div class="example">
+        <span class="example-label">📌 مثال: تحديد نوع العدد</span>
+        <div class="code-box green">
+<pre><span class="tag-name">const</span> <span class="attr">num</span> = <span class="attr-val">7</span>;
+
+<span class="tag-name">if</span> (<span class="attr">num</span> % <span class="attr-val">2</span> === <span class="attr-val">0</span>) {
+  <span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr-val">'زوجي'</span>);
+} <span class="tag-name">else</span> {
+  <span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr-val">'فردي'</span>);
+}
+<span class="comment">// ← "فردي"</span></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- S4 -->
+  <div class="section" id="s4">
+    <h2 class="section-title"><span class="num">.4</span> else if — شروط متعددة <span class="en">else if</span></h2>
+    <div class="content">
+      <p>لما عندك أكثر من حالتين، تضيف <em>else if</em> بينهم:</p>
+      <div class="code-box">
+<div class="code-header"><span>📊 تقدير درجة</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-name">const</span> <span class="attr">score</span> = <span class="attr-val">72</span>;
+<span class="tag-name">let</span> <span class="attr">grade</span>;
+
+<span class="tag-name">if</span> (<span class="attr">score</span> >= <span class="attr-val">90</span>) {
+  <span class="attr">grade</span> = <span class="attr-val">'A — ممتاز'</span>;
+} <span class="tag-name">else if</span> (<span class="attr">score</span> >= <span class="attr-val">80</span>) {
+  <span class="attr">grade</span> = <span class="attr-val">'B — جيد جداً'</span>;
+} <span class="tag-name">else if</span> (<span class="attr">score</span> >= <span class="attr-val">70</span>) {
+  <span class="attr">grade</span> = <span class="attr-val">'C — جيد'</span>;
+} <span class="tag-name">else if</span> (<span class="attr">score</span> >= <span class="attr-val">50</span>) {
+  <span class="attr">grade</span> = <span class="attr-val">'D — مقبول'</span>;
+} <span class="tag-name">else</span> {
+  <span class="attr">grade</span> = <span class="attr-val">'F — راسب'</span>;
+}
+
+<span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr">grade</span>);  <span class="comment">// "C — جيد"</span></pre>
+      </div>
+      <div class="warning-box"><strong>مهم:</strong> JS تفحص الشروط بالترتيب وتوقف عند أول شرط true. ترتيب الشروط مهم جداً.</div>
+    </div>
+  </div>
+
+  <!-- S5 -->
+  <div class="section" id="s5">
+    <h2 class="section-title"><span class="num">.5</span> switch <span class="en">switch Statement</span></h2>
+    <div class="content">
+      <p>لما تقارن متغيراً بقيم ثابتة كثيرة، <em>switch</em> أنظف من if/else if المتراكمة:</p>
+      <div class="code-box">
+<div class="code-header"><span>🔀 switch/case</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-name">const</span> <span class="attr">day</span> = <span class="attr-val">'الجمعة'</span>;
+
+<span class="tag-name">switch</span> (<span class="attr">day</span>) {
+  <span class="tag-name">case</span> <span class="attr-val">'السبت'</span>:
+  <span class="tag-name">case</span> <span class="attr-val">'الأحد'</span>:
+    <span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr-val">'عطلة! 🎉'</span>);
+    <span class="tag-name">break</span>;
+
+  <span class="tag-name">case</span> <span class="attr-val">'الجمعة'</span>:
+    <span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr-val">'نصف يوم 😌'</span>);
+    <span class="tag-name">break</span>;
+
+  <span class="tag-name">default</span>:
+    <span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr-val">'يوم عمل 💼'</span>);
+}
+<span class="comment">// ← "نصف يوم 😌"</span></pre>
+      </div>
+      <div class="warning-box"><strong>لا تنسَ break!</strong> بدون <em>break</em>، JS ستكمل تنفيذ كل الـ cases التالية حتى نهاية الـ switch — وهذا يسبب أخطاء غير متوقعة.</div>
+      <table class="cool-table">
+        <thead><tr><th></th><th>if/else</th><th>switch</th></tr></thead>
+        <tbody>
+          <tr><td>متى تستخدم؟</td><td>نطاقات ومعادلات معقدة</td><td>مقارنة قيمة واحدة بخيارات ثابتة</td></tr>
+          <tr><td>المقارنة</td><td>أي شرط</td><td>===  فقط</td></tr>
+          <tr><td>القراءة</td><td>أحياناً طويل</td><td>أنظف مع خيارات كثيرة</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- S6 -->
+  <div class="section" id="s6">
+    <h2 class="section-title"><span class="num">.6</span> Ternary Operator <span class="en">Shorthand Condition</span></h2>
+    <div class="content">
+      <p>اختصار لـ if/else في سطر واحد — مفيد جداً في التعيين السريع:</p>
+      <div class="code-box">
+<div class="code-header"><span>⚡ التعبير الثلاثي</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">// الشكل:</span>
+<span class="tag-name">const</span> <span class="attr">result</span> = الشرط ? <span class="attr-val">قيمة_لو_true</span> : <span class="attr-val">قيمة_لو_false</span>;
+
+<span class="comment">// مثال:</span>
+<span class="tag-name">const</span> <span class="attr">age</span>    = <span class="attr-val">20</span>;
+<span class="tag-name">const</span> <span class="attr">status</span> = <span class="attr">age</span> >= <span class="attr-val">18</span> ? <span class="attr-val">'بالغ'</span> : <span class="attr-val">'قاصر'</span>;
+<span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr">status</span>);  <span class="comment">// "بالغ"</span>
+
+<span class="comment">// مفيد في JSX / template literals:</span>
+<span class="tag-name">const</span> <span class="attr">msg</span> = <span class="attr-val">`أنت ${age >= <span class="attr-val">18</span> ? <span class="attr-val">'بالغ'</span> : <span class="attr-val">'قاصر'</span>}`</span>;</pre>
+      </div>
+      <div class="tip-box"><strong>متى تستخدمه؟</strong> لما الشرط بسيط وتريد تعيين قيمة. لو الكود داخل الشرط طويل أو معقد، استخدم if/else العادي.</div>
+    </div>
+  </div>
+
+  <!-- S7 -->
+  <div class="section" id="s7">
+    <h2 class="section-title"><span class="num">.7</span> Truthy و Falsy في الشروط <span class="en">Truthy & Falsy</span></h2>
+    <div class="content">
+      <p>في JS، أي قيمة ممكن تستخدمها في شرط — مش لازم تكون boolean صريحة:</p>
+      <div class="code-box">
+<div class="code-header"><span>🔍 Truthy & Falsy</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">// Falsy — تعتبر false في الشروط:</span>
+<span class="tag-name">if</span> (<span class="attr-val">0</span>)         { } <span class="comment">// لا يُنفَّذ</span>
+<span class="tag-name">if</span> (<span class="attr-val">''</span>)        { } <span class="comment">// لا يُنفَّذ</span>
+<span class="tag-name">if</span> (<span class="attr-val">null</span>)      { } <span class="comment">// لا يُنفَّذ</span>
+<span class="tag-name">if</span> (<span class="attr-val">undefined</span>) { } <span class="comment">// لا يُنفَّذ</span>
+<span class="tag-name">if</span> (<span class="attr-val">NaN</span>)       { } <span class="comment">// لا يُنفَّذ</span>
+<span class="tag-name">if</span> (<span class="attr-val">false</span>)     { } <span class="comment">// لا يُنفَّذ</span>
+
+<span class="comment">// Truthy — كل ما عدا ذلك:</span>
+<span class="tag-name">if</span> (<span class="attr-val">1</span>)          { } <span class="comment">// يُنفَّذ</span>
+<span class="tag-name">if</span> (<span class="attr-val">'hello'</span>)    { } <span class="comment">// يُنفَّذ</span>
+<span class="tag-name">if</span> ([])         { } <span class="comment">// يُنفَّذ (مصفوفة فارغة truthy!)</span>
+<span class="tag-name">if</span> ({})         { } <span class="comment">// يُنفَّذ (كائن فارغ truthy!)</span></pre>
+      </div>
+      <div class="example">
+        <span class="example-label">📌 استخدام عملي — التحقق من وجود قيمة:</span>
+        <div class="code-box green">
+<pre><span class="tag-name">const</span> <span class="attr">username</span> = <span class="attr-val">''</span>;   <span class="comment">// فارغ</span>
+
+<span class="tag-name">if</span> (<span class="attr">username</span>) {
+  <span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr-val">`مرحباً ${username}`</span>);
+} <span class="tag-name">else</span> {
+  <span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr-val">'الرجاء إدخال الاسم'</span>);
+}
+<span class="comment">// ← "الرجاء إدخال الاسم" (لأن '' falsy)</span></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- S8 -->
+  <div class="section" id="s8">
+    <h2 class="section-title"><span class="num">.8</span> محرر الكود الحي <span class="en">Live Editor</span></h2>
+    <div class="content"><p>جرب الشروط بنفسك:</p></div>
+    <div class="try-it">
+      <div class="try-it-header">
+        <span>⚡ جرب الشروط</span>
+        <div class="try-it-controls">
+          <button class="try-btn" onclick="runCode(this)">▶️ تشغيل</button>
+          <button class="try-btn" onclick="resetCode(this)">🔄 إعادة</button>
+        </div>
+      </div>
+      <div class="try-it-body">
+        <textarea class="try-it-editor" spellcheck="false" data-default='<!DOCTYPE html>
+<html><head><meta charset="UTF-8"></head>
+<body style="font-family:Arial;padding:20px;direction:rtl;">
+  <h2>📊 حاسبة التقديرات</h2>
+  <div id="out" style="background:#1e293b;color:#4ade80;padding:16px;border-radius:10px;font-family:monospace;white-space:pre-line;"></div>
+<script>
+  const p = s => document.getElementById("out").textContent += s + "\n";
+  const scores = [95, 83, 71, 55, 40];
+
+  scores.forEach(score => {
+    let grade;
+    if (score >= 90)      grade = "A — ممتاز";
+    else if (score >= 80) grade = "B — جيد جداً";
+    else if (score >= 70) grade = "C — جيد";
+    else if (score >= 50) grade = "D — مقبول";
+    else                  grade = "F — راسب";
+    p(`${score} → ${grade}`);
+  });
+</script>
+</body></html>'><!DOCTYPE html>
+<html><head><meta charset="UTF-8"></head>
+<body style="font-family:Arial;padding:20px;direction:rtl;">
+  <h2>📊 حاسبة التقديرات</h2>
+  <div id="out" style="background:#1e293b;color:#4ade80;padding:16px;border-radius:10px;font-family:monospace;white-space:pre-line;"></div>
+<script>
+  const p = s => document.getElementById("out").textContent += s + "\n";
+  const scores = [95, 83, 71, 55, 40];
+
+  scores.forEach(score => {
+    let grade;
+    if (score >= 90)      grade = "A — ممتاز";
+    else if (score >= 80) grade = "B — جيد جداً";
+    else if (score >= 70) grade = "C — جيد";
+    else if (score >= 50) grade = "D — مقبول";
+    else                  grade = "F — راسب";
+    p(`${score} → ${grade}`);
+  });
+</script>
+</body></html></textarea>
+        <div class="try-it-preview"><iframe srcdoc="" sandbox="allow-scripts allow-same-origin allow-modals allow-popups allow-forms" title="معاينة الكود"></iframe></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EXERCISES -->
+  <div class="section" id="exercises">
+    <h2 class="section-title"><span class="num">📝</span> التمارين العملية <span class="en">Exercises</span></h2>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 1: هل الرقم موجب؟</div>
+      <p>اكتب شرطاً يطبع "موجب" لو الرقم أكبر من صفر، "سالب" لو أصغر، و"صفر" لو يساوي صفر.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre><span class="tag-name">const</span> <span class="attr">num</span> = <span class="attr-val">-5</span>;
+
+<span class="tag-name">if</span> (<span class="attr">num</span> > <span class="attr-val">0</span>)      <span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr-val">'موجب'</span>);
+<span class="tag-name">else if</span> (<span class="attr">num</span> < <span class="attr-val">0</span>) <span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr-val">'سالب'</span>);
+<span class="tag-name">else</span>               <span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr-val">'صفر'</span>);</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 2: فصل السنة</div>
+      <p>استخدم switch لتحديد فصل السنة بناءً على رقم الشهر (1-12).</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre><span class="tag-name">const</span> <span class="attr">month</span> = <span class="attr-val">7</span>;
+<span class="tag-name">let</span> <span class="attr">season</span>;
+
+<span class="tag-name">switch</span> (true) {
+  <span class="tag-name">case</span> <span class="attr">month</span> >= <span class="attr-val">3</span> && <span class="attr">month</span> <= <span class="attr-val">5</span>:  <span class="attr">season</span> = <span class="attr-val">'ربيع'</span>; <span class="tag-name">break</span>;
+  <span class="tag-name">case</span> <span class="attr">month</span> >= <span class="attr-val">6</span> && <span class="attr">month</span> <= <span class="attr-val">8</span>:  <span class="attr">season</span> = <span class="attr-val">'صيف'</span>;  <span class="tag-name">break</span>;
+  <span class="tag-name">case</span> <span class="attr">month</span> >= <span class="attr-val">9</span> && <span class="attr">month</span> <= <span class="attr-val">11</span>: <span class="attr">season</span> = <span class="attr-val">'خريف'</span>; <span class="tag-name">break</span>;
+  <span class="tag-name">default</span>: <span class="attr">season</span> = <span class="attr-val">'شتاء'</span>;
+}
+<span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr">season</span>);  <span class="comment">// "صيف"</span></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 3: Ternary</div>
+      <p>اكتب سطراً واحداً يعيّن قيمة متغير <em>label</em>: "قصير" لو الطول أقل من 170، و"طويل" لو أكبر أو يساوي.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre><span class="tag-name">const</span> <span class="attr">height</span> = <span class="attr-val">175</span>;
+<span class="tag-name">const</span> <span class="attr">label</span>  = <span class="attr">height</span> >= <span class="attr-val">170</span> ? <span class="attr-val">'طويل'</span> : <span class="attr-val">'قصير'</span>;
+<span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr">label</span>);  <span class="comment">// "طويل"</span></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 4: التحقق من الدخول</div>
+      <p>اكتب كوداً يتحقق: لو <em>username</em> موجود (truthy) و <em>password</em> يساوي <em>'1234'</em>، اطبع "مرحباً". وإلا اطبع "بيانات خاطئة".</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre><span class="tag-name">const</span> <span class="attr">username</span> = <span class="attr-val">'أحمد'</span>;
+<span class="tag-name">const</span> <span class="attr">password</span> = <span class="attr-val">'1234'</span>;
+
+<span class="tag-name">if</span> (<span class="attr">username</span> && <span class="attr">password</span> === <span class="attr-val">'1234'</span>) {
+  <span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr-val">`مرحباً ${username}!`</span>);
+} <span class="tag-name">else</span> {
+  <span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr-val">'بيانات خاطئة'</span>);
+}</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 5: حاسبة خصم</div>
+      <p>لو مبلغ الشراء <em>amount</em> >= 500 → خصم 20%. لو >= 200 → خصم 10%. وإلا لا خصم. احسب السعر النهائي.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre><span class="tag-name">const</span> <span class="attr">amount</span> = <span class="attr-val">350</span>;
+<span class="tag-name">let</span> <span class="attr">discount</span>;
+
+<span class="tag-name">if</span> (<span class="attr">amount</span> >= <span class="attr-val">500</span>)      <span class="attr">discount</span> = <span class="attr-val">0.20</span>;
+<span class="tag-name">else if</span> (<span class="attr">amount</span> >= <span class="attr-val">200</span>) <span class="attr">discount</span> = <span class="attr-val">0.10</span>;
+<span class="tag-name">else</span>                     <span class="attr">discount</span> = <span class="attr-val">0</span>;
+
+<span class="tag-name">const</span> <span class="attr">final</span> = <span class="attr">amount</span> * (<span class="attr-val">1</span> - <span class="attr">discount</span>);
+<span class="attr">console</span>.<span class="tag-name">log</span>(<span class="attr-val">`السعر النهائي: ${final}`</span>);  <span class="comment">// 315</span></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="quiz-container" id="quiz">
+    <div class="quiz-intro"><p>اختبر فهمك للشروط!</p></div>
+    <div class="quiz-type-tabs">
+      <button class="qt-tab active" onclick="switchQuiz(this,'tf')">✓✗ صح وخطأ</button>
+      <button class="qt-tab" onclick="switchQuiz(this,'mc')">🔘 اختيار من متعدد</button>
+    </div>
+
+    <div class="quiz-section active" id="quiz-tf">
+      <div class="quiz-question" data-correct="false">
+        <span class="q-num">1</span><span class="q-text">switch يستخدم == للمقارنة.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">2</span><span class="q-text">المصفوفة الفارغة [] تُعتبر truthy في JavaScript.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">3</span><span class="q-text">Ternary operator يكتب في سطر واحد بديلاً عن if/else.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="false">
+        <span class="q-num">4</span><span class="q-text">بدون break في switch، ينفّذ فقط الـ case المطابق.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">5</span><span class="q-text">النص الفارغ '' يُعتبر falsy في JavaScript.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <button class="quiz-submit" onclick="submitQuiz('tf')">عرض النتيجة 🎯</button>
+      <div class="quiz-result" id="result-tf"><div class="result-score" id="score-tf">0/5</div><div class="result-label">إجابات صحيحة</div><div class="result-message" id="msg-tf"></div><button class="retry-btn" onclick="retryQuiz('tf')">🔄 حاول تاني</button></div>
+    </div>
+
+    <div class="quiz-section" id="quiz-mc">
+      <div class="quiz-question" data-correct="2">
+        <span class="q-num">1</span><span class="q-text">ما شكل Ternary operator؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">if(x) ? y : z</button>
+          <button class="q-opt" onclick="answerMC(this,1)">x then y else z</button>
+          <button class="q-opt" onclick="answerMC(this,2)">x ? y : z</button>
+          <button class="q-opt" onclick="answerMC(this,3)">x : y ? z</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="3">
+        <span class="q-num">2</span><span class="q-text">أيهما falsy؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">'false'</button>
+          <button class="q-opt" onclick="answerMC(this,1)">[]</button>
+          <button class="q-opt" onclick="answerMC(this,2)">{}</button>
+          <button class="q-opt" onclick="answerMC(this,3)">0</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="1">
+        <span class="q-num">3</span><span class="q-text">ما وظيفة default في switch؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">تنهي الـ switch</button>
+          <button class="q-opt" onclick="answerMC(this,1)">تنفّذ لو ما طابق أي case</button>
+          <button class="q-opt" onclick="answerMC(this,2)">أول case ينفّذ</button>
+          <button class="q-opt" onclick="answerMC(this,3)">تحدد القيمة الافتراضية للمتغير</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="0">
+        <span class="q-num">4</span><span class="q-text">ما ناتج: 5 > 3 && 2 < 1؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">false</button>
+          <button class="q-opt" onclick="answerMC(this,1)">true</button>
+          <button class="q-opt" onclick="answerMC(this,2)">null</button>
+          <button class="q-opt" onclick="answerMC(this,3)">undefined</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="2">
+        <span class="q-num">5</span><span class="q-text">متى يُفضّل switch على if/else if؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">دائماً</button>
+          <button class="q-opt" onclick="answerMC(this,1)">لمقارنة نطاقات أرقام</button>
+          <button class="q-opt" onclick="answerMC(this,2)">مقارنة متغير بقيم ثابتة كثيرة</button>
+          <button class="q-opt" onclick="answerMC(this,3)">لما يكون شرط واحد فقط</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <button class="quiz-submit" onclick="submitQuiz('mc')">عرض النتيجة 🎯</button>
+      <div class="quiz-result" id="result-mc"><div class="result-score" id="score-mc">0/5</div><div class="result-label">إجابات صحيحة</div><div class="result-message" id="msg-mc"></div><button class="retry-btn" onclick="retryQuiz('mc')">🔄 حاول تاني</button></div>
+    </div>
+  </div>
+
+  <div class="lesson-nav">
+    <a href="./lesson-14.html" class="nav-btn"><span>⬅️</span><span>الدرس السابق</span></a>
+    <button class="nav-btn complete-btn" id="completeBtn" onclick="markComplete(this)"><span>✅</span><span>علّم كمكتمل</span></button>
+    <a href="./lesson-16.html" class="nav-btn"><span>الدرس التالي</span><span>➡️</span></a>
+  </div>
+
+  <div class="notebook-footer">
+    <h3>🎉 أتقنت الشروط!</h3>
+    <p>برنامجك بدأ يفكر ويتخذ قرارات ❤️<br><strong>الدرس التالي: الحلقات التكرارية (Loops) 🔄</strong></p>
+  </div>
+</div>
+
+<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">⬆️</button>
+<div class="toast" id="toast"></div>
+<script src="../../js/data/courses.js"></script>
+<script src="../../js/progress.js"></script>
+<script src="../../js/lesson-editor.js"></script>
+<script>
+const COURSE_ID='frontend',LESSON_ID=15,TOTAL=32;
+function toggleSolution(b){const s=b.nextElementSibling;s.classList.toggle('show');b.textContent=s.classList.contains('show')?'إخفاء الحل ▲':'عرض الحل ▼';}
+function copyCode(b){const p=b.closest('.code-box').querySelector('pre');navigator.clipboard.writeText(p.innerText).then(()=>{b.classList.add('copied');b.textContent='✓ تم النسخ';setTimeout(()=>{b.classList.remove('copied');b.textContent='📋 نسخ';},2000);});}
+function runCode(b){const t=b.closest('.try-it');t.querySelector('iframe').srcdoc=t.querySelector('.try-it-editor').value;}
+function resetCode(b){const t=b.closest('.try-it'),e=t.querySelector('.try-it-editor');e.value=e.dataset.default;t.querySelector('iframe').srcdoc=e.value;}
+window.addEventListener('load',()=>{document.querySelectorAll('.try-it').forEach(t=>{const e=t.querySelector('.try-it-editor');t.querySelector('iframe').srcdoc=e.value;});});
+function switchQuiz(b,t){document.querySelectorAll('.qt-tab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.quiz-section').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.getElementById('quiz-'+t).classList.add('active');}
+const answers={tf:{},mc:{}};
+function answerTF(b,v){const q=b.closest('.quiz-question'),i=Array.from(q.parentNode.querySelectorAll('.quiz-question')).indexOf(q);q.querySelectorAll('.q-opt').forEach(o=>o.classList.remove('selected'));b.classList.add('selected');answers.tf[i]=v;}
+function answerMC(b,i){const q=b.closest('.quiz-question'),qi=Array.from(q.parentNode.querySelectorAll('.quiz-question')).indexOf(q);q.querySelectorAll('.q-opt').forEach(o=>o.classList.remove('selected'));b.classList.add('selected');answers.mc[qi]=i;}
+function submitQuiz(type){const sec=document.getElementById('quiz-'+type),qs=sec.querySelectorAll('.quiz-question');let c=0;qs.forEach((q,i)=>{const ca=type==='tf'?(q.dataset.correct==='true'):parseInt(q.dataset.correct),ua=answers[type][i],fb=q.querySelector('.q-feedback'),opts=q.querySelectorAll('.q-opt');opts.forEach(o=>{o.classList.remove('selected');o.disabled=true;});if(ua===undefined){fb.className='q-feedback wrong show';fb.textContent='⚠️ ما اخترتش إجابة!';return;}if(ua===ca){c++;fb.className='q-feedback correct show';fb.textContent='✓ إجابة صحيحة!';if(type==='tf')opts[ca?0:1].classList.add('correct');else opts[ca].classList.add('correct');}else{fb.className='q-feedback wrong show';if(type==='tf'){opts[ca?0:1].classList.add('correct');opts[ua?0:1].classList.add('wrong');fb.textContent='✗ خطأ.';}else{opts[ca].classList.add('correct');opts[ua].classList.add('wrong');fb.textContent='✗ الإجابة بالأخضر.';}}});const r=document.getElementById('result-'+type);document.getElementById('score-'+type).textContent=c+'/'+qs.length;const m=document.getElementById('msg-'+type);if(c===qs.length){m.textContent='🏆 ممتاز 100%!';m.className='result-message excellent';}else if(c>=3){m.textContent='👍 جيد!';m.className='result-message good';}else{m.textContent='📚 راجع الدرس.';m.className='result-message try-again';}r.classList.add('show');r.scrollIntoView({behavior:'smooth',block:'center'});}
+function retryQuiz(type){const sec=document.getElementById('quiz-'+type);sec.querySelectorAll('.q-opt').forEach(o=>{o.classList.remove('selected','correct','wrong');o.disabled=false;});sec.querySelectorAll('.q-feedback').forEach(f=>{f.classList.remove('show','correct','wrong');f.textContent='';});document.getElementById('result-'+type).classList.remove('show');answers[type]={};}
+function markComplete(btn){const done=Progress.toggleLessonComplete(COURSE_ID,LESSON_ID);btn.classList.toggle('completed',done);btn.querySelector('span:last-child').textContent=done?'مكتمل! ⭐':'علّم كمكتمل';showToast(done?'🎉 أكملت درس الشروط!':'تم إلغاء الإكمال');}
+if(Progress.isLessonComplete(COURSE_ID,LESSON_ID)){const b=document.getElementById('completeBtn');b.classList.add('completed');b.querySelector('span:last-child').textContent='مكتمل! ⭐';}
+(function(){const p=Progress.getCourseProgress(COURSE_ID,TOTAL);document.getElementById('progFill').style.width=p+'%';document.getElementById('progText').textContent=p+'%';})();
+function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
+window.addEventListener('scroll',()=>{document.getElementById('scrollTop').classList.toggle('show',window.scrollY>300);});
+document.querySelectorAll('.toc-card a').forEach(l=>{l.addEventListener('click',e=>{e.preventDefault();const t=document.querySelector(l.getAttribute('href'));if(t)t.scrollIntoView({behavior:'smooth',block:'start'});});});
+</script>
+</body>
+</html>

@@ -1,0 +1,972 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-V2NCKVL16D"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-V2NCKVL16D');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>الجداول والفورمات — دفتر البرمجة</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=Cairo:wght@300;400;500;600;700;900&family=Caveat:wght@400;700&family=Fira+Code:wght@400;500;600&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../css/shared.css">
+<link rel="stylesheet" href="../../css/notebook.css">
+<style>
+body { padding: 20px 10px; }
+
+/* form demo styles */
+.form-demo {
+  background: white; border: 2px solid var(--ink-blue);
+  border-radius: var(--radius); padding: 22px 24px; margin: 16px 0;
+}
+.form-demo label {
+  display: block; font-weight: 600; margin-bottom: 5px;
+  font-size: .95rem; color: var(--ink-blue);
+}
+.form-demo input, .form-demo select, .form-demo textarea {
+  width: 100%; padding: 10px 14px; border: 2px solid var(--border);
+  border-radius: 8px; font-family: 'Cairo', sans-serif; font-size: .95rem;
+  margin-bottom: 14px; transition: border-color .2s; outline: none;
+  background: #fafafa;
+}
+.form-demo input:focus, .form-demo select:focus, .form-demo textarea:focus {
+  border-color: var(--ink-blue); background: white;
+}
+.form-demo input[type="radio"],
+.form-demo input[type="checkbox"] {
+  width: auto; margin-left: 8px;
+}
+.form-demo .radio-group, .form-demo .check-group {
+  display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 14px; align-items: center;
+}
+.form-demo .radio-label, .form-demo .check-label {
+  display: flex; align-items: center; gap: 6px; font-weight: 400; cursor: pointer;
+}
+.form-demo button[type="submit"] {
+  background: var(--ink-blue); color: white; border: none;
+  padding: 11px 28px; border-radius: 10px;
+  font-family: 'Cairo', sans-serif; font-size: 1rem; font-weight: 700;
+  cursor: pointer; transition: all .2s;
+}
+.form-demo button[type="submit"]:hover { background: var(--ink-blue-light); transform: translateY(-2px); }
+
+/* Table demo */
+.table-demo { width: 100%; border-collapse: collapse; margin: 16px 0; background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,.06); }
+.table-demo caption { font-family: 'Aref Ruqaa', serif; font-size: 1.1rem; color: var(--ink-blue); padding: 12px; font-weight: 700; }
+.table-demo thead { background: linear-gradient(135deg, var(--ink-blue), var(--ink-blue-light)); color: white; }
+.table-demo th { padding: 12px 16px; text-align: right; font-family: 'Aref Ruqaa', serif; }
+.table-demo td { padding: 10px 16px; border-bottom: 1px solid var(--border); }
+.table-demo tbody tr:hover { background: #f0f4ff; }
+.table-demo tfoot { background: #f0f4ff; font-weight: 700; }
+.table-demo .center { text-align: center; }
+
+/* input type grid */
+.input-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 14px 0; }
+@media(max-width:600px){ .input-grid { grid-template-columns: 1fr; } }
+.input-card { background: white; border: 1.5px solid var(--border); border-radius: 10px; padding: 12px 14px; }
+.input-card .type-label { font-family: 'Fira Code', monospace; color: var(--ink-purple); font-size: .85rem; font-weight: 700; margin-bottom: 6px; }
+.input-card input, .input-card select { width: 100%; padding: 7px 10px; border: 1.5px solid var(--border); border-radius: 6px; font-family: 'Cairo', sans-serif; font-size: .9rem; }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="crumbs">
+    <a href="../../index.html">🏠 الرئيسية</a>
+    <span class="sep">/</span>
+    <a href="./index.html">🌐 الفرونت إند</a>
+    <span class="sep">/</span>
+    <span class="current">📘 الدرس 5: الجداول والفورمات</span>
+  </div>
+  <div class="progress-mini">
+    <div class="progress-bar-mini"><div class="progress-fill-mini" id="progFill"></div></div>
+    <span id="progText">0%</span>
+  </div>
+</div>
+
+<div class="notebook">
+
+  <div class="notebook-header">
+    <div class="lesson-tag">📘 الدرس الخامس</div>
+    <h1><span class="sparkle">✦</span> الجداول والفورمات <span class="sparkle">✦</span></h1>
+    <div class="lesson-meta">
+      <span>⏱️ 40 دقيقة</span>
+      <span>📊 مبتدئ</span>
+      <span>🎯 5 تمارين + اختبار</span>
+    </div>
+  </div>
+
+  <div class="toc-card">
+    <h2>📑 فهرس الدرس</h2>
+    <ol>
+      <li><a href="#s1">هيكل الجدول</a></li>
+      <li><a href="#s2">colspan و rowspan</a></li>
+      <li><a href="#s3">الفورم (form)</a></li>
+      <li><a href="#s4">أنواع الـ input</a></li>
+      <li><a href="#s5">label و textarea و select</a></li>
+      <li><a href="#s6">أزرار الفورم</a></li>
+      <li><a href="#s7">محرر الكود الحي</a></li>
+      <li><a href="#exercises">التمارين</a></li>
+      <li><a href="#quiz">اختبر فهمك</a></li>
+    </ol>
+  </div>
+
+  <!-- ══════════════════════════════════ -->
+  <!-- SECTION 1: الجداول -->
+  <!-- ══════════════════════════════════ -->
+  <div class="section" id="s1">
+    <h2 class="section-title"><span class="num">.1</span> هيكل الجدول <span class="en">Table Structure</span></h2>
+    <div class="content">
+      <p>الجدول في HTML بيتكوّن من <strong>صفوف وأعمدة</strong>. الهيكل الكامل:</p>
+
+      <div class="analogy">
+        <div class="analogy-title">📊 تخيل جدول Excel:</div>
+        <p>الـ <em>&lt;table&gt;</em> هو ورقة العمل كلها. الـ <em>&lt;thead&gt;</em> هو الصف العلوي بالعناوين (الأزرق الغامق). الـ <em>&lt;tbody&gt;</em> هو البيانات اللي في النص. الـ <em>&lt;tfoot&gt;</em> هو صف الإجمالي في الأسفل.</p>
+      </div>
+
+      <table class="table-demo">
+        <caption>نتائج طلاب الدفعة الأولى</caption>
+        <thead>
+          <tr><th>الاسم</th><th>المادة</th><th>الدرجة</th><th>التقدير</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>محمد</td><td>HTML</td><td>95</td><td>ممتاز</td></tr>
+          <tr><td>سارة</td><td>CSS</td><td>88</td><td>جيد جداً</td></tr>
+          <tr><td>أحمد</td><td>JavaScript</td><td>92</td><td>ممتاز</td></tr>
+        </tbody>
+        <tfoot>
+          <tr><td colspan="2">المتوسط العام</td><td>91.7</td><td>ممتاز</td></tr>
+        </tfoot>
+      </table>
+
+      <div class="code-box">
+<div class="code-header"><span>📋 كود الجدول الكامل</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-open">&lt;</span><span class="tag-name">table</span><span class="tag-close">&gt;</span>
+
+  <span class="comment">&lt;!-- عنوان الجدول (اختياري) --&gt;</span>
+  <span class="tag-open">&lt;</span><span class="tag-name">caption</span><span class="tag-close">&gt;</span>نتائج الطلاب<span class="tag-open">&lt;/</span><span class="tag-name">caption</span><span class="tag-close">&gt;</span>
+
+  <span class="comment">&lt;!-- رأس الجدول --&gt;</span>
+  <span class="tag-open">&lt;</span><span class="tag-name">thead</span><span class="tag-close">&gt;</span>
+    <span class="tag-open">&lt;</span><span class="tag-name">tr</span><span class="tag-close">&gt;</span>
+      <span class="tag-open">&lt;</span><span class="tag-name">th</span><span class="tag-close">&gt;</span>الاسم<span class="tag-open">&lt;/</span><span class="tag-name">th</span><span class="tag-close">&gt;</span>
+      <span class="tag-open">&lt;</span><span class="tag-name">th</span><span class="tag-close">&gt;</span>الدرجة<span class="tag-open">&lt;/</span><span class="tag-name">th</span><span class="tag-close">&gt;</span>
+    <span class="tag-open">&lt;/</span><span class="tag-name">tr</span><span class="tag-close">&gt;</span>
+  <span class="tag-open">&lt;/</span><span class="tag-name">thead</span><span class="tag-close">&gt;</span>
+
+  <span class="comment">&lt;!-- جسم الجدول --&gt;</span>
+  <span class="tag-open">&lt;</span><span class="tag-name">tbody</span><span class="tag-close">&gt;</span>
+    <span class="tag-open">&lt;</span><span class="tag-name">tr</span><span class="tag-close">&gt;</span>
+      <span class="tag-open">&lt;</span><span class="tag-name">td</span><span class="tag-close">&gt;</span>محمد<span class="tag-open">&lt;/</span><span class="tag-name">td</span><span class="tag-close">&gt;</span>
+      <span class="tag-open">&lt;</span><span class="tag-name">td</span><span class="tag-close">&gt;</span>95<span class="tag-open">&lt;/</span><span class="tag-name">td</span><span class="tag-close">&gt;</span>
+    <span class="tag-open">&lt;/</span><span class="tag-name">tr</span><span class="tag-close">&gt;</span>
+  <span class="tag-open">&lt;/</span><span class="tag-name">tbody</span><span class="tag-close">&gt;</span>
+
+  <span class="comment">&lt;!-- ذيل الجدول --&gt;</span>
+  <span class="tag-open">&lt;</span><span class="tag-name">tfoot</span><span class="tag-close">&gt;</span>
+    <span class="tag-open">&lt;</span><span class="tag-name">tr</span><span class="tag-close">&gt;</span>
+      <span class="tag-open">&lt;</span><span class="tag-name">td</span><span class="tag-close">&gt;</span>المتوسط<span class="tag-open">&lt;/</span><span class="tag-name">td</span><span class="tag-close">&gt;</span>
+      <span class="tag-open">&lt;</span><span class="tag-name">td</span><span class="tag-close">&gt;</span>95<span class="tag-open">&lt;/</span><span class="tag-name">td</span><span class="tag-close">&gt;</span>
+    <span class="tag-open">&lt;/</span><span class="tag-name">tr</span><span class="tag-close">&gt;</span>
+  <span class="tag-open">&lt;/</span><span class="tag-name">tfoot</span><span class="tag-close">&gt;</span>
+
+<span class="tag-open">&lt;/</span><span class="tag-name">table</span><span class="tag-close">&gt;</span></pre>
+      </div>
+
+      <table class="cool-table">
+        <thead><tr><th>الوسم</th><th>وظيفته</th></tr></thead>
+        <tbody>
+          <tr><td><code>&lt;table&gt;</code></td><td>الحاوية الرئيسية للجدول</td></tr>
+          <tr><td><code>&lt;caption&gt;</code></td><td>عنوان/وصف الجدول</td></tr>
+          <tr><td><code>&lt;thead&gt;</code></td><td>قسم رأس الجدول (عناوين الأعمدة)</td></tr>
+          <tr><td><code>&lt;tbody&gt;</code></td><td>قسم جسم الجدول (البيانات)</td></tr>
+          <tr><td><code>&lt;tfoot&gt;</code></td><td>قسم ذيل الجدول (الإجماليات)</td></tr>
+          <tr><td><code>&lt;tr&gt;</code></td><td>صف (Table Row)</td></tr>
+          <tr><td><code>&lt;th&gt;</code></td><td>خلية رأسية عريضة (Table Header)</td></tr>
+          <tr><td><code>&lt;td&gt;</code></td><td>خلية بيانات عادية (Table Data)</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- SECTION 2 -->
+  <div class="section" id="s2">
+    <h2 class="section-title"><span class="num">.2</span> colspan و rowspan <span class="en">Merging Cells</span></h2>
+    <div class="content">
+      <p><strong>colspan</strong> يدمج خلايا أفقياً (عبر أعمدة). <strong>rowspan</strong> يدمج خلايا عمودياً (عبر صفوف).</p>
+
+      <div class="analogy">
+        <div class="analogy-title">📦 تخيل خلايا الجدول كغرف:</div>
+        <p><em>colspan="2"</em> = إزالة الحائط بين غرفتين جنب بعض (توسيع أفقي). <em>rowspan="2"</em> = إزالة الحائط بين طابقين (توسيع عمودي).</p>
+      </div>
+
+      <div class="code-box blue">
+<div class="code-header"><span>🔀 دمج الخلايا</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-open">&lt;</span><span class="tag-name">table</span> <span class="attr">border</span>=<span class="attr-val">"1"</span><span class="tag-close">&gt;</span>
+  <span class="tag-open">&lt;</span><span class="tag-name">tr</span><span class="tag-close">&gt;</span>
+    <span class="comment">&lt;!-- colspan: تمتد على عمودين --&gt;</span>
+    <span class="tag-open">&lt;</span><span class="tag-name">th</span> <span class="attr">colspan</span>=<span class="attr-val">"2"</span><span class="tag-close">&gt;</span>المرحلة الأولى<span class="tag-open">&lt;/</span><span class="tag-name">th</span><span class="tag-close">&gt;</span>
+    <span class="tag-open">&lt;</span><span class="tag-name">th</span><span class="tag-close">&gt;</span>المرحلة الثانية<span class="tag-open">&lt;/</span><span class="tag-name">th</span><span class="tag-close">&gt;</span>
+  <span class="tag-open">&lt;/</span><span class="tag-name">tr</span><span class="tag-close">&gt;</span>
+  <span class="tag-open">&lt;</span><span class="tag-name">tr</span><span class="tag-close">&gt;</span>
+    <span class="tag-open">&lt;</span><span class="tag-name">td</span><span class="tag-close">&gt;</span>HTML<span class="tag-open">&lt;/</span><span class="tag-name">td</span><span class="tag-close">&gt;</span>
+    <span class="tag-open">&lt;</span><span class="tag-name">td</span><span class="tag-close">&gt;</span>CSS<span class="tag-open">&lt;/</span><span class="tag-name">td</span><span class="tag-close">&gt;</span>
+    <span class="tag-open">&lt;</span><span class="tag-name">td</span><span class="tag-close">&gt;</span>JavaScript<span class="tag-open">&lt;/</span><span class="tag-name">td</span><span class="tag-close">&gt;</span>
+  <span class="tag-open">&lt;/</span><span class="tag-name">tr</span><span class="tag-close">&gt;</span>
+  <span class="tag-open">&lt;</span><span class="tag-name">tr</span><span class="tag-close">&gt;</span>
+    <span class="comment">&lt;!-- rowspan: تمتد على صفين --&gt;</span>
+    <span class="tag-open">&lt;</span><span class="tag-name">td</span> <span class="attr">rowspan</span>=<span class="attr-val">"2"</span><span class="tag-close">&gt;</span>مجموعة أ<span class="tag-open">&lt;/</span><span class="tag-name">td</span><span class="tag-close">&gt;</span>
+    <span class="tag-open">&lt;</span><span class="tag-name">td</span><span class="tag-close">&gt;</span>محمد<span class="tag-open">&lt;/</span><span class="tag-name">td</span><span class="tag-close">&gt;</span>
+    <span class="tag-open">&lt;</span><span class="tag-name">td</span><span class="tag-close">&gt;</span>95<span class="tag-open">&lt;/</span><span class="tag-name">td</span><span class="tag-close">&gt;</span>
+  <span class="tag-open">&lt;/</span><span class="tag-name">tr</span><span class="tag-close">&gt;</span>
+  <span class="tag-open">&lt;</span><span class="tag-name">tr</span><span class="tag-close">&gt;</span>
+    <span class="comment">&lt;!-- مش محتاج تكتب مجموعة أ تاني --&gt;</span>
+    <span class="tag-open">&lt;</span><span class="tag-name">td</span><span class="tag-close">&gt;</span>سارة<span class="tag-open">&lt;/</span><span class="tag-name">td</span><span class="tag-close">&gt;</span>
+    <span class="tag-open">&lt;</span><span class="tag-name">td</span><span class="tag-close">&gt;</span>88<span class="tag-open">&lt;/</span><span class="tag-name">td</span><span class="tag-close">&gt;</span>
+  <span class="tag-open">&lt;/</span><span class="tag-name">tr</span><span class="tag-close">&gt;</span>
+<span class="tag-open">&lt;/</span><span class="tag-name">table</span><span class="tag-close">&gt;</span></pre>
+      </div>
+
+      <div class="warning-box"><strong>تحذير شائع:</strong> لما تستخدم <em>rowspan="2"</em>، الصف التاني هيكون فيه خلية <strong>أقل</strong> من الصفوف العادية. لو نسيت ده، الجدول هيختل.</div>
+    </div>
+  </div>
+
+  <!-- SECTION 3 -->
+  <div class="section" id="s3">
+    <h2 class="section-title"><span class="num">.3</span> الفورم <span class="en">HTML Forms</span></h2>
+    <div class="content">
+      <p>الفورم (<em>&lt;form&gt;</em>) هو الطريقة الوحيدة لإرسال بيانات المستخدم للسيرفر. تسجيل الدخول، البحث، نماذج التواصل — كلها forms.</p>
+
+      <div class="analogy">
+        <div class="analogy-title">📬 تخيل طلب وظيفة:</div>
+        <p>الـ <em>&lt;form&gt;</em> هو الورقة كلها. الـ <em>inputs</em> هي الحقول اللي بتملأها (الاسم، الإيميل، ...). الـ <em>button</em> هو زر "إرسال الطلب".</p>
+      </div>
+
+      <div class="code-box pink">
+<div class="code-header"><span>📝 هيكل الفورم الأساسي</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-open">&lt;</span><span class="tag-name">form</span> <span class="attr">action</span>=<span class="attr-val">"/submit"</span> <span class="attr">method</span>=<span class="attr-val">"POST"</span><span class="tag-close">&gt;</span>
+
+  <span class="comment">&lt;!-- كل حقل فيه label + input --&gt;</span>
+  <span class="tag-open">&lt;</span><span class="tag-name">label</span> <span class="attr">for</span>=<span class="attr-val">"username"</span><span class="tag-close">&gt;</span>اسم المستخدم:<span class="tag-open">&lt;/</span><span class="tag-name">label</span><span class="tag-close">&gt;</span>
+  <span class="tag-open">&lt;</span><span class="tag-name">input</span>
+    <span class="attr">type</span>=<span class="attr-val">"text"</span>
+    <span class="attr">id</span>=<span class="attr-val">"username"</span>
+    <span class="attr">name</span>=<span class="attr-val">"username"</span>
+    <span class="attr">placeholder</span>=<span class="attr-val">"أدخل اسمك"</span>
+    <span class="attr">required</span>
+  <span class="tag-close">&gt;</span>
+
+  <span class="tag-open">&lt;</span><span class="tag-name">button</span> <span class="attr">type</span>=<span class="attr-val">"submit"</span><span class="tag-close">&gt;</span>إرسال<span class="tag-open">&lt;/</span><span class="tag-name">button</span><span class="tag-close">&gt;</span>
+
+<span class="tag-open">&lt;/</span><span class="tag-name">form</span><span class="tag-close">&gt;</span></pre>
+      </div>
+
+      <table class="cool-table">
+        <thead><tr><th>الخاصية</th><th>وظيفتها</th><th>القيم</th></tr></thead>
+        <tbody>
+          <tr><td><code>action</code></td><td>أين تُرسل البيانات (URL)</td><td><code>/submit</code>, <code>contact.php</code></td></tr>
+          <tr><td><code>method</code></td><td>طريقة الإرسال</td><td><code>GET</code> (في الـ URL) | <code>POST</code> (مخفي)</td></tr>
+          <tr><td><code>name</code></td><td>اسم الحقل في البيانات المُرسلة</td><td>أي نص بدون مسافات</td></tr>
+          <tr><td><code>required</code></td><td>الحقل إلزامي — لا يمكن إرسال بدونه</td><td>لا قيمة لها</td></tr>
+          <tr><td><code>placeholder</code></td><td>نص تلميح داخل الحقل</td><td>أي نص</td></tr>
+        </tbody>
+      </table>
+
+      <div class="tip-box"><strong>GET مقابل POST:</strong> استخدم <em>GET</em> للبحث (البيانات تظهر في الـ URL). استخدم <em>POST</em> للبيانات الحساسة (كلمة مرور، بيانات شخصية).</div>
+    </div>
+  </div>
+
+  <!-- SECTION 4 -->
+  <div class="section" id="s4">
+    <h2 class="section-title"><span class="num">.4</span> أنواع الـ input <span class="en">Input Types</span></h2>
+    <div class="content">
+      <p>أكتر ما يميّز الـ HTML5 هو <strong>أنواع الـ input</strong> المتعددة — المتصفح بيعرف كيف يتعامل مع كل نوع:</p>
+
+      <div class="input-grid">
+        <div class="input-card">
+          <div class="type-label">type="text"</div>
+          <input type="text" placeholder="نص عادي">
+        </div>
+        <div class="input-card">
+          <div class="type-label">type="email"</div>
+          <input type="email" placeholder="example@mail.com">
+        </div>
+        <div class="input-card">
+          <div class="type-label">type="password"</div>
+          <input type="password" placeholder="كلمة المرور">
+        </div>
+        <div class="input-card">
+          <div class="type-label">type="number"</div>
+          <input type="number" placeholder="0" min="0" max="100">
+        </div>
+        <div class="input-card">
+          <div class="type-label">type="date"</div>
+          <input type="date">
+        </div>
+        <div class="input-card">
+          <div class="type-label">type="range"</div>
+          <input type="range" min="0" max="100" value="50">
+        </div>
+        <div class="input-card">
+          <div class="type-label">type="color"</div>
+          <input type="color" value="#1e3a8a">
+        </div>
+        <div class="input-card">
+          <div class="type-label">type="file"</div>
+          <input type="file">
+        </div>
+      </div>
+
+      <div class="code-box green">
+<div class="code-header"><span>🎛️ أنواع input بالكود</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-open">&lt;</span><span class="tag-name">input</span> <span class="attr">type</span>=<span class="attr-val">"text"</span>     <span class="attr">placeholder</span>=<span class="attr-val">"نص عادي"</span><span class="tag-close">&gt;</span>
+<span class="tag-open">&lt;</span><span class="tag-name">input</span> <span class="attr">type</span>=<span class="attr-val">"email"</span>    <span class="attr">placeholder</span>=<span class="attr-val">"me@example.com"</span><span class="tag-close">&gt;</span>
+<span class="tag-open">&lt;</span><span class="tag-name">input</span> <span class="attr">type</span>=<span class="attr-val">"password"</span> <span class="attr">placeholder</span>=<span class="attr-val">"••••••••"</span><span class="tag-close">&gt;</span>
+<span class="tag-open">&lt;</span><span class="tag-name">input</span> <span class="attr">type</span>=<span class="attr-val">"number"</span>  <span class="attr">min</span>=<span class="attr-val">"1"</span> <span class="attr">max</span>=<span class="attr-val">"100"</span><span class="tag-close">&gt;</span>
+<span class="tag-open">&lt;</span><span class="tag-name">input</span> <span class="attr">type</span>=<span class="attr-val">"date"</span><span class="tag-close">&gt;</span>
+<span class="tag-open">&lt;</span><span class="tag-name">input</span> <span class="attr">type</span>=<span class="attr-val">"range"</span>   <span class="attr">min</span>=<span class="attr-val">"0"</span> <span class="attr">max</span>=<span class="attr-val">"100"</span><span class="tag-close">&gt;</span>
+<span class="tag-open">&lt;</span><span class="tag-name">input</span> <span class="attr">type</span>=<span class="attr-val">"color"</span><span class="tag-close">&gt;</span>
+<span class="tag-open">&lt;</span><span class="tag-name">input</span> <span class="attr">type</span>=<span class="attr-val">"file"</span>    <span class="attr">accept</span>=<span class="attr-val">".pdf,.jpg"</span><span class="tag-close">&gt;</span>
+<span class="tag-open">&lt;</span><span class="tag-name">input</span> <span class="attr">type</span>=<span class="attr-val">"checkbox"</span> <span class="attr">id</span>=<span class="attr-val">"agree"</span><span class="tag-close">&gt;</span>
+<span class="tag-open">&lt;</span><span class="tag-name">input</span> <span class="attr">type</span>=<span class="attr-val">"radio"</span>    <span class="attr">name</span>=<span class="attr-val">"gender"</span> <span class="attr">value</span>=<span class="attr-val">"male"</span><span class="tag-close">&gt;</span></pre>
+      </div>
+
+      <div class="info-box"><strong>Radio vs Checkbox:</strong> الـ <em>radio</em> للاختيار الواحد من مجموعة (ذكر / أنثى). الـ <em>checkbox</em> للاختيار المتعدد (الهوايات: كرة + سباحة + قراءة). Radio buttons في نفس المجموعة لازم يكون لهم نفس الـ <em>name</em>.</div>
+    </div>
+  </div>
+
+  <!-- SECTION 5 -->
+  <div class="section" id="s5">
+    <h2 class="section-title"><span class="num">.5</span> label و textarea و select <span class="en">Form Elements</span></h2>
+    <div class="content">
+
+      <div class="sub-header">وسم label — ربط النص بالحقل</div>
+      <p>الـ <em>&lt;label&gt;</em> بيربط نص وصفي بحقل input. لما المستخدم يضغط على النص، الحقل ينشّط تلقائياً. الربط يتم عبر <em>for</em> في الـ label و <em>id</em> في الـ input:</p>
+
+      <div class="code-box">
+<div class="code-header"><span>🏷️ label صح ولأ</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">&lt;!-- ✅ الطريقة الصحيحة --&gt;</span>
+<span class="tag-open">&lt;</span><span class="tag-name">label</span> <span class="attr">for</span>=<span class="attr-val">"name"</span><span class="tag-close">&gt;</span>الاسم الكامل:<span class="tag-open">&lt;/</span><span class="tag-name">label</span><span class="tag-close">&gt;</span>
+<span class="tag-open">&lt;</span><span class="tag-name">input</span> <span class="attr">type</span>=<span class="attr-val">"text"</span> <span class="attr">id</span>=<span class="attr-val">"name"</span> <span class="attr">name</span>=<span class="attr-val">"fullname"</span><span class="tag-close">&gt;</span>
+
+<span class="comment">&lt;!-- ✅ أو التضمين: label حاوي input --&gt;</span>
+<span class="tag-open">&lt;</span><span class="tag-name">label</span><span class="tag-close">&gt;</span>
+  الاسم الكامل:
+  <span class="tag-open">&lt;</span><span class="tag-name">input</span> <span class="attr">type</span>=<span class="attr-val">"text"</span> <span class="attr">name</span>=<span class="attr-val">"fullname"</span><span class="tag-close">&gt;</span>
+<span class="tag-open">&lt;/</span><span class="tag-name">label</span><span class="tag-close">&gt;</span></pre>
+      </div>
+
+      <div class="sub-header">textarea — حقل نص متعدد الأسطر</div>
+      <div class="code-box blue">
+<div class="code-header"><span>📄 textarea</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-open">&lt;</span><span class="tag-name">label</span> <span class="attr">for</span>=<span class="attr-val">"msg"</span><span class="tag-close">&gt;</span>رسالتك:<span class="tag-open">&lt;/</span><span class="tag-name">label</span><span class="tag-close">&gt;</span>
+<span class="tag-open">&lt;</span><span class="tag-name">textarea</span>
+  <span class="attr">id</span>=<span class="attr-val">"msg"</span>
+  <span class="attr">name</span>=<span class="attr-val">"message"</span>
+  <span class="attr">rows</span>=<span class="attr-val">"5"</span>
+  <span class="attr">cols</span>=<span class="attr-val">"40"</span>
+  <span class="attr">placeholder</span>=<span class="attr-val">"اكتب رسالتك هنا..."</span>
+  <span class="attr">required</span>
+<span class="tag-close">&gt;</span><span class="tag-open">&lt;/</span><span class="tag-name">textarea</span><span class="tag-close">&gt;</span></pre>
+      </div>
+
+      <div class="sub-header">select — قائمة منسدلة</div>
+      <div class="code-box green">
+<div class="code-header"><span>🔽 select و option</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="tag-open">&lt;</span><span class="tag-name">label</span> <span class="attr">for</span>=<span class="attr-val">"course"</span><span class="tag-close">&gt;</span>اختر المسار:<span class="tag-open">&lt;/</span><span class="tag-name">label</span><span class="tag-close">&gt;</span>
+<span class="tag-open">&lt;</span><span class="tag-name">select</span> <span class="attr">id</span>=<span class="attr-val">"course"</span> <span class="attr">name</span>=<span class="attr-val">"course"</span><span class="tag-close">&gt;</span>
+  <span class="tag-open">&lt;</span><span class="tag-name">option</span> <span class="attr">value</span>=<span class="attr-val">""</span><span class="tag-close">&gt;</span>-- اختر --<span class="tag-open">&lt;/</span><span class="tag-name">option</span><span class="tag-close">&gt;</span>
+  <span class="tag-open">&lt;</span><span class="tag-name">option</span> <span class="attr">value</span>=<span class="attr-val">"frontend"</span><span class="tag-close">&gt;</span>الفرونت إند<span class="tag-open">&lt;/</span><span class="tag-name">option</span><span class="tag-close">&gt;</span>
+  <span class="tag-open">&lt;</span><span class="tag-name">option</span> <span class="attr">value</span>=<span class="attr-val">"python"</span> <span class="attr">selected</span><span class="tag-close">&gt;</span>Python<span class="tag-open">&lt;/</span><span class="tag-name">option</span><span class="tag-close">&gt;</span>
+  <span class="tag-open">&lt;</span><span class="tag-name">option</span> <span class="attr">value</span>=<span class="attr-val">"backend"</span> <span class="attr">disabled</span><span class="tag-close">&gt;</span>الباك إند (قريباً)<span class="tag-open">&lt;/</span><span class="tag-name">option</span><span class="tag-close">&gt;</span>
+<span class="tag-open">&lt;/</span><span class="tag-name">select</span><span class="tag-close">&gt;</span></pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 6 -->
+  <div class="section" id="s6">
+    <h2 class="section-title"><span class="num">.6</span> أزرار الفورم <span class="en">Buttons</span></h2>
+    <div class="content">
+      <div class="code-box pink">
+<div class="code-header"><span>🔘 أنواع الأزرار</span><button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button></div>
+<pre><span class="comment">&lt;!-- إرسال الفورم --&gt;</span>
+<span class="tag-open">&lt;</span><span class="tag-name">button</span> <span class="attr">type</span>=<span class="attr-val">"submit"</span><span class="tag-close">&gt;</span>إرسال ✉️<span class="tag-open">&lt;/</span><span class="tag-name">button</span><span class="tag-close">&gt;</span>
+
+<span class="comment">&lt;!-- إعادة تعيين الحقول --&gt;</span>
+<span class="tag-open">&lt;</span><span class="tag-name">button</span> <span class="attr">type</span>=<span class="attr-val">"reset"</span><span class="tag-close">&gt;</span>مسح 🗑️<span class="tag-open">&lt;/</span><span class="tag-name">button</span><span class="tag-close">&gt;</span>
+
+<span class="comment">&lt;!-- زر عادي لا يرسل الفورم --&gt;</span>
+<span class="tag-open">&lt;</span><span class="tag-name">button</span> <span class="attr">type</span>=<span class="attr-val">"button"</span> <span class="attr">onclick</span>=<span class="attr-val">"doSomething()"</span><span class="tag-close">&gt;</span>معاينة 👁️<span class="tag-open">&lt;/</span><span class="tag-name">button</span><span class="tag-close">&gt;</span></pre>
+      </div>
+      <div class="warning-box"><strong>مهم:</strong> لو استخدمت <em>&lt;button&gt;</em> داخل <em>&lt;form&gt;</em> بدون <em>type</em>، القيمة الافتراضية هي <em>submit</em> وده ممكن يرسل الفورم بالغلط. دايماً حدد الـ type.</div>
+    </div>
+  </div>
+
+  <!-- SECTION 7: TRY IT -->
+  <div class="section" id="s7">
+    <h2 class="section-title"><span class="num">.7</span> جرب بنفسك! <span class="en">Try It Live</span></h2>
+    <div class="content">
+      <div class="try-it">
+        <div class="try-it-header">
+          <span>💻 محرر الكود الحي</span>
+          <div class="try-it-controls">
+            <button class="try-btn" onclick="runCode(this)">▶️ تشغيل</button>
+            <button class="try-btn" onclick="resetCode(this)">🔄 إعادة</button>
+          </div>
+        </div>
+        <div class="try-it-body">
+          <textarea class="try-it-editor" spellcheck="false" data-default='<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    body { font-family: Arial; padding: 20px; }
+    table { border-collapse: collapse; width: 100%; margin-bottom: 30px; }
+    th, td { border: 1px solid #ddd; padding: 10px; text-align: right; }
+    thead { background: #1e3a8a; color: white; }
+    tfoot { background: #f0f4ff; font-weight: bold; }
+    form { background: #f9f9f9; padding: 20px; border-radius: 8px; }
+    label { display: block; margin-bottom: 5px; font-weight: bold; }
+    input, select, textarea { width: 100%; padding: 8px; margin-bottom: 14px; border: 1px solid #ccc; border-radius: 5px; }
+    button { background: #1e3a8a; color: white; border: none; padding: 10px 24px; border-radius: 6px; cursor: pointer; }
+  </style>
+</head>
+<body>
+
+  <h2>📊 جدول المبيعات</h2>
+  <table>
+    <caption>مبيعات الربع الأول 2025</caption>
+    <thead>
+      <tr>
+        <th>المنتج</th>
+        <th colspan="2">المبيعات</th>
+        <th>الإجمالي</th>
+      </tr>
+      <tr>
+        <th></th>
+        <th>يناير</th>
+        <th>فبراير</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td rowspan="2">الكورسات</td>
+        <td>500</td>
+        <td>650</td>
+        <td>1150</td>
+      </tr>
+      <tr>
+        <td>200</td>
+        <td>300</td>
+        <td>500</td>
+      </tr>
+    </tbody>
+    <tfoot>
+      <tr>
+        <td colspan="3">الإجمالي</td>
+        <td>1650</td>
+      </tr>
+    </tfoot>
+  </table>
+
+  <h2>📝 نموذج التسجيل</h2>
+  <form>
+    <label for="name">الاسم الكامل:</label>
+    <input type="text" id="name" placeholder="محمد أحمد" required>
+
+    <label for="email">البريد الإلكتروني:</label>
+    <input type="email" id="email" placeholder="me@example.com" required>
+
+    <label for="course">اختر المسار:</label>
+    <select id="course">
+      <option value="">-- اختر --</option>
+      <option value="frontend">الفرونت إند</option>
+      <option value="python">Python</option>
+    </select>
+
+    <label for="msg">رسالتك:</label>
+    <textarea id="msg" rows="3" placeholder="اكتب ملاحظاتك..."></textarea>
+
+    <button type="submit">إرسال التسجيل ✉️</button>
+    <button type="reset" style="background:#dc2626; margin-right:10px;">مسح 🗑️</button>
+  </form>
+
+</body>
+</html>'><!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    body { font-family: Arial; padding: 20px; }
+    table { border-collapse: collapse; width: 100%; margin-bottom: 30px; }
+    th, td { border: 1px solid #ddd; padding: 10px; text-align: right; }
+    thead { background: #1e3a8a; color: white; }
+    tfoot { background: #f0f4ff; font-weight: bold; }
+    form { background: #f9f9f9; padding: 20px; border-radius: 8px; }
+    label { display: block; margin-bottom: 5px; font-weight: bold; }
+    input, select, textarea { width: 100%; padding: 8px; margin-bottom: 14px; border: 1px solid #ccc; border-radius: 5px; }
+    button { background: #1e3a8a; color: white; border: none; padding: 10px 24px; border-radius: 6px; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <h2>📊 جدول المبيعات</h2>
+  <table>
+    <caption>مبيعات الربع الأول 2025</caption>
+    <thead>
+      <tr><th>المنتج</th><th colspan="2">المبيعات</th><th>الإجمالي</th></tr>
+      <tr><th></th><th>يناير</th><th>فبراير</th><th></th></tr>
+    </thead>
+    <tbody>
+      <tr><td rowspan="2">الكورسات</td><td>500</td><td>650</td><td>1150</td></tr>
+      <tr><td>200</td><td>300</td><td>500</td></tr>
+    </tbody>
+    <tfoot>
+      <tr><td colspan="3">الإجمالي</td><td>1650</td></tr>
+    </tfoot>
+  </table>
+  <h2>📝 نموذج التسجيل</h2>
+  <form>
+    <label for="name">الاسم:</label>
+    <input type="text" id="name" placeholder="محمد أحمد" required>
+    <label for="email">الإيميل:</label>
+    <input type="email" id="email" placeholder="me@example.com" required>
+    <label for="course">المسار:</label>
+    <select id="course">
+      <option value="">-- اختر --</option>
+      <option value="frontend">الفرونت إند</option>
+      <option value="python">Python</option>
+    </select>
+    <label for="msg">رسالتك:</label>
+    <textarea id="msg" rows="3" placeholder="اكتب ملاحظاتك..."></textarea>
+    <button type="submit">إرسال ✉️</button>
+    <button type="reset" style="background:#dc2626; margin-right:10px;">مسح 🗑️</button>
+  </form>
+</body>
+</html></textarea>
+          <div class="try-it-preview"><iframe srcdoc="" sandbox="allow-scripts allow-same-origin allow-modals allow-popups allow-forms" title="معاينة الكود"></iframe></div>
+        </div>
+      </div>
+      <div class="tip-box"><strong>جرب:</strong> ضيف حقل <em>type="color"</em> أو <em>type="range"</em> للفورم وشوف التجربة!</div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════ -->
+  <!-- EXERCISES -->
+  <!-- ══════════════════════════════════ -->
+  <div class="section" id="exercises">
+    <h2 class="section-title"><span class="num">📝</span> التمارين <span class="en">Exercises</span></h2>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 1: جدول جدول حصص</div>
+      <p>اعمل جدول حصص أسبوعي فيه: thead بأيام الأسبوع (السبت للأربعاء)، tbody بـ 3 حصص، caption بعنوان.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre><span class="tag-open">&lt;</span><span class="tag-name">table</span> <span class="attr">border</span>=<span class="attr-val">"1"</span><span class="tag-close">&gt;</span>
+  <span class="tag-open">&lt;</span><span class="tag-name">caption</span><span class="tag-close">&gt;</span>جدول حصصي الأسبوعي<span class="tag-open">&lt;/</span><span class="tag-name">caption</span><span class="tag-close">&gt;</span>
+  <span class="tag-open">&lt;</span><span class="tag-name">thead</span><span class="tag-close">&gt;</span>
+    <span class="tag-open">&lt;</span><span class="tag-name">tr</span><span class="tag-close">&gt;</span>
+      <span class="tag-open">&lt;</span><span class="tag-name">th</span><span class="tag-close">&gt;</span>الحصة<span class="tag-open">&lt;/</span><span class="tag-name">th</span><span class="tag-close">&gt;</span>
+      <span class="tag-open">&lt;</span><span class="tag-name">th</span><span class="tag-close">&gt;</span>السبت<span class="tag-open">&lt;/</span><span class="tag-name">th</span><span class="tag-close">&gt;</span>
+      <span class="tag-open">&lt;</span><span class="tag-name">th</span><span class="tag-close">&gt;</span>الأحد<span class="tag-open">&lt;/</span><span class="tag-name">th</span><span class="tag-close">&gt;</span>
+      <span class="tag-open">&lt;</span><span class="tag-name">th</span><span class="tag-close">&gt;</span>الاثنين<span class="tag-open">&lt;/</span><span class="tag-name">th</span><span class="tag-close">&gt;</span>
+    <span class="tag-open">&lt;/</span><span class="tag-name">tr</span><span class="tag-close">&gt;</span>
+  <span class="tag-open">&lt;/</span><span class="tag-name">thead</span><span class="tag-close">&gt;</span>
+  <span class="tag-open">&lt;</span><span class="tag-name">tbody</span><span class="tag-close">&gt;</span>
+    <span class="tag-open">&lt;</span><span class="tag-name">tr</span><span class="tag-close">&gt;</span><span class="tag-open">&lt;</span><span class="tag-name">td</span><span class="tag-close">&gt;</span>1<span class="tag-open">&lt;/</span><span class="tag-name">td</span><span class="tag-close">&gt;</span><span class="tag-open">&lt;</span><span class="tag-name">td</span><span class="tag-close">&gt;</span>HTML<span class="tag-open">&lt;/</span><span class="tag-name">td</span><span class="tag-close">&gt;</span><span class="tag-open">&lt;</span><span class="tag-name">td</span><span class="tag-close">&gt;</span>CSS<span class="tag-open">&lt;/</span><span class="tag-name">td</span><span class="tag-close">&gt;</span><span class="tag-open">&lt;</span><span class="tag-name">td</span><span class="tag-close">&gt;</span>JS<span class="tag-open">&lt;/</span><span class="tag-name">td</span><span class="tag-close">&gt;</span><span class="tag-open">&lt;/</span><span class="tag-name">tr</span><span class="tag-close">&gt;</span>
+    <span class="tag-open">&lt;</span><span class="tag-name">tr</span><span class="tag-close">&gt;</span><span class="tag-open">&lt;</span><span class="tag-name">td</span><span class="tag-close">&gt;</span>2<span class="tag-open">&lt;/</span><span class="tag-name">td</span><span class="tag-close">&gt;</span><span class="tag-open">&lt;</span><span class="tag-name">td</span><span class="tag-close">&gt;</span>Python<span class="tag-open">&lt;/</span><span class="tag-name">td</span><span class="tag-close">&gt;</span><span class="tag-open">&lt;</span><span class="tag-name">td</span><span class="tag-close">&gt;</span>HTML<span class="tag-open">&lt;/</span><span class="tag-name">td</span><span class="tag-close">&gt;</span><span class="tag-open">&lt;</span><span class="tag-name">td</span><span class="tag-close">&gt;</span>CSS<span class="tag-open">&lt;/</span><span class="tag-name">td</span><span class="tag-close">&gt;</span><span class="tag-open">&lt;/</span><span class="tag-name">tr</span><span class="tag-close">&gt;</span>
+    <span class="tag-open">&lt;</span><span class="tag-name">tr</span><span class="tag-close">&gt;</span><span class="tag-open">&lt;</span><span class="tag-name">td</span><span class="tag-close">&gt;</span>3<span class="tag-open">&lt;/</span><span class="tag-name">td</span><span class="tag-close">&gt;</span><span class="tag-open">&lt;</span><span class="tag-name">td</span><span class="tag-close">&gt;</span>مشروع<span class="tag-open">&lt;/</span><span class="tag-name">td</span><span class="tag-close">&gt;</span><span class="tag-open">&lt;</span><span class="tag-name">td</span><span class="tag-close">&gt;</span>مشروع<span class="tag-open">&lt;/</span><span class="tag-name">td</span><span class="tag-close">&gt;</span><span class="tag-open">&lt;</span><span class="tag-name">td</span><span class="tag-close">&gt;</span>مشروع<span class="tag-open">&lt;/</span><span class="tag-name">td</span><span class="tag-close">&gt;</span><span class="tag-open">&lt;/</span><span class="tag-name">tr</span><span class="tag-close">&gt;</span>
+  <span class="tag-open">&lt;/</span><span class="tag-name">tbody</span><span class="tag-close">&gt;</span>
+<span class="tag-open">&lt;/</span><span class="tag-name">table</span><span class="tag-close">&gt;</span></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 2: جدول بدمج خلايا</div>
+      <p>اعمل جدول فيه: الخلية الأولى تمتد على عمودين (colspan="2")، وخلية في العمود الأول تمتد على صفين (rowspan="2").</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre><span class="tag-open">&lt;</span><span class="tag-name">table</span> <span class="attr">border</span>=<span class="attr-val">"1"</span><span class="tag-close">&gt;</span>
+  <span class="tag-open">&lt;</span><span class="tag-name">tr</span><span class="tag-close">&gt;</span>
+    <span class="tag-open">&lt;</span><span class="tag-name">th</span> <span class="attr">colspan</span>=<span class="attr-val">"2"</span><span class="tag-close">&gt;</span>المسارات التعليمية<span class="tag-open">&lt;/</span><span class="tag-name">th</span><span class="tag-close">&gt;</span>
+    <span class="tag-open">&lt;</span><span class="tag-name">th</span><span class="tag-close">&gt;</span>المدة<span class="tag-open">&lt;/</span><span class="tag-name">th</span><span class="tag-close">&gt;</span>
+  <span class="tag-open">&lt;/</span><span class="tag-name">tr</span><span class="tag-close">&gt;</span>
+  <span class="tag-open">&lt;</span><span class="tag-name">tr</span><span class="tag-close">&gt;</span>
+    <span class="tag-open">&lt;</span><span class="tag-name">td</span> <span class="attr">rowspan</span>=<span class="attr-val">"2"</span><span class="tag-close">&gt;</span>الفرونت إند<span class="tag-open">&lt;/</span><span class="tag-name">td</span><span class="tag-close">&gt;</span>
+    <span class="tag-open">&lt;</span><span class="tag-name">td</span><span class="tag-close">&gt;</span>HTML وCSS<span class="tag-open">&lt;/</span><span class="tag-name">td</span><span class="tag-close">&gt;</span>
+    <span class="tag-open">&lt;</span><span class="tag-name">td</span><span class="tag-close">&gt;</span>4 أسابيع<span class="tag-open">&lt;/</span><span class="tag-name">td</span><span class="tag-close">&gt;</span>
+  <span class="tag-open">&lt;/</span><span class="tag-name">tr</span><span class="tag-close">&gt;</span>
+  <span class="tag-open">&lt;</span><span class="tag-name">tr</span><span class="tag-close">&gt;</span>
+    <span class="tag-open">&lt;</span><span class="tag-name">td</span><span class="tag-close">&gt;</span>JavaScript<span class="tag-open">&lt;/</span><span class="tag-name">td</span><span class="tag-close">&gt;</span>
+    <span class="tag-open">&lt;</span><span class="tag-name">td</span><span class="tag-close">&gt;</span>6 أسابيع<span class="tag-open">&lt;/</span><span class="tag-name">td</span><span class="tag-close">&gt;</span>
+  <span class="tag-open">&lt;/</span><span class="tag-name">tr</span><span class="tag-close">&gt;</span>
+<span class="tag-open">&lt;/</span><span class="tag-name">table</span><span class="tag-close">&gt;</span></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 3: نموذج تسجيل الدخول</div>
+      <p>اعمل فورم تسجيل دخول فيه: حقل إيميل، حقل كلمة مرور، checkbox "تذكرني"، وزر submit.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre><span class="tag-open">&lt;</span><span class="tag-name">form</span> <span class="attr">action</span>=<span class="attr-val">"/login"</span> <span class="attr">method</span>=<span class="attr-val">"POST"</span><span class="tag-close">&gt;</span>
+
+  <span class="tag-open">&lt;</span><span class="tag-name">label</span> <span class="attr">for</span>=<span class="attr-val">"email"</span><span class="tag-close">&gt;</span>البريد الإلكتروني:<span class="tag-open">&lt;/</span><span class="tag-name">label</span><span class="tag-close">&gt;</span>
+  <span class="tag-open">&lt;</span><span class="tag-name">input</span> <span class="attr">type</span>=<span class="attr-val">"email"</span> <span class="attr">id</span>=<span class="attr-val">"email"</span> <span class="attr">name</span>=<span class="attr-val">"email"</span>
+         <span class="attr">placeholder</span>=<span class="attr-val">"me@example.com"</span> <span class="attr">required</span><span class="tag-close">&gt;</span>
+
+  <span class="tag-open">&lt;</span><span class="tag-name">label</span> <span class="attr">for</span>=<span class="attr-val">"pass"</span><span class="tag-close">&gt;</span>كلمة المرور:<span class="tag-open">&lt;/</span><span class="tag-name">label</span><span class="tag-close">&gt;</span>
+  <span class="tag-open">&lt;</span><span class="tag-name">input</span> <span class="attr">type</span>=<span class="attr-val">"password"</span> <span class="attr">id</span>=<span class="attr-val">"pass"</span> <span class="attr">name</span>=<span class="attr-val">"password"</span>
+         <span class="attr">placeholder</span>=<span class="attr-val">"••••••••"</span> <span class="attr">required</span><span class="tag-close">&gt;</span>
+
+  <span class="tag-open">&lt;</span><span class="tag-name">label</span><span class="tag-close">&gt;</span>
+    <span class="tag-open">&lt;</span><span class="tag-name">input</span> <span class="attr">type</span>=<span class="attr-val">"checkbox"</span> <span class="attr">name</span>=<span class="attr-val">"remember"</span><span class="tag-close">&gt;</span>
+    تذكرني
+  <span class="tag-open">&lt;/</span><span class="tag-name">label</span><span class="tag-close">&gt;</span>
+
+  <span class="tag-open">&lt;</span><span class="tag-name">button</span> <span class="attr">type</span>=<span class="attr-val">"submit"</span><span class="tag-close">&gt;</span>تسجيل الدخول<span class="tag-open">&lt;/</span><span class="tag-name">button</span><span class="tag-close">&gt;</span>
+
+<span class="tag-open">&lt;/</span><span class="tag-name">form</span><span class="tag-close">&gt;</span></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 4: استطلاع رأي</div>
+      <p>اعمل استطلاع رأي فيه: سؤال بـ radio (كيف تعلمت البرمجة؟ — دورات، يوتيوب، كتب)، سؤال بـ checkbox (ما اللغات التي تعرفها؟ — HTML, CSS, JS, Python).</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre><span class="tag-open">&lt;</span><span class="tag-name">form</span><span class="tag-close">&gt;</span>
+  <span class="tag-open">&lt;</span><span class="tag-name">p</span><span class="tag-close">&gt;</span><span class="tag-open">&lt;</span><span class="tag-name">strong</span><span class="tag-close">&gt;</span>كيف تعلمت البرمجة؟<span class="tag-open">&lt;/</span><span class="tag-name">strong</span><span class="tag-close">&gt;</span><span class="tag-open">&lt;/</span><span class="tag-name">p</span><span class="tag-close">&gt;</span>
+  <span class="tag-open">&lt;</span><span class="tag-name">label</span><span class="tag-close">&gt;</span><span class="tag-open">&lt;</span><span class="tag-name">input</span> <span class="attr">type</span>=<span class="attr-val">"radio"</span> <span class="attr">name</span>=<span class="attr-val">"how"</span> <span class="attr">value</span>=<span class="attr-val">"courses"</span><span class="tag-close">&gt;</span> دورات تدريبية<span class="tag-open">&lt;/</span><span class="tag-name">label</span><span class="tag-close">&gt;</span><span class="tag-open">&lt;</span><span class="tag-name">br</span><span class="tag-close">&gt;</span>
+  <span class="tag-open">&lt;</span><span class="tag-name">label</span><span class="tag-close">&gt;</span><span class="tag-open">&lt;</span><span class="tag-name">input</span> <span class="attr">type</span>=<span class="attr-val">"radio"</span> <span class="attr">name</span>=<span class="attr-val">"how"</span> <span class="attr">value</span>=<span class="attr-val">"youtube"</span><span class="tag-close">&gt;</span> يوتيوب<span class="tag-open">&lt;/</span><span class="tag-name">label</span><span class="tag-close">&gt;</span><span class="tag-open">&lt;</span><span class="tag-name">br</span><span class="tag-close">&gt;</span>
+  <span class="tag-open">&lt;</span><span class="tag-name">label</span><span class="tag-close">&gt;</span><span class="tag-open">&lt;</span><span class="tag-name">input</span> <span class="attr">type</span>=<span class="attr-val">"radio"</span> <span class="attr">name</span>=<span class="attr-val">"how"</span> <span class="attr">value</span>=<span class="attr-val">"books"</span><span class="tag-close">&gt;</span> كتب<span class="tag-open">&lt;/</span><span class="tag-name">label</span><span class="tag-close">&gt;</span>
+
+  <span class="tag-open">&lt;</span><span class="tag-name">p</span><span class="tag-close">&gt;</span><span class="tag-open">&lt;</span><span class="tag-name">strong</span><span class="tag-close">&gt;</span>ما اللغات التي تعرفها؟<span class="tag-open">&lt;/</span><span class="tag-name">strong</span><span class="tag-close">&gt;</span><span class="tag-open">&lt;/</span><span class="tag-name">p</span><span class="tag-close">&gt;</span>
+  <span class="tag-open">&lt;</span><span class="tag-name">label</span><span class="tag-close">&gt;</span><span class="tag-open">&lt;</span><span class="tag-name">input</span> <span class="attr">type</span>=<span class="attr-val">"checkbox"</span> <span class="attr">name</span>=<span class="attr-val">"lang"</span> <span class="attr">value</span>=<span class="attr-val">"html"</span><span class="tag-close">&gt;</span> HTML<span class="tag-open">&lt;/</span><span class="tag-name">label</span><span class="tag-close">&gt;</span>
+  <span class="tag-open">&lt;</span><span class="tag-name">label</span><span class="tag-close">&gt;</span><span class="tag-open">&lt;</span><span class="tag-name">input</span> <span class="attr">type</span>=<span class="attr-val">"checkbox"</span> <span class="attr">name</span>=<span class="attr-val">"lang"</span> <span class="attr">value</span>=<span class="attr-val">"css"</span><span class="tag-close">&gt;</span> CSS<span class="tag-open">&lt;/</span><span class="tag-name">label</span><span class="tag-close">&gt;</span>
+  <span class="tag-open">&lt;</span><span class="tag-name">label</span><span class="tag-close">&gt;</span><span class="tag-open">&lt;</span><span class="tag-name">input</span> <span class="attr">type</span>=<span class="attr-val">"checkbox"</span> <span class="attr">name</span>=<span class="attr-val">"lang"</span> <span class="attr">value</span>=<span class="attr-val">"js"</span><span class="tag-close">&gt;</span> JavaScript<span class="tag-open">&lt;/</span><span class="tag-name">label</span><span class="tag-close">&gt;</span>
+  <span class="tag-open">&lt;</span><span class="tag-name">label</span><span class="tag-close">&gt;</span><span class="tag-open">&lt;</span><span class="tag-name">input</span> <span class="attr">type</span>=<span class="attr-val">"checkbox"</span> <span class="attr">name</span>=<span class="attr-val">"lang"</span> <span class="attr">value</span>=<span class="attr-val">"py"</span><span class="tag-close">&gt;</span> Python<span class="tag-open">&lt;/</span><span class="tag-name">label</span><span class="tag-close">&gt;</span>
+
+  <span class="tag-open">&lt;</span><span class="tag-name">br</span><span class="tag-close">&gt;</span><span class="tag-open">&lt;</span><span class="tag-name">button</span> <span class="attr">type</span>=<span class="attr-val">"submit"</span><span class="tag-close">&gt;</span>إرسال الاستطلاع<span class="tag-open">&lt;/</span><span class="tag-name">button</span><span class="tag-close">&gt;</span>
+<span class="tag-open">&lt;/</span><span class="tag-name">form</span><span class="tag-close">&gt;</span></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="exercise-title">تمرين 5: نموذج تواصل كامل</div>
+      <p>اعمل نموذج تواصل كامل فيه: الاسم (text)، الإيميل (email)، الموضوع (select بـ 3 خيارات)، الرسالة (textarea)، أولوية الرد (radio: عادي/عاجل)، موافقة على الشروط (checkbox required)، وأزرار submit و reset.</p>
+      <button class="solution-toggle" onclick="toggleSolution(this)">عرض الحل ▼</button>
+      <div class="solution">
+        <span class="solution-label">الحل:</span>
+        <div class="code-box">
+<pre><span class="tag-open">&lt;</span><span class="tag-name">form</span> <span class="attr">action</span>=<span class="attr-val">"/contact"</span> <span class="attr">method</span>=<span class="attr-val">"POST"</span><span class="tag-close">&gt;</span>
+  <span class="tag-open">&lt;</span><span class="tag-name">label</span> <span class="attr">for</span>=<span class="attr-val">"n"</span><span class="tag-close">&gt;</span>الاسم:<span class="tag-open">&lt;/</span><span class="tag-name">label</span><span class="tag-close">&gt;</span>
+  <span class="tag-open">&lt;</span><span class="tag-name">input</span> <span class="attr">type</span>=<span class="attr-val">"text"</span> <span class="attr">id</span>=<span class="attr-val">"n"</span> <span class="attr">name</span>=<span class="attr-val">"name"</span> <span class="attr">required</span><span class="tag-close">&gt;</span>
+
+  <span class="tag-open">&lt;</span><span class="tag-name">label</span> <span class="attr">for</span>=<span class="attr-val">"e"</span><span class="tag-close">&gt;</span>الإيميل:<span class="tag-open">&lt;/</span><span class="tag-name">label</span><span class="tag-close">&gt;</span>
+  <span class="tag-open">&lt;</span><span class="tag-name">input</span> <span class="attr">type</span>=<span class="attr-val">"email"</span> <span class="attr">id</span>=<span class="attr-val">"e"</span> <span class="attr">name</span>=<span class="attr-val">"email"</span> <span class="attr">required</span><span class="tag-close">&gt;</span>
+
+  <span class="tag-open">&lt;</span><span class="tag-name">label</span> <span class="attr">for</span>=<span class="attr-val">"sub"</span><span class="tag-close">&gt;</span>الموضوع:<span class="tag-open">&lt;/</span><span class="tag-name">label</span><span class="tag-close">&gt;</span>
+  <span class="tag-open">&lt;</span><span class="tag-name">select</span> <span class="attr">id</span>=<span class="attr-val">"sub"</span> <span class="attr">name</span>=<span class="attr-val">"subject"</span><span class="tag-close">&gt;</span>
+    <span class="tag-open">&lt;</span><span class="tag-name">option</span> <span class="attr">value</span>=<span class="attr-val">"support"</span><span class="tag-close">&gt;</span>الدعم التقني<span class="tag-open">&lt;/</span><span class="tag-name">option</span><span class="tag-close">&gt;</span>
+    <span class="tag-open">&lt;</span><span class="tag-name">option</span> <span class="attr">value</span>=<span class="attr-val">"billing"</span><span class="tag-close">&gt;</span>الاشتراك<span class="tag-open">&lt;/</span><span class="tag-name">option</span><span class="tag-close">&gt;</span>
+    <span class="tag-open">&lt;</span><span class="tag-name">option</span> <span class="attr">value</span>=<span class="attr-val">"other"</span><span class="tag-close">&gt;</span>أخرى<span class="tag-open">&lt;/</span><span class="tag-name">option</span><span class="tag-close">&gt;</span>
+  <span class="tag-open">&lt;/</span><span class="tag-name">select</span><span class="tag-close">&gt;</span>
+
+  <span class="tag-open">&lt;</span><span class="tag-name">label</span> <span class="attr">for</span>=<span class="attr-val">"m"</span><span class="tag-close">&gt;</span>الرسالة:<span class="tag-open">&lt;/</span><span class="tag-name">label</span><span class="tag-close">&gt;</span>
+  <span class="tag-open">&lt;</span><span class="tag-name">textarea</span> <span class="attr">id</span>=<span class="attr-val">"m"</span> <span class="attr">name</span>=<span class="attr-val">"message"</span> <span class="attr">rows</span>=<span class="attr-val">"4"</span> <span class="attr">required</span><span class="tag-close">&gt;</span><span class="tag-open">&lt;/</span><span class="tag-name">textarea</span><span class="tag-close">&gt;</span>
+
+  <span class="tag-open">&lt;</span><span class="tag-name">p</span><span class="tag-close">&gt;</span>الأولوية:<span class="tag-open">&lt;/</span><span class="tag-name">p</span><span class="tag-close">&gt;</span>
+  <span class="tag-open">&lt;</span><span class="tag-name">label</span><span class="tag-close">&gt;</span><span class="tag-open">&lt;</span><span class="tag-name">input</span> <span class="attr">type</span>=<span class="attr-val">"radio"</span> <span class="attr">name</span>=<span class="attr-val">"priority"</span> <span class="attr">value</span>=<span class="attr-val">"normal"</span> <span class="attr">checked</span><span class="tag-close">&gt;</span> عادي<span class="tag-open">&lt;/</span><span class="tag-name">label</span><span class="tag-close">&gt;</span>
+  <span class="tag-open">&lt;</span><span class="tag-name">label</span><span class="tag-close">&gt;</span><span class="tag-open">&lt;</span><span class="tag-name">input</span> <span class="attr">type</span>=<span class="attr-val">"radio"</span> <span class="attr">name</span>=<span class="attr-val">"priority"</span> <span class="attr">value</span>=<span class="attr-val">"urgent"</span><span class="tag-close">&gt;</span> عاجل<span class="tag-open">&lt;/</span><span class="tag-name">label</span><span class="tag-close">&gt;</span>
+
+  <span class="tag-open">&lt;</span><span class="tag-name">label</span><span class="tag-close">&gt;</span>
+    <span class="tag-open">&lt;</span><span class="tag-name">input</span> <span class="attr">type</span>=<span class="attr-val">"checkbox"</span> <span class="attr">name</span>=<span class="attr-val">"terms"</span> <span class="attr">required</span><span class="tag-close">&gt;</span>
+    أوافق على الشروط والأحكام
+  <span class="tag-open">&lt;/</span><span class="tag-name">label</span><span class="tag-close">&gt;</span>
+
+  <span class="tag-open">&lt;</span><span class="tag-name">button</span> <span class="attr">type</span>=<span class="attr-val">"submit"</span><span class="tag-close">&gt;</span>إرسال ✉️<span class="tag-open">&lt;/</span><span class="tag-name">button</span><span class="tag-close">&gt;</span>
+  <span class="tag-open">&lt;</span><span class="tag-name">button</span> <span class="attr">type</span>=<span class="attr-val">"reset"</span><span class="tag-close">&gt;</span>مسح 🗑️<span class="tag-open">&lt;/</span><span class="tag-name">button</span><span class="tag-close">&gt;</span>
+<span class="tag-open">&lt;/</span><span class="tag-name">form</span><span class="tag-close">&gt;</span></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="quiz-container" id="quiz">
+    <div class="quiz-intro"><p>اختبر فهمك! جاوب على الأسئلة.</p></div>
+    <div class="quiz-type-tabs">
+      <button class="qt-tab active" onclick="switchQuiz(this,'tf')">✓✗ صح وخطأ</button>
+      <button class="qt-tab" onclick="switchQuiz(this,'mc')">🔘 اختيار من متعدد</button>
+    </div>
+
+    <div class="quiz-section active" id="quiz-tf">
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">1</span>
+        <span class="q-text">وسم &lt;th&gt; في الجداول بيعرض النص بشكل عريض (Bold) افتراضياً.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="false">
+        <span class="q-num">2</span>
+        <span class="q-text">colspan بيدمج الخلايا عمودياً (من فوق لتحت).</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">3</span>
+        <span class="q-text">method="POST" يُخفي البيانات المُرسلة ولا تظهر في الـ URL.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="false">
+        <span class="q-num">4</span>
+        <span class="q-text">عناصر radio مختلفة المجموعات لازم يكون لها نفس الـ name.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="true">
+        <span class="q-num">5</span>
+        <span class="q-text">الـ label بيربط النص بحقل input عن طريق for في label وid في input.</span>
+        <div class="q-options"><button class="q-opt" onclick="answerTF(this,true)">✓ صح</button><button class="q-opt" onclick="answerTF(this,false)">✗ خطأ</button></div>
+        <div class="q-feedback"></div>
+      </div>
+      <button class="quiz-submit" onclick="submitQuiz('tf')">عرض النتيجة 🎯</button>
+      <div class="quiz-result" id="result-tf">
+        <div class="result-score" id="score-tf">0/5</div>
+        <div class="result-label">إجابات صحيحة</div>
+        <div class="result-message" id="msg-tf"></div>
+        <button class="retry-btn" onclick="retryQuiz('tf')">🔄 حاول تاني</button>
+      </div>
+    </div>
+
+    <div class="quiz-section" id="quiz-mc">
+      <div class="quiz-question" data-correct="2">
+        <span class="q-num">1</span>
+        <span class="q-text">إيه الوسم اللي بيحتوي بيانات الجدول (مش العناوين)؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">&lt;th&gt;</button>
+          <button class="q-opt" onclick="answerMC(this,1)">&lt;tr&gt;</button>
+          <button class="q-opt" onclick="answerMC(this,2)">&lt;td&gt;</button>
+          <button class="q-opt" onclick="answerMC(this,3)">&lt;data&gt;</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="0">
+        <span class="q-num">2</span>
+        <span class="q-text">إيه نوع الـ input للاختيار الواحد من مجموعة (ذكر/أنثى)؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">radio</button>
+          <button class="q-opt" onclick="answerMC(this,1)">checkbox</button>
+          <button class="q-opt" onclick="answerMC(this,2)">select</button>
+          <button class="q-opt" onclick="answerMC(this,3)">option</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="3">
+        <span class="q-num">3</span>
+        <span class="q-text">إيه الـ attribute اللي بيمنع إرسال الفورم لو الحقل فاضي؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">needed</button>
+          <button class="q-opt" onclick="answerMC(this,1)">mandatory</button>
+          <button class="q-opt" onclick="answerMC(this,2)">validate</button>
+          <button class="q-opt" onclick="answerMC(this,3)">required</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="1">
+        <span class="q-num">4</span>
+        <span class="q-text">إيه الفرق بين &lt;input type="text"&gt; و &lt;textarea&gt;؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">مفيش فرق</button>
+          <button class="q-opt" onclick="answerMC(this,1)">textarea متعدد الأسطر، input سطر واحد</button>
+          <button class="q-opt" onclick="answerMC(this,2)">textarea للأرقام فقط</button>
+          <button class="q-opt" onclick="answerMC(this,3)">input أكبر من textarea</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <div class="quiz-question" data-correct="2">
+        <span class="q-num">5</span>
+        <span class="q-text">لدمج خليتين في نفس الصف أفقياً، نستخدم؟</span>
+        <div class="q-options">
+          <button class="q-opt" onclick="answerMC(this,0)">rowspan="2"</button>
+          <button class="q-opt" onclick="answerMC(this,1)">merge="2"</button>
+          <button class="q-opt" onclick="answerMC(this,2)">colspan="2"</button>
+          <button class="q-opt" onclick="answerMC(this,3)">span="2"</button>
+        </div><div class="q-feedback"></div>
+      </div>
+      <button class="quiz-submit" onclick="submitQuiz('mc')">عرض النتيجة 🎯</button>
+      <div class="quiz-result" id="result-mc">
+        <div class="result-score" id="score-mc">0/5</div>
+        <div class="result-label">إجابات صحيحة</div>
+        <div class="result-message" id="msg-mc"></div>
+        <button class="retry-btn" onclick="retryQuiz('mc')">🔄 حاول تاني</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- NAVIGATION -->
+  <div class="lesson-nav">
+    <a href="./lesson-04.html" class="nav-btn"><span>⬅️</span><span>الدرس السابق</span></a>
+    <button class="nav-btn complete-btn" id="completeBtn" onclick="markComplete(this)">
+      <span>✅</span><span>علّم كمكتمل</span>
+    </button>
+    <a href="./lesson-06.html" class="nav-btn"><span>الدرس التالي</span><span>➡️</span></a>
+  </div>
+
+  <div class="notebook-footer">
+    <h3>🏆 أنهيت مرحلة HTML بالكامل!</h3>
+    <p>
+      5 دروس، جداول، فورمات، صور، روابط، وسوم دلالية...<br>
+      دلوقتي جاهز تتعلم <strong>CSS</strong> وتخلي صفحاتك تبقى تحفة 🎨<br><br>
+      <strong>استمر، الأجمل جاي! 🚀</strong>
+    </p>
+  </div>
+
+</div><!-- end .notebook -->
+
+<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">⬆️</button>
+<div class="toast" id="toast"></div>
+
+<script src="../../js/data/courses.js"></script>
+<script src="../../js/progress.js"></script>
+<script src="../../js/lesson-editor.js"></script>
+<script>
+const COURSE_ID = 'frontend', LESSON_ID = 5, TOTAL = 32;
+
+// ── Solution toggle ──
+function toggleSolution(b) {
+  const s = b.nextElementSibling;
+  s.classList.toggle('show');
+  b.textContent = s.classList.contains('show') ? 'إخفاء الحل ▲' : 'عرض الحل ▼';
+}
+
+// ── Copy code ──
+function copyCode(b) {
+  const p = b.closest('.code-box').querySelector('pre');
+  navigator.clipboard.writeText(p.innerText).then(() => {
+    b.classList.add('copied'); b.textContent = '✓ تم النسخ';
+    setTimeout(() => { b.classList.remove('copied'); b.textContent = '📋 نسخ'; }, 2000);
+  });
+}
+
+// ── Live editor ──
+function runCode(b)   { const t = b.closest('.try-it'); t.querySelector('iframe').srcdoc = t.querySelector('.try-it-editor').value; }
+function resetCode(b) { const t = b.closest('.try-it'), e = t.querySelector('.try-it-editor'); e.value = e.dataset.default; t.querySelector('iframe').srcdoc = e.value; }
+window.addEventListener('load', () => {
+  document.querySelectorAll('.try-it').forEach(t => { const e = t.querySelector('.try-it-editor'); t.querySelector('iframe').srcdoc = e.value; });
+});
+
+// ── Quiz ──
+function switchQuiz(b, t) {
+  document.querySelectorAll('.qt-tab').forEach(x => x.classList.remove('active'));
+  document.querySelectorAll('.quiz-section').forEach(x => x.classList.remove('active'));
+  b.classList.add('active');
+  document.getElementById('quiz-' + t).classList.add('active');
+}
+
+const answers = { tf: {}, mc: {} };
+
+function answerTF(b, v) {
+  const q = b.closest('.quiz-question'), i = Array.from(q.parentNode.querySelectorAll('.quiz-question')).indexOf(q);
+  q.querySelectorAll('.q-opt').forEach(o => o.classList.remove('selected'));
+  b.classList.add('selected'); answers.tf[i] = v;
+}
+
+function answerMC(b, i) {
+  const q = b.closest('.quiz-question'), qi = Array.from(q.parentNode.querySelectorAll('.quiz-question')).indexOf(q);
+  q.querySelectorAll('.q-opt').forEach(o => o.classList.remove('selected'));
+  b.classList.add('selected'); answers.mc[qi] = i;
+}
+
+function submitQuiz(type) {
+  const sec = document.getElementById('quiz-' + type), qs = sec.querySelectorAll('.quiz-question');
+  let c = 0;
+  qs.forEach((q, i) => {
+    const ca = type === 'tf' ? (q.dataset.correct === 'true') : parseInt(q.dataset.correct);
+    const ua = answers[type][i];
+    const fb = q.querySelector('.q-feedback'), opts = q.querySelectorAll('.q-opt');
+    opts.forEach(o => { o.classList.remove('selected'); o.disabled = true; });
+    if (ua === undefined) { fb.className = 'q-feedback wrong show'; fb.textContent = '⚠️ ما اخترتش إجابة!'; return; }
+    if (ua === ca) {
+      c++; fb.className = 'q-feedback correct show'; fb.textContent = '✓ إجابة صحيحة!';
+      if (type === 'tf') opts[ca ? 0 : 1].classList.add('correct'); else opts[ca].classList.add('correct');
+    } else {
+      fb.className = 'q-feedback wrong show';
+      if (type === 'tf') { opts[ca ? 0 : 1].classList.add('correct'); opts[ua ? 0 : 1].classList.add('wrong'); fb.textContent = '✗ خطأ. الإجابة: ' + (ca ? 'صح' : 'خطأ'); }
+      else { opts[ca].classList.add('correct'); opts[ua].classList.add('wrong'); fb.textContent = '✗ الإجابة الصحيحة بالأخضر.'; }
+    }
+  });
+  const r = document.getElementById('result-' + type);
+  document.getElementById('score-' + type).textContent = c + '/' + qs.length;
+  const m = document.getElementById('msg-' + type);
+  if (c === qs.length) { m.textContent = '🏆 ممتاز 100%!'; m.className = 'result-message excellent'; }
+  else if (c >= 3)      { m.textContent = '👍 جيد، راجع الأخطاء.'; m.className = 'result-message good'; }
+  else                  { m.textContent = '📚 راجع الدرس تاني.'; m.className = 'result-message try-again'; }
+  r.classList.add('show'); r.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+function retryQuiz(type) {
+  const sec = document.getElementById('quiz-' + type);
+  sec.querySelectorAll('.q-opt').forEach(o => { o.classList.remove('selected', 'correct', 'wrong'); o.disabled = false; });
+  sec.querySelectorAll('.q-feedback').forEach(f => { f.classList.remove('show', 'correct', 'wrong'); f.textContent = ''; });
+  document.getElementById('result-' + type).classList.remove('show');
+  answers[type] = {};
+}
+
+// ── Progress & complete ──
+function markComplete(btn) {
+  const done = Progress.toggleLessonComplete(COURSE_ID, LESSON_ID);
+  btn.classList.toggle('completed', done);
+  btn.querySelector('span:last-child').textContent = done ? 'مكتمل! ⭐' : 'علّم كمكتمل';
+  showToast(done ? '🎉 أكملت مرحلة HTML بالكامل! 🏆' : 'تم إلغاء الإكمال');
+}
+
+if (Progress.isLessonComplete(COURSE_ID, LESSON_ID)) {
+  const b = document.getElementById('completeBtn');
+  b.classList.add('completed');
+  b.querySelector('span:last-child').textContent = 'مكتمل! ⭐';
+}
+
+(function updateBar() {
+  const p = Progress.getCourseProgress(COURSE_ID, TOTAL);
+  document.getElementById('progFill').style.width = p + '%';
+  document.getElementById('progText').textContent = p + '%';
+})();
+
+// ── Toast ──
+function showToast(m) {
+  const t = document.getElementById('toast');
+  t.textContent = m; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3500);
+}
+
+// ── Scroll top ──
+window.addEventListener('scroll', () => { document.getElementById('scrollTop').classList.toggle('show', window.scrollY > 300); });
+
+// ── TOC smooth scroll ──
+document.querySelectorAll('.toc-card a').forEach(l => {
+  l.addEventListener('click', e => {
+    e.preventDefault();
+    const t = document.querySelector(l.getAttribute('href'));
+    if (t) t.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+});
+</script>
+</body>
+</html>
